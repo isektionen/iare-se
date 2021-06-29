@@ -8,11 +8,11 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "lib/api";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
-import React from "react";
+import React, { StrictMode } from "react";
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (
-        <React.StrictMode>
+        <StrictMode>
             <RecoilRoot>
                 <ChakraProvider theme={customTheme}>
                     <ApolloProvider client={client}>
@@ -29,7 +29,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                     </ApolloProvider>
                 </ChakraProvider>
             </RecoilRoot>
-        </React.StrictMode>
+        </StrictMode>
     );
 };
 

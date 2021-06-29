@@ -1,6 +1,7 @@
 const withPWA = require("next-pwa");
 
-module.exports = withPWA({
+module.exports = {
+    /*
     pwa: {
         disable:
             process.env.NODE_ENV === "development" ||
@@ -12,6 +13,7 @@ module.exports = withPWA({
         dest: "public",
         register: true,
     },
+    */
     reactStrictMode: true,
     target: "serverless",
-});
+};

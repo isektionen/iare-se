@@ -126,7 +126,7 @@ export const headerState = selector<HeaderProps>({
 
 export const footerState = selector<FooterProps>({
     key: "SELECTOR/FOOTER",
-    get: async ({ get }) => {
+    get: ({ get }) => {
         const menuList = get(menuAtom);
         return { menuList, responsiblePublisher: "Alice?" };
     },

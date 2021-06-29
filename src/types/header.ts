@@ -2,7 +2,7 @@ import { MenuListItem } from "./global";
 
 export type LanguageItem = {
     name: string;
-    code: "sv" | "en";
+    code: string;
 };
 export interface HeaderProps {
     menuList: MenuListItem[];

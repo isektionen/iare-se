@@ -6,22 +6,31 @@ import customTheme from "styles/customTheme";
 import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "lib/api";
+import { RecoilRoot } from "recoil";
+import Layout from "components/layout";
+import React from "react";
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
     return (
-        <ChakraProvider theme={customTheme}>
-            <ApolloProvider client={client}>
-                <Head>
-                    <meta
-                        name="viewport"
-                        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover"
-                    />
-                </Head>
+        <React.StrictMode>
+            <RecoilRoot>
+                <ChakraProvider theme={customTheme}>
+                    <ApolloProvider client={client}>
+                        <Head>
+                            <meta
+                                name="viewport"
+                                content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover"
+                            />
+                        </Head>
 
-                <Component {...pageProps} />
-            </ApolloProvider>
-        </ChakraProvider>
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
+                    </ApolloProvider>
+                </ChakraProvider>
+            </RecoilRoot>
+        </React.StrictMode>
     );
 };
 
-export default MyApp;
+export default App;

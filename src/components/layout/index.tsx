@@ -9,14 +9,12 @@ import { FooterProps } from "types/footer";
 
 interface Props {
     children: ReactNode;
-    header: HeaderProps;
-    footer: FooterProps;
 }
 
 const Layout = (props: Props) => {
     return (
         <>
-            <Header {...props.header} />
+            <Header />
             <Meta />
             <Flex
                 w="full"
@@ -28,7 +26,7 @@ const Layout = (props: Props) => {
             >
                 {props.children}
             </Flex>
-            <Footer {...props.footer} />
+            <Footer />
         </>
     );
 };

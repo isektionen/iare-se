@@ -1,14 +1,15 @@
 {
-  "name": "nextchakra-starter",
+  "name": "iare.se",
   "version": "0.1.0",
   "private": true,
-  "author": "sozonome",
+  "author": "John Landeholt <Yonda AB>",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettify": "prettier --write src"
+    "prettify": "prettier --write src",
+    "generate": "graphql-codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.3.20",
@@ -29,6 +30,8 @@
     "recoil": "^0.3.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.21.5",
+    "@graphql-codegen/typescript": "^1.22.3",
     "@netlify/plugin-nextjs": "^3.4.2",
     "@types/react": "^17.0.11",
     "eslint": "^7.28.0",

@@ -10,60 +10,59 @@ import { BigNavigation } from "./navigation/BigNavigation";
 import { MobileNavigation } from "./navigation/MobileNavigation";
 import { useRecoilValueLoadable } from "recoil";
 import { headerState } from "state/layout";
-import { RecoilSSRValue } from "components/RecoilSSR";
+import { RecoilSSRValue, useRecoilSSRValue } from "components/RecoilSSR";
 
 const Header = () => {
     const [isLg] = useMediaQuery(`(min-width: ${customTheme.breakpoints.lg})`);
     const [isMd] = useMediaQuery(`(min-width: ${customTheme.breakpoints.md})`);
-    return (
-        <RecoilSSRValue
-            recoilValue={headerState}
-            fallback={<div>loading...</div>}
-        >
-            {({ menuList, languages, contact }) => (
-                <>
-                    <Box px={{ base: 4, md: 12 }} pos="relative" bg="gray.50">
-                        <Flex py={4} as="header" width="full" align="center">
-                            <AccessibleLink href="/">
-                                <Image
-                                    src="/logo.svg"
-                                    width={77}
-                                    height={28}
-                                    alt="Iare Logotype"
-                                />
-                            </AccessibleLink>
-                            <Spacer />
-                            {isMd && (
-                                <>
-                                    <NavigationMenu menuList={menuList} />
-                                    <Spacer />
-                                    <NavigationButtons
-                                        contact={contact}
-                                        mediaQuery={{ isLg, isMd }}
-                                        languages={languages}
-                                    />
-                                </>
-                            )}
-                            {!isMd && (
-                                <MobileNavigation
-                                    menuList={menuList}
+    const [data, isLoading, hasError] = useRecoilSSRValue(headerState);
+
+    if (isLoading) return <div>Loading..</div>;
+    if (data) {
+        const { menuList, contact, languages } = data;
+        return (
+            <>
+                <Box px={{ base: 4, md: 12 }} pos="relative" bg="gray.50">
+                    <Flex py={4} as="header" width="full" align="center">
+                        <AccessibleLink href="/">
+                            <Image
+                                src="/logo.svg"
+                                width={77}
+                                height={28}
+                                alt="Iare Logotype"
+                            />
+                        </AccessibleLink>
+                        <Spacer />
+                        {isMd && (
+                            <>
+                                <NavigationMenu menuList={menuList} />
+                                <Spacer />
+                                <NavigationButtons
                                     contact={contact}
-                                    languages={languages}
                                     mediaQuery={{ isLg, isMd }}
+                                    languages={languages}
                                 />
-                            )}
-                        </Flex>
-                    </Box>
-                    {isMd && (
-                        <BigNavigation
-                            mediaQuery={{ isLg }}
-                            subMenuList={menuList[1].listItems}
-                        />
-                    )}
-                </>
-            )}
-        </RecoilSSRValue>
-    );
+                            </>
+                        )}
+                        {!isMd && (
+                            <MobileNavigation
+                                menuList={menuList}
+                                contact={contact}
+                                languages={languages}
+                                mediaQuery={{ isLg, isMd }}
+                            />
+                        )}
+                    </Flex>
+                </Box>
+                {/*isMd && (
+                    <BigNavigation
+                        mediaQuery={{ isLg }}
+                        subMenuList={menuList[1].listItems}
+                    />
+                )*/}
+            </>
+        );
+    }
 };
 
 export default Header;

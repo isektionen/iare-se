@@ -5,7 +5,7 @@ import "@fontsource/source-sans-pro";
 import customTheme from "styles/customTheme";
 import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "lib/api";
+import strapi from "lib/strapi";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
 import React, { StrictMode } from "react";
@@ -15,7 +15,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <StrictMode>
             <RecoilRoot>
                 <ChakraProvider theme={customTheme}>
-                    <ApolloProvider client={client}>
+                    <ApolloProvider client={strapi}>
                         <Head>
                             <meta
                                 name="viewport"

@@ -1,8 +1,16 @@
 import React, { Props, PropsWithChildren, ReactNode } from "react";
-import { RecoilValue, useRecoilValueLoadable } from "recoil";
+import {
+    RecoilState,
+    RecoilValue,
+    SetterOrUpdater,
+    useRecoilStateLoadable,
+    useRecoilValueLoadable,
+} from "recoil";
+
+type children<T> = (contents: T) => ReactNode;
 
 interface ValueProps<T> {
-    children: (contents: T) => ReactNode;
+    children: children<T>;
     recoilValue: RecoilValue<T>;
     fallback: ReactNode;
 }
@@ -39,5 +47,55 @@ export const RecoilSSRValue = <T,>({
             return <>{fallback}</>;
         case "hasError":
             throw data.contents;
+    }
+};
+
+interface StateProps<T> {
+    children: children<T>;
+    recoilState: RecoilState<T>;
+    fallback: ReactNode;
+}
+
+export const RecoilSSRState = <T,>({
+    children,
+    recoilState,
+    fallback,
+}: StateProps<T>) => {
+    const [stateLoadable, setState] = useRecoilStateLoadable(recoilState);
+    switch (stateLoadable.state) {
+        case "hasValue":
+            return <>{children(stateLoadable.contents)}</>;
+        case "loading":
+            return <>{fallback}</>;
+        case "hasError":
+            throw stateLoadable.contents;
+    }
+};
+
+export const useRecoilSSRValue = <T,>(
+    recoilValue: RecoilValue<T>
+): [T | undefined, boolean, undefined | T] => {
+    const data = useRecoilValueLoadable(recoilValue);
+    switch (data.state) {
+        case "hasValue":
+            return [data.contents, false, undefined];
+        case "loading":
+            return [undefined, true, undefined];
+        case "hasError":
+            return [undefined, false, data.contents];
+    }
+};
+
+export const useRecoilSSRState = <T,>(
+    recoilState: RecoilState<T>
+): [[T, SetterOrUpdater<T>] | undefined, boolean, undefined | T] => {
+    const [data, setData] = useRecoilStateLoadable(recoilState);
+    switch (data.state) {
+        case "hasValue":
+            return [[data.contents, setData], false, undefined];
+        case "loading":
+            return [undefined, true, undefined];
+        case "hasError":
+            return [undefined, false, data.contents];
     }
 };

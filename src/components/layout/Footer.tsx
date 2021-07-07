@@ -34,6 +34,7 @@ const Footer = () => {
             </Flex>
         );
     }
+    return <></>;
 };
 
 export default Footer;

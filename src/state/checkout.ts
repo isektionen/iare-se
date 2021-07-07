@@ -1,8 +1,13 @@
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { ICheckoutSession } from "types/checkout";
 
 export const eventId = atom<string>({
     key: "ATOM/EVENTID",
+    default: "-1",
+});
+
+export const paymentId = atom<string>({
+    key: "ATOM/PAYMENTID",
     default: "-1",
 });
 
@@ -16,12 +21,9 @@ const createIntention = async (eventId: string) => {
     return data.paymentId;
 };
 
-export const intention = atom<string>({
+export const intention = atomFamily<string, string>({
     key: "ATOM/INTENTION",
-    default: selector({
-        key: "SELECTOR/INTENTION",
-        get: ({ get }) => createIntention(get(eventId)),
-    }),
+    default: (eventId: string) => createIntention(eventId),
 });
 
 /**

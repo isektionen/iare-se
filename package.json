@@ -20,6 +20,7 @@
     "@fontsource/lexend": "^4.4.5",
     "@fontsource/source-sans-pro": "^4.4.5",
     "axios": "^0.21.1",
+    "date-fns": "^2.22.1",
     "framer-motion": "^4.1.17",
     "graphql": "^15.5.1",
     "next": "^11.0.0",

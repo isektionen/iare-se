@@ -22,8 +22,13 @@ const Header = () => {
         const { menuList, contact, languages } = data;
         return (
             <>
-                <Box px={{ base: 4, md: 12 }} pos="relative" bg="gray.50">
-                    <Flex py={4} as="header" width="full" align="center">
+                <Box
+                    px={{ base: 4, md: 12 }}
+                    pos="relative"
+                    bg="gray.50"
+                    w="full"
+                >
+                    <Flex py={4} as="header" w="full" align="center">
                         <AccessibleLink href="/">
                             <Image
                                 src="/logo.svg"
@@ -63,6 +68,7 @@ const Header = () => {
             </>
         );
     }
+    return <></>;
 };
 
 export default Header;

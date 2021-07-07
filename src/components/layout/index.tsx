@@ -13,12 +13,11 @@ interface Props {
 
 const Layout = (props: Props) => {
     return (
-        <>
+        <VStack>
             <Header />
             <Meta />
             <Flex
                 w="full"
-                px={{ base: 4, md: 12 }}
                 bg="gray.50"
                 h="full"
                 flexDir="column"
@@ -27,7 +26,7 @@ const Layout = (props: Props) => {
                 {props.children}
             </Flex>
             <Footer />
-        </>
+        </VStack>
     );
 };
 

@@ -22,9 +22,13 @@ const customTheme = extendTheme({
             50: "#F3F5F5",
             100: "#ECEFEF",
             200: "hsla(180, 3%, 88%, 1)",
+            500: "#90A2A2",
             700: "hsla(196, 14%, 25%, 1)",
             800: "hsla(196, 14%, 18%, 1)",
             900: "hsla(196, 14%, 12%, 1)",
+        },
+        brand: {
+            500: "#976E49",
         },
     },
     breakpoints,

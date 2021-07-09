@@ -6,7 +6,10 @@ import { useRecoilCallback } from "recoil";
 import {
     getTicketInfo,
     intention,
-    paymentId,
+    intentionState,
+    paymentState,
+    pidFromIntention,
+    ticketsFromIntention,
     ticketState,
 } from "state/checkout";
 import { Allergy, Diet, Event } from "types/strapi";
@@ -46,9 +49,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const [paymentInitialized, setPaymentInitialized] = useState(false);
     const [orderIsFree, setOrderIsFree] = useState(false);
 
-    const [[currentPid, setCurrentPid], loading, error] =
-        useRecoilSSRState(paymentId);
-    const [currentTickets] = useRecoilSSRValue(ticketState);
+    const [paymentId] = useRecoilSSRValue(pidFromIntention);
+    // TODO: create SSRSetValue
+    const [[_, setPid]] = useRecoilSSRState(paymentState);
+    const [intentionId] = useRecoilSSRValue(intentionState);
+    const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
 
     const nextQueryParams = () => {
         const query = router.asPath.split("?")[1];
@@ -68,38 +73,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const breadCrumbs = ["Aktuellt", "Events"];
 
-    const handleTicketsChecked = () => {
-        if (
-            currentTickets &&
-            currentTickets.length > 0 &&
-            event.tickets?.Tickets
-        ) {
-            const ticketReferences = event.tickets.Tickets.reduce(
-                (previousValue, currentValue) => {
-                    if (
-                        currentTickets.some(
-                            (reference) =>
-                                reference ===
-                                slugifyTicketReference(
-                                    `${event.title}.${currentValue?.name}`
-                                )
-                        )
-                    ) {
-                        return [...previousValue, currentValue?.id];
-                    }
-                    return [...previousValue];
-                },
-                []
-            ) as unknown as string[];
-            return ticketReferences;
-        }
-        return [];
-    };
-
     const handleOrderUpdate = async (ticketId: string) => {
         if (checkout) checkout.freezeCheckout();
-        if (currentPid !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${event.id}/${currentPid}`;
+        console.log(ticketId);
+        if (intentionId !== "-1") {
+            const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${event.id}/${intentionId}`;
             const res = await fetch(url, {
                 method: "PUT",
                 headers: {
@@ -111,9 +89,9 @@ const EventView = ({ event, diets, allergies }: Props) => {
             });
             if (res.ok) {
                 const data = await res.json();
-                if (data.paymentId !== currentPid) {
-                    setCurrentPid(data.paymentId);
-                    router.push(`/event/${event.slug}?pid=${data.paymentId}`);
+                setOrderIsFree(data.paymentId ? false : true);
+                if (setPid) {
+                    setPid(data.paymentId ? data.paymentId : "-1");
                 }
             }
         }
@@ -122,23 +100,25 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const handleFreeOrder = async (orderBody: IConfirmation) => {
         await handleOrderDetails();
-        const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${currentPid}/complete`;
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(orderBody),
-        });
+        if (intentionId !== "-1") {
+            const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${intentionId}/complete`;
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(orderBody),
+            });
+        }
     };
 
     const handleOrderDetails = async () => {
         if (
             dietResult.length > 0 ||
             specialDietResult.length > 0 ||
-            currentPid !== "-1"
+            intentionId !== "-1"
         ) {
-            const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${currentPid}/diets`;
+            const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/diets`;
 
             const body = {} as { diets: number[]; allergens: number[] };
             if (dietResult.length > 0)
@@ -162,41 +142,44 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const checkoutSession = useRecoilCallback(
         ({ set, snapshot }) =>
             async () => {
-                const { pid } = nextQueryParams();
-                if (pid === currentPid) {
-                    console.log("TRUE", currentPid);
-                }
-                let sessionPid = pid;
-                if (!pid) {
-                    sessionPid = await snapshot.getPromise(intention(event.id));
-                    router.push(`/event/${event.slug}?pid=${sessionPid}`);
-                    const tickets = await getTicketInfo(sessionPid);
-                    set(ticketState, tickets);
+                const { iid } = nextQueryParams();
+                if (!iid) {
+                    const { intentionId, paymentId } =
+                        await snapshot.getPromise(intention(event.id));
+                    router.push(`/event/${event.slug}?iid=${intentionId}`);
+                    set(intentionState, intentionId);
+                    /** When paymentId is set to "-1" it means that the
+                     *  intention started with a free ticket.
+                     */
+                    setOrderIsFree(
+                        !paymentId || paymentId === "-1" ? true : false
+                    );
+                    if (paymentId && paymentId !== "-1") {
+                        set(paymentState, paymentId);
+                    }
                 } else {
-                    const tickets = await getTicketInfo(currentPid as string);
-                    set(ticketState, tickets);
+                    set(intentionState, iid);
                 }
-
-                set(paymentId, sessionPid as string);
-
-                if (sessionPid.startsWith("free-")) {
-                    setOrderIsFree(true);
-                } else if (
-                    Dibs &&
+                if (
+                    paymentId &&
+                    intentionId &&
+                    paymentId !== "-1" &&
+                    intentionId !== "-1" &&
+                    typeof Dibs !== "undefined" &&
                     checkoutRef.current &&
                     checkoutRef.current?.childElementCount === 0
                 ) {
                     setOrderIsFree(false);
                     const checkoutConfig = {
                         checkoutKey: process.env.NEXT_PUBLIC_TEST_CHECKOUT_KEY,
-                        paymentId: sessionPid,
+                        paymentId: paymentId,
                         language: "sv-SE",
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);
-                    _checkout.on("payment-completed", (resp) =>
+                    _checkout.on("payment-completed", () =>
                         router.push(
-                            `/event/${event.slug}?pid=${sessionPid}&done=true`
+                            `/event/${event.slug}?iid=${intentionId}&done=true`
                         )
                     );
                     _checkout.setTheme({
@@ -219,9 +202,8 @@ const EventView = ({ event, diets, allergies }: Props) => {
     );
 
     useEffect(() => {
-        console.log(currentPid);
         checkoutSession();
-    }, [currentPid]);
+    }, [intentionId, paymentId, orderIsFree]);
 
     useEffect(() => {
         if (paymentInitialized) {
@@ -234,7 +216,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         if (netsCheckout) {
             netsCheckout.style.width = "100%";
         }
-    }, [checkout]);
+    }, [checkout, orderIsFree]);
 
     return (
         <Flex direction={{ base: "column", md: "row" }} justify="stretch">
@@ -269,11 +251,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         badge={{ color: "green", text: "nyhet" }}
                     />
                     <EventDiscription description={event.description} />
-                    {currentTickets?.length > 0 && (
+                    {intendedTickets && intendedTickets?.length > 0 && (
                         <EventTicketList
                             tickets={event.tickets}
                             onChange={handleOrderUpdate}
-                            currentTickets={handleTicketsChecked()}
+                            currentTickets={intendedTickets}
                         >
                             {({ radio, ticket }) => (
                                 <EventTicketItem

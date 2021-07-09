@@ -1,25 +1,28 @@
 import { Box, RadioGroup, useRadioGroup, VStack } from "@chakra-ui/react";
+import { useRecoilSSRValue } from "components/RecoilSSR";
 import React, { ReactNode } from "react";
+import { ticketState } from "state/checkout";
 import { ComponentEventTickets, Maybe } from "types/strapi";
 
 interface Props {
     tickets: Maybe<ComponentEventTickets> | undefined;
+    currentTickets: string[] | undefined;
+    onChange: (v: string) => void;
     children: (o: any) => ReactNode;
+    allowMultiple?: boolean;
 }
 
 export const EventTicketList = (props: Props) => {
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: "eventTickets",
-        defaultValue: props.tickets?.Tickets[0]?.id,
-        onChange: (value: string) => {
-            console.log(value);
-        },
+        defaultValue: props.currentTickets[0],
+        onChange: props.onChange,
     });
 
     const group = getRootProps();
 
     return (
-        <VStack {...group} w="full">
+        <VStack {...group} w="full" pb={2}>
             {props.tickets?.Tickets?.map((ticket, i) => {
                 const radio = getRadioProps({ value: ticket?.id });
                 return (

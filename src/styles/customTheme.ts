@@ -22,6 +22,7 @@ const customTheme = extendTheme({
             50: "#F3F5F5",
             100: "#ECEFEF",
             200: "hsla(180, 3%, 88%, 1)",
+            300: "hsla(180, 3%, 66%, 1)",
             500: "#90A2A2",
             700: "hsla(196, 14%, 25%, 1)",
             800: "hsla(196, 14%, 18%, 1)",
@@ -29,6 +30,12 @@ const customTheme = extendTheme({
         },
         brand: {
             500: "#976E49",
+        },
+        porter: {
+            100: "#fff",
+            200: "#ECEFEF",
+            400: "#CBD5E0",
+            500: "tomato",
         },
     },
     breakpoints,

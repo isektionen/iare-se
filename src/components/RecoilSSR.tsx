@@ -88,14 +88,18 @@ export const useRecoilSSRValue = <T,>(
 
 export const useRecoilSSRState = <T,>(
     recoilState: RecoilState<T>
-): [[T, SetterOrUpdater<T>] | undefined, boolean, undefined | T] => {
+): [
+    [T, SetterOrUpdater<T>] | [undefined, undefined],
+    boolean,
+    undefined | T
+] => {
     const [data, setData] = useRecoilStateLoadable(recoilState);
     switch (data.state) {
         case "hasValue":
             return [[data.contents, setData], false, undefined];
         case "loading":
-            return [undefined, true, undefined];
+            return [[undefined, undefined], true, undefined];
         case "hasError":
-            return [undefined, false, data.contents];
+            return [[undefined, undefined], false, data.contents];
     }
 };

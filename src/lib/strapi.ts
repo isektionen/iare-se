@@ -7,7 +7,7 @@ import {
 } from "@apollo/client";
 
 export const client = new ApolloClient({
-    uri: process.env.NEXT_STRAPI_BACKEND_URL || "http://localhost:1337/graphql",
+    uri: `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/graphql`,
     cache: new InMemoryCache(),
 });
 

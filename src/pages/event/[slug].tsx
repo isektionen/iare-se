@@ -4,21 +4,18 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import React, { useEffect, useRef, useState } from "react";
 import { useRecoilCallback } from "recoil";
 import {
-    getTicketInfo,
     intention,
     intentionState,
     paymentState,
     pidFromIntention,
     ticketsFromIntention,
-    ticketState,
 } from "state/checkout";
 import { Allergy, Diet, Event } from "types/strapi";
-
+import { isBefore } from "date-fns";
 import { useRouter } from "next/router";
 
 import Script from "next/script";
 import {
-    Text,
     Flex,
     Box,
     Breadcrumb,
@@ -29,12 +26,13 @@ import { EventTitle } from "components/event/EventTitle";
 import { EventDiscription } from "components/event/EventDiscription";
 import { EventTicketList } from "components/event/EventTicketList";
 import { EventTicketItem } from "components/event/EventTicketItem";
-import { slugifyTicketReference } from "utils/slug";
 import { Divider } from "components/Divider";
 import { OptionsInput } from "components/event/OptionsInput";
 import { Option } from "components/Autocomplete";
 import { EventConfirmation } from "components/event/EventConfirmation";
 import { IConfirmation } from "types/checkout";
+import { EventDeadlineMet } from "components/event/EventDeadlineMet";
+import { EventDeadline } from "components/event/EventDeadline";
 
 interface Props {
     event: Event;
@@ -43,6 +41,9 @@ interface Props {
 }
 const EventView = ({ event, diets, allergies }: Props) => {
     const router = useRouter();
+    const [beforeDeadline] = useState(
+        isBefore(new Date(), new Date(event.deadline))
+    );
     const [checkout, setCheckout] = useState<any>(null);
     const [dietResult, setDietResult] = useState<Option[]>([]);
     const [specialDietResult, setSpecialDietResult] = useState<Option[]>([]);
@@ -75,7 +76,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const handleOrderUpdate = async (ticketId: string) => {
         if (checkout) checkout.freezeCheckout();
-        console.log(ticketId);
         if (intentionId !== "-1") {
             const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${event.id}/${intentionId}`;
             const res = await fetch(url, {
@@ -202,7 +202,9 @@ const EventView = ({ event, diets, allergies }: Props) => {
     );
 
     useEffect(() => {
-        checkoutSession();
+        if (beforeDeadline) {
+            checkoutSession();
+        }
     }, [intentionId, paymentId, orderIsFree]);
 
     useEffect(() => {
@@ -219,7 +221,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
     }, [checkout, orderIsFree]);
 
     return (
-        <Flex direction={{ base: "column", md: "row" }} justify="stretch">
+        <Flex
+            direction={{ base: "column", md: "row" }}
+            minH="560px"
+            pos="relative"
+        >
             <Flex
                 p={{ base: 4, md: 12 }}
                 bg="gray.200"
@@ -265,37 +271,55 @@ const EventView = ({ event, diets, allergies }: Props) => {
                             )}
                         </EventTicketList>
                     )}
-                    <Divider />
-                    <OptionsInput
-                        name="Diet"
-                        description="Ange den diet som passar dig bäst"
-                        options={diets.map((entity) => ({
-                            value: entity.id,
-                            label: entity.name,
-                        }))}
-                        result={dietResult}
-                        setResult={setDietResult}
-                        placeholder="Sök efter dieter"
-                        createText="Lägg till som ny"
+                    <EventDeadline
+                        deadline={event.deadline}
+                        description={{
+                            before: "Det är {TIMELEFT} tills osan stänger",
+                            after: "Det var {TIMELEFT} osan stängde",
+                        }}
                     />
-                    <Divider />
-                    <OptionsInput
-                        name="Specialkost"
-                        description="Ange det som passar in på dig bäst"
-                        options={allergies.map((entity) => ({
-                            value: entity.id,
-                            label: entity.name,
-                        }))}
-                        result={specialDietResult}
-                        setResult={setSpecialDietResult}
-                        placeholder="Sök efter allergier"
-                        createText="Lägg till som ny"
-                    />
+                    {beforeDeadline && (
+                        <>
+                            <Divider />
+                            <OptionsInput
+                                name="Diet"
+                                description="Ange den diet som passar dig bäst"
+                                options={diets.map((entity) => ({
+                                    value: entity.id,
+                                    label: entity.name,
+                                }))}
+                                result={dietResult}
+                                setResult={setDietResult}
+                                placeholder="Sök efter dieter"
+                                createText="Lägg till som ny"
+                            />
+                            <Divider />
+                            <OptionsInput
+                                name="Specialkost"
+                                description="Ange det som passar in på dig bäst"
+                                options={allergies.map((entity) => ({
+                                    value: entity.id,
+                                    label: entity.name,
+                                }))}
+                                result={specialDietResult}
+                                setResult={setSpecialDietResult}
+                                placeholder="Sök efter allergier"
+                                createText="Lägg till som ny"
+                            />
+                        </>
+                    )}
                 </Flex>
             </Flex>
-            <Box pr={{ base: 4, md: 12 }} bg="gray.50" flex={1} h="full">
-                {!orderIsFree && <Box id="checkout" ref={checkoutRef} />}
-                {orderIsFree && (
+            <Flex
+                p={{ base: 4, md: 12 }}
+                bg="gray.50"
+                flex={1}
+                direction="column"
+            >
+                {beforeDeadline && !orderIsFree && (
+                    <Box id="checkout" ref={checkoutRef} />
+                )}
+                {beforeDeadline && orderIsFree && (
                     <EventConfirmation
                         title="Konfirmation"
                         firstName={{ label: "Förnamn", placeholder: "Iaren" }}
@@ -312,7 +336,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         onSubmit={handleFreeOrder}
                     />
                 )}
-            </Box>
+                {!beforeDeadline && (
+                    <EventDeadlineMet description="Det här eventet har stängt sin osa" />
+                )}
+            </Flex>
             <Script id="dibs-js" src={process.env.NEXT_PUBLIC_TEST_CHECKOUT} />
         </Flex>
     );

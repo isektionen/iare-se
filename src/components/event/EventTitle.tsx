@@ -42,7 +42,9 @@ export const EventTitle = (props: Props) => {
                 {props.startTime && (
                     <HStack>
                         <Icon as={MdDateRange} />
-                        <Text>{getDate(props.startTime)}</Text>
+                        <Text textTransform="capitalize">
+                            {getDate(props.startTime)}
+                        </Text>
                     </HStack>
                 )}
             </Box>

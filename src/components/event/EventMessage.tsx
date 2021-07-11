@@ -1,17 +1,18 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import React from "react";
-import { BiCalendarExclamation } from "react-icons/bi";
+import { IconType } from "react-icons";
 
 interface Props {
-    description: string;
+    message: string;
+    icon: IconType;
 }
-export const EventDeadlineMet = (props: Props) => {
+export const EventMessage = (props: Props) => {
     return (
         <Flex justify="center" align="center" h="full" w="full">
             <Flex direction="column" align="center">
-                <Icon as={BiCalendarExclamation} boxSize={32} />
+                {props.icon && <Icon as={props.icon} boxSize={32} />}
                 <Text as="h5" fontSize={24} fontWeight={900} mb={6}>
-                    {props.description}
+                    {props.message}
                 </Text>
             </Flex>
         </Flex>

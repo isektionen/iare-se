@@ -40,6 +40,36 @@ export const getDetails = async (intentionId: string) => {
     return data;
 };
 
+export const validIntentionId = async (intentionId: string) => {
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/valid`;
+    const res = await fetch(url, { method: "GET" });
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    return data.valid;
+};
+
+export const validatePassword = async (eventId: string, password: string) => {
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/events/${eventId}/password`;
+    const res = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.valid;
+};
+
+export const validateIntention = selectorFamily<boolean, string>({
+    key: "SELECTOR/VALIDATE",
+    get: (intentionId: string) => async () => {
+        return await validIntentionId(intentionId);
+    },
+});
+
 export const ticketsFromIntention = selector<string[] | undefined>({
     key: "SELECTOR/TICKETS",
     get: async ({ get }) => {
@@ -84,9 +114,4 @@ export const intention = atomFamily<
                 return { intentionId: iid, paymentId: pid };
             },
         }),
-});
-
-export const ticketState = atom<string[]>({
-    key: "ATOM/TICKETS",
-    default: [],
 });

@@ -1,7 +1,5 @@
-import { Box, RadioGroup, useRadioGroup, VStack } from "@chakra-ui/react";
-import { useRecoilSSRValue } from "components/RecoilSSR";
+import { Box, useRadioGroup, VStack } from "@chakra-ui/react";
 import React, { ReactNode } from "react";
-import { ticketState } from "state/checkout";
 import { ComponentEventTickets, Maybe } from "types/strapi";
 
 interface Props {

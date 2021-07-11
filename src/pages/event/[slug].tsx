@@ -9,6 +9,8 @@ import {
     paymentState,
     pidFromIntention,
     ticketsFromIntention,
+    validateIntention,
+    validatePassword,
 } from "state/checkout";
 import { Allergy, Diet, Event } from "types/strapi";
 import { isBefore } from "date-fns";
@@ -30,9 +32,12 @@ import { Divider } from "components/Divider";
 import { OptionsInput } from "components/event/OptionsInput";
 import { Option } from "components/Autocomplete";
 import { EventConfirmation } from "components/event/EventConfirmation";
-import { IConfirmation } from "types/checkout";
-import { EventDeadlineMet } from "components/event/EventDeadlineMet";
+import { IConfirmation, IPasswordProtect } from "types/checkout";
+import { EventMessage } from "components/event/EventMessage";
 import { EventDeadline } from "components/event/EventDeadline";
+import { BiCalendarExclamation } from "react-icons/bi";
+import { IoWarning } from "react-icons/io5";
+import { EventPasswordProtection } from "components/event/EventPasswordProtection";
 
 interface Props {
     event: Event;
@@ -41,17 +46,20 @@ interface Props {
 }
 const EventView = ({ event, diets, allergies }: Props) => {
     const router = useRouter();
+
     const [beforeDeadline] = useState(
         isBefore(new Date(), new Date(event.deadline))
     );
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [checkout, setCheckout] = useState<any>(null);
     const [dietResult, setDietResult] = useState<Option[]>([]);
     const [specialDietResult, setSpecialDietResult] = useState<Option[]>([]);
-    const [paymentInitialized, setPaymentInitialized] = useState(false);
-    const [orderIsFree, setOrderIsFree] = useState(false);
+    const [paymentInitialized, setPaymentInitialized] =
+        useState<boolean>(false);
+    const [orderIsFree, setOrderIsFree] = useState<boolean>(false);
+    const [invalidIntention, setInvalidIntention] = useState(false);
 
     const [paymentId] = useRecoilSSRValue(pidFromIntention);
-    // TODO: create SSRSetValue
     const [[_, setPid]] = useRecoilSSRState(paymentState);
     const [intentionId] = useRecoilSSRValue(intentionState);
     const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
@@ -73,6 +81,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const checkoutRef = useRef(null);
 
     const breadCrumbs = ["Aktuellt", "Events"];
+
+    const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
+        const isValid = await validatePassword(event.id, password);
+        setIsAuthenticated(isValid);
+    };
 
     const handleOrderUpdate = async (ticketId: string) => {
         if (checkout) checkout.freezeCheckout();
@@ -99,16 +112,27 @@ const EventView = ({ event, diets, allergies }: Props) => {
     };
 
     const handleFreeOrder = async (orderBody: IConfirmation) => {
-        await handleOrderDetails();
         if (intentionId !== "-1") {
             const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${intentionId}/complete`;
+
+            const diets = dietResult.map((entity) => parseInt(entity.value));
+            const allergens = specialDietResult.map((entity) =>
+                parseInt(entity.value)
+            );
+
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(orderBody),
+                body: JSON.stringify({
+                    ...orderBody,
+                    diets,
+                    allergens,
+                }),
             });
+            //if (res.ok)
+            router.push(`/ticket/${intentionId}`);
         }
     };
 
@@ -148,23 +172,31 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         await snapshot.getPromise(intention(event.id));
                     router.push(`/event/${event.slug}?iid=${intentionId}`);
                     set(intentionState, intentionId);
-                    /** When paymentId is set to "-1" it means that the
-                     *  intention started with a free ticket.
-                     */
-                    setOrderIsFree(
-                        !paymentId || paymentId === "-1" ? true : false
-                    );
+
                     if (paymentId && paymentId !== "-1") {
                         set(paymentState, paymentId);
                     }
                 } else {
-                    set(intentionState, iid);
+                    const validIntention = await snapshot.getPromise(
+                        validateIntention(iid)
+                    );
+                    if (validIntention) {
+                        set(intentionState, iid);
+                    } else {
+                        setInvalidIntention(true);
+                    }
                 }
+                /** When paymentId is set to "-1" it means that the
+                 *  intention started with a free ticket.
+                 */
+                setOrderIsFree(!paymentId || paymentId === "-1" ? true : false);
+
                 if (
                     paymentId &&
                     intentionId &&
                     paymentId !== "-1" &&
                     intentionId !== "-1" &&
+                    !invalidIntention &&
                     typeof Dibs !== "undefined" &&
                     checkoutRef.current &&
                     checkoutRef.current?.childElementCount === 0
@@ -178,9 +210,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);
                     _checkout.on("payment-completed", () =>
-                        router.push(
-                            `/event/${event.slug}?iid=${intentionId}&done=true`
-                        )
+                        router.push(`/ticket/${intentionId}`)
                     );
                     _checkout.setTheme({
                         textColor: "#000",
@@ -219,127 +249,172 @@ const EventView = ({ event, diets, allergies }: Props) => {
             netsCheckout.style.width = "100%";
         }
     }, [checkout, orderIsFree]);
-
     return (
         <Flex
             direction={{ base: "column", md: "row" }}
             minH="560px"
             pos="relative"
         >
-            <Flex
-                p={{ base: 4, md: 12 }}
-                bg="gray.200"
-                flex={1}
-                direction="column"
-            >
-                <Breadcrumb pb={2}>
-                    {breadCrumbs.map((b, i) => (
-                        <BreadcrumbItem key={i}>
-                            <BreadcrumbLink textTransform="capitalize">
-                                {b}
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                    ))}
-                    <BreadcrumbItem isCurrentPage>
-                        <BreadcrumbLink
-                            textTransform="capitalize"
-                            fontWeight="bold"
+            {event.passwordProtected && !isAuthenticated && (
+                <EventPasswordProtection
+                    onSubmit={handlePasswordSubmit}
+                    placeholderText="Ange lösenordet"
+                    showLabel="visa"
+                    hideLabel="dölj"
+                    submitLabel="validera"
+                />
+            )}
+            {!event.passwordProtected ||
+                (isAuthenticated && (
+                    <>
+                        <Flex
+                            p={{ base: 4, md: 12 }}
+                            bg="gray.200"
+                            flex={1}
+                            direction="column"
                         >
-                            {event.title}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                </Breadcrumb>
-                <Flex direction="column">
-                    <EventTitle
-                        title={event.title}
-                        startTime={event.startTime}
-                        place={event.place}
-                        badge={{ color: "green", text: "nyhet" }}
-                    />
-                    <EventDiscription description={event.description} />
-                    {intendedTickets && intendedTickets?.length > 0 && (
-                        <EventTicketList
-                            tickets={event.tickets}
-                            onChange={handleOrderUpdate}
-                            currentTickets={intendedTickets}
+                            <Breadcrumb pb={2}>
+                                {breadCrumbs.map((b, i) => (
+                                    <BreadcrumbItem key={i}>
+                                        <BreadcrumbLink textTransform="capitalize">
+                                            {b}
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                ))}
+                                <BreadcrumbItem isCurrentPage>
+                                    <BreadcrumbLink
+                                        textTransform="capitalize"
+                                        fontWeight="bold"
+                                    >
+                                        {event.title}
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                            </Breadcrumb>
+                            <Flex direction="column">
+                                <EventTitle
+                                    title={event.title}
+                                    startTime={event.startTime}
+                                    place={event.place}
+                                    badge={{ color: "green", text: "nyhet" }}
+                                />
+                                <EventDiscription
+                                    description={event.description}
+                                />
+                                {intendedTickets &&
+                                    intendedTickets?.length > 0 && (
+                                        <EventTicketList
+                                            tickets={event.tickets}
+                                            onChange={handleOrderUpdate}
+                                            currentTickets={intendedTickets}
+                                        >
+                                            {({ radio, ticket }) => (
+                                                <EventTicketItem
+                                                    {...radio}
+                                                    ticket={{
+                                                        ...ticket,
+                                                        currency: "kr",
+                                                    }}
+                                                />
+                                            )}
+                                        </EventTicketList>
+                                    )}
+                                <EventDeadline
+                                    deadline={event.deadline}
+                                    description={{
+                                        before: "Det är {TIMELEFT} tills osan stänger",
+                                        after: "Det var {TIMELEFT} osan stängde",
+                                    }}
+                                />
+                                {beforeDeadline &&
+                                    !invalidIntention &&
+                                    event.servingOptions?.servingFood && (
+                                        <>
+                                            <Divider />
+                                            <OptionsInput
+                                                name="Diet"
+                                                description="Ange den diet som passar dig bäst"
+                                                options={diets.map(
+                                                    (entity) => ({
+                                                        value: entity.id,
+                                                        label: entity.name,
+                                                    })
+                                                )}
+                                                result={dietResult}
+                                                setResult={setDietResult}
+                                                placeholder="Sök efter dieter"
+                                                createText="Lägg till som ny"
+                                            />
+                                            <Divider />
+                                            <OptionsInput
+                                                name="Specialkost"
+                                                description="Ange det som passar in på dig bäst"
+                                                options={allergies.map(
+                                                    (entity) => ({
+                                                        value: entity.id,
+                                                        label: entity.name,
+                                                    })
+                                                )}
+                                                result={specialDietResult}
+                                                setResult={setSpecialDietResult}
+                                                placeholder="Sök efter allergier"
+                                                createText="Lägg till som ny"
+                                            />
+                                        </>
+                                    )}
+                            </Flex>
+                        </Flex>
+                        <Flex
+                            p={{ base: 4, md: 12 }}
+                            bg="gray.50"
+                            flex={1}
+                            direction="column"
                         >
-                            {({ radio, ticket }) => (
-                                <EventTicketItem
-                                    {...radio}
-                                    ticket={{ ...ticket, currency: "kr" }}
+                            {beforeDeadline &&
+                                !orderIsFree &&
+                                !invalidIntention && (
+                                    <Box id="checkout" ref={checkoutRef} />
+                                )}
+                            {beforeDeadline &&
+                                orderIsFree &&
+                                !invalidIntention && (
+                                    <EventConfirmation
+                                        title="Konfirmation"
+                                        firstName={{
+                                            label: "Förnamn",
+                                            placeholder: "Iaren",
+                                        }}
+                                        lastName={{
+                                            label: "Efternamn",
+                                            placeholder: "Portersson",
+                                        }}
+                                        email={{
+                                            label: "Email",
+                                            placeholder: "iare@kth.se",
+                                        }}
+                                        phoneNumber={{
+                                            label: "Telefon",
+                                            placeholder: "072-01230123",
+                                        }}
+                                        button={{ label: "Osa" }}
+                                        onSubmit={handleFreeOrder}
+                                    />
+                                )}
+                            {invalidIntention && (
+                                <EventMessage
+                                    icon={IoWarning}
+                                    message="Det iid:et du har i länken existerar inte"
                                 />
                             )}
-                        </EventTicketList>
-                    )}
-                    <EventDeadline
-                        deadline={event.deadline}
-                        description={{
-                            before: "Det är {TIMELEFT} tills osan stänger",
-                            after: "Det var {TIMELEFT} osan stängde",
-                        }}
-                    />
-                    {beforeDeadline && (
-                        <>
-                            <Divider />
-                            <OptionsInput
-                                name="Diet"
-                                description="Ange den diet som passar dig bäst"
-                                options={diets.map((entity) => ({
-                                    value: entity.id,
-                                    label: entity.name,
-                                }))}
-                                result={dietResult}
-                                setResult={setDietResult}
-                                placeholder="Sök efter dieter"
-                                createText="Lägg till som ny"
-                            />
-                            <Divider />
-                            <OptionsInput
-                                name="Specialkost"
-                                description="Ange det som passar in på dig bäst"
-                                options={allergies.map((entity) => ({
-                                    value: entity.id,
-                                    label: entity.name,
-                                }))}
-                                result={specialDietResult}
-                                setResult={setSpecialDietResult}
-                                placeholder="Sök efter allergier"
-                                createText="Lägg till som ny"
-                            />
-                        </>
-                    )}
-                </Flex>
-            </Flex>
-            <Flex
-                p={{ base: 4, md: 12 }}
-                bg="gray.50"
-                flex={1}
-                direction="column"
-            >
-                {beforeDeadline && !orderIsFree && (
-                    <Box id="checkout" ref={checkoutRef} />
-                )}
-                {beforeDeadline && orderIsFree && (
-                    <EventConfirmation
-                        title="Konfirmation"
-                        firstName={{ label: "Förnamn", placeholder: "Iaren" }}
-                        lastName={{
-                            label: "Efternamn",
-                            placeholder: "Portersson",
-                        }}
-                        email={{ label: "Email", placeholder: "iare@kth.se" }}
-                        phoneNumber={{
-                            label: "Telefon",
-                            placeholder: "072-01230123",
-                        }}
-                        button={{ label: "Osa" }}
-                        onSubmit={handleFreeOrder}
-                    />
-                )}
-                {!beforeDeadline && (
-                    <EventDeadlineMet description="Det här eventet har stängt sin osa" />
-                )}
-            </Flex>
+                            {!beforeDeadline && !invalidIntention && (
+                                <EventMessage
+                                    icon={BiCalendarExclamation}
+                                    message="Det här eventet har stängt sin osa"
+                                />
+                            )}
+                        </Flex>
+                    </>
+                ))}
+
             <Script id="dibs-js" src={process.env.NEXT_PUBLIC_TEST_CHECKOUT} />
         </Flex>
     );
@@ -406,6 +481,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                     endTime
                     deadline
                     published_at
+                    passwordProtected {
+                        __typename
+                    }
                 }
                 diets {
                     id

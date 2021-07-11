@@ -5,5 +5,5 @@ interface Props {
 }
 
 export const EventDiscription = (props: Props) => {
-    return <Text pt={4}>{props.description && props.description}</Text>;
+    return <Text py={4}>{props.description && props.description}</Text>;
 };

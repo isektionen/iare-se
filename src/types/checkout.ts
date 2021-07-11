@@ -20,3 +20,7 @@ export interface IConfirmation {
     email: string;
     phoneNumber: string;
 }
+
+export interface IPasswordProtect {
+    password: string;
+}

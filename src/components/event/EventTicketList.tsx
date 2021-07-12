@@ -13,7 +13,7 @@ interface Props {
 export const EventTicketList = (props: Props) => {
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: "eventTickets",
-        defaultValue: props.currentTickets[0],
+        defaultValue: props.currentTickets ? props.currentTickets[0] : "0",
         onChange: props.onChange,
     });
 

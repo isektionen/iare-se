@@ -16,7 +16,6 @@ import { Allergy, Diet, Event } from "types/strapi";
 import { isBefore } from "date-fns";
 import { useRouter } from "next/router";
 
-import Script from "next/script";
 import {
     Flex,
     Box,
@@ -38,6 +37,7 @@ import { EventDeadline } from "components/event/EventDeadline";
 import { BiCalendarExclamation } from "react-icons/bi";
 import { IoWarning } from "react-icons/io5";
 import { EventPasswordProtection } from "components/event/EventPasswordProtection";
+import { useDibs } from "hooks/use-dibs";
 
 interface Props {
     event: Event;
@@ -46,6 +46,8 @@ interface Props {
 }
 const EventView = ({ event, diets, allergies }: Props) => {
     const router = useRouter();
+
+    const Dibs = useDibs();
 
     const [beforeDeadline] = useState(
         isBefore(new Date(), new Date(event.deadline))
@@ -78,7 +80,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         return params as any;
     };
 
-    const checkoutRef = useRef(null);
+    const checkoutRef = useRef<HTMLDivElement>(null);
 
     const breadCrumbs = ["Aktuellt", "Events"];
 
@@ -131,7 +133,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     allergens,
                 }),
             });
-            //if (res.ok)
             router.push(`/ticket/${intentionId}`);
         }
     };
@@ -197,13 +198,14 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     paymentId !== "-1" &&
                     intentionId !== "-1" &&
                     !invalidIntention &&
-                    typeof Dibs !== "undefined" &&
+                    Dibs &&
                     checkoutRef.current &&
                     checkoutRef.current?.childElementCount === 0
                 ) {
                     setOrderIsFree(false);
                     const checkoutConfig = {
-                        checkoutKey: process.env.NEXT_PUBLIC_TEST_CHECKOUT_KEY,
+                        checkoutKey: process.env
+                            .NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
                         paymentId: paymentId,
                         language: "sv-SE",
                         containerId: "checkout",
@@ -222,7 +224,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         outlineColor: "#BEBEBE",
                         primaryOutlineColor: "#976E49",
                     });
-                    _checkout.on("pay-initialized", (paymentId: string) => {
+                    _checkout.on("pay-initialized", () => {
                         setPaymentInitialized(true);
                         _checkout.send("payment-order-finalized", true);
                     });
@@ -406,8 +408,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     </Flex>
                 </>
             )}
-
-            <Script id="dibs-js" src={process.env.NEXT_PUBLIC_TEST_CHECKOUT} />
         </Flex>
     );
 };

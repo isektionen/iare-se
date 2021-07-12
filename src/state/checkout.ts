@@ -1,5 +1,6 @@
 import strapi, { gql } from "lib/strapi";
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
+import { ComponentEventTicketReference } from "types/strapi";
 export const eventId = atom<string>({
     key: "ATOM/EVENTID",
     default: "-1",
@@ -31,10 +32,16 @@ const createIntention = async (eventId: string) => {
     return body;
 };
 
-export const getDetails = async (intentionId: string) => {
+export const getDetails = async (
+    intentionId: string
+): Promise<{ tickets: ComponentEventTicketReference[]; paymentId: string }> => {
     const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/details`;
     const res = await fetch(url, { method: "GET" });
-    if (!res.ok) return;
+    if (!res.ok)
+        return {
+            tickets: [],
+            paymentId: "-1",
+        };
 
     const data = await res.json();
     return data;
@@ -76,7 +83,8 @@ export const ticketsFromIntention = selector<string[] | undefined>({
         const intentionId = get(intentionState);
         if (intentionId === "-1") return;
         const details = await getDetails(intentionId);
-        return details.tickets.map((ticket) => ticket.uid);
+        const tickets = details.tickets.map((ticket) => ticket.uid);
+        return tickets as string[];
     },
 });
 

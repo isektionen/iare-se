@@ -62,7 +62,7 @@ export const EventPasswordProtection = (props: Props) => {
                                     size="sm"
                                     onClick={handleClick}
                                 >
-                                    {show ? props.showLabel : props.hideLabel}
+                                    {show ? props.hideLabel : props.showLabel}
                                 </Button>
                             </InputRightElement>
                         </InputGroup>

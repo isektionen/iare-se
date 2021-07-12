@@ -264,156 +264,148 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     submitLabel="validera"
                 />
             )}
-            {!event.passwordProtected ||
-                (isAuthenticated && (
-                    <>
-                        <Flex
-                            p={{ base: 4, md: 12 }}
-                            bg="gray.200"
-                            flex={1}
-                            direction="column"
-                        >
-                            <Breadcrumb pb={2}>
-                                {breadCrumbs.map((b, i) => (
-                                    <BreadcrumbItem key={i}>
-                                        <BreadcrumbLink textTransform="capitalize">
-                                            {b}
-                                        </BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                ))}
-                                <BreadcrumbItem isCurrentPage>
-                                    <BreadcrumbLink
-                                        textTransform="capitalize"
-                                        fontWeight="bold"
-                                    >
-                                        {event.title}
+            {(!event.passwordProtected || isAuthenticated) && (
+                <>
+                    <Flex
+                        p={{ base: 4, md: 12 }}
+                        bg="gray.200"
+                        flex={1}
+                        direction="column"
+                    >
+                        <Breadcrumb pb={2}>
+                            {breadCrumbs.map((b, i) => (
+                                <BreadcrumbItem key={i}>
+                                    <BreadcrumbLink textTransform="capitalize">
+                                        {b}
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
-                            </Breadcrumb>
-                            <Flex direction="column">
-                                <EventTitle
-                                    title={event.title}
-                                    startTime={event.startTime}
-                                    place={event.place}
-                                    badge={{ color: "green", text: "nyhet" }}
-                                />
-                                <EventDiscription
-                                    description={event.description}
-                                />
-                                {intendedTickets &&
-                                    intendedTickets?.length > 0 && (
-                                        <EventTicketList
-                                            tickets={event.tickets}
-                                            onChange={handleOrderUpdate}
-                                            currentTickets={intendedTickets}
-                                        >
-                                            {({ radio, ticket }) => (
-                                                <EventTicketItem
-                                                    {...radio}
-                                                    ticket={{
-                                                        ...ticket,
-                                                        currency: "kr",
-                                                    }}
-                                                />
+                            ))}
+                            <BreadcrumbItem isCurrentPage>
+                                <BreadcrumbLink
+                                    textTransform="capitalize"
+                                    fontWeight="bold"
+                                >
+                                    {event.title}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </Breadcrumb>
+                        <Flex direction="column">
+                            <EventTitle
+                                title={event.title}
+                                startTime={event.startTime}
+                                place={event.place}
+                                badge={{ color: "green", text: "nyhet" }}
+                            />
+                            <EventDiscription description={event.description} />
+                            {intendedTickets && intendedTickets?.length > 0 && (
+                                <EventTicketList
+                                    tickets={event.tickets}
+                                    onChange={handleOrderUpdate}
+                                    currentTickets={intendedTickets}
+                                >
+                                    {({ radio, ticket }) => (
+                                        <EventTicketItem
+                                            {...radio}
+                                            ticket={{
+                                                ...ticket,
+                                                currency: "kr",
+                                            }}
+                                        />
+                                    )}
+                                </EventTicketList>
+                            )}
+                            <EventDeadline
+                                deadline={event.deadline}
+                                description={{
+                                    before: "Det är {TIMELEFT} tills osan stänger",
+                                    after: "Det var {TIMELEFT} osan stängde",
+                                }}
+                            />
+                            {beforeDeadline &&
+                                !invalidIntention &&
+                                event.servingOptions?.servingFood && (
+                                    <>
+                                        <Divider />
+                                        <OptionsInput
+                                            name="Diet"
+                                            description="Ange den diet som passar dig bäst"
+                                            options={diets.map((entity) => ({
+                                                value: entity.id,
+                                                label: entity.name,
+                                            }))}
+                                            result={dietResult}
+                                            setResult={setDietResult}
+                                            placeholder="Sök efter dieter"
+                                            createText="Lägg till som ny"
+                                        />
+                                        <Divider />
+                                        <OptionsInput
+                                            name="Specialkost"
+                                            description="Ange det som passar in på dig bäst"
+                                            options={allergies.map(
+                                                (entity) => ({
+                                                    value: entity.id,
+                                                    label: entity.name,
+                                                })
                                             )}
-                                        </EventTicketList>
-                                    )}
-                                <EventDeadline
-                                    deadline={event.deadline}
-                                    description={{
-                                        before: "Det är {TIMELEFT} tills osan stänger",
-                                        after: "Det var {TIMELEFT} osan stängde",
-                                    }}
-                                />
-                                {beforeDeadline &&
-                                    !invalidIntention &&
-                                    event.servingOptions?.servingFood && (
-                                        <>
-                                            <Divider />
-                                            <OptionsInput
-                                                name="Diet"
-                                                description="Ange den diet som passar dig bäst"
-                                                options={diets.map(
-                                                    (entity) => ({
-                                                        value: entity.id,
-                                                        label: entity.name,
-                                                    })
-                                                )}
-                                                result={dietResult}
-                                                setResult={setDietResult}
-                                                placeholder="Sök efter dieter"
-                                                createText="Lägg till som ny"
-                                            />
-                                            <Divider />
-                                            <OptionsInput
-                                                name="Specialkost"
-                                                description="Ange det som passar in på dig bäst"
-                                                options={allergies.map(
-                                                    (entity) => ({
-                                                        value: entity.id,
-                                                        label: entity.name,
-                                                    })
-                                                )}
-                                                result={specialDietResult}
-                                                setResult={setSpecialDietResult}
-                                                placeholder="Sök efter allergier"
-                                                createText="Lägg till som ny"
-                                            />
-                                        </>
-                                    )}
-                            </Flex>
-                        </Flex>
-                        <Flex
-                            p={{ base: 4, md: 12 }}
-                            bg="gray.50"
-                            flex={1}
-                            direction="column"
-                        >
-                            {beforeDeadline &&
-                                !orderIsFree &&
-                                !invalidIntention && (
-                                    <Box id="checkout" ref={checkoutRef} />
+                                            result={specialDietResult}
+                                            setResult={setSpecialDietResult}
+                                            placeholder="Sök efter allergier"
+                                            createText="Lägg till som ny"
+                                        />
+                                    </>
                                 )}
-                            {beforeDeadline &&
-                                orderIsFree &&
-                                !invalidIntention && (
-                                    <EventConfirmation
-                                        title="Konfirmation"
-                                        firstName={{
-                                            label: "Förnamn",
-                                            placeholder: "Iaren",
-                                        }}
-                                        lastName={{
-                                            label: "Efternamn",
-                                            placeholder: "Portersson",
-                                        }}
-                                        email={{
-                                            label: "Email",
-                                            placeholder: "iare@kth.se",
-                                        }}
-                                        phoneNumber={{
-                                            label: "Telefon",
-                                            placeholder: "072-01230123",
-                                        }}
-                                        button={{ label: "Osa" }}
-                                        onSubmit={handleFreeOrder}
-                                    />
-                                )}
-                            {invalidIntention && (
-                                <EventMessage
-                                    icon={IoWarning}
-                                    message="Det iid:et du har i länken existerar inte"
-                                />
-                            )}
-                            {!beforeDeadline && !invalidIntention && (
-                                <EventMessage
-                                    icon={BiCalendarExclamation}
-                                    message="Det här eventet har stängt sin osa"
-                                />
-                            )}
                         </Flex>
-                    </>
-                ))}
+                    </Flex>
+                    <Flex
+                        p={{ base: 4, md: 12 }}
+                        bg="gray.50"
+                        flex={1}
+                        direction="column"
+                    >
+                        {beforeDeadline &&
+                            !orderIsFree &&
+                            !invalidIntention && (
+                                <Box id="checkout" ref={checkoutRef} />
+                            )}
+                        {beforeDeadline && orderIsFree && !invalidIntention && (
+                            <EventConfirmation
+                                title="Konfirmation"
+                                firstName={{
+                                    label: "Förnamn",
+                                    placeholder: "Iaren",
+                                }}
+                                lastName={{
+                                    label: "Efternamn",
+                                    placeholder: "Portersson",
+                                }}
+                                email={{
+                                    label: "Email",
+                                    placeholder: "iare@kth.se",
+                                }}
+                                phoneNumber={{
+                                    label: "Telefon",
+                                    placeholder: "072-01230123",
+                                }}
+                                button={{ label: "Osa" }}
+                                onSubmit={handleFreeOrder}
+                            />
+                        )}
+                        {invalidIntention && (
+                            <EventMessage
+                                icon={IoWarning}
+                                message="Det iid:et du har i länken existerar inte"
+                            />
+                        )}
+                        {!beforeDeadline && !invalidIntention && (
+                            <EventMessage
+                                icon={BiCalendarExclamation}
+                                message="Det här eventet har stängt sin osa"
+                            />
+                        )}
+                    </Flex>
+                </>
+            )}
 
             <Script id="dibs-js" src={process.env.NEXT_PUBLIC_TEST_CHECKOUT} />
         </Flex>

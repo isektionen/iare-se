@@ -10,14 +10,12 @@ import React from "react";
 import Image from "next/image";
 import { FaAngleDown } from "react-icons/fa";
 import { LanguageItem } from "types/header";
+import { ComponentHeaderLanguages } from "types/strapi";
 
 interface Props {
-    standardLanguage: {
-        code: string;
-        name: string;
-    };
+    standardLanguage: ComponentHeaderLanguages;
     isMobile?: boolean;
-    languages: LanguageItem[];
+    languages: ComponentHeaderLanguages[];
     mediaQuery: {
         isLg?: boolean;
         isMd?: boolean;
@@ -40,12 +38,12 @@ export const LanguageMenu = (props: Props) => {
                                 src={`/${props.standardLanguage.code}.svg`}
                                 width={22}
                                 height={12}
-                                alt={props.standardLanguage.name}
+                                alt={props.standardLanguage.label}
                             />
                             <span>
                                 {props.mediaQuery.isLg ||
                                     (props.isMobile &&
-                                        props.standardLanguage.name)}
+                                        props.standardLanguage.label)}
                             </span>
                         </HStack>
                     </MenuButton>
@@ -57,9 +55,9 @@ export const LanguageMenu = (props: Props) => {
                                         src={`/${lang.code}.svg`}
                                         width={22}
                                         height={12}
-                                        alt={lang.name}
+                                        alt={lang.label}
                                     />
-                                    <span>{lang.name}</span>
+                                    <span>{lang.label}</span>
                                 </HStack>
                             </MenuItem>
                         ))}

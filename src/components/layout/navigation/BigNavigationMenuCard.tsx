@@ -1,9 +1,11 @@
 import { Circle, Icon, VStack, HStack, Text, Flex } from "@chakra-ui/react";
+import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
 import React from "react";
 import { FaGavel } from "react-icons/fa";
 import { ListItemProp, MenuListItem } from "types/global";
+import { ComponentHeaderSubSection } from "types/strapi";
 
-export const BigNavigationMenuCard = (props: ListItemProp) => {
+export const BigNavigationMenuCard = (props: ComponentHeaderSubSection) => {
     return (
         <Flex
             borderRadius={"md"}
@@ -18,11 +20,13 @@ export const BigNavigationMenuCard = (props: ListItemProp) => {
             </Circle>
             <VStack spacing={0.5}>
                 <Text as="h6" fontSize="lg" w="full" fontWeight="semibold">
-                    {props.name}
+                    {props.label}
                 </Text>
-                <Text fontSize="sm" w="full" color="#4D4D4D">
-                    Sektionens högsta organ
-                </Text>
+                {props.description && (
+                    <Text fontSize="sm" w="full" color="#4D4D4D">
+                        {props.description}
+                    </Text>
+                )}
             </VStack>
         </Flex>
     );

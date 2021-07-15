@@ -14,6 +14,9 @@ module.exports = {
         register: true,
     },
     */
+    images: {
+        domains: ["localhost"],
+    },
     reactStrictMode: true,
     target: "serverless",
 };

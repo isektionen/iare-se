@@ -4,17 +4,19 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Meta from "./Meta";
 import { Box, Container, Flex, VStack } from "@chakra-ui/react";
-import { HeaderProps } from "types/header";
 import { FooterProps } from "types/footer";
+import { DefHeader, DefFooter } from "types/global";
 
 interface Props {
+    header: DefHeader;
+    footer: DefFooter;
     children: ReactNode;
 }
 
 const Layout = (props: Props) => {
     return (
         <VStack>
-            <Header />
+            <Header {...props.header} />
             <Meta />
             <Flex
                 w="full"
@@ -25,7 +27,9 @@ const Layout = (props: Props) => {
             >
                 {props.children}
             </Flex>
-            <Footer />
+            <Footer
+                {...{ ...props.footer, sections: props.header?.sections ?? [] }}
+            />
         </VStack>
     );
 };

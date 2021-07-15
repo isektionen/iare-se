@@ -526,6 +526,18 @@ export type ComponentEventTickets = {
   allowMultiple?: Maybe<Scalars['Boolean']>;
 };
 
+export type ComponentFooterSocial = {
+  __typename?: 'ComponentFooterSocial';
+  id: Scalars['ID'];
+  type: Enum_Componentfootersocial_Type;
+  href?: Maybe<Scalars['String']>;
+};
+
+export type ComponentFooterSocialInput = {
+  type: Enum_Componentfootersocial_Type;
+  href?: Maybe<Scalars['String']>;
+};
+
 export type ComponentFormCheckbox = {
   __typename?: 'ComponentFormCheckbox';
   id: Scalars['ID'];
@@ -608,6 +620,72 @@ export type ComponentFormSelectInput = {
   allowMultiple?: Maybe<Scalars['Boolean']>;
   label: Scalars['String'];
   options?: Maybe<Array<ComponentFormInternalsOptionInput>>;
+};
+
+export type ComponentHeaderContact = {
+  __typename?: 'ComponentHeaderContact';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  href: Scalars['String'];
+};
+
+export type ComponentHeaderContactInput = {
+  label: Scalars['String'];
+  href: Scalars['String'];
+};
+
+export type ComponentHeaderLanguageInput = {
+  label: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
+};
+
+export type ComponentHeaderLanguages = {
+  __typename?: 'ComponentHeaderLanguages';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
+};
+
+export type ComponentHeaderLogo = {
+  __typename?: 'ComponentHeaderLogo';
+  id: Scalars['ID'];
+  alternative?: Maybe<Scalars['String']>;
+  src?: Maybe<UploadFile>;
+};
+
+export type ComponentHeaderLogoInput = {
+  alternative?: Maybe<Scalars['String']>;
+  src?: Maybe<Scalars['ID']>;
+};
+
+export type ComponentHeaderMenuSection = {
+  __typename?: 'ComponentHeaderMenuSection';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  href: Scalars['String'];
+  subSection?: Maybe<Array<Maybe<ComponentHeaderSubSection>>>;
+  displayDropDown: Scalars['Boolean'];
+};
+
+export type ComponentHeaderMenuSectionInput = {
+  label: Scalars['String'];
+  href: Scalars['String'];
+  subSection?: Maybe<Array<Maybe<ComponentHeaderSubSectionInput>>>;
+  displayDropDown?: Maybe<Scalars['Boolean']>;
+};
+
+export type ComponentHeaderSubSection = {
+  __typename?: 'ComponentHeaderSubSection';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  href: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ComponentHeaderSubSectionInput = {
+  label: Scalars['String'];
+  href: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
 };
 
 
@@ -732,6 +810,13 @@ export type DietInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export enum Enum_Componentfootersocial_Type {
+  Facebook = 'FACEBOOK',
+  Instagram = 'INSTAGRAM',
+  Linkedin = 'LINKEDIN',
+  Discord = 'DISCORD'
+}
+
 export enum Enum_Order_Status {
   Pending = 'pending',
   Failed = 'failed',
@@ -759,16 +844,7 @@ export type Event = {
   passwordProtected?: Maybe<ComponentEventPasswordProtect>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
-  orders?: Maybe<Array<Maybe<Order>>>;
   localizations?: Maybe<Array<Maybe<Event>>>;
-};
-
-
-export type EventOrdersArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
 };
 
 
@@ -1067,6 +1143,66 @@ export type FileInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type Footer = {
+  __typename?: 'Footer';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  responsiblePublisher?: Maybe<AdminUser>;
+  social?: Maybe<Array<Maybe<ComponentFooterSocial>>>;
+  locale?: Maybe<Scalars['String']>;
+  localizations?: Maybe<Array<Maybe<Footer>>>;
+};
+
+
+export type FooterLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type FooterInput = {
+  responsiblePublisher?: Maybe<Scalars['ID']>;
+  social?: Maybe<Array<Maybe<ComponentFooterSocialInput>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type Header = {
+  __typename?: 'Header';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  sections?: Maybe<Array<Maybe<ComponentHeaderMenuSection>>>;
+  languages?: Maybe<Array<Maybe<ComponentHeaderLanguages>>>;
+  contact?: Maybe<ComponentHeaderContact>;
+  logo?: Maybe<UploadFile>;
+  locale?: Maybe<Scalars['String']>;
+  localizations?: Maybe<Array<Maybe<Header>>>;
+};
+
+
+export type HeaderLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type HeaderInput = {
+  sections?: Maybe<Array<Maybe<ComponentHeaderMenuSectionInput>>>;
+  languages?: Maybe<Array<ComponentHeaderLanguageInput>>;
+  contact: ComponentHeaderContactInput;
+  logo?: Maybe<Scalars['ID']>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
 export type I18NLocale = {
   __typename?: 'I18NLocale';
   id: Scalars['ID'];
@@ -1089,7 +1225,7 @@ export type LocaleInput = {
 };
 
 
-export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Order | OrderConnection | OrderAggregator | OrderAggregatorSum | OrderAggregatorAvg | OrderAggregatorMin | OrderAggregatorMax | OrderGroupBy | OrderConnectionId | OrderConnectionCreated_At | OrderConnectionUpdated_At | OrderConnectionPaymentId | OrderConnectionStatus | OrderConnectionConsumer | OrderConnectionEvent | OrderConnectionIp | OrderConnectionReference | OrderConnectionAmount | OrderConnectionTimestamp | OrderConnectionPaymentType | OrderConnectionPaymentMethod | OrderConnectionIntentionId | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect;
+export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -1111,6 +1247,10 @@ export type Mutation = {
   createEvent?: Maybe<CreateEventPayload>;
   updateEvent?: Maybe<UpdateEventPayload>;
   deleteEvent?: Maybe<DeleteEventPayload>;
+  updateFooter?: Maybe<UpdateFooterPayload>;
+  deleteFooter?: Maybe<DeleteFooterPayload>;
+  updateHeader?: Maybe<UpdateHeaderPayload>;
+  deleteHeader?: Maybe<DeleteHeaderPayload>;
   createOrder?: Maybe<CreateOrderPayload>;
   updateOrder?: Maybe<UpdateOrderPayload>;
   deleteOrder?: Maybe<DeleteOrderPayload>;
@@ -1137,6 +1277,8 @@ export type Mutation = {
   createDietLocalization: Diet;
   createEventCategoryLocalization: EventCategory;
   createEventLocalization: Event;
+  createFooterLocalization: Footer;
+  createHeaderLocalization: Header;
   createPostLocalization: Post;
   upload: UploadFile;
   multipleUpload: Array<Maybe<UploadFile>>;
@@ -1239,6 +1381,28 @@ export type MutationDeleteEventArgs = {
 };
 
 
+export type MutationUpdateFooterArgs = {
+  input?: Maybe<UpdateFooterInput>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDeleteFooterArgs = {
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationUpdateHeaderArgs = {
+  input?: Maybe<UpdateHeaderInput>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDeleteHeaderArgs = {
+  locale?: Maybe<Scalars['String']>;
+};
+
+
 export type MutationCreateOrderArgs = {
   input?: Maybe<CreateOrderInput>;
 };
@@ -1331,6 +1495,16 @@ export type MutationCreateEventCategoryLocalizationArgs = {
 
 export type MutationCreateEventLocalizationArgs = {
   input: UpdateEventInput;
+};
+
+
+export type MutationCreateFooterLocalizationArgs = {
+  input: UpdateFooterInput;
+};
+
+
+export type MutationCreateHeaderLocalizationArgs = {
+  input: UpdateHeaderInput;
 };
 
 
@@ -1434,36 +1608,6 @@ export type Order = {
   intentionId?: Maybe<Scalars['String']>;
 };
 
-export type OrderAggregator = {
-  __typename?: 'OrderAggregator';
-  count?: Maybe<Scalars['Int']>;
-  totalCount?: Maybe<Scalars['Int']>;
-  sum?: Maybe<OrderAggregatorSum>;
-  avg?: Maybe<OrderAggregatorAvg>;
-  min?: Maybe<OrderAggregatorMin>;
-  max?: Maybe<OrderAggregatorMax>;
-};
-
-export type OrderAggregatorAvg = {
-  __typename?: 'OrderAggregatorAvg';
-  amount?: Maybe<Scalars['Float']>;
-};
-
-export type OrderAggregatorMax = {
-  __typename?: 'OrderAggregatorMax';
-  amount?: Maybe<Scalars['Float']>;
-};
-
-export type OrderAggregatorMin = {
-  __typename?: 'OrderAggregatorMin';
-  amount?: Maybe<Scalars['Float']>;
-};
-
-export type OrderAggregatorSum = {
-  __typename?: 'OrderAggregatorSum';
-  amount?: Maybe<Scalars['Float']>;
-};
-
 export type OrderAsTicket = {
   __typename?: 'OrderAsTicket';
   status?: Maybe<Enum_Order_Status>;
@@ -1471,115 +1615,6 @@ export type OrderAsTicket = {
   event?: Maybe<OatEvent>;
   ticketReference?: Maybe<Array<Maybe<OatComponentEventTicketReference>>>;
   reference?: Maybe<Scalars['String']>;
-};
-
-export type OrderConnection = {
-  __typename?: 'OrderConnection';
-  values?: Maybe<Array<Maybe<Order>>>;
-  groupBy?: Maybe<OrderGroupBy>;
-  aggregate?: Maybe<OrderAggregator>;
-};
-
-export type OrderConnectionAmount = {
-  __typename?: 'OrderConnectionAmount';
-  key?: Maybe<Scalars['Float']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionConsumer = {
-  __typename?: 'OrderConnectionConsumer';
-  key?: Maybe<Scalars['ID']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionCreated_At = {
-  __typename?: 'OrderConnectionCreated_at';
-  key?: Maybe<Scalars['DateTime']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionEvent = {
-  __typename?: 'OrderConnectionEvent';
-  key?: Maybe<Scalars['ID']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionId = {
-  __typename?: 'OrderConnectionId';
-  key?: Maybe<Scalars['ID']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionIntentionId = {
-  __typename?: 'OrderConnectionIntentionId';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionIp = {
-  __typename?: 'OrderConnectionIp';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionPaymentId = {
-  __typename?: 'OrderConnectionPaymentId';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionPaymentMethod = {
-  __typename?: 'OrderConnectionPaymentMethod';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionPaymentType = {
-  __typename?: 'OrderConnectionPaymentType';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionReference = {
-  __typename?: 'OrderConnectionReference';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionStatus = {
-  __typename?: 'OrderConnectionStatus';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionTimestamp = {
-  __typename?: 'OrderConnectionTimestamp';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderConnectionUpdated_At = {
-  __typename?: 'OrderConnectionUpdated_at';
-  key?: Maybe<Scalars['DateTime']>;
-  connection?: Maybe<OrderConnection>;
-};
-
-export type OrderGroupBy = {
-  __typename?: 'OrderGroupBy';
-  id?: Maybe<Array<Maybe<OrderConnectionId>>>;
-  created_at?: Maybe<Array<Maybe<OrderConnectionCreated_At>>>;
-  updated_at?: Maybe<Array<Maybe<OrderConnectionUpdated_At>>>;
-  paymentId?: Maybe<Array<Maybe<OrderConnectionPaymentId>>>;
-  status?: Maybe<Array<Maybe<OrderConnectionStatus>>>;
-  consumer?: Maybe<Array<Maybe<OrderConnectionConsumer>>>;
-  event?: Maybe<Array<Maybe<OrderConnectionEvent>>>;
-  ip?: Maybe<Array<Maybe<OrderConnectionIp>>>;
-  reference?: Maybe<Array<Maybe<OrderConnectionReference>>>;
-  amount?: Maybe<Array<Maybe<OrderConnectionAmount>>>;
-  timestamp?: Maybe<Array<Maybe<OrderConnectionTimestamp>>>;
-  paymentType?: Maybe<Array<Maybe<OrderConnectionPaymentType>>>;
-  paymentMethod?: Maybe<Array<Maybe<OrderConnectionPaymentMethod>>>;
-  intentionId?: Maybe<Array<Maybe<OrderConnectionIntentionId>>>;
 };
 
 export type OrderInput = {
@@ -1757,9 +1792,8 @@ export type Query = {
   event?: Maybe<Event>;
   events?: Maybe<Array<Maybe<Event>>>;
   eventsConnection?: Maybe<EventConnection>;
-  order?: Maybe<Order>;
-  orders?: Maybe<Array<Maybe<Order>>>;
-  ordersConnection?: Maybe<OrderConnection>;
+  footer?: Maybe<Footer>;
+  header?: Maybe<Header>;
   post?: Maybe<Post>;
   posts?: Maybe<Array<Maybe<Post>>>;
   postsConnection?: Maybe<PostConnection>;
@@ -1773,8 +1807,8 @@ export type Query = {
   users?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
   usersConnection?: Maybe<UsersPermissionsUserConnection>;
   me?: Maybe<UsersPermissionsMe>;
-  eventBySlug?: Maybe<Event>;
   orderAsTicket?: Maybe<OrderAsTicket>;
+  eventBySlug?: Maybe<Event>;
 };
 
 
@@ -1928,26 +1962,15 @@ export type QueryEventsConnectionArgs = {
 };
 
 
-export type QueryOrderArgs = {
-  id: Scalars['ID'];
+export type QueryFooterArgs = {
   publicationState?: Maybe<PublicationState>;
+  locale?: Maybe<Scalars['String']>;
 };
 
 
-export type QueryOrdersArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
+export type QueryHeaderArgs = {
   publicationState?: Maybe<PublicationState>;
-};
-
-
-export type QueryOrdersConnectionArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
+  locale?: Maybe<Scalars['String']>;
 };
 
 
@@ -2039,13 +2062,13 @@ export type QueryUsersConnectionArgs = {
 };
 
 
-export type QueryEventBySlugArgs = {
-  slug: Scalars['String'];
+export type QueryOrderAsTicketArgs = {
+  intentionId: Scalars['String'];
 };
 
 
-export type QueryOrderAsTicketArgs = {
-  intentionId: Scalars['String'];
+export type QueryEventBySlugArgs = {
+  slug: Scalars['String'];
 };
 
 export type RoleInput = {
@@ -2651,6 +2674,16 @@ export type DeleteFilePayload = {
   file?: Maybe<UploadFile>;
 };
 
+export type DeleteFooterPayload = {
+  __typename?: 'deleteFooterPayload';
+  footer?: Maybe<Footer>;
+};
+
+export type DeleteHeaderPayload = {
+  __typename?: 'deleteHeaderPayload';
+  header?: Maybe<Header>;
+};
+
 export type DeleteOrderInput = {
   where?: Maybe<InputId>;
 };
@@ -2784,6 +2817,12 @@ export type EditComponentEventTicketReferenceInput = {
   uid?: Maybe<Scalars['String']>;
 };
 
+export type EditComponentFooterSocialInput = {
+  id?: Maybe<Scalars['ID']>;
+  type?: Maybe<Enum_Componentfootersocial_Type>;
+  href?: Maybe<Scalars['String']>;
+};
+
 export type EditComponentFormCheckboxInput = {
   id?: Maybe<Scalars['ID']>;
   label?: Maybe<Scalars['String']>;
@@ -2824,6 +2863,39 @@ export type EditComponentFormSelectInput = {
   allowMultiple?: Maybe<Scalars['Boolean']>;
   label?: Maybe<Scalars['String']>;
   options?: Maybe<Array<Maybe<EditComponentFormInternalsOptionInput>>>;
+};
+
+export type EditComponentHeaderContactInput = {
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  href?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentHeaderLanguageInput = {
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentHeaderLogoInput = {
+  id?: Maybe<Scalars['ID']>;
+  alternative?: Maybe<Scalars['String']>;
+  src?: Maybe<Scalars['ID']>;
+};
+
+export type EditComponentHeaderMenuSectionInput = {
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  href?: Maybe<Scalars['String']>;
+  subSection?: Maybe<Array<Maybe<EditComponentHeaderSubSectionInput>>>;
+  displayDropDown?: Maybe<Scalars['Boolean']>;
+};
+
+export type EditComponentHeaderSubSectionInput = {
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  href?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type EditDietInput = {
@@ -2884,6 +2956,26 @@ export type EditFileInput = {
   provider?: Maybe<Scalars['String']>;
   provider_metadata?: Maybe<Scalars['JSON']>;
   related?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type EditFooterInput = {
+  responsiblePublisher?: Maybe<Scalars['ID']>;
+  social?: Maybe<Array<Maybe<EditComponentFooterSocialInput>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type EditHeaderInput = {
+  sections?: Maybe<Array<Maybe<EditComponentHeaderMenuSectionInput>>>;
+  languages?: Maybe<Array<Maybe<EditComponentHeaderLanguageInput>>>;
+  contact?: Maybe<EditComponentHeaderContactInput>;
+  logo?: Maybe<Scalars['ID']>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
   created_by?: Maybe<Scalars['ID']>;
   updated_by?: Maybe<Scalars['ID']>;
 };
@@ -3009,6 +3101,24 @@ export type UpdateEventInput = {
 export type UpdateEventPayload = {
   __typename?: 'updateEventPayload';
   event?: Maybe<Event>;
+};
+
+export type UpdateFooterInput = {
+  data?: Maybe<EditFooterInput>;
+};
+
+export type UpdateFooterPayload = {
+  __typename?: 'updateFooterPayload';
+  footer?: Maybe<Footer>;
+};
+
+export type UpdateHeaderInput = {
+  data?: Maybe<EditHeaderInput>;
+};
+
+export type UpdateHeaderPayload = {
+  __typename?: 'updateHeaderPayload';
+  header?: Maybe<Header>;
 };
 
 export type UpdateOrderInput = {

@@ -5,6 +5,7 @@ import {
     SetterOrUpdater,
     useRecoilStateLoadable,
     useRecoilValueLoadable,
+    useSetRecoilState,
 } from "recoil";
 
 type children<T> = (contents: T) => ReactNode;
@@ -102,4 +103,10 @@ export const useRecoilSSRState = <T,>(
         case "hasError":
             return [[undefined, undefined], false, data.contents];
     }
+};
+
+export const useSetRecoilSSRState = <T,>(
+    recoilState: RecoilState<T>
+): SetterOrUpdater<T> => {
+    return useSetRecoilState(recoilState);
 };

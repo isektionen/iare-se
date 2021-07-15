@@ -1,10 +1,11 @@
 import { Box, Flex, Grid, GridItem, HStack, Text } from "@chakra-ui/react";
 import React from "react";
-import { MenuListItem } from "types/global";
+import { DefHeader, MenuListItem } from "types/global";
+import { ComponentHeaderMenuSection } from "types/strapi";
 import { LinkList } from "./LinkList";
 
 interface Props {
-    menuList: MenuListItem[];
+    sections: ComponentHeaderMenuSection[];
 }
 
 export const ListSection = (props: Props) => {
@@ -15,9 +16,9 @@ export const ListSection = (props: Props) => {
             gap={4}
             w="full"
         >
-            {props.menuList.map((menu, key) => (
-                <GridItem key={key} colSpan={1} rowSpan={1}>
-                    <LinkList {...menu} />
+            {props.sections.map((section) => (
+                <GridItem key={section.id} colSpan={1} rowSpan={1}>
+                    <LinkList {...section} />
                 </GridItem>
             ))}
         </Grid>

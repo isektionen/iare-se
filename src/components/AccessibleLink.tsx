@@ -1,22 +1,39 @@
 import {
-  Link as ChakraLink,
-  LinkProps as ChakraLinkProps,
-} from "@chakra-ui/layout";
+    Link as ChakraLink,
+    LinkProps as ChakraLinkProps,
+    Box,
+} from "@chakra-ui/react";
 import Link, { LinkProps } from "next/link";
+import { useRouter } from "next/router";
 
-type AccessibleLinkProps = LinkProps & ChakraLinkProps;
+type AccessibleLinkProps = LinkProps &
+    ChakraLinkProps & { afterClick?: () => void };
 
 const AccessibleLink = ({
-  href,
-  isExternal,
-  children,
-  as,
+    href,
+    isExternal,
+    children,
+    as,
+    afterClick,
 }: AccessibleLinkProps) => {
-  return (
-    <Link href={href} as={as} passHref>
-      <ChakraLink isExternal={isExternal}>{children}</ChakraLink>
-    </Link>
-  );
+    const router = useRouter();
+    const handleAfterClick = () => {
+        if (afterClick) afterClick();
+        router.push(href);
+    };
+    return (
+        <>
+            {afterClick && !isExternal ? (
+                <Box onClick={handleAfterClick} cursor="pointer">
+                    {children}
+                </Box>
+            ) : (
+                <Link href={href} as={as} passHref>
+                    <ChakraLink isExternal={isExternal}>{children}</ChakraLink>
+                </Link>
+            )}
+        </>
+    );
 };
 
 export default AccessibleLink;

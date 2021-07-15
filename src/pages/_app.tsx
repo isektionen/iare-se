@@ -5,12 +5,26 @@ import "@fontsource/source-sans-pro";
 import customTheme from "styles/customTheme";
 import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
-import strapi from "lib/strapi";
+import strapi, { gql } from "lib/strapi";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
 import React, { StrictMode } from "react";
+import {
+    ComponentHeaderContact,
+    ComponentHeaderLanguages,
+    ComponentHeaderLogo,
+    ComponentHeaderMenuSection,
+    Footer,
+    Header,
+} from "types/strapi";
+import { DefFooter, DefHeader } from "types/global";
 
-const App = ({ Component, pageProps }: AppProps) => {
+interface Props extends AppProps {
+    headerProps: DefHeader;
+    footerProps: DefFooter;
+}
+
+const App = ({ Component, pageProps, headerProps, footerProps }: Props) => {
     return (
         <StrictMode>
             <RecoilRoot>
@@ -23,7 +37,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                             />
                         </Head>
 
-                        <Layout>
+                        <Layout header={headerProps} footer={footerProps}>
                             <Component {...pageProps} />
                         </Layout>
                     </ApolloProvider>
@@ -31,6 +45,68 @@ const App = ({ Component, pageProps }: AppProps) => {
             </RecoilRoot>
         </StrictMode>
     );
+};
+
+let headerCache: DefHeader | null = null;
+let footerCache: DefFooter | null = null;
+
+App.getInitialProps = async () => {
+    if (headerCache) {
+        return { navigation: headerCache };
+    }
+    const { data } = await strapi.query<{ header: Header; footer: Footer }>({
+        query: gql`
+            query {
+                header {
+                    logo {
+                        alternativeText
+                        width
+                        height
+                        url
+                    }
+                    sections {
+                        id
+                        label
+                        displayDropDown
+                        href
+                        subSection {
+                            id
+                            label
+                            href
+                            description
+                        }
+                    }
+                    languages {
+                        label
+                        code
+                    }
+                    contact {
+                        label
+                        href
+                    }
+                }
+                footer {
+                    social {
+                        id
+                        type
+                        href
+                    }
+                    responsiblePublisher {
+                        firstname
+                        lastname
+                    }
+                }
+            }
+        `,
+    });
+    if (data) {
+        headerCache = data.header as DefHeader;
+        footerCache = data.footer as DefFooter;
+        return {
+            headerProps: data.header as DefHeader,
+            footerProps: data.footer,
+        };
+    }
 };
 
 export default App;

@@ -31,7 +31,7 @@ import { Divider } from "components/Divider";
 import { OptionsInput } from "components/event/OptionsInput";
 import { Option } from "components/Autocomplete";
 import { EventConfirmation } from "components/event/EventConfirmation";
-import { IConfirmation, IPasswordProtect } from "types/checkout";
+import { IConfirmation, IPasswordProtect, MinDiet } from "types/checkout";
 import { EventMessage } from "components/event/EventMessage";
 import { EventDeadline } from "components/event/EventDeadline";
 import { BiCalendarExclamation } from "react-icons/bi";
@@ -145,15 +145,17 @@ const EventView = ({ event, diets, allergies }: Props) => {
         ) {
             const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/diets`;
 
-            const body = {} as { diets: number[]; allergens: number[] };
+            const body = {} as { diets: MinDiet[]; allergens: MinDiet[] };
             if (dietResult.length > 0)
-                body["diets"] = dietResult.map((entity) =>
-                    parseInt(entity.value)
-                );
+                body["diets"] = dietResult.map((entity) => ({
+                    id: parseInt(entity.value),
+                    name: entity.label,
+                }));
             if (specialDietResult.length > 0)
-                body["allergens"] = specialDietResult.map((entity) =>
-                    parseInt(entity.value)
-                );
+                body["allergens"] = specialDietResult.map((entity) => ({
+                    id: parseInt(entity.value),
+                    name: entity.label,
+                }));
             const res = await fetch(url, {
                 method: "PUT",
                 headers: {

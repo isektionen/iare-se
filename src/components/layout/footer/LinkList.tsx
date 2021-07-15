@@ -2,21 +2,31 @@ import { Box, List, ListItem, Text } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import React from "react";
 import { MenuListItem } from "types/global";
+import { ComponentHeaderMenuSection } from "types/strapi";
+import { mergeLink } from "utils/mergeHref";
 
-export const LinkList = (props: MenuListItem) => {
+export const LinkList = (props: ComponentHeaderMenuSection) => {
     return (
-        <Box pr={{ base: 8, lg: 20 }}>
+        <Box pr={{ base: 8, lg: 20 }} w="max-content">
             <Text as="h6" fontSize="xl" w="full" fontWeight="bold">
-                {props.title}
+                {props.label}
             </Text>
             <List>
-                {props.listItems.map((item, key) => (
-                    <ListItem key={key}>
-                        <AccessibleLink href={item.href}>
-                            {item.name}
-                        </AccessibleLink>
-                    </ListItem>
-                ))}
+                {props.subSection &&
+                    props.subSection.map((item) => {
+                        if (item) {
+                            return (
+                                <ListItem key={item.id}>
+                                    <AccessibleLink
+                                        href={mergeLink(props.href, item.href)}
+                                    >
+                                        {item.label}
+                                    </AccessibleLink>
+                                </ListItem>
+                            );
+                        }
+                        return <></>;
+                    })}
             </List>
         </Box>
     );

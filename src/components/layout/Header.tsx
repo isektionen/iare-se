@@ -3,72 +3,89 @@ import Image from "next/image";
 import AccessibleLink from "components/AccessibleLink";
 import { Spacer, useMediaQuery } from "@chakra-ui/react";
 import { NavigationMenu } from "./navigation/NavigationMenu";
-import { HeaderProps } from "types/header";
 import customTheme from "styles/customTheme";
 import { NavigationButtons } from "./navigation/NavigationButtons";
 import { BigNavigation } from "./navigation/BigNavigation";
 import { MobileNavigation } from "./navigation/MobileNavigation";
-import { useRecoilValueLoadable } from "recoil";
-import { headerState } from "state/layout";
-import { RecoilSSRValue, useRecoilSSRValue } from "components/RecoilSSR";
+import { useMenu } from "hooks/use-menu";
+import {
+    ComponentHeaderContact,
+    ComponentHeaderMenuSection,
+    ComponentHeaderLanguages,
+    Header as HeaderProps,
+    ComponentHeaderSubSection,
+} from "../../types/strapi";
+import { DefHeader } from "types/global";
+import { mergeLink } from "utils/mergeHref";
+import { imageSource } from "utils/images";
 
-const Header = () => {
+const Header = ({ logo, sections, languages, contact }: DefHeader) => {
     const [isLg] = useMediaQuery(`(min-width: ${customTheme.breakpoints.lg})`);
     const [isMd] = useMediaQuery(`(min-width: ${customTheme.breakpoints.md})`);
-    const [data, isLoading, hasError] = useRecoilSSRValue(headerState);
 
-    if (isLoading) return <div>Loading..</div>;
-    if (data) {
-        const { menuList, contact, languages } = data;
-        return (
-            <>
-                <Box
-                    px={{ base: 4, md: 12 }}
-                    pos="relative"
-                    bg="gray.50"
-                    w="full"
-                >
-                    <Flex py={4} as="header" w="full" align="center">
-                        <AccessibleLink href="/">
-                            <Image
-                                src="/logo.svg"
-                                width={77}
-                                height={28}
-                                alt="Iare Logotype"
+    const { useMenuItem, isOpen, activeSection, setIsOpen, delayedSetIsOpen } =
+        useMenu();
+    return (
+        <>
+            <Box
+                px={{ base: 4, md: 12 }}
+                as="header"
+                pos="relative"
+                bg="gray.50"
+                w="full"
+                h={16}
+            >
+                <Flex py={4} w="full" align="center">
+                    <AccessibleLink href="/">
+                        <Image
+                            src={imageSource(logo.url, "/logo.svg")}
+                            width={77}
+                            height={28}
+                            alt={logo?.alternativeText ?? ""}
+                        />
+                    </AccessibleLink>
+                    <Spacer />
+                    {isMd && (
+                        <>
+                            <NavigationMenu
+                                sections={
+                                    sections as ComponentHeaderMenuSection[]
+                                }
+                                setIsOpen={setIsOpen}
+                                delayedSetIsOpen={delayedSetIsOpen}
+                                useMenuItem={useMenuItem}
                             />
-                        </AccessibleLink>
-                        <Spacer />
-                        {isMd && (
-                            <>
-                                <NavigationMenu menuList={menuList} />
-                                <Spacer />
-                                <NavigationButtons
-                                    contact={contact}
-                                    mediaQuery={{ isLg, isMd }}
-                                    languages={languages}
-                                />
-                            </>
-                        )}
-                        {!isMd && (
-                            <MobileNavigation
-                                menuList={menuList}
-                                contact={contact}
-                                languages={languages}
+                            <Spacer />
+                            <NavigationButtons
+                                contact={contact as ComponentHeaderContact}
                                 mediaQuery={{ isLg, isMd }}
+                                languages={
+                                    languages as ComponentHeaderLanguages[]
+                                }
                             />
-                        )}
-                    </Flex>
-                </Box>
-                {/*isMd && (
-                    <BigNavigation
-                        mediaQuery={{ isLg }}
-                        subMenuList={menuList[1].listItems}
-                    />
-                )*/}
-            </>
-        );
-    }
-    return <></>;
+                        </>
+                    )}
+                    {!isMd && (
+                        <MobileNavigation
+                            sections={sections as ComponentHeaderMenuSection[]}
+                            contact={contact as ComponentHeaderContact}
+                            languages={languages as ComponentHeaderLanguages[]}
+                            mediaQuery={{ isLg, isMd }}
+                        />
+                    )}
+                </Flex>
+            </Box>
+            {isMd && (
+                <BigNavigation
+                    isOpen={isOpen}
+                    delayedSetIsOpen={delayedSetIsOpen}
+                    setIsOpen={setIsOpen}
+                    mediaQuery={{ isLg }}
+                    activeSection={activeSection}
+                />
+            )}
+        </>
+    );
 };
 
 export default Header;

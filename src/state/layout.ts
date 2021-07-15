@@ -115,6 +115,13 @@ export const languageAtom = atom<LanguageItem[]>({
     default: defaultLanguages,
 });
 
+export const menuState = atom<{ isOpen: boolean; nav?: string }>({
+    key: "ATOM/MENUSTATE",
+    default: {
+        isOpen: false,
+    },
+});
+
 export const headerState = selector<HeaderProps>({
     key: "SELECTOR/HEADER",
     get: async ({ get }) => {

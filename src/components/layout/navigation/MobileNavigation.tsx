@@ -11,27 +11,33 @@ import {
     Spacer,
     useDisclosure,
 } from "@chakra-ui/react";
+import AccessibleLink from "components/AccessibleLink";
 import React from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdChatBubble } from "react-icons/md";
-import { MenuListItem } from "types/global";
-import { LanguageItem } from "types/header";
+import {
+    ComponentHeaderContact,
+    ComponentHeaderLanguages,
+    ComponentHeaderMenuSection,
+} from "types/strapi";
 import { LanguageMenu } from "./LanguageMenu";
 import { MobileMenuItem } from "./MobileMenuItem";
+import { useRouter } from "next/router";
 
 interface Props {
-    menuList: MenuListItem[];
-    languages: LanguageItem[];
+    sections: ComponentHeaderMenuSection[];
+    languages: ComponentHeaderLanguages[];
     mediaQuery: {
         isLg?: boolean;
         isMd?: boolean;
     };
-    contact: string;
+    contact: ComponentHeaderContact;
 }
 
 export const MobileNavigation = (props: Props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter();
     return (
         <>
             <IconButton
@@ -69,8 +75,12 @@ export const MobileNavigation = (props: Props) => {
                             justify="space-between"
                             h="full"
                         >
-                            {props.menuList.map((menuItem, key) => (
-                                <MobileMenuItem {...menuItem} key={key} />
+                            {props.sections.map((section) => (
+                                <MobileMenuItem
+                                    key={section.id}
+                                    section={section}
+                                    onClose={onClose}
+                                />
                             ))}
                             <Spacer />
                             <Flex direction="column">
@@ -84,8 +94,12 @@ export const MobileNavigation = (props: Props) => {
                                     mt={2}
                                     variant="iareSolid"
                                     leftIcon={<MdChatBubble />}
+                                    onClick={() => {
+                                        onClose();
+                                        router.push(props.contact.href);
+                                    }}
                                 >
-                                    {props.contact}
+                                    {props.contact.label}
                                 </Button>
                             </Flex>
                         </Flex>

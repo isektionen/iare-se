@@ -24,3 +24,8 @@ export interface IConfirmation {
 export interface IPasswordProtect {
     password: string;
 }
+
+export interface MinDiet {
+    id: number;
+    name: string;
+}

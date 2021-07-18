@@ -8,7 +8,7 @@ import { ApolloProvider } from "@apollo/client";
 import strapi, { gql } from "lib/strapi";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
-import React, { StrictMode } from "react";
+import React, { FunctionComponent, StrictMode } from "react";
 import {
     ComponentHeaderContact,
     ComponentHeaderLanguages,
@@ -18,6 +18,7 @@ import {
     Header,
 } from "types/strapi";
 import { DefFooter, DefHeader } from "types/global";
+import { pdfjs } from "react-pdf";
 
 interface Props extends AppProps {
     headerProps: DefHeader;
@@ -25,6 +26,7 @@ interface Props extends AppProps {
 }
 
 const App = ({ Component, pageProps, headerProps, footerProps }: Props) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     return (
         <StrictMode>
             <RecoilRoot>
@@ -51,8 +53,8 @@ let headerCache: DefHeader | null = null;
 let footerCache: DefFooter | null = null;
 
 App.getInitialProps = async () => {
-    if (headerCache) {
-        return { navigation: headerCache };
+    if (headerCache && footerCache) {
+        return { headerProps: headerCache, footerProps: footerCache };
     }
     const { data } = await strapi.query<{ header: Header; footer: Footer }>({
         query: gql`
@@ -74,6 +76,8 @@ App.getInitialProps = async () => {
                             label
                             href
                             description
+                            icon
+                            color
                         }
                     }
                     languages {
@@ -109,4 +113,7 @@ App.getInitialProps = async () => {
     }
 };
 
-export default App;
+import appWithI18n from "next-translate/appWithI18n";
+import i18nConfig from "../../i18n";
+
+export default appWithI18n(App as any, { ...i18nConfig });

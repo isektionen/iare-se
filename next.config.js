@@ -1,22 +1,31 @@
-const withPWA = require("next-pwa");
+const nextTranslate = require("next-translate");
+const withPlugins = require("next-compose-plugins");
 
-module.exports = {
-    /*
-    pwa: {
-        disable:
-            process.env.NODE_ENV === "development" ||
-            process.env.NODE_ENV === "preview" ||
-            process.env.NODE_ENV === "production",
-        // delete two lines above to enable PWA in production deployment
-        // add your own icons to public/manifest.json
-        // to re-generate manifest.json, you can visit https://tomitm.github.io/appmanifest/
-        dest: "public",
-        register: true,
-    },
-    */
+module.exports = withPlugins([nextTranslate], {
     images: {
         domains: ["localhost"],
     },
     reactStrictMode: true,
     target: "serverless",
-};
+    webpack: (config) => {
+        return {
+            ...config,
+            externals: [
+                ...config.externals,
+                { canvas: "canvas", critters: "critters" },
+            ],
+        };
+    },
+    i18n: {
+        locales: ["en", "sv-SE"], // perhaps change it to regular sv in production
+        defaultLocale: "sv-SE",
+        domains: [
+            {
+                domain: "localhost",
+                defaultLocale: "sv-SE",
+                // bypassing sub-paths by redirecting all locales to a single domain, and then taking care of the routing dynamically
+                locales: ["en"],
+            },
+        ],
+    },
+});

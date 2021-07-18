@@ -5,9 +5,10 @@ import {
     LinkBoxProps,
     LinkProps as ChakraLinkProps,
 } from "@chakra-ui/layout";
+import { LinkOverlayProps } from "@chakra-ui/react";
 import Link, { LinkProps } from "next/link";
 
-type AccessibleLinkOverlayProps = LinkProps & LinkBoxProps;
+type AccessibleLinkOverlayProps = LinkProps & LinkOverlayProps;
 
 const AccessibleLinkOverlay = ({
     href,

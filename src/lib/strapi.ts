@@ -1,9 +1,17 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-export const client = new ApolloClient({
+import baseAxios from "axios";
+
+const client = new ApolloClient({
     uri: process.env.NEXT_PUBLIC_STRAPI_GQL,
     cache: new InMemoryCache(),
 });
 
-export default client;
+const axios = baseAxios.create({
+    baseURL: process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL,
+});
 
-export { gql };
+const strapi = client;
+
+export default strapi;
+
+export { gql, axios };

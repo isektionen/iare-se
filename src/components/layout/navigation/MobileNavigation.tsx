@@ -75,7 +75,7 @@ export const MobileNavigation = (props: Props) => {
                             justify="space-between"
                             h="full"
                         >
-                            {props.sections.map((section) => (
+                            {props.sections?.map((section) => (
                                 <MobileMenuItem
                                     key={section.id}
                                     section={section}
@@ -85,7 +85,13 @@ export const MobileNavigation = (props: Props) => {
                             <Spacer />
                             <Flex direction="column">
                                 <LanguageMenu
-                                    standardLanguage={props.languages[0]}
+                                    standardLanguage={
+                                        props.languages
+                                            ? props.languages.find(
+                                                  (l) => l.code === "se"
+                                              )
+                                            : undefined
+                                    }
                                     languages={props.languages}
                                     mediaQuery={props.mediaQuery}
                                     isMobile

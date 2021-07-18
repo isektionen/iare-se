@@ -4,8 +4,10 @@ import React from "react";
 import { FaGavel } from "react-icons/fa";
 import { ListItemProp, MenuListItem } from "types/global";
 import { ComponentHeaderSubSection } from "types/strapi";
+import { availableIcons } from "utils/icon";
 
 export const BigNavigationMenuCard = (props: ComponentHeaderSubSection) => {
+    const CustomIcon = availableIcons(props.icon);
     return (
         <Flex
             borderRadius={"md"}
@@ -15,8 +17,8 @@ export const BigNavigationMenuCard = (props: ComponentHeaderSubSection) => {
             minH={24}
             direction="row"
         >
-            <Circle w={10} h={10} mr={4} bg={"#C4C4C4"}>
-                <Icon as={FaGavel} />
+            <Circle w={10} h={10} mr={4} bg={`${props.color}.200`}>
+                <Icon as={CustomIcon} />
             </Circle>
             <VStack spacing={0.5}>
                 <Text as="h6" fontSize="lg" w="full" fontWeight="semibold">

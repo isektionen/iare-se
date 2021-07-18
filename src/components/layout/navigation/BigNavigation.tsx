@@ -1,14 +1,7 @@
 import { Box, Flex, Grid, GridItem, HStack } from "@chakra-ui/react";
 import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
-import { useRecoilSSRValue } from "components/RecoilSSR";
-import { MenuSection, SectionItem } from "hooks/use-menu";
-import React, { Dispatch, SetStateAction } from "react";
-import { menuState } from "state/layout";
-import { ListItemProp } from "types/global";
-import {
-    ComponentHeaderMenuSection,
-    ComponentHeaderSubSection,
-} from "types/strapi";
+import React from "react";
+import { ComponentHeaderMenuSection } from "types/strapi";
 import { mergeLink } from "utils/mergeHref";
 import { BigNavigationMenuCard } from "./BigNavigationMenuCard";
 import { BigNavigationNewsCard } from "./BigNavigationNewsCard";
@@ -64,19 +57,21 @@ export const BigNavigation = (props: Props) => {
                                                 rowSpan={1}
                                                 colSpan={1}
                                             >
-                                                {section && (
-                                                    <AccessibleLinkOverlay
-                                                        href={mergeLink(
-                                                            props.activeSection
-                                                                .href,
-                                                            section.href
-                                                        )}
-                                                    >
-                                                        <BigNavigationMenuCard
-                                                            {...section}
-                                                        />
-                                                    </AccessibleLinkOverlay>
-                                                )}
+                                                {section &&
+                                                    props.activeSection && (
+                                                        <AccessibleLinkOverlay
+                                                            href={mergeLink(
+                                                                props
+                                                                    .activeSection
+                                                                    .href,
+                                                                section.href
+                                                            )}
+                                                        >
+                                                            <BigNavigationMenuCard
+                                                                {...section}
+                                                            />
+                                                        </AccessibleLinkOverlay>
+                                                    )}
                                             </GridItem>
                                         );
                                     }

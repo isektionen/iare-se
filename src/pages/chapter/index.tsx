@@ -1,7 +1,7 @@
 import React from "react";
 
 const ChapterView = () => {
-    return <div>knark</div>;
+    return <div>SEKTIONEN</div>;
 };
 
 export default ChapterView;

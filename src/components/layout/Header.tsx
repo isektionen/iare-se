@@ -38,7 +38,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                 <Flex py={4} w="full" align="center">
                     <AccessibleLink href="/">
                         <Image
-                            src={imageSource(logo.url, "/logo.svg")}
+                            src={imageSource(logo, "/logo.svg")}
                             width={77}
                             height={28}
                             alt={logo?.alternativeText ?? ""}

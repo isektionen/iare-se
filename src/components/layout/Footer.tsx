@@ -1,8 +1,6 @@
 import { Flex, Spacer } from "@chakra-ui/react";
-import { useRecoilSSRValue } from "components/RecoilSSR";
 import React from "react";
-import { footerState } from "state/layout";
-import { DefFooter, DefHeader } from "types/global";
+import { DefFooter } from "types/global";
 import { ComponentHeaderMenuSection } from "types/strapi";
 import { Branding } from "./footer/Branding";
 import { ListSection } from "./footer/ListSection";

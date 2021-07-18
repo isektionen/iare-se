@@ -13,7 +13,7 @@ import { LanguageItem } from "types/header";
 import { ComponentHeaderLanguages } from "types/strapi";
 
 interface Props {
-    standardLanguage: ComponentHeaderLanguages;
+    standardLanguage: ComponentHeaderLanguages | undefined;
     isMobile?: boolean;
     languages: ComponentHeaderLanguages[];
     mediaQuery: {
@@ -34,17 +34,23 @@ export const LanguageMenu = (props: Props) => {
                         variant="outline"
                     >
                         <HStack>
-                            <Image
-                                src={`/${props.standardLanguage.code}.svg`}
-                                width={22}
-                                height={12}
-                                alt={props.standardLanguage.label}
-                            />
-                            <span>
-                                {props.mediaQuery.isLg ||
-                                    (props.isMobile &&
-                                        props.standardLanguage.label)}
-                            </span>
+                            {props.standardLanguage ? (
+                                <>
+                                    <Image
+                                        src={`/${props.standardLanguage.code}.svg`}
+                                        width={22}
+                                        height={12}
+                                        alt={props.standardLanguage.label}
+                                    />
+                                    <span>
+                                        {props.mediaQuery.isLg ||
+                                            (props.isMobile &&
+                                                props.standardLanguage.label)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span>-</span>
+                            )}
                         </HStack>
                     </MenuButton>
                     <MenuList>

@@ -34,8 +34,8 @@ export const DocumentCard = (props: Props) => {
                 <Box
                     w="full"
                     p={4}
-                    h={"15%"}
-                    bgGradient="linear(to-b, white 0%,white 50%,  rgba(0,0,0,0))"
+                    h="125px"
+                    bgGradient="linear(to-b, white 0%,white 50%, rgba(255,255,255,.5) 70%,  rgba(255,255,255,0))"
                     position="absolute"
                     zIndex={1}
                 >

@@ -11,6 +11,7 @@ export const LayoutWrapper = ({ children }: Props) => {
             direction={{ base: "column", md: "row" }}
             pos="relative"
             minH="560px"
+            justify="space-around"
         >
             {children}
         </Flex>

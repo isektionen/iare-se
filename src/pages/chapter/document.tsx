@@ -9,10 +9,13 @@ import {
     ComponentDocumentActionDocument,
     ComponentDocumentContractDocument,
     ComponentDocumentControlDocument,
+    ComponentDocumentDocument,
     ComponentDocumentFormDocument,
     ComponentDocumentProtocolDocument,
     Document as DocType,
     DocumentAllDocumentsDynamicZone,
+    Maybe,
+    UsersPermissionsUser,
 } from "../../types/strapi";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
 import { Document } from "components/document/Document";
@@ -21,6 +24,7 @@ import { useDocument } from "hooks/use-document";
 import {
     Box,
     Button,
+    Center,
     Flex,
     Heading,
     HStack,
@@ -37,19 +41,26 @@ import {
 import { DocumentCard } from "components/document/DocumentCard";
 import { getDate } from "utils/dates";
 import { DocumentListItem } from "components/document/DocumentListItem";
+import { DocumentBody, DocumentTable } from "components/document/DocumentTable";
+import {
+    PageContainer,
+    PageOptions,
+} from "components/pagination/PageContainer";
+import {
+    PageSelector,
+    SelectorOptions,
+} from "components/pagination/PageSelector";
 interface Props {
     document: DocType;
     locale: string;
 }
 
-type ExtendedDoc = { __component: string };
-
-interface Grouped {
-    protocol: (ComponentDocumentProtocolDocument & ExtendedDoc)[];
-    action: (ComponentDocumentActionDocument & ExtendedDoc)[];
-    form: (ComponentDocumentFormDocument & ExtendedDoc)[];
-    control: (ComponentDocumentControlDocument & ExtendedDoc)[];
-    contract: (ComponentDocumentContractDocument & ExtendedDoc)[];
+export interface AllDocType {
+    id: string;
+    documentContent?: ComponentDocumentDocument;
+    authors?: UsersPermissionsUser[];
+    __component?: string;
+    type?: string;
 }
 
 const makeHref = (url: string | undefined) => {
@@ -105,42 +116,50 @@ const DocumentControl = ({ data }: { data: DocType }) => {
     );
 };
 
-const groupDocuments = (data: DocType): Grouped => {
-    const minimize = (key: string) => {
-        const match = key.match(/document\.(.+)-document/);
-        if (match) {
-            return match[1];
-        }
-        return key;
-    };
-    const addToGroup = (group: any, doc: any) => {
-        const key = minimize(doc.__component);
-        if (group.hasOwnProperty(doc.__component)) {
-            return {
-                ...group,
-                [key]: [...group[key], doc],
-            };
-        }
-        return { ...group, [key]: [doc] } as Grouped;
-    };
-    return data.allDocuments.reduce(addToGroup, {} as unknown as any);
+const minimize = (key: string) => {
+    const match = key.match(/document\.(.+)-document/);
+    if (match) {
+        return match[1];
+    }
+    return key;
 };
 
 const DocumentView = ({ locale, document: data }: Props) => {
     const router = useRouter();
     const { t } = useTranslation("common");
+    const allRawDocs = data.allDocuments as AllDocType[];
+    const docs = allRawDocs.reduce(
+        (acc, curr) => [
+            ...acc,
+            {
+                ...curr,
+                // @ts-ignore: REST and GraphQL types are not identical
+                type: minimize(curr?.__component ?? ""),
+            },
+        ],
+        [] as AllDocType[]
+    );
 
-    const groupedDocuments = groupDocuments(data);
+    const handleChangePage = ({ limit, offset }: PageOptions) => {
+        return docs.slice(offset, offset + limit).map((doc) => ({
+            label: doc.documentContent?.label,
+            date: getDate(doc.documentContent?.file?.created_at),
+            type: doc.type,
+            url: makeHref(doc.documentContent?.file?.url),
+            authors:
+                doc?.authors?.map((user) => user.nickname).join(", ") ?? "---",
+        }));
+    };
+
     return (
         <LayoutWrapper>
             <DocumentContainer loading={"LOADING"} fallback={"NO PDF"}>
                 <Flex
                     bg="gray.50"
-                    flex={1}
                     order={{ base: 1, md: 0 }}
                     justify="center"
                     direction="column"
-                    p={4}
+                    p={8}
                     h="full"
                 >
                     <Box>
@@ -184,70 +203,59 @@ const DocumentView = ({ locale, document: data }: Props) => {
                             />
                         </Flex>
                     </Box>
-                    <Box>
-                        <Heading as="h2" size="lg" mb={8}>
-                            Styrdokument
-                        </Heading>
-                        {groupedDocuments.control.map((doc) => (
-                            <DocumentListItem
-                                key={doc.__component + doc.id}
-                                label={doc.documentContent?.label ?? ""}
-                                createdAt={
-                                    doc.documentContent?.file?.created_at ?? ""
-                                }
-                            />
-                        ))}
-                    </Box>
-                    <Box>
-                        <Heading as="h2" size="lg" mb={8}>
-                            Handlingar
-                        </Heading>
-                        {groupedDocuments.action.map((doc) => (
-                            <DocumentListItem
-                                key={doc.__component + doc.id}
-                                label={doc.documentContent?.label ?? ""}
-                                createdAt={
-                                    doc.documentContent?.file?.created_at ?? ""
-                                }
-                            />
-                        ))}
-                    </Box>
-                    <Box>
-                        <Heading as="h2" size="lg" mb={8}>
-                            Protokoll
-                        </Heading>
-                        {groupedDocuments.protocol.map((doc) => (
-                            <DocumentListItem
-                                key={doc.__component + doc.id}
-                                label={doc.documentContent?.label ?? ""}
-                                createdAt={
-                                    doc.documentContent?.file?.created_at ?? ""
-                                }
-                            />
-                        ))}
-                    </Box>
-                    <Box>
-                        <Heading as="h2" size="lg" mb={8}>
-                            Avtal
-                        </Heading>
-                        {groupedDocuments.contract.map((doc) => (
-                            <DocumentListItem
-                                key={doc.__component + doc.id}
-                                label={doc.documentContent?.label ?? ""}
-                                createdAt={
-                                    doc.documentContent?.file?.created_at ?? ""
-                                }
-                            />
-                        ))}
-                    </Box>
+                    <PageContainer
+                        itemQuantity={docs.length}
+                        itemsPerPage={10}
+                        onChangePage={handleChangePage}
+                    >
+                        <DocumentTable
+                            columns={[
+                                { label: "Titel", id: "label" },
+                                { label: "Dokument", id: "type" },
+                                { label: "Författare", id: "authors" },
+                                { label: "Datum", id: "date" },
+                            ]}
+                        >
+                            {(header) => <DocumentBody header={header} />}
+                        </DocumentTable>
+                        <Box
+                            as={PageSelector}
+                            pageSize={3}
+                            d="flex"
+                            justifyContent="space-evenly"
+                            next={
+                                <IconButton
+                                    aria-label="next"
+                                    icon={<IoIosArrowDroprightCircle />}
+                                    variant="iareSolid"
+                                />
+                            }
+                            previous={
+                                <IconButton
+                                    aria-label="previous"
+                                    icon={<IoIosArrowDropleftCircle />}
+                                    variant="iareSolid"
+                                />
+                            }
+                        >
+                            {({ page, isActive, onClick }) => (
+                                <Button
+                                    p={4}
+                                    bg={isActive ? "gray.200" : "gray.50"}
+                                    onClick={onClick}
+                                >
+                                    {page}
+                                </Button>
+                            )}
+                        </Box>
+                    </PageContainer>
                 </Flex>
                 <Flex
                     order={{ base: 0, md: 1 }}
                     bg="gray.200"
-                    flex={1}
                     position="relative"
                     justify="center"
-                    p={4}
+                    p={8}
                 >
                     <DocumentControl data={data} />
                     <Document />

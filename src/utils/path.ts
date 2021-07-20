@@ -15,3 +15,6 @@ export const makeFetcher = (document: string) => {
             return strapi;
     }
 };
+
+export const isExternal = (href: string) =>
+    /https?:\/\/.+|mailto:.+$|tel:.+/i.test(href);

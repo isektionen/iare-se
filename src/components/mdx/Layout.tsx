@@ -3,8 +3,10 @@ import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import {
     a,
     br,
+    code,
     heading,
     hr,
+    img,
     inlineCode,
     li,
     ol,
@@ -43,10 +45,11 @@ export const MDXLayout = ({ source }: Props) => {
         ul,
         ol,
         li,
-        custom,
+        code,
+        img,
     };
     return (
-        <Box p={12}>
+        <Box py={12}>
             <MDXRemote {...source} components={components} />
         </Box>
     );

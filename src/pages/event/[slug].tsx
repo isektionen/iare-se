@@ -82,7 +82,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const checkoutRef = useRef<HTMLDivElement>(null);
 
-    const breadCrumbs = ["Aktuellt", "Events"];
+    //const breadCrumbs = ["Aktuellt", "Events"];
 
     const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
         const isValid = await validatePassword(event.id, password);
@@ -276,7 +276,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         flex={1}
                         direction="column"
                     >
-                        <Breadcrumb pb={2}>
+                        {/*<Breadcrumb pb={2}>
                             {breadCrumbs.map((b, i) => (
                                 <BreadcrumbItem key={i}>
                                     <BreadcrumbLink textTransform="capitalize">
@@ -292,7 +292,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                     {event.title}
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                        </Breadcrumb>
+                            </Breadcrumb>*/}
                         <Flex direction="column">
                             <EventTitle
                                 title={event.title}

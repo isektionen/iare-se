@@ -27,10 +27,14 @@ const AccessibleLink = ({
                 <Box onClick={handleAfterClick} cursor="pointer">
                     {children}
                 </Box>
-            ) : (
+            ) : !afterClick && !isExternal ? (
                 <Link href={href} as={as} passHref>
                     <ChakraLink isExternal={isExternal}>{children}</ChakraLink>
                 </Link>
+            ) : (
+                <ChakraLink isExternal={isExternal} href={href}>
+                    {children}
+                </ChakraLink>
             )}
         </>
     );

@@ -4,9 +4,88 @@ import { Jobs } from "types/strapi";
 import { serialize } from "next-mdx-remote/serialize";
 import React from "react";
 import { MDXLayout } from "components/mdx/Layout";
+import { LayoutWrapper } from "components/layout/LayoutWrapper";
+import { Box, Button, Center, Flex, Heading } from "@chakra-ui/react";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { Image } from "../../components/Image";
+import { getSchoolYear } from "utils/dates";
+import { useRouter } from "next/router";
+import { DeadlineCounter } from "components/DeadlineCounter";
+import { isBefore } from "date-fns";
+import AccessibleLink from "components/AccessibleLink";
+interface Props {
+    job: Jobs;
+    mdx: MDXRemoteSerializeResult;
+}
 
-const JobView = ({ job, mdx }: any) => {
-    return <MDXLayout source={mdx} />;
+const JobView = ({ job, mdx }: Props) => {
+    const router = useRouter();
+    const cta = job.contact?.find((c) => c?.type === "cta");
+
+    const isActive = isBefore(new Date(), new Date(job.deadlineDate));
+    return (
+        <Flex direction="column" px={24} py={12}>
+            <Center>
+                <Flex direction="column" align="center">
+                    <AccessibleLink
+                        href={job.company?.website ?? "#"}
+                        isExternal
+                    >
+                        <Image
+                            mb={8}
+                            src={job.company?.logo?.url ?? ""}
+                            alt={
+                                job.company?.logo?.alternativeText ?? "logotype"
+                            }
+                            width={job.company?.logo?.width}
+                            height={job.company?.logo?.height}
+                        />
+                    </AccessibleLink>
+                    <Heading as="h1" size="2xl" textAlign="center">
+                        {job.title}
+                    </Heading>
+                    <Flex
+                        fontSize="xl"
+                        w="25%"
+                        justify="space-around"
+                        py={4}
+                        textTransform="capitalize"
+                    >
+                        <span>{job.position}</span>
+                        <span>&bull;</span>
+                        <span>{job.location}</span>
+                    </Flex>
+                    <Flex>
+                        Riktat åt årskurs{" "}
+                        {job.year?.map(getSchoolYear).join(", ")}
+                    </Flex>
+                    {cta && isActive && (
+                        <Button
+                            mt={12}
+                            variant="iareSolid"
+                            disabled={!isActive}
+                            onClick={() => {
+                                if (isActive) {
+                                    window.open(cta.href, "__blank");
+                                }
+                            }}
+                            w={{ base: "full", md: "25%" }}
+                        >
+                            {cta.label}
+                        </Button>
+                    )}
+                </Flex>
+            </Center>
+            <DeadlineCounter
+                deadline={job.deadlineDate}
+                description={{
+                    before: "Det är {TIMELEFT} tills ansökan stänger",
+                    after: "Det var {TIMELEFT} tills ansökan stängde",
+                }}
+            />
+            <MDXLayout source={mdx} />
+        </Flex>
+    );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -48,6 +127,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                             height
                             url
                         }
+                        website
                     }
                     year {
                         year

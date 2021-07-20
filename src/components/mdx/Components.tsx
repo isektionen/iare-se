@@ -4,52 +4,90 @@ import {
     Box,
     BoxProps,
     Heading,
+    Link,
+    Icon,
+    Image,
+    Center,
 } from "@chakra-ui/react";
-import NextImage, { ImageProps as NextImageProps } from "next/image";
+import NextLink from "next/link";
+import Highlight, { Prism, PrismTheme } from "prism-react-renderer";
+import { prismTheme } from "../../styles/highlightTheme";
 import React from "react";
+import AccessibleLink from "components/AccessibleLink";
+import { HiOutlineExternalLink } from "react-icons/hi";
+import { isExternal } from "utils/path";
 
-export type ImageProps = NextImageProps & ChakraImageProps;
-
-export const Image = () => {
-    const ChakraImage = chakra(NextImage, {
-        baseStyle: {
-            maxH: 120,
-            maxW: 120,
-        },
-        shouldForwardProp: (prop) =>
-            ["width", "height", "src", "alt"].includes(prop),
-    });
-    return ChakraImage;
-};
+export const img = ({ alt, ...props }: any) => (
+    <Center w="full">
+        <Image
+            alt={alt ? alt : "No image alternative text was provided"}
+            {...props}
+        />
+    </Center>
+);
 
 export const heading = ({ as }: any) => {
     switch (as) {
         case "h1":
             return function h1(props: any) {
-                return <Heading as="h1" mb={4} {...props} />;
+                return <Heading as="h1" mb={4} size="2xl" {...props} />;
             };
         case "h2":
             return function h2(props: any) {
-                return <chakra.h2 {...props} />;
+                return <Heading as="h2" mb={4} size="xl" {...props} />;
             };
         case "h3":
             return function h3(props: any) {
-                return <chakra.h3 {...props} />;
+                return <Heading as="h3" mb={4} size="lg" {...props} />;
             };
         case "h4":
             return function h4(props: any) {
-                return <chakra.h4 {...props} />;
+                return <Heading as="h4" mb={4} size="md" {...props} />;
             };
         case "h5":
             return function h5(props: any) {
-                return <chakra.h5 {...props} />;
+                return <Heading as="h5" mb={4} size="sm" {...props} />;
             };
         case "h6":
             return function h6(props: any) {
-                return <chakra.h6 {...props} />;
+                return <Heading as="h6" mb={4} size="xs" {...props} />;
             };
     }
 };
+export const code = ({ children, ...props }: any) => (
+    <Highlight
+        Prism={Prism}
+        theme={prismTheme as PrismTheme}
+        code={children}
+        language={
+            props.className
+                ? props.className.replace("language-", "")
+                : "javascript"
+        }
+    >
+        {({ style, tokens, getLineProps, getTokenProps }) => (
+            <Box
+                as="pre"
+                style={style}
+                pt={6}
+                px={2}
+                w="max-content"
+                {...props}
+            >
+                {tokens.map((line, i) => (
+                    <div key={i} {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                            <span
+                                key={key}
+                                {...getTokenProps({ token, key })}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </Box>
+        )}
+    </Highlight>
+);
 
 export const inlineCode = (props: any) => <chakra.code {...props} />;
 export const pre = (props: BoxProps) => (
@@ -65,10 +103,21 @@ export const br = ({ reset, ...props }: any) => (
         {...props}
     />
 );
-export const a = React.forwardRef(function a(props: any, ref: any) {
-    return <chakra.a ref={ref} {...props} />;
-});
-export const p = (props: any) => <chakra.p mb={4} {...props} />;
-export const ul = (props: any) => <chakra.ul ml={4} mb={4} {...props} />;
+export const a = ({ href, children }: any) => {
+    const external = isExternal(href);
+    if (external) {
+        return (
+            <Link isExternal={external} href={href}>
+                {children}
+                <Icon mx={2} as={HiOutlineExternalLink} />
+            </Link>
+        );
+    }
+    return <NextLink href={href}>{children}</NextLink>;
+};
+export const p = (props: any) => <chakra.p mb={4} fontSize="lg" {...props} />;
+export const ul = (props: any) => (
+    <chakra.ul ml={4} mb={4} fontSize="lg" {...props} />
+);
 export const ol = (props: any) => <chakra.ol {...props} />;
 export const li = (props: any) => <chakra.li {...props} />;

@@ -454,6 +454,112 @@ export type CommitteeInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type Company = {
+  __typename?: 'Company';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  name: Scalars['String'];
+  logo?: Maybe<UploadFile>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  jobs?: Maybe<Array<Maybe<Jobs>>>;
+  localizations?: Maybe<Array<Maybe<Company>>>;
+};
+
+
+export type CompanyJobsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+
+export type CompanyLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type CompanyAggregator = {
+  __typename?: 'CompanyAggregator';
+  count?: Maybe<Scalars['Int']>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CompanyConnection = {
+  __typename?: 'CompanyConnection';
+  values?: Maybe<Array<Maybe<Company>>>;
+  groupBy?: Maybe<CompanyGroupBy>;
+  aggregate?: Maybe<CompanyAggregator>;
+};
+
+export type CompanyConnectionCreated_At = {
+  __typename?: 'CompanyConnectionCreated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionId = {
+  __typename?: 'CompanyConnectionId';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionLocale = {
+  __typename?: 'CompanyConnectionLocale';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionLogo = {
+  __typename?: 'CompanyConnectionLogo';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionName = {
+  __typename?: 'CompanyConnectionName';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionPublished_At = {
+  __typename?: 'CompanyConnectionPublished_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyConnectionUpdated_At = {
+  __typename?: 'CompanyConnectionUpdated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<CompanyConnection>;
+};
+
+export type CompanyGroupBy = {
+  __typename?: 'CompanyGroupBy';
+  id?: Maybe<Array<Maybe<CompanyConnectionId>>>;
+  created_at?: Maybe<Array<Maybe<CompanyConnectionCreated_At>>>;
+  updated_at?: Maybe<Array<Maybe<CompanyConnectionUpdated_At>>>;
+  name?: Maybe<Array<Maybe<CompanyConnectionName>>>;
+  logo?: Maybe<Array<Maybe<CompanyConnectionLogo>>>;
+  locale?: Maybe<Array<Maybe<CompanyConnectionLocale>>>;
+  published_at?: Maybe<Array<Maybe<CompanyConnectionPublished_At>>>;
+};
+
+export type CompanyInput = {
+  name: Scalars['String'];
+  logo?: Maybe<Scalars['ID']>;
+  jobs?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
 export type ComponentDocumentActionDocument = {
   __typename?: 'ComponentDocumentActionDocument';
   id: Scalars['ID'];
@@ -539,11 +645,11 @@ export type ComponentDocumentFinancialReportDocumentInput = {
 export type ComponentDocumentFormDocument = {
   __typename?: 'ComponentDocumentFormDocument';
   id: Scalars['ID'];
-  documentContent?: Maybe<Array<Maybe<ComponentDocumentDocument>>>;
+  documentContent?: Maybe<ComponentDocumentDocument>;
 };
 
 export type ComponentDocumentFormDocumentInput = {
-  documentContent?: Maybe<Array<Maybe<ComponentDocumentDocumentInput>>>;
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
 };
 
 export type ComponentDocumentProtocolDocument = {
@@ -883,6 +989,109 @@ export type ComponentHeaderSubSectionInput = {
   color?: Maybe<Enum_Componentheadersubsection_Color>;
 };
 
+export type ComponentJobAbout = {
+  __typename?: 'ComponentJobAbout';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type ComponentJobAboutInput = {
+  title?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
+};
+
+export type ComponentJobContact = {
+  __typename?: 'ComponentJobContact';
+  id: Scalars['ID'];
+  label?: Maybe<Scalars['String']>;
+  type: Enum_Componentjobcontact_Type;
+  href: Scalars['String'];
+};
+
+export type ComponentJobContactInput = {
+  label?: Maybe<Scalars['String']>;
+  type?: Maybe<Enum_Componentjobcontact_Type>;
+  href: Scalars['String'];
+};
+
+export type ComponentJobDescription = {
+  __typename?: 'ComponentJobDescription';
+  id: Scalars['ID'];
+  description: Scalars['String'];
+};
+
+export type ComponentJobDescriptionInput = {
+  description: Scalars['String'];
+};
+
+export type ComponentJobImage = {
+  __typename?: 'ComponentJobImage';
+  id: Scalars['ID'];
+  image?: Maybe<UploadFile>;
+};
+
+export type ComponentJobImageInput = {
+  image?: Maybe<Scalars['ID']>;
+};
+
+export type ComponentJobMail = {
+  __typename?: 'ComponentJobMail';
+  id: Scalars['ID'];
+  email?: Maybe<Scalars['String']>;
+  label: Scalars['String'];
+};
+
+export type ComponentJobMailInput = {
+  email?: Maybe<Scalars['String']>;
+  label: Scalars['String'];
+};
+
+export type ComponentJobRequirementInput = {
+  title?: Maybe<Scalars['String']>;
+  requirements?: Maybe<Array<ComponentJobTaskItemInput>>;
+};
+
+export type ComponentJobRequirements = {
+  __typename?: 'ComponentJobRequirements';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  requirements?: Maybe<Array<Maybe<ComponentJobTaskItem>>>;
+};
+
+export type ComponentJobTaskInput = {
+  title?: Maybe<Scalars['String']>;
+  taskItem?: Maybe<Array<Maybe<ComponentJobTaskItemInput>>>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ComponentJobTaskItem = {
+  __typename?: 'ComponentJobTaskItem';
+  id: Scalars['ID'];
+};
+
+export type ComponentJobTaskItemInput = {
+  _?: Maybe<Scalars['String']>;
+};
+
+export type ComponentJobTasks = {
+  __typename?: 'ComponentJobTasks';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  taskItem?: Maybe<Array<Maybe<ComponentJobTaskItem>>>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ComponentJobYear = {
+  __typename?: 'ComponentJobYear';
+  id: Scalars['ID'];
+  year: Enum_Componentjobyear_Year;
+};
+
+export type ComponentJobYearInput = {
+  year: Enum_Componentjobyear_Year;
+};
+
 
 
 export type Diet = {
@@ -1076,6 +1285,20 @@ export enum Enum_Componentheadersubsection_Icon {
   Beer = 'beer',
   Work = 'work',
   Workshop = 'workshop'
+}
+
+export enum Enum_Componentjobcontact_Type {
+  Email = 'email',
+  Website = 'website',
+  Phone = 'phone'
+}
+
+export enum Enum_Componentjobyear_Year {
+  YearOne = 'YEAR_ONE',
+  YearTwo = 'YEAR_TWO',
+  YearThree = 'YEAR_THREE',
+  YearFour = 'YEAR_FOUR',
+  YearFive = 'YEAR_FIVE'
 }
 
 export enum Enum_Order_Status {
@@ -1478,6 +1701,266 @@ export type InputId = {
 };
 
 
+export type JobCategory = {
+  __typename?: 'JobCategory';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  name?: Maybe<Scalars['String']>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  jobs?: Maybe<Array<Maybe<Jobs>>>;
+  localizations?: Maybe<Array<Maybe<JobCategory>>>;
+};
+
+
+export type JobCategoryJobsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+
+export type JobCategoryLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type JobCategoryAggregator = {
+  __typename?: 'JobCategoryAggregator';
+  count?: Maybe<Scalars['Int']>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type JobCategoryConnection = {
+  __typename?: 'JobCategoryConnection';
+  values?: Maybe<Array<Maybe<JobCategory>>>;
+  groupBy?: Maybe<JobCategoryGroupBy>;
+  aggregate?: Maybe<JobCategoryAggregator>;
+};
+
+export type JobCategoryConnectionCreated_At = {
+  __typename?: 'JobCategoryConnectionCreated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryConnectionId = {
+  __typename?: 'JobCategoryConnectionId';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryConnectionLocale = {
+  __typename?: 'JobCategoryConnectionLocale';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryConnectionName = {
+  __typename?: 'JobCategoryConnectionName';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryConnectionPublished_At = {
+  __typename?: 'JobCategoryConnectionPublished_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryConnectionUpdated_At = {
+  __typename?: 'JobCategoryConnectionUpdated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobCategoryConnection>;
+};
+
+export type JobCategoryGroupBy = {
+  __typename?: 'JobCategoryGroupBy';
+  id?: Maybe<Array<Maybe<JobCategoryConnectionId>>>;
+  created_at?: Maybe<Array<Maybe<JobCategoryConnectionCreated_At>>>;
+  updated_at?: Maybe<Array<Maybe<JobCategoryConnectionUpdated_At>>>;
+  name?: Maybe<Array<Maybe<JobCategoryConnectionName>>>;
+  locale?: Maybe<Array<Maybe<JobCategoryConnectionLocale>>>;
+  published_at?: Maybe<Array<Maybe<JobCategoryConnectionPublished_At>>>;
+};
+
+export type JobCategoryInput = {
+  name?: Maybe<Scalars['String']>;
+  jobs?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type JobInput = {
+  title: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
+  deadlineDate?: Maybe<Scalars['DateTime']>;
+  startDate?: Maybe<Scalars['DateTime']>;
+  jobCategory?: Maybe<Scalars['ID']>;
+  company?: Maybe<Scalars['ID']>;
+  year?: Maybe<Array<Maybe<ComponentJobYearInput>>>;
+  body: Scalars['String'];
+  contact?: Maybe<Array<Maybe<ComponentJobContactInput>>>;
+  position?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['String']>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type Jobs = {
+  __typename?: 'Jobs';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  title: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
+  deadlineDate?: Maybe<Scalars['DateTime']>;
+  startDate?: Maybe<Scalars['DateTime']>;
+  jobCategory?: Maybe<JobCategory>;
+  company?: Maybe<Company>;
+  year?: Maybe<Array<Maybe<ComponentJobYear>>>;
+  body: Scalars['String'];
+  contact?: Maybe<Array<Maybe<ComponentJobContact>>>;
+  position?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['String']>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  localizations?: Maybe<Array<Maybe<Jobs>>>;
+};
+
+
+export type JobsLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type JobsAggregator = {
+  __typename?: 'JobsAggregator';
+  count?: Maybe<Scalars['Int']>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type JobsConnection = {
+  __typename?: 'JobsConnection';
+  values?: Maybe<Array<Maybe<Jobs>>>;
+  groupBy?: Maybe<JobsGroupBy>;
+  aggregate?: Maybe<JobsAggregator>;
+};
+
+export type JobsConnectionBody = {
+  __typename?: 'JobsConnectionBody';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionCompany = {
+  __typename?: 'JobsConnectionCompany';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionCreated_At = {
+  __typename?: 'JobsConnectionCreated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionDeadlineDate = {
+  __typename?: 'JobsConnectionDeadlineDate';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionId = {
+  __typename?: 'JobsConnectionId';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionJobCategory = {
+  __typename?: 'JobsConnectionJobCategory';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionLocale = {
+  __typename?: 'JobsConnectionLocale';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionLocation = {
+  __typename?: 'JobsConnectionLocation';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionPosition = {
+  __typename?: 'JobsConnectionPosition';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionPublished_At = {
+  __typename?: 'JobsConnectionPublished_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionSlug = {
+  __typename?: 'JobsConnectionSlug';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionStartDate = {
+  __typename?: 'JobsConnectionStartDate';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionTitle = {
+  __typename?: 'JobsConnectionTitle';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsConnectionUpdated_At = {
+  __typename?: 'JobsConnectionUpdated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<JobsConnection>;
+};
+
+export type JobsGroupBy = {
+  __typename?: 'JobsGroupBy';
+  id?: Maybe<Array<Maybe<JobsConnectionId>>>;
+  created_at?: Maybe<Array<Maybe<JobsConnectionCreated_At>>>;
+  updated_at?: Maybe<Array<Maybe<JobsConnectionUpdated_At>>>;
+  title?: Maybe<Array<Maybe<JobsConnectionTitle>>>;
+  slug?: Maybe<Array<Maybe<JobsConnectionSlug>>>;
+  deadlineDate?: Maybe<Array<Maybe<JobsConnectionDeadlineDate>>>;
+  startDate?: Maybe<Array<Maybe<JobsConnectionStartDate>>>;
+  jobCategory?: Maybe<Array<Maybe<JobsConnectionJobCategory>>>;
+  company?: Maybe<Array<Maybe<JobsConnectionCompany>>>;
+  body?: Maybe<Array<Maybe<JobsConnectionBody>>>;
+  position?: Maybe<Array<Maybe<JobsConnectionPosition>>>;
+  location?: Maybe<Array<Maybe<JobsConnectionLocation>>>;
+  locale?: Maybe<Array<Maybe<JobsConnectionLocale>>>;
+  published_at?: Maybe<Array<Maybe<JobsConnectionPublished_At>>>;
+};
+
 export type LocaleInput = {
   name?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
@@ -1486,7 +1969,7 @@ export type LocaleInput = {
 };
 
 
-export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentActionDocument | ComponentDocumentContractDocument | ComponentDocumentControlDocument | ComponentDocumentDocument | ComponentDocumentFinancialReportDocument | ComponentDocumentFormDocument | ComponentDocumentProtocolDocument | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection;
+export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentActionDocument | ComponentDocumentContractDocument | ComponentDocumentControlDocument | ComponentDocumentDocument | ComponentDocumentFinancialReportDocument | ComponentDocumentFormDocument | ComponentDocumentProtocolDocument | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -1502,6 +1985,9 @@ export type Mutation = {
   createCommittee?: Maybe<CreateCommitteePayload>;
   updateCommittee?: Maybe<UpdateCommitteePayload>;
   deleteCommittee?: Maybe<DeleteCommitteePayload>;
+  createCompany?: Maybe<CreateCompanyPayload>;
+  updateCompany?: Maybe<UpdateCompanyPayload>;
+  deleteCompany?: Maybe<DeleteCompanyPayload>;
   createDiet?: Maybe<CreateDietPayload>;
   updateDiet?: Maybe<UpdateDietPayload>;
   deleteDiet?: Maybe<DeleteDietPayload>;
@@ -1517,6 +2003,12 @@ export type Mutation = {
   deleteFooter?: Maybe<DeleteFooterPayload>;
   updateHeader?: Maybe<UpdateHeaderPayload>;
   deleteHeader?: Maybe<DeleteHeaderPayload>;
+  createJobCategory?: Maybe<CreateJobCategoryPayload>;
+  updateJobCategory?: Maybe<UpdateJobCategoryPayload>;
+  deleteJobCategory?: Maybe<DeleteJobCategoryPayload>;
+  createJob?: Maybe<CreateJobPayload>;
+  updateJob?: Maybe<UpdateJobPayload>;
+  deleteJob?: Maybe<DeleteJobPayload>;
   createOrder?: Maybe<CreateOrderPayload>;
   updateOrder?: Maybe<UpdateOrderPayload>;
   deleteOrder?: Maybe<DeleteOrderPayload>;
@@ -1540,12 +2032,15 @@ export type Mutation = {
   createAllergyLocalization: Allergy;
   createCategoryLocalization: Category;
   createCommitteeLocalization: Committee;
+  createCompanyLocalization: Company;
   createDietLocalization: Diet;
   createDocumentLocalization: Document;
   createEventCategoryLocalization: EventCategory;
   createEventLocalization: Event;
   createFooterLocalization: Footer;
   createHeaderLocalization: Header;
+  createJobCategoryLocalization: JobCategory;
+  createJobLocalization: Jobs;
   createPostLocalization: Post;
   upload: UploadFile;
   multipleUpload: Array<Maybe<UploadFile>>;
@@ -1615,6 +2110,21 @@ export type MutationUpdateCommitteeArgs = {
 
 export type MutationDeleteCommitteeArgs = {
   input?: Maybe<DeleteCommitteeInput>;
+};
+
+
+export type MutationCreateCompanyArgs = {
+  input?: Maybe<CreateCompanyInput>;
+};
+
+
+export type MutationUpdateCompanyArgs = {
+  input?: Maybe<UpdateCompanyInput>;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  input?: Maybe<DeleteCompanyInput>;
 };
 
 
@@ -1693,6 +2203,36 @@ export type MutationUpdateHeaderArgs = {
 
 export type MutationDeleteHeaderArgs = {
   locale?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateJobCategoryArgs = {
+  input?: Maybe<CreateJobCategoryInput>;
+};
+
+
+export type MutationUpdateJobCategoryArgs = {
+  input?: Maybe<UpdateJobCategoryInput>;
+};
+
+
+export type MutationDeleteJobCategoryArgs = {
+  input?: Maybe<DeleteJobCategoryInput>;
+};
+
+
+export type MutationCreateJobArgs = {
+  input?: Maybe<CreateJobInput>;
+};
+
+
+export type MutationUpdateJobArgs = {
+  input?: Maybe<UpdateJobInput>;
+};
+
+
+export type MutationDeleteJobArgs = {
+  input?: Maybe<DeleteJobInput>;
 };
 
 
@@ -1776,6 +2316,11 @@ export type MutationCreateCommitteeLocalizationArgs = {
 };
 
 
+export type MutationCreateCompanyLocalizationArgs = {
+  input: UpdateCompanyInput;
+};
+
+
 export type MutationCreateDietLocalizationArgs = {
   input: UpdateDietInput;
 };
@@ -1803,6 +2348,16 @@ export type MutationCreateFooterLocalizationArgs = {
 
 export type MutationCreateHeaderLocalizationArgs = {
   input: UpdateHeaderInput;
+};
+
+
+export type MutationCreateJobCategoryLocalizationArgs = {
+  input: UpdateJobCategoryInput;
+};
+
+
+export type MutationCreateJobLocalizationArgs = {
+  input: UpdateJobInput;
 };
 
 
@@ -2084,6 +2639,9 @@ export type Query = {
   committee?: Maybe<Committee>;
   committees?: Maybe<Array<Maybe<Committee>>>;
   committeesConnection?: Maybe<CommitteeConnection>;
+  company?: Maybe<Company>;
+  companies?: Maybe<Array<Maybe<Company>>>;
+  companiesConnection?: Maybe<CompanyConnection>;
   diet?: Maybe<Diet>;
   diets?: Maybe<Array<Maybe<Diet>>>;
   dietsConnection?: Maybe<DietConnection>;
@@ -2096,6 +2654,12 @@ export type Query = {
   eventsConnection?: Maybe<EventConnection>;
   footer?: Maybe<Footer>;
   header?: Maybe<Header>;
+  jobCategory?: Maybe<JobCategory>;
+  jobCategories?: Maybe<Array<Maybe<JobCategory>>>;
+  jobCategoriesConnection?: Maybe<JobCategoryConnection>;
+  job?: Maybe<Jobs>;
+  jobs?: Maybe<Array<Maybe<Jobs>>>;
+  jobsConnection?: Maybe<JobsConnection>;
   post?: Maybe<Post>;
   posts?: Maybe<Array<Maybe<Post>>>;
   postsConnection?: Maybe<PostConnection>;
@@ -2212,6 +2776,31 @@ export type QueryCommitteesConnectionArgs = {
 };
 
 
+export type QueryCompanyArgs = {
+  id: Scalars['ID'];
+  publicationState?: Maybe<PublicationState>;
+};
+
+
+export type QueryCompaniesArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  publicationState?: Maybe<PublicationState>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryCompaniesConnectionArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
 export type QueryDietArgs = {
   id: Scalars['ID'];
   publicationState?: Maybe<PublicationState>;
@@ -2301,6 +2890,56 @@ export type QueryFooterArgs = {
 
 export type QueryHeaderArgs = {
   publicationState?: Maybe<PublicationState>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryJobCategoryArgs = {
+  id: Scalars['ID'];
+  publicationState?: Maybe<PublicationState>;
+};
+
+
+export type QueryJobCategoriesArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  publicationState?: Maybe<PublicationState>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryJobCategoriesConnectionArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryJobArgs = {
+  id: Scalars['ID'];
+  publicationState?: Maybe<PublicationState>;
+};
+
+
+export type QueryJobsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  publicationState?: Maybe<PublicationState>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryJobsConnectionArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
   locale?: Maybe<Scalars['String']>;
 };
 
@@ -2924,6 +3563,15 @@ export type CreateCommitteePayload = {
   committee?: Maybe<Committee>;
 };
 
+export type CreateCompanyInput = {
+  data?: Maybe<CompanyInput>;
+};
+
+export type CreateCompanyPayload = {
+  __typename?: 'createCompanyPayload';
+  company?: Maybe<Company>;
+};
+
 export type CreateDietInput = {
   data?: Maybe<DietInput>;
 };
@@ -2949,6 +3597,24 @@ export type CreateEventInput = {
 export type CreateEventPayload = {
   __typename?: 'createEventPayload';
   event?: Maybe<Event>;
+};
+
+export type CreateJobCategoryInput = {
+  data?: Maybe<JobCategoryInput>;
+};
+
+export type CreateJobCategoryPayload = {
+  __typename?: 'createJobCategoryPayload';
+  jobCategory?: Maybe<JobCategory>;
+};
+
+export type CreateJobInput = {
+  data?: Maybe<JobInput>;
+};
+
+export type CreateJobPayload = {
+  __typename?: 'createJobPayload';
+  job?: Maybe<Jobs>;
 };
 
 export type CreateOrderInput = {
@@ -3023,6 +3689,15 @@ export type DeleteCommitteePayload = {
   committee?: Maybe<Committee>;
 };
 
+export type DeleteCompanyInput = {
+  where?: Maybe<InputId>;
+};
+
+export type DeleteCompanyPayload = {
+  __typename?: 'deleteCompanyPayload';
+  company?: Maybe<Company>;
+};
+
 export type DeleteDietInput = {
   where?: Maybe<InputId>;
 };
@@ -3072,6 +3747,24 @@ export type DeleteFooterPayload = {
 export type DeleteHeaderPayload = {
   __typename?: 'deleteHeaderPayload';
   header?: Maybe<Header>;
+};
+
+export type DeleteJobCategoryInput = {
+  where?: Maybe<InputId>;
+};
+
+export type DeleteJobCategoryPayload = {
+  __typename?: 'deleteJobCategoryPayload';
+  jobCategory?: Maybe<JobCategory>;
+};
+
+export type DeleteJobInput = {
+  where?: Maybe<InputId>;
+};
+
+export type DeleteJobPayload = {
+  __typename?: 'deleteJobPayload';
+  job?: Maybe<Jobs>;
 };
 
 export type DeleteOrderInput = {
@@ -3151,6 +3844,17 @@ export type EditCommitteeInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type EditCompanyInput = {
+  name?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['ID']>;
+  jobs?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
 export type EditComponentDocumentActionDocumentInput = {
   id?: Maybe<Scalars['ID']>;
   documentContent?: Maybe<EditComponentDocumentDocumentInput>;
@@ -3182,7 +3886,7 @@ export type EditComponentDocumentFinancialReportDocumentInput = {
 
 export type EditComponentDocumentFormDocumentInput = {
   id?: Maybe<Scalars['ID']>;
-  documentContent?: Maybe<Array<Maybe<EditComponentDocumentDocumentInput>>>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
 };
 
 export type EditComponentDocumentProtocolDocumentInput = {
@@ -3338,6 +4042,57 @@ export type EditComponentHeaderSubSectionInput = {
   color?: Maybe<Enum_Componentheadersubsection_Color>;
 };
 
+export type EditComponentJobAboutInput = {
+  id?: Maybe<Scalars['ID']>;
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentJobContactInput = {
+  id?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
+  type?: Maybe<Enum_Componentjobcontact_Type>;
+  href?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentJobDescriptionInput = {
+  id?: Maybe<Scalars['ID']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentJobImageInput = {
+  id?: Maybe<Scalars['ID']>;
+  image?: Maybe<Scalars['ID']>;
+};
+
+export type EditComponentJobMailInput = {
+  id?: Maybe<Scalars['ID']>;
+  email?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentJobRequirementInput = {
+  id?: Maybe<Scalars['ID']>;
+  title?: Maybe<Scalars['String']>;
+  requirements?: Maybe<Array<Maybe<EditComponentJobTaskItemInput>>>;
+};
+
+export type EditComponentJobTaskInput = {
+  id?: Maybe<Scalars['ID']>;
+  title?: Maybe<Scalars['String']>;
+  taskItem?: Maybe<Array<Maybe<EditComponentJobTaskItemInput>>>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type EditComponentJobTaskItemInput = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type EditComponentJobYearInput = {
+  id?: Maybe<Scalars['ID']>;
+  year?: Maybe<Enum_Componentjobyear_Year>;
+};
+
 export type EditDietInput = {
   name?: Maybe<Scalars['String']>;
   count?: Maybe<Scalars['Int']>;
@@ -3428,6 +4183,35 @@ export type EditHeaderInput = {
   logo?: Maybe<Scalars['ID']>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type EditJobCategoryInput = {
+  name?: Maybe<Scalars['String']>;
+  jobs?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type EditJobInput = {
+  title?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  deadlineDate?: Maybe<Scalars['DateTime']>;
+  startDate?: Maybe<Scalars['DateTime']>;
+  jobCategory?: Maybe<Scalars['ID']>;
+  company?: Maybe<Scalars['ID']>;
+  year?: Maybe<Array<Maybe<EditComponentJobYearInput>>>;
+  body?: Maybe<Scalars['String']>;
+  contact?: Maybe<Array<Maybe<EditComponentJobContactInput>>>;
+  position?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['String']>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
   created_by?: Maybe<Scalars['ID']>;
   updated_by?: Maybe<Scalars['ID']>;
 };
@@ -3539,6 +4323,16 @@ export type UpdateCommitteePayload = {
   committee?: Maybe<Committee>;
 };
 
+export type UpdateCompanyInput = {
+  where?: Maybe<InputId>;
+  data?: Maybe<EditCompanyInput>;
+};
+
+export type UpdateCompanyPayload = {
+  __typename?: 'updateCompanyPayload';
+  company?: Maybe<Company>;
+};
+
 export type UpdateDietInput = {
   where?: Maybe<InputId>;
   data?: Maybe<EditDietInput>;
@@ -3594,6 +4388,26 @@ export type UpdateHeaderInput = {
 export type UpdateHeaderPayload = {
   __typename?: 'updateHeaderPayload';
   header?: Maybe<Header>;
+};
+
+export type UpdateJobCategoryInput = {
+  where?: Maybe<InputId>;
+  data?: Maybe<EditJobCategoryInput>;
+};
+
+export type UpdateJobCategoryPayload = {
+  __typename?: 'updateJobCategoryPayload';
+  jobCategory?: Maybe<JobCategory>;
+};
+
+export type UpdateJobInput = {
+  where?: Maybe<InputId>;
+  data?: Maybe<EditJobInput>;
+};
+
+export type UpdateJobPayload = {
+  __typename?: 'updateJobPayload';
+  job?: Maybe<Jobs>;
 };
 
 export type UpdateOrderInput = {

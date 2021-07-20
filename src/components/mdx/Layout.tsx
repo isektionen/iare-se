@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { MDXProvider, MDXProviderComponentsProp } from "@mdx-js/react";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import {
     a,
     br,
@@ -13,13 +13,20 @@ import {
     strong,
     ul,
 } from "./Components";
+import { Box } from "@chakra-ui/react";
 
 interface Props {
-    children: ReactNode | ReactNode[];
+    source: MDXRemoteSerializeResult;
 }
 
-export const MDXLayout = ({ children }: Props) => {
-    const components: MDXProviderComponentsProp = {
+const custom = (props: any) => (
+    <Box bg="gray.900" {...props}>
+        CUSTOM
+    </Box>
+);
+
+export const MDXLayout = ({ source }: Props) => {
+    const components = {
         h1: heading({ as: "h1" }),
         h2: heading({ as: "h2" }),
         h3: heading({ as: "h3" }),
@@ -36,6 +43,11 @@ export const MDXLayout = ({ children }: Props) => {
         ul,
         ol,
         li,
+        custom,
     };
-    return <MDXProvider components={components}>{children}</MDXProvider>;
+    return (
+        <Box p={12}>
+            <MDXRemote {...source} components={components} />
+        </Box>
+    );
 };

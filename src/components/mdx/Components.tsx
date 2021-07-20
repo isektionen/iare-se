@@ -3,6 +3,7 @@ import {
     ImageProps as ChakraImageProps,
     Box,
     BoxProps,
+    Heading,
 } from "@chakra-ui/react";
 import NextImage, { ImageProps as NextImageProps } from "next/image";
 import React from "react";
@@ -25,7 +26,7 @@ export const heading = ({ as }: any) => {
     switch (as) {
         case "h1":
             return function h1(props: any) {
-                return <chakra.h1 {...props} />;
+                return <Heading as="h1" mb={4} {...props} />;
             };
         case "h2":
             return function h2(props: any) {
@@ -67,7 +68,7 @@ export const br = ({ reset, ...props }: any) => (
 export const a = React.forwardRef(function a(props: any, ref: any) {
     return <chakra.a ref={ref} {...props} />;
 });
-export const p = (props: any) => <chakra.p {...props} />;
-export const ul = (props: any) => <chakra.ul {...props} />;
+export const p = (props: any) => <chakra.p mb={4} {...props} />;
+export const ul = (props: any) => <chakra.ul ml={4} mb={4} {...props} />;
 export const ol = (props: any) => <chakra.ol {...props} />;
 export const li = (props: any) => <chakra.li {...props} />;

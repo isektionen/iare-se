@@ -28,6 +28,7 @@
     "match-sorter": "^6.3.0",
     "next": "^11.0.0",
     "next-compose-plugins": "^2.2.1",
+    "next-mdx-remote": "^3.0.4",
     "next-pwa": "^5.2.21",
     "next-translate": "^1.0.7",
     "react": "^17.0.2",

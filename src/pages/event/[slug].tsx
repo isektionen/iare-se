@@ -419,7 +419,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         query: gql`
             query {
                 events {
-                    id
                     slug
                 }
             }

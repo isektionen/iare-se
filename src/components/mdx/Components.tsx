@@ -21,21 +21,32 @@ export const Image = () => {
     return ChakraImage;
 };
 
-export const heading = (props: any) => {
-    const { as, ...rest } = props;
+export const heading = ({ as }: any) => {
     switch (as) {
         case "h1":
-            return <chakra.h1 {...rest} />;
+            return function h1(props: any) {
+                return <chakra.h1 {...props} />;
+            };
         case "h2":
-            return <chakra.h2 {...rest} />;
+            return function h2(props: any) {
+                return <chakra.h2 {...props} />;
+            };
         case "h3":
-            return <chakra.h3 {...rest} />;
+            return function h3(props: any) {
+                return <chakra.h3 {...props} />;
+            };
         case "h4":
-            return <chakra.h4 {...rest} />;
+            return function h4(props: any) {
+                return <chakra.h4 {...props} />;
+            };
         case "h5":
-            return <chakra.h5 {...rest} />;
+            return function h5(props: any) {
+                return <chakra.h5 {...props} />;
+            };
         case "h6":
-            return <chakra.h6 {...rest} />;
+            return function h6(props: any) {
+                return <chakra.h6 {...props} />;
+            };
     }
 };
 

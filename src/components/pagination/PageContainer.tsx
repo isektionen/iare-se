@@ -1,8 +1,4 @@
-import {
-    createPaginationContext,
-    PaginationButtonProps,
-    PaginationContext,
-} from "hooks/use-pagination";
+import { PaginationButtonProps, PaginationContext } from "hooks/use-pagination";
 import React, {
     ReactNode,
     useCallback,
@@ -10,7 +6,6 @@ import React, {
     useMemo,
     useState,
 } from "react";
-import { separateChildren } from "utils/page";
 
 export interface PageOptions {
     limit: number;

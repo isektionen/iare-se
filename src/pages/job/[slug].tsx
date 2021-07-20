@@ -37,8 +37,8 @@ const JobView = ({ job, mdx }: Props) => {
                             alt={
                                 job.company?.logo?.alternativeText ?? "logotype"
                             }
-                            width={job.company?.logo?.width}
-                            height={job.company?.logo?.height}
+                            width={job.company?.logo?.width ?? 160 * 3}
+                            height={job.company?.logo?.height ?? 90 * 3}
                         />
                     </AccessibleLink>
                     <Heading as="h1" size="2xl" textAlign="center">

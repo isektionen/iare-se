@@ -34,8 +34,14 @@ export const Document = (props: Props) => {
     const [pages, setPages] = useState<ReactNode[]>(
         getPages(props.infinite ? 3 : 0)
     );
+    const [_window, setWindow] = useState();
+    const [height, setHeight] = useState(540);
 
-    const height = window.innerHeight * 0.8;
+    useEffect(() => {
+        if (window && process.browser) {
+            setHeight(window.innerHeight);
+        }
+    }, []);
 
     return (
         <Box h={height}>

@@ -238,7 +238,15 @@ const DocumentView = ({ locale, document: data }: Props) => {
                                 />
                             }
                         >
-                            {({ page, isActive, onClick }) => (
+                            {({
+                                page,
+                                isActive,
+                                onClick,
+                            }: {
+                                page: number;
+                                isActive: boolean;
+                                onClick: () => void;
+                            }) => (
                                 <Button
                                     p={4}
                                     bg={isActive ? "gray.200" : "gray.50"}

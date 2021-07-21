@@ -29,6 +29,7 @@ const customTheme = extendTheme({
             900: "hsla(196, 14%, 12%, 1)",
         },
         brand: {
+            200: "#C5B19F",
             500: "#976E49",
         },
         porter: {

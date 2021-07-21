@@ -1,6 +1,13 @@
-import { Box } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/react";
+import { Sidebar } from "components/sidebar/Sidebar";
+import React from "react";
 
 const Home = () => {
-    return <Box mb={8} w="full" h="200vh"></Box>;
+    return (
+        <Flex>
+            <Sidebar />
+            <Flex></Flex>
+        </Flex>
+    );
 };
 export default Home;

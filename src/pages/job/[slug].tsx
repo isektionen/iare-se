@@ -7,7 +7,7 @@ import { MDXLayout } from "components/mdx/Layout";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
 import { Box, Button, Center, Flex, Heading } from "@chakra-ui/react";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { Image } from "../../components/Image";
+import { NextImage } from "../../components/NextImage";
 import { getSchoolYear } from "utils/dates";
 import { useRouter } from "next/router";
 import { DeadlineCounter } from "components/DeadlineCounter";
@@ -31,7 +31,7 @@ const JobView = ({ job, mdx }: Props) => {
                         href={job.company?.website ?? "#"}
                         isExternal
                     >
-                        <Image
+                        <NextImage
                             mb={8}
                             src={job.company?.logo?.url ?? ""}
                             alt={

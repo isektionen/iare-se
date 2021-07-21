@@ -35,6 +35,7 @@ import {
     SelectorOptions,
 } from "components/pagination/PageSelector";
 import { HiOutlineDownload } from "react-icons/hi";
+import { createPreview } from "lib/pdf";
 interface Props {
     document: DocType;
     locale: string;
@@ -277,6 +278,7 @@ export const getStaticProps: GetStaticProps = async ({
 }) => {
     const locale = "en";
     const { data } = await axios.get("/document?_locale=" + locale);
+
     return {
         props: {
             locale,

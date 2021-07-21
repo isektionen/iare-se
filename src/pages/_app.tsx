@@ -26,7 +26,7 @@ interface Props extends AppProps {
 }
 
 const App = ({ Component, pageProps, headerProps, footerProps }: Props) => {
-    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+    pdfjs.GlobalWorkerOptions.workerSrc = "../js/pdf.worker.js"; //`//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     return (
         <StrictMode>
             <RecoilRoot>

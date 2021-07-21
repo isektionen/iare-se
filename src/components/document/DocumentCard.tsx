@@ -55,10 +55,7 @@ export const DocumentCard = (props: Props) => {
                         <Document
                             file={props.url}
                             renderMode="svg"
-                            onLoadSuccess={() => {
-                                console.log("PDFS LOADED");
-                                setLoading(false);
-                            }}
+                            onLoadSuccess={() => setLoading(false)}
                         >
                             <Page
                                 pageNumber={1}

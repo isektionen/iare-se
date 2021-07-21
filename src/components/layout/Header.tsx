@@ -12,12 +12,11 @@ import {
     ComponentHeaderContact,
     ComponentHeaderMenuSection,
     ComponentHeaderLanguages,
-    Header as HeaderProps,
-    ComponentHeaderSubSection,
 } from "../../types/strapi";
 import { DefHeader } from "types/global";
-import { mergeLink } from "utils/mergeHref";
 import { imageSource } from "utils/images";
+import { useViewportScroll } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 const Header = ({ logo, sections, languages, contact }: DefHeader) => {
     const [isLg] = useMediaQuery(`(min-width: ${customTheme.breakpoints.lg})`);
@@ -25,17 +24,34 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
 
     const { useMenuItem, isOpen, activeSection, setIsOpen, delayedSetIsOpen } =
         useMenu();
+
+    const { scrollY } = useViewportScroll();
+    const [y, setY] = useState(0);
+
+    const ref = useRef<HTMLHeadingElement>(null);
+    const { height = 0 } = ref.current?.getBoundingClientRect() ?? {};
+
+    useEffect(() => {
+        return scrollY.onChange(() => setY(scrollY.get()));
+    }, [scrollY]);
     return (
         <>
             <Box
-                px={{ base: 4, md: 12 }}
-                as="header"
-                pos="relative"
+                ref={ref}
+                py={4}
                 bg="gray.50"
+                as="header"
+                position="sticky"
+                transition="box-shadow 0.2s"
                 w="full"
-                h={16}
+                maxH={16}
+                zIndex={3}
+                top={0}
+                left={0}
+                right={0}
+                shadow={y > height ? "base" : undefined}
             >
-                <Flex py={4} w="full" align="center">
+                <Flex w="full" align="center" h="full" px={{ base: 4, md: 12 }}>
                     <AccessibleLink href="/">
                         <Image
                             src={imageSource(logo, "/logo.svg")}
@@ -74,15 +90,28 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                         />
                     )}
                 </Flex>
+                {isMd && (
+                    <BigNavigation
+                        isOpen={isOpen}
+                        delayedSetIsOpen={delayedSetIsOpen}
+                        setIsOpen={setIsOpen}
+                        mediaQuery={{ isLg }}
+                        activeSection={activeSection}
+                    />
+                )}
             </Box>
-            {isMd && (
-                <BigNavigation
-                    isOpen={isOpen}
-                    delayedSetIsOpen={delayedSetIsOpen}
-                    setIsOpen={setIsOpen}
-                    mediaQuery={{ isLg }}
-                    activeSection={activeSection}
-                />
+            {isOpen && (
+                <Box
+                    top={`${height - 10}px`}
+                    pos="sticky"
+                    bg="rgba(0,0,0,0.1)"
+                    bottom={0}
+                    h="100vh"
+                    w="full"
+                    zIndex={2}
+                >
+                    ?
+                </Box>
             )}
         </>
     );

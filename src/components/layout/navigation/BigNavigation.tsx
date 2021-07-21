@@ -22,7 +22,6 @@ export const BigNavigation = (props: Props) => {
         <>
             {props.isOpen && (
                 <Box
-                    bg="rgba(0,0,0,0.1)"
                     h="full"
                     w="full"
                     pos="absolute"

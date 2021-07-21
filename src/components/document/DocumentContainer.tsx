@@ -26,7 +26,6 @@ export const DocumentContainer = (props: DocumentProps) => {
         currentPage: undefined,
         pages: undefined,
     });
-    //const [searchResult, setSearchResult] = useState<any[]>([]);
 
     const setDocument = (newDocument: NewDocumentType) => {
         _setDocument({
@@ -79,69 +78,6 @@ export const DocumentContainer = (props: DocumentProps) => {
         },
         [documentState.href]
     );
-    /*
-    const textPagesPromised = useMemo(async () => {
-        if (documentState && documentState.href && documentState.pages) {
-            const _document = await pdfjs.getDocument(documentState.href)
-                .promise;
-
-            const _pagePromises = [...Array(documentState.pages)].map(
-                (_, index) => _document.getPage(index + 1)
-            );
-            const _pages = await Promise.all(_pagePromises);
-            const textPages = await Promise.all(
-                _pages.map(async (page, pageIndex) => {
-                    const content = await page.getTextContent();
-                    return content.items.map((item, itemIndex) => ({
-                        text: item.str,
-                        position: {
-                            pageIndex,
-                            itemIndex,
-                            sx: item.transform[0],
-                            sy: item.transform[3],
-                            tx: item.transform[4],
-                            ty: item.transform[5],
-                            width: item.width,
-                            height: item.height,
-                        },
-                    }));
-                })
-            );
-            return textPages.flat();
-        }
-        return [];
-    }, [documentState]);
-
-    const search = useCallback(
-        // DEPRECATED UNTIL FURTHER FUNDING
-        async (pattern: string) => {
-            if (
-                documentState &&
-                documentState.href &&
-                documentState.pages &&
-                false
-            ) {
-                // traverse all pages
-                const textPages = await textPagesPromised;
-                const fuse = new Fuse(textPages, { keys: ["text"] });
-                const result = fuse.search(pattern);
-                setSearchResult(result);
-            }
-        },
-        [documentState]
-    );
-
-    
-    useEffect(() => {
-        if (searchResult.length > 0) {
-            // TODO: differentiate when plural and singular
-            const { item } = searchResult[0];
-            const { itemIndex } = item.position;
-            const node = document.querySelector(`[data-item-index='${itemIndex}']`);
-            node?.scrollIntoView();
-        }
-    }, [searchResult]);
-    */
 
     const value = {
         document: documentState,

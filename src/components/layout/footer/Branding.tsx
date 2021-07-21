@@ -28,7 +28,7 @@ export const Branding = (props: Props) => {
                 justify="space-between"
             >
                 <Text>Ansvarig utgivare {props.responsiblePublisher}</Text>
-                <Text>Utvecklad med 🤎 av Yonda AB & webgroup</Text>
+                <Text>Utvecklad med 🤎 av webgroup</Text>
             </Flex>
         </Box>
     );

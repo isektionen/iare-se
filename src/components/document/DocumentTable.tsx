@@ -1,4 +1,5 @@
 import {
+    Icon,
     Table,
     TableCaption,
     Tbody,
@@ -11,20 +12,28 @@ import { useDocument } from "hooks/use-document";
 import { usePagination } from "hooks/use-pagination";
 import { AllDocType } from "pages/chapter/document";
 import React, { ReactNode } from "react";
+import { IconType } from "react-icons";
 
 interface Column {
     label: string;
     id: string;
 }
 
+interface Action {
+    id: string;
+    icon: IconType;
+    onClick: (row: any) => void;
+}
+
 interface Props {
     columns: Column[];
-    children: (item: Column[]) => ReactNode;
+    children: (column: Column[], actions: Action[]) => ReactNode;
+    actions: Action[];
 }
 
 [{}];
 
-export const DocumentTable = ({ columns, children }: Props) => {
+export const DocumentTable = ({ columns, actions, children }: Props) => {
     return (
         <Table colorScheme="gray" variant="striped">
             <Thead>
@@ -39,16 +48,17 @@ export const DocumentTable = ({ columns, children }: Props) => {
                     ))}
                 </Tr>
             </Thead>
-            {children(columns)}
+            {children(columns, actions)}
         </Table>
     );
 };
 
 interface RowProps {
     header: Column[];
+    actions: Action[];
 }
 
-export const DocumentBody = ({ header }: RowProps) => {
+export const DocumentBody = ({ header, actions }: RowProps) => {
     const { currentItems } = usePagination();
     const { setDocument } = useDocument();
     return (
@@ -65,6 +75,18 @@ export const DocumentBody = ({ header }: RowProps) => {
                 >
                     {header.map((title, j) => (
                         <Td key={"table-element" + j}>{item[title.id]}</Td>
+                    ))}
+                    {actions.map((action, j) => (
+                        <Td key={"table-action" + j}>
+                            <Icon
+                                as={action.icon}
+                                cursor="pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    action.onClick(item);
+                                }}
+                            />
+                        </Td>
                     ))}
                 </Tr>
             ))}

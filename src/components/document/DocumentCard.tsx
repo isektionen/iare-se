@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { UsersPermissionsUser } from "types/strapi";
 
 import { Document, Page } from "react-pdf";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Skeleton, Text } from "@chakra-ui/react";
 import { getDate } from "utils/dates";
 import { useDocument } from "hooks/use-document";
 interface Props {
@@ -21,6 +21,8 @@ export const DocumentCard = (props: Props) => {
     }
 
     const { setDocument } = useDocument();
+
+    const [loading, setLoading] = useState(true);
     if (props.isCurrent && props.url) {
         return (
             <Box
@@ -45,13 +47,26 @@ export const DocumentCard = (props: Props) => {
                     <Text>{day}</Text>
                 </Box>
                 <Box overflow="hidden">
-                    <Document file={props.url} renderMode="svg">
-                        <Page
-                            pageNumber={1}
-                            renderTextLayer={false}
-                            height={250}
-                        />
-                    </Document>
+                    <Skeleton
+                        isLoaded={!loading}
+                        height={250}
+                        width={250 / Math.SQRT2}
+                    >
+                        <Document
+                            file={props.url}
+                            renderMode="svg"
+                            onLoadSuccess={() => {
+                                console.log("PDFS LOADED");
+                                setLoading(false);
+                            }}
+                        >
+                            <Page
+                                pageNumber={1}
+                                renderTextLayer={false}
+                                height={250}
+                            />
+                        </Document>
+                    </Skeleton>
                 </Box>
             </Box>
         );

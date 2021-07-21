@@ -18,17 +18,7 @@ export const Document = (props: Props) => {
     const { document, onLoadSuccess } = useDocument();
     const getPages = (p: number) =>
         paginate(p).map((idx) => (
-            <BasePage
-                key={"page_" + idx}
-                pageNumber={idx}
-                customTextRenderer={(layer) => {
-                    return (
-                        <span data-item-index={layer.itemIndex}>
-                            {layer.str}
-                        </span>
-                    );
-                }}
-            />
+            <BasePage key={"page_" + idx} pageNumber={idx} />
         ));
     const [pg, setpg] = useState(1);
     const [pages, setPages] = useState<ReactNode[]>(

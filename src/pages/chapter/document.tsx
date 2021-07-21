@@ -6,31 +6,15 @@ import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import loadNamespaces from "next-translate/loadNamespaces";
 import {
-    ComponentDocumentActionDocument,
-    ComponentDocumentContractDocument,
-    ComponentDocumentControlDocument,
     ComponentDocumentDocument,
-    ComponentDocumentFormDocument,
-    ComponentDocumentProtocolDocument,
     Document as DocType,
-    DocumentAllDocumentsDynamicZone,
-    Maybe,
     UsersPermissionsUser,
 } from "../../types/strapi";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
 import { Document } from "components/document/Document";
 import { useDocument } from "hooks/use-document";
 
-import {
-    Box,
-    Button,
-    Center,
-    Flex,
-    Heading,
-    HStack,
-    IconButton,
-    Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
 import React, { useEffect, useState } from "react";
 
@@ -50,6 +34,7 @@ import {
     PageSelector,
     SelectorOptions,
 } from "components/pagination/PageSelector";
+import { HiOutlineDownload } from "react-icons/hi";
 interface Props {
     document: DocType;
     locale: string;
@@ -125,7 +110,6 @@ const minimize = (key: string) => {
 };
 
 const DocumentView = ({ locale, document: data }: Props) => {
-    const router = useRouter();
     const { t } = useTranslation("common");
     const allRawDocs = data.allDocuments as AllDocType[];
     const docs = allRawDocs.reduce(
@@ -215,8 +199,22 @@ const DocumentView = ({ locale, document: data }: Props) => {
                                 { label: "Författare", id: "authors" },
                                 { label: "Datum", id: "date" },
                             ]}
+                            actions={[
+                                {
+                                    id: "download",
+                                    icon: HiOutlineDownload,
+                                    onClick: (row) =>
+                                        window &&
+                                        window.open(row.url, "_blank"),
+                                },
+                            ]}
                         >
-                            {(header) => <DocumentBody header={header} />}
+                            {(header, actions) => (
+                                <DocumentBody
+                                    header={header}
+                                    actions={actions}
+                                />
+                            )}
                         </DocumentTable>
                         <Box
                             as={PageSelector}

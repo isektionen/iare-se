@@ -42,7 +42,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                 bg="gray.50"
                 as="header"
                 position="sticky"
-                transition="box-shadow 0.2s"
+                transition="box-shadow 0.3s"
                 w="full"
                 maxH={16}
                 zIndex={3}

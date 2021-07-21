@@ -56,6 +56,9 @@ export const BigNavigation = (props: Props) => {
                                                 key={section?.id ?? key}
                                                 rowSpan={1}
                                                 colSpan={1}
+                                                onClick={() =>
+                                                    props.setIsOpen(false)
+                                                }
                                             >
                                                 {section &&
                                                     props.activeSection && (

@@ -5,6 +5,8 @@ import {
     List,
     ListItem,
     ListProps,
+    Text,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { useRouter } from "next/router";
@@ -27,38 +29,43 @@ const RouteItem = ({ href, icon, label }: Route) => {
     const [, parent] = href.split("/");
     const isActive =
         pathname.includes(parent) && (parent !== "" || pathname === "/");
+
+    const isMd = useBreakpointValue({ base: false, md: true });
     return (
-        <AccessibleLink href={href} passHref>
-            <Flex
-                as="a"
-                align="center"
-                fontWeight={isActive ? "bold" : "semibold"}
-                color={isActive ? "gray.700" : "gray.500"}
-                transitionProperty="colors"
-                transitionDuration="0.2s"
-                _hover={{
-                    color: "gray.700",
-                }}
+        <Flex
+            align="center"
+            fontWeight={isActive ? "bold" : "semibold"}
+            color={isActive ? "gray.700" : "gray.500"}
+            transitionProperty="colors"
+            transitionDuration="0.2s"
+            _hover={{
+                color: "gray.700",
+            }}
+        >
+            <Center
+                minW={6}
+                minH={6}
+                bg={isActive ? "brand.200" : "gray.200"}
+                rounded="base"
+                mr={{ base: undefined, md: 3 }}
             >
-                <Center
-                    w={6}
-                    h={6}
-                    bg={isActive ? "brand.200" : "gray.200"}
-                    rounded="base"
-                    mr={3}
-                >
-                    {icon && <Icon as={icon} />}
-                </Center>
-                {label}
-            </Flex>
-        </AccessibleLink>
+                {icon && <Icon as={icon} />}
+            </Center>
+            {isMd && <Text>{label}</Text>}
+        </Flex>
     );
 };
 
 export const Pages = (props: ListProps & Props) => {
     const { routes, ...rest } = props;
     return (
-        <List spacing={4} styleType="none" {...rest}>
+        <List
+            spacing={4}
+            styleType="none"
+            display="table"
+            margin="0 auto"
+            {...rest}
+        >
             {routes.map((route) => (
                 <ListItem key={route.label}>
                     <RouteItem {...route} />

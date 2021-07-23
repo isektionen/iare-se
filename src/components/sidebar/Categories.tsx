@@ -5,6 +5,7 @@ import {
     List,
     ListItem,
     ListProps,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -45,22 +46,27 @@ const CategoryItem = ({ query, label }: Category) => {
 
 export const Categories = (props: ListProps & Props) => {
     const { items, ...rest } = props;
+    const isMd = useBreakpointValue({ base: false, md: true });
     return (
-        <Flex direction="column" {...rest}>
-            <Heading as="h4" size="md" fontWeight="semibold" mb={4}>
-                Kategorier
-            </Heading>
+        <Flex direction="column">
+            {isMd && (
+                <>
+                    <Heading as="h4" size="md" fontWeight="semibold" mb={4}>
+                        Kategorier
+                    </Heading>
 
-            <List spacing={2} styleType="none">
-                <ListItem>
-                    <CategoryItem label="Alla kategorier" />
-                </ListItem>
-                {items.map((item) => (
-                    <ListItem key={item.label}>
-                        <CategoryItem {...item} />
-                    </ListItem>
-                ))}
-            </List>
+                    <List spacing={2} styleType="none" {...rest}>
+                        <ListItem>
+                            <CategoryItem label="Alla kategorier" />
+                        </ListItem>
+                        {items.map((item) => (
+                            <ListItem key={item.label}>
+                                <CategoryItem {...item} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </>
+            )}
         </Flex>
     );
 };

@@ -10,8 +10,8 @@ interface Props {
 
 export const Sidebar = ({ routes, categories }: Props) => {
     return (
-        <VStack spacing={6} h="full" w="25%" py={4} px={12}>
-            <Pages w="full" routes={routes} />
+        <VStack spacing={6} h="full" py={4} minW={14} px={{ base: 2, md: 12 }}>
+            <Pages routes={routes} />
             <Categories w="full" items={categories} />
         </VStack>
     );

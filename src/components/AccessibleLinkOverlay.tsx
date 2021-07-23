@@ -17,7 +17,7 @@ const AccessibleLinkOverlay = ({
     as,
 }: AccessibleLinkOverlayProps) => {
     return (
-        <LinkBox as={as} w="full" h="full">
+        <LinkBox as={as}>
             <Link href={href} passHref>
                 <LinkOverlay isExternal={isExternal}>{children}</LinkOverlay>
             </Link>

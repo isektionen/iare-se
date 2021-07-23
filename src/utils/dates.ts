@@ -1,4 +1,8 @@
-import { format, formatDistanceToNow } from "date-fns";
+import {
+    format,
+    formatDistanceToNow,
+    formatDistanceToNowStrict,
+} from "date-fns";
 import { enGB, sv } from "date-fns/locale";
 import { ComponentJobYear, Maybe } from "../types/strapi";
 export const getDate = (
@@ -9,11 +13,14 @@ export const getDate = (
 export const getTime = (dateString: string) =>
     format(new Date(dateString), "HH : mm", { locale: sv });
 
-export const getTimeLeft = (dateString: string) =>
-    formatDistanceToNow(new Date(dateString), {
+export const getTimeLeft = (dateString: string, strict: boolean = false) => {
+    const fn = strict ? formatDistanceToNowStrict : formatDistanceToNow;
+
+    return fn(new Date(dateString), {
         addSuffix: true,
         locale: sv,
     });
+};
 
 export const getSchoolYear = (jobYear: Maybe<ComponentJobYear>) => {
     if (!jobYear) return 0;

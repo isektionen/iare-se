@@ -25,7 +25,8 @@ const RouteItem = ({ href, icon, label }: Route) => {
     const { pathname } = useRouter();
     //TODO: take care of aktuellt
     const [, parent] = href.split("/");
-    const isActive = pathname.includes(parent);
+    const isActive =
+        pathname.includes(parent) && (parent !== "" || pathname === "/");
     return (
         <AccessibleLink href={href} passHref>
             <Flex

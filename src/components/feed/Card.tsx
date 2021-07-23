@@ -14,7 +14,14 @@ import React from "react";
 import { FeedItem } from "./Feed";
 import { getDate } from "utils/dates";
 
-export const Card = (props: FeedItem) => {
+interface Props<T> {
+    setItem: () => T;
+}
+
+export const Card = <T extends { label?: string; title?: string }>(
+    props: Props<T>
+) => {
+    const item = props.setItem();
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -27,9 +34,10 @@ export const Card = (props: FeedItem) => {
                 rounded="base"
                 overflow="hidden"
                 w={{ base: "full", lg: "48%" }}
-                maxH={{ base: 80, lg: "full" }}
-                layout="responsive"
+                h={80}
+                layout="intrinsic"
                 objectFit="fill"
+                objectPosition="center"
                 src={props.imageUrl}
             />
             <Spacer />

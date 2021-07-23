@@ -18,7 +18,7 @@ interface StaticImageData {
 }
 
 export const NextImage = (props: NextImageProps) => {
-    const { src, alt, layout, objectFit, ...rest } = props;
+    const { src, alt, layout, objectFit, objectPosition, ...rest } = props;
     /*
     const external = isExternal(src as string);
     const base = process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL as string;
@@ -48,6 +48,7 @@ export const NextImage = (props: NextImageProps) => {
                     alt={alt}
                     layout={layout}
                     objectFit={objectFit}
+                    objectPosition={objectPosition}
                 />
             </Center>
         );
@@ -61,6 +62,7 @@ export const NextImage = (props: NextImageProps) => {
                 objectFit={objectFit}
                 width={dimensions.width}
                 height={dimensions.height}
+                objectPosition={objectPosition}
             />
         </Box>
     );

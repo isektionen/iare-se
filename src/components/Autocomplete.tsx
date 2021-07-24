@@ -51,7 +51,6 @@ export const AutoComplete = (props: Props) => {
         } else {
             props.setResult((oldResult) => {
                 const r = [...oldResult, option];
-                console.log(r);
                 return r;
             });
         }

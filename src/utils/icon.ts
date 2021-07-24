@@ -124,7 +124,6 @@ export const makeIcon = (icon: string) => {
     // doesn't work properly.. DONT USE
     const { iconName, iconPack } = findIconPack(icon);
     if (iconPack) {
-        console.log("react-icons/" + iconPack);
         return dynamic(
             () =>
                 import(`react-icons/${"fa"}`).then(

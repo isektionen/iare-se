@@ -23,7 +23,6 @@ export const HFeed = <T extends object>(props: Props<T> & StackProps) => {
         event.preventDefault();
         if (ref && ref.current) {
             const node = ref.current;
-            console.log(event);
             node.scrollTo({
                 left: node.scrollLeft + event.deltaY,
             });
@@ -34,19 +33,19 @@ export const HFeed = <T extends object>(props: Props<T> & StackProps) => {
         <Box
             position="relative"
             w="full"
-            h="55vh"
-            overflowY="hidden"
+            h="250px"
             overflowX="scroll"
             onWheel={handleScrolling}
+            ref={ref}
             onMouseOver={() => lock(true)}
-            bg="tomato"
+            onMouseLeave={() => lock(false)}
         >
             <HStack
                 position="absolute"
                 spacing={4}
                 bg="gray.100"
                 p={4}
-                w="500vw"
+                w="max-content"
                 h="full"
                 {...rest}
             >

@@ -32,6 +32,11 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { getTimeLeft } from "utils/dates";
 import { useRouter } from "next/router";
 import { IoShareSocial } from "react-icons/io5";
+import { Card } from "components/feed/Card";
+import { MobileEventCard } from "components/feed/MobileEventCard";
+import { RouteItem } from "components/sidebar/Pages";
+import { EventCard } from "components/feed/EventCard";
+import { SmallCard } from "components/feed/SmallCard";
 
 interface Props {
     events: Event[];
@@ -40,6 +45,18 @@ interface Props {
 
 const EventFeedView = ({ events, categories }: Props) => {
     const router = useRouter();
+    const isAboveSm = useBreakpointValue({ base: false, sm: true });
+
+    const routes = [
+        { label: "Händelser", icon: HiHome, href: "/" },
+        { label: "Event", icon: MdEvent, href: "/event" },
+        {
+            label: "Jobb",
+            icon: RiUserSearchFill,
+            href: "/jobb",
+        },
+    ];
+
     const { current, past } = _.groupBy(
         _.sortBy(events, "deadline"),
         (item) => {
@@ -54,116 +71,43 @@ const EventFeedView = ({ events, categories }: Props) => {
     const shorten = (array: any[], to: number = 5) =>
         array.slice(0, Math.min(array.length, to));
     return (
-        <Flex>
-            <Sidebar
-                routes={[
-                    { label: "Händelser", icon: HiHome, href: "/" },
-                    { label: "Event", icon: MdEvent, href: "/event" },
-                    { label: "Jobb", icon: RiUserSearchFill, href: "/jobb" },
-                ]}
-                categories={
-                    categories?.map((item) => ({
-                        label: item.name,
-                        query: `?=${item.name}`,
-                    })) ?? []
-                }
-            />
+        <Flex direction={{ base: "column", sm: "row" }}>
+            {!isAboveSm && (
+                <VStack spacing={4} pb={4} w="full">
+                    <Flex w="full" px={4} justify="space-evenly">
+                        {routes.map((route) => (
+                            <RouteItem key={route.label} {...route} />
+                        ))}
+                    </Flex>
+                    <HStack spacing={4} w="full" px={4} fontWeight="bold">
+                        <Text>Alla kategorier</Text>
+                        {categories.map((cat) => (
+                            <Text key={cat.name}>{cat.name}</Text>
+                        ))}
+                    </HStack>
+                </VStack>
+            )}
+            {isAboveSm && (
+                <Sidebar
+                    routes={routes}
+                    categories={categories.map((cat) => ({
+                        label: cat.name,
+                        query: `?=${cat.name}`,
+                    }))}
+                />
+            )}
             <VStack spacing={4} w="full" bg="gray.100">
                 <Feed setFeed={() => shorten(current)}>
-                    {(item, key) => (
-                        <Flex
-                            key={key}
-                            direction={{ base: "column", xl: "row" }}
-                            bg="white"
-                            rounded="md"
-                            w="full"
-                            overflow="hidden"
-                            maxH="4xl"
-                        >
-                            {item.banner && (
-                                <Box
-                                    minW={{ base: "full", xl: "50%" }}
-                                    h={{ base: "60%", xl: "lg" }}
-                                    overflow="hidden"
-                                >
-                                    <Image
-                                        src={imageSource(
-                                            item.banner,
-                                            "/news-image.png"
-                                        )}
-                                        alt={
-                                            item.banner?.alternativeText ??
-                                            "banner"
-                                        }
-                                        objectFit="cover"
-                                        w="full"
-                                        h="full"
-                                        objectPosition="50% 50%"
-                                    />
-                                </Box>
-                            )}
-                            <Flex
-                                direction="column"
-                                w="full"
-                                p={8}
-                                h={{ base: "40%", xl: "full" }}
-                            >
-                                <Flex
-                                    w="full"
-                                    justify="space-between"
-                                    align="flex-start"
-                                >
-                                    <Box>
-                                        {item.category && (
-                                            <HStack spacing={2}>
-                                                <Badge variant="subtle">
-                                                    {item.category.name}
-                                                </Badge>
-                                            </HStack>
-                                        )}
-                                        <Heading
-                                            as="h3"
-                                            size="xl"
-                                            mb={4}
-                                            textTransform="capitalize"
-                                        >
-                                            {item.title}
-                                        </Heading>
-                                    </Box>
-                                    <HStack>
-                                        <Icon as={AiOutlineClockCircle} />
-                                        <Text size="sm">
-                                            Osan stänger{" "}
-                                            {getTimeLeft(item.deadline, true)}
-                                        </Text>
-                                    </HStack>
-                                </Flex>
-                                <Text noOfLines={8} mb={8}>
-                                    {item.description}
-                                </Text>
-                                <Spacer />
-                                <HStack spacing={4}>
-                                    <Button
-                                        flex={1}
-                                        variant="iareSolid"
-                                        onClick={() =>
-                                            router.push("event/" + item.slug)
-                                        }
-                                    >
-                                        OSA
-                                    </Button>
-                                    <IconButton
-                                        variant="iareSolid"
-                                        aria-label="socials"
-                                    >
-                                        <IoShareSocial />
-                                    </IconButton>
-                                </HStack>
-                            </Flex>
-                        </Flex>
-                    )}
+                    {(item, key) => {
+                        if (isAboveSm) {
+                            return <EventCard key={key} item={item} />;
+                        }
+                        return <MobileEventCard key={key} item={item} />;
+                    }}
                 </Feed>
-                <HFeed feed={shorten(past)} />
+                <HFeed setFeed={() => shorten(past)}>
+                    {(item, key) => <SmallCard key={key} {...item} />}
+                </HFeed>
             </VStack>
         </Flex>
     );
@@ -183,6 +127,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                         name
                     }
                     place {
+                        name
+                    }
+                    committee {
                         name
                     }
                     deadline

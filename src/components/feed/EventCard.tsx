@@ -22,6 +22,7 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { imageSource } from "utils/images";
 
 export const EventCard = ({ item }: any) => {
+    console.log(item);
     return (
         <Flex
             direction={{ base: "column", xl: "row" }}

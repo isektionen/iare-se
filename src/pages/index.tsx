@@ -125,7 +125,6 @@ import { estimateReadingMinutes } from "utils/text";
  */
 
 const Home = () => {
-    //const [] = useMediaQuery("(min-width: 960px)")
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
 
     const routes = [

@@ -45,7 +45,6 @@ export const Feed = <T extends { title?: string; label?: string }>(
         event.preventDefault();
         if (ref && ref.current) {
             const node = ref.current;
-            console.log(event);
             node.scrollTo({
                 left: node.scrollLeft + event.deltaY,
             });

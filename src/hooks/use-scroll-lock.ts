@@ -6,7 +6,6 @@ export const useScrollLock = () => {
     useEffect(() => {
         const node = document.body;
         if (!node) return;
-        console.log("hello", lock);
         if (lock) {
             node.style.overflow = "hidden";
         }

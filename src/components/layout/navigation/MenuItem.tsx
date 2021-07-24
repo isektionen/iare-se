@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
-import { useSetRecoilSSRState } from "components/RecoilSSR";
 import { motion } from "framer-motion";
 import { useHover } from "hooks/use-hover";
 import React, {

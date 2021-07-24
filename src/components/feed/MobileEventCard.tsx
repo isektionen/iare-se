@@ -1,6 +1,7 @@
 import { Flex, Heading, Spacer, Avatar, Text } from "@chakra-ui/react";
 import React from "react";
 import { getDate, getTimeLeft } from "utils/dates";
+import { imageProvider } from "utils/images";
 import { estimateReadingMinutes } from "utils/text";
 
 export const MobileEventCard = ({ item }: any) => {
@@ -8,7 +9,9 @@ export const MobileEventCard = ({ item }: any) => {
         <Flex
             rounded="md"
             align="flex-end"
-            backgroundImage={`url(${item.imageUrl})`}
+            background={`linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(${imageProvider(
+                { file: item.banner.url }
+            )})`}
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
             backgroundPosition="center"
@@ -16,7 +19,7 @@ export const MobileEventCard = ({ item }: any) => {
             w="70vw"
             p={4}
         >
-            <Flex h="60%" w="full" direction="column">
+            <Flex h="45%" w="full" direction="column">
                 <Heading
                     size="lg"
                     textTransform="capitalize"
@@ -27,7 +30,7 @@ export const MobileEventCard = ({ item }: any) => {
                     {item.title}
                 </Heading>
                 <Spacer />
-                <Flex align="center">
+                <Flex align="center" color="whiteAlpha.700">
                     <Avatar
                         size="sm"
                         name={item.committee.name}

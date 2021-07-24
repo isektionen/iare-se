@@ -17,8 +17,13 @@ import { FeedItem } from "./Feed";
 import { getDate } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
+import { Category, Post } from "types/strapi";
 
-export const Card = ({ item }: any) => {
+interface Props {
+    item: Post;
+}
+
+export const Card = ({ item }: Props) => {
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -28,14 +33,14 @@ export const Card = ({ item }: any) => {
             overflow="hidden"
             maxH="4xl"
         >
-            {item.imageUrl && (
+            {item.banner && (
                 <Box
                     minW={{ base: "full", lg: "50%" }}
                     h={{ base: "60%", lg: "lg" }}
                     overflow="hidden"
                 >
                     <Image
-                        src={item.imageUrl}
+                        src={item.banner.url}
                         alt={"banner"}
                         objectFit="cover"
                         w="full"
@@ -55,8 +60,8 @@ export const Card = ({ item }: any) => {
                         {item.categories && (
                             <HStack spacing={2}>
                                 {item.categories.map((cat) => (
-                                    <Badge key={cat.label} variant="subtle">
-                                        {cat.label}
+                                    <Badge key={cat?.name} variant="subtle">
+                                        {cat?.name}
                                     </Badge>
                                 ))}
                             </HStack>

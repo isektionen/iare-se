@@ -1,14 +1,25 @@
 import { Flex, Heading, Spacer, Avatar, Text } from "@chakra-ui/react";
 import React from "react";
+import { Post } from "types/strapi";
 import { getDate } from "utils/dates";
+import { imageProvider } from "utils/images";
 import { estimateReadingMinutes } from "utils/text";
+interface Props {
+    item: Post;
+}
 
-export const MobileCard = ({ item }: any) => {
+export const MobileCard = ({ item }: Props) => {
     return (
         <Flex
             rounded="md"
             align="flex-end"
-            backgroundImage={`url(${item.imageUrl})`}
+            backgroundImage={
+                item.banner
+                    ? `linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(${imageProvider(
+                          { file: item.banner.url }
+                      )})`
+                    : "linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(news-image.png)"
+            }
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
             backgroundPosition="center"
@@ -30,7 +41,7 @@ export const MobileCard = ({ item }: any) => {
                 <Flex align="center">
                     <Avatar
                         size="sm"
-                        name={item.author.committee}
+                        name={item?.committee?.name}
                         src={undefined}
                     />
                     <Spacer />
@@ -39,7 +50,7 @@ export const MobileCard = ({ item }: any) => {
                         color="whiteAlpha.700"
                         size="sm"
                     >
-                        {getDate(item.createdAt, "dd MMM")}
+                        {getDate(item.published_at, "dd MMM")}
                     </Text>
                 </Flex>
                 <Flex
@@ -49,15 +60,14 @@ export const MobileCard = ({ item }: any) => {
                     color="whiteAlpha.700"
                     fontSize="sm"
                 >
-                    <Text>{item.author.name}</Text>
-                    <Text>&bull;</Text>
+                    <Text>{item?.committee?.name ?? "---"}</Text>
+
                     <Text>
                         {estimateReadingMinutes({
-                            text: item.description,
+                            text: item.description + item.body,
                         })}
                     </Text>
-                    <Text>&bull;</Text>
-                    <Text>0 reads</Text>
+                    {/*<Text>0 reads</Text>*/}
                 </Flex>
             </Flex>
         </Flex>

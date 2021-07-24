@@ -70,8 +70,9 @@ const EventFeedView = ({ events, categories }: Props) => {
             />
             <VStack spacing={4} w="full" bg="gray.100">
                 <Feed setFeed={() => shorten(current)}>
-                    {(item) => (
+                    {(item, key) => (
                         <Flex
+                            key={key}
                             direction={{ base: "column", xl: "row" }}
                             bg="white"
                             rounded="md"

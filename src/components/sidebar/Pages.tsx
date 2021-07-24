@@ -23,7 +23,7 @@ interface Props {
     routes: Route[];
 }
 
-const RouteItem = ({ href, icon, label }: Route) => {
+export const RouteItem = ({ href, icon, label }: Route) => {
     const { pathname } = useRouter();
     //TODO: take care of aktuellt
     const [, parent] = href.split("/");
@@ -31,28 +31,30 @@ const RouteItem = ({ href, icon, label }: Route) => {
         pathname.includes(parent) && (parent !== "" || pathname === "/");
 
     const isMd = useBreakpointValue({ base: false, md: true });
+    const isSm = useBreakpointValue({ base: true, sm: false });
     return (
-        <Flex
-            align="center"
-            fontWeight={isActive ? "bold" : "semibold"}
-            color={isActive ? "gray.700" : "gray.500"}
-            transitionProperty="colors"
-            transitionDuration="0.2s"
-            _hover={{
-                color: "gray.700",
-            }}
-        >
-            <Center
-                minW={6}
-                minH={6}
-                bg={isActive ? "brand.200" : "gray.200"}
-                rounded="base"
-                mr={{ base: undefined, md: 3 }}
+        <AccessibleLink href={href}>
+            <Flex
+                align="center"
+                fontWeight={isActive ? "bold" : "semibold"}
+                color={isActive ? "gray.700" : "gray.500"}
+                transitionProperty="colors"
+                transitionDuration="0.2s"
+                _hover={{
+                    color: "gray.700",
+                }}
             >
-                {icon && <Icon as={icon} />}
-            </Center>
-            {isMd && <Text>{label}</Text>}
-        </Flex>
+                <Center
+                    minW={6}
+                    minH={6}
+                    bg={isActive ? "brand.200" : "gray.200"}
+                    rounded="base"
+                >
+                    {icon && <Icon as={icon} />}
+                </Center>
+                {(isMd || isSm) && <Text ml={3}>{label}</Text>}
+            </Flex>
+        </AccessibleLink>
     );
 };
 

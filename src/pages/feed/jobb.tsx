@@ -51,12 +51,12 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
     const isAboveLg = useBreakpointValue({ base: false, lg: true });
 
     const routes = [
-        { label: "Händelser", icon: HiHome, href: "/" },
-        { label: "Event", icon: MdEvent, href: "/event" },
+        { label: "Händelser", icon: HiHome, href: "/feed" },
+        { label: "Event", icon: MdEvent, href: "/feed/event" },
         {
             label: "Jobb",
             icon: RiUserSearchFill,
-            href: "/jobb",
+            href: "/feed/jobb",
         },
     ];
     const categories = baseCategories.map((category) => ({

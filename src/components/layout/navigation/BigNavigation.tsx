@@ -79,7 +79,7 @@ export const BigNavigation = (props: Props) => {
                                     }
                                 )}
                         </Grid>
-                        {props.mediaQuery.isLg && (
+                        {false && props.mediaQuery.isLg && (
                             <HStack
                                 w="33%"
                                 alignSelf="flex-start"

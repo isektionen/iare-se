@@ -103,15 +103,13 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
             {isOpen && (
                 <Box
                     top={`${height - 10}px`}
-                    pos="sticky"
+                    pos="absolute"
                     bg="rgba(0,0,0,0.1)"
                     bottom={0}
-                    h="100vh"
+                    h="100%"
                     w="full"
                     zIndex={2}
-                >
-                    ?
-                </Box>
+                ></Box>
             )}
         </>
     );

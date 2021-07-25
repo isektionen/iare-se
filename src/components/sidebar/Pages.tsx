@@ -26,9 +26,8 @@ interface Props {
 export const RouteItem = ({ href, icon, label }: Route) => {
     const { pathname } = useRouter();
     //TODO: take care of aktuellt
-    const [, parent] = href.split("/");
-    const isActive =
-        pathname.includes(parent) && (parent !== "" || pathname === "/");
+
+    const isActive = pathname === href;
 
     const isMd = useBreakpointValue({ base: false, md: true });
     const isSm = useBreakpointValue({ base: true, sm: false });

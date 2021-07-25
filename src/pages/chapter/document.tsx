@@ -154,7 +154,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     p={8}
                     w="50%"
                 >
-                    <Box>
+                    <Box mb={8}>
                         <Heading as="h2" size="lg" mb={8}>
                             Huvuddokument
                         </Heading>

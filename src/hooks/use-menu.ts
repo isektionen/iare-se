@@ -43,7 +43,7 @@ export const useMenu = () => {
     };
     const useMenuItem = (menuSection: ComponentHeaderMenuSection) => {
         return {
-            isActive: router.asPath === menuSection.href,
+            isActive: router.asPath.includes(menuSection.href),
             onMouseEnter: () => {
                 if (menuSection.displayDropDown) {
                     setActiveSection(menuSection);

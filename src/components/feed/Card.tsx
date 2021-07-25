@@ -25,7 +25,6 @@ interface Props {
 }
 
 export const Card = ({ item }: Props) => {
-    console.log(item);
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}

@@ -48,12 +48,12 @@ const EventFeedView = ({ events, categories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
 
     const routes = [
-        { label: "Händelser", icon: HiHome, href: "/" },
-        { label: "Event", icon: MdEvent, href: "/event" },
+        { label: "Händelser", icon: HiHome, href: "/feed" },
+        { label: "Event", icon: MdEvent, href: "/feed/event" },
         {
             label: "Jobb",
             icon: RiUserSearchFill,
-            href: "/jobb",
+            href: "/feed/jobb",
         },
     ];
 

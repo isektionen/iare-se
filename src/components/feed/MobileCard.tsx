@@ -16,16 +16,7 @@ export const MobileCard = ({ item }: Props) => {
             position="relative"
             rounded="md"
             align="flex-end"
-            /*backgroundImage={
-                item.banner
-                    ? `linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(${imageProvider(
-                          { file: item.banner.url }
-                      )})`
-                    : "linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(news-image.png)"
-            }
-            backgroundRepeat="no-repeat"
-            backgroundSize="cover"
-            backgroundPosition="center"*/
+            overflow="hidden"
             h="400px"
             w="70vw"
         >

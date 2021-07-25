@@ -19,40 +19,35 @@ import { getDate, getTimeLeft } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { imageSource } from "utils/images";
+import { imageProvider, imageSource } from "utils/images";
+
+import NextImage from "next/image";
 
 export const EventCard = ({ item }: any) => {
     return (
         <Flex
-            direction={{ base: "column", xl: "row" }}
+            direction={{ base: "column", lg: "row" }}
             bg="white"
             rounded="md"
             w="full"
             overflow="hidden"
-            maxH="4xl"
         >
             {item.banner && (
                 <Box
-                    minW={{ base: "full", xl: "50%" }}
-                    h={{ base: "60%", xl: "lg" }}
+                    minW={{ base: "full", lg: "50%" }}
+                    minH="320px"
                     overflow="hidden"
+                    position="relative"
                 >
-                    <Image
-                        src={imageSource(item.banner, "/news-image.png")}
-                        alt={item.banner?.alternativeText ?? "banner"}
+                    <NextImage
+                        src={imageProvider({ file: item.banner.url })}
+                        layout="fill"
                         objectFit="cover"
-                        w="full"
-                        h="full"
-                        objectPosition="50% 50%"
+                        objectPosition="center"
                     />
                 </Box>
             )}
-            <Flex
-                direction="column"
-                w="full"
-                p={8}
-                h={{ base: "40%", xl: "full" }}
-            >
+            <Flex direction="column" w="full" p={8} h="full">
                 <Flex w="full" justify="space-between" align="flex-start">
                     <Box>
                         {item.category && (
@@ -71,17 +66,17 @@ export const EventCard = ({ item }: any) => {
                             {item.title}
                         </Heading>
                     </Box>
-                    <HStack>
-                        <Icon as={AiOutlineClockCircle} />
-                        <Text size="sm">
-                            Osan stänger {getTimeLeft(item.deadline, true)}
-                        </Text>
-                    </HStack>
                 </Flex>
                 <Text noOfLines={8} mb={8}>
                     {item.description}
                 </Text>
                 <Spacer />
+                <HStack mb={4}>
+                    <Icon as={AiOutlineClockCircle} />
+                    <Text size="sm">
+                        Osan stänger {getTimeLeft(item.deadline, true)}
+                    </Text>
+                </HStack>
                 <HStack spacing={4}>
                     <Button
                         flex={1}

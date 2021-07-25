@@ -42,15 +42,6 @@ export const Card = ({ item }: Props) => {
                     h={{ base: "60%", lg: "lg" }}
                     overflow="hidden"
                 >
-                    {/*
-                    <Image
-                        src={imageSource(item.banner, "/news-image.png")}
-                        alt={"banner"}
-                        objectFit="cover"
-                        w="full"
-                        h="full"
-                        objectPosition="50% 50%"
-                    />*/}
                     <NextImage
                         src={imageProvider({ file: item.banner.url })}
                         layout="fill"

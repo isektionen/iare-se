@@ -1,25 +1,49 @@
-import { Flex, Heading, Spacer, Avatar, Text } from "@chakra-ui/react";
+import { Flex, Heading, Spacer, Avatar, Text, Box } from "@chakra-ui/react";
 import React from "react";
 import { getDate, getTimeLeft } from "utils/dates";
 import { imageProvider } from "utils/images";
 import { estimateReadingMinutes } from "utils/text";
+
+import NextImage from "next/image";
 
 export const MobileEventCard = ({ item }: any) => {
     return (
         <Flex
             rounded="md"
             align="flex-end"
-            background={`linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.05)), url(${imageProvider(
-                { file: item.banner.url }
-            )})`}
-            backgroundRepeat="no-repeat"
-            backgroundSize="cover"
-            backgroundPosition="center"
             h="400px"
             w="70vw"
-            p={4}
+            position="relative"
+            overflow="hidden"
         >
-            <Flex h="45%" w="full" direction="column">
+            <Box
+                position="absolute"
+                top="0"
+                bottom="0"
+                w="full"
+                overflow="hidden"
+                rounded="md"
+                zIndex="0"
+            >
+                <Box position="relative" h="full" w="full">
+                    {item.banner && (
+                        <NextImage
+                            src={imageProvider({ file: item.banner.url })}
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                        />
+                    )}
+                </Box>
+            </Box>
+            <Box
+                position="absolute"
+                h="full"
+                w="full"
+                bgGradient="linear(to-t, blackAlpha.700, blackAlpha.50)"
+                zIndex="1"
+            />
+            <Flex h="45%" w="full" direction="column" p={4} zIndex="2">
                 <Heading
                     size="lg"
                     textTransform="capitalize"

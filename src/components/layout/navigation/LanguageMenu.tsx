@@ -27,32 +27,35 @@ export const LanguageMenu = (props: Props) => {
         <Menu>
             {({ isOpen }) => (
                 <>
-                    <MenuButton
-                        isActive={isOpen}
-                        as={Button}
-                        rightIcon={<FaAngleDown />}
-                        variant="outline"
-                    >
-                        <HStack>
-                            {props.standardLanguage ? (
-                                <>
-                                    <Image
-                                        src={`/${props.standardLanguage.code}.svg`}
-                                        width={22}
-                                        height={12}
-                                        alt={props.standardLanguage.label}
-                                    />
-                                    <span>
-                                        {props.mediaQuery.isLg ||
-                                            (props.isMobile &&
-                                                props.standardLanguage.label)}
-                                    </span>
-                                </>
-                            ) : (
-                                <span>-</span>
-                            )}
-                        </HStack>
-                    </MenuButton>
+                    {
+                        <MenuButton
+                            isActive={isOpen}
+                            as={Button}
+                            rightIcon={<FaAngleDown />}
+                            variant="outline"
+                        >
+                            <HStack>
+                                {props.standardLanguage ? (
+                                    <>
+                                        <Image
+                                            src={`/${props.standardLanguage.code}.svg`}
+                                            width={22}
+                                            height={12}
+                                            alt={props.standardLanguage.label}
+                                        />
+                                        <span>
+                                            {props.mediaQuery.isLg ||
+                                                (props.isMobile &&
+                                                    props.standardLanguage
+                                                        .label)}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span>-</span>
+                                )}
+                            </HStack>
+                        </MenuButton>
+                    }
                     <MenuList>
                         {props.languages.map((lang) => (
                             <MenuItem key={lang.code}>

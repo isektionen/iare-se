@@ -36,7 +36,6 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
         return scrollY.onChange(() => setY(scrollY.get()));
     }, [scrollY]);
 
-    console.log(sections);
     return (
         <>
             <Box

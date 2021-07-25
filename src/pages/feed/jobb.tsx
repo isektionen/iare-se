@@ -15,7 +15,6 @@ import {
     IconButton,
 } from "@chakra-ui/react";
 import { Feed } from "components/feed/Feed";
-import { HFeed } from "components/feed/HFeed";
 import { Sidebar } from "components/sidebar/Sidebar";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -78,12 +77,6 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
                             <RouteItem key={route.label} {...route} />
                         ))}
                     </Flex>
-                    <HStack spacing={4} w="full" px={4} fontWeight="bold">
-                        <Text>Alla kategorier</Text>
-                        {categories.map((cat) => (
-                            <Text key={cat.label}>{cat.label}</Text>
-                        ))}
-                    </HStack>
                 </VStack>
             )}
             {isAboveSm && <Sidebar routes={routes} categories={categories} />}

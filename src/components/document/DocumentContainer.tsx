@@ -30,11 +30,7 @@ export const DocumentContainer = (props: DocumentProps) => {
     const setDocument = (newDocument: NewDocumentType) => {
         _setDocument({
             href: newDocument?.href ?? documentState.href,
-            currentPage:
-                newDocument.href !== documentState.href &&
-                !newDocument.currentPage
-                    ? 1
-                    : newDocument.currentPage,
+            currentPage: newDocument.currentPage || 1,
             pages: newDocument?.pages ?? documentState.pages,
         });
     };

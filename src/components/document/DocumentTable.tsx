@@ -7,6 +7,7 @@ import {
     Th,
     Thead,
     Tr,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { useDocument } from "hooks/use-document";
 import { usePagination } from "hooks/use-pagination";
@@ -34,8 +35,14 @@ interface Props {
 [{}];
 
 export const DocumentTable = ({ columns, actions, children }: Props) => {
+    const size = useBreakpointValue({
+        base: "lg",
+        md: "sm",
+        lg: "sm",
+        xl: "md",
+    });
     return (
-        <Table colorScheme="gray" variant="striped">
+        <Table colorScheme="gray" variant="striped" size={size}>
             <Thead>
                 <Tr>
                     {columns.map((col) => (
@@ -61,6 +68,9 @@ interface RowProps {
 export const DocumentBody = ({ header, actions }: RowProps) => {
     const { currentItems } = usePagination();
     const { setDocument } = useDocument();
+
+    const truncate = (text: string, cap: number = 15) =>
+        text.length > cap ? text.slice(0, cap) + ".." : text;
     return (
         <Tbody>
             {currentItems.map((item: { [k: string]: any }, i) => (

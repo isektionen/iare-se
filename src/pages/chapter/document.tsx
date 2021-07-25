@@ -14,7 +14,15 @@ import { DocumentContainer } from "../../components/document/DocumentContainer";
 import { Document } from "components/document/Document";
 import { useDocument } from "hooks/use-document";
 
-import { Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Flex,
+    Heading,
+    IconButton,
+    Spacer,
+    Text,
+} from "@chakra-ui/react";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
 import React, { useEffect, useState } from "react";
 
@@ -35,7 +43,6 @@ import {
     SelectorOptions,
 } from "components/pagination/PageSelector";
 import { HiOutlineDownload } from "react-icons/hi";
-import { createPreview } from "lib/pdf";
 interface Props {
     document: DocType;
     locale: string;
@@ -128,7 +135,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
     const handleChangePage = ({ limit, offset }: PageOptions) => {
         return docs.slice(offset, offset + limit).map((doc) => ({
             label: doc.documentContent?.label,
-            date: getDate(doc.documentContent?.file?.created_at),
+            date: getDate(doc.documentContent?.file?.created_at, "dd MMM"),
             type: doc.type,
             url: makeHref(doc.documentContent?.file?.url),
             authors:
@@ -137,7 +144,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
     };
 
     return (
-        <LayoutWrapper>
+        <Flex direction={{ base: "column", md: "row" }} pos="relative">
             <DocumentContainer loading={"LOADING"} fallback={"NO PDF"}>
                 <Flex
                     bg="gray.50"
@@ -145,7 +152,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     justify="center"
                     direction="column"
                     p={8}
-                    h="full"
+                    w="50%"
                 >
                     <Box>
                         <Heading as="h2" size="lg" mb={8}>
@@ -155,7 +162,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                             direction="row"
                             justify={{ base: "flex-start", lg: "space-evenly" }}
                             w="full"
-                            wrap={{ base: "wrap", lg: "nowrap" }}
+                            wrap={{ base: "nowrap", md: "wrap", lg: "nowrap" }}
                         >
                             <DocumentCard
                                 isCurrent
@@ -259,16 +266,20 @@ const DocumentView = ({ locale, document: data }: Props) => {
                 </Flex>
                 <Flex
                     order={{ base: 0, md: 1 }}
+                    w={{ base: "full", md: "50%" }}
                     bg="gray.200"
                     position="relative"
                     justify="center"
+                    align="center"
+                    maxH="90vh"
+                    overflow="hidden"
                     p={8}
                 >
                     <DocumentControl data={data} />
                     <Document />
                 </Flex>
             </DocumentContainer>
-        </LayoutWrapper>
+        </Flex>
     );
 };
 

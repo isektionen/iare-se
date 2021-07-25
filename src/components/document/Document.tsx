@@ -1,7 +1,13 @@
 import { useDocument } from "hooks/use-document";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Document as BaseDocument, Page as BasePage } from "react-pdf";
-import { Box, Skeleton } from "@chakra-ui/react";
+import {
+    Box,
+    Center,
+    Flex,
+    Skeleton,
+    useBreakpointValue,
+} from "@chakra-ui/react";
 import { useWindow } from "hooks/use-window";
 
 const paginate = (pagination: number) =>
@@ -14,12 +20,13 @@ export const Document = (props: Props) => {
     const { document, onLoadSuccess } = useDocument();
 
     const [loading, setLoading] = useState(true);
+    const variant = useBreakpointValue({ base: 0.7, md: 0.35 }) as number;
+    const { width: baseWidth } = useWindow();
 
-    const { height } = useWindow();
-
-    const width = height / Math.SQRT2;
+    const width = baseWidth * variant;
+    const height = width * Math.SQRT2;
     return (
-        <Box h={height} w={width}>
+        <Flex justify="center" align="center" h="full" w="full">
             <BaseDocument
                 file={document.href}
                 onSourceSuccess={() => setLoading(true)}
@@ -29,13 +36,15 @@ export const Document = (props: Props) => {
                 }}
                 loading={""}
             >
-                <Skeleton isLoaded={!loading} height={height} width={width}>
-                    <BasePage
-                        pageNumber={document.currentPage}
-                        height={height}
-                    />
+                <Skeleton isLoaded={!loading} width={width} height={height}>
+                    <Flex justify="center" align="center" bg="white">
+                        <BasePage
+                            pageNumber={document.currentPage}
+                            height={height}
+                        />
+                    </Flex>
                 </Skeleton>
             </BaseDocument>
-        </Box>
+        </Flex>
     );
 };

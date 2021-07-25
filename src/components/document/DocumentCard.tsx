@@ -23,6 +23,8 @@ export const DocumentCard = (props: Props) => {
     const { setDocument } = useDocument();
 
     const [loading, setLoading] = useState(true);
+
+    const height = 180;
     if (props.isCurrent && props.url) {
         return (
             <Box
@@ -49,8 +51,8 @@ export const DocumentCard = (props: Props) => {
                 <Box overflow="hidden">
                     <Skeleton
                         isLoaded={!loading}
-                        height={250}
-                        width={250 / Math.SQRT2}
+                        height={height}
+                        width={height / Math.SQRT2}
                     >
                         <Document
                             file={props.url}
@@ -60,7 +62,7 @@ export const DocumentCard = (props: Props) => {
                             <Page
                                 pageNumber={1}
                                 renderTextLayer={false}
-                                height={250}
+                                height={height}
                             />
                         </Document>
                     </Skeleton>

@@ -1,9 +1,14 @@
 import {
     Box,
+    Center,
+    Flex,
+    Heading,
     HStack,
+    Square,
     StackProps,
     useBreakpointValue,
     VStack,
+    Text,
 } from "@chakra-ui/react";
 import React, { ReactNode, useRef } from "react";
 import { Card } from "./Card";
@@ -34,9 +39,7 @@ interface Props<T> {
     _direction?: "horizontal" | "vertical" | "both";
 }
 
-export const Feed = <T extends { title?: string; label?: string }>(
-    props: Props<T> & StackProps
-) => {
+export const Feed = <T,>(props: Props<T> & StackProps) => {
     const { setFeed, children, _direction = "both", ...rest } = props;
     const { lock } = useScrollLock();
     const feed = setFeed();
@@ -53,6 +56,29 @@ export const Feed = <T extends { title?: string; label?: string }>(
     };
 
     const isSm = useBreakpointValue({ base: true, sm: false });
+    if (feed.length === 0) {
+        return (
+            <Flex justify="center" align="center" w="full" h="50vh">
+                <Flex
+                    bg="white"
+                    rounded="md"
+                    direction="column"
+                    p={8}
+                    align="center"
+                >
+                    <Box>
+                        <Heading size="lg" textAlign="center">
+                            Inga inlägg
+                        </Heading>
+                        <Text color="gray.500">
+                            Det verkar som att det saknas inlägg för denna
+                            kategori.
+                        </Text>
+                    </Box>
+                </Flex>
+            </Flex>
+        );
+    }
 
     if (isSm && ["both", "horizontal"].includes(_direction)) {
         return (

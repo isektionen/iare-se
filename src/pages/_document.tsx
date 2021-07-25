@@ -6,9 +6,8 @@ import Document, {
     DocumentContext,
 } from "next/document";
 
-const APP_NAME = "nextchakra-starter";
-const APP_DESCRIPTION =
-    "Next.js app template with Chakra-UI, TypeScript, and PWA configured";
+const APP_NAME = "iare-se";
+const APP_DESCRIPTION = "Sektionen för Industriell Ekonomi KTH";
 
 class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {

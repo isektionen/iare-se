@@ -21,6 +21,7 @@ import { Category, Post } from "types/strapi";
 import { imageProvider, imageSource } from "utils/images";
 
 import NextImage from "next/image";
+import AccessibleLink from "components/AccessibleLink";
 interface Props {
     item: Post;
 }
@@ -39,23 +40,20 @@ export const Card = ({ item }: Props) => {
                 <Box
                     position="relative"
                     minW={{ base: "full", lg: "50%" }}
-                    h={{ base: "60%", lg: "lg" }}
+                    minH="320px"
                     overflow="hidden"
                 >
-                    <NextImage
-                        src={imageProvider({ file: item.banner.url })}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="center"
-                    />
+                    <AccessibleLink href={("../post/" + item.slug) as string}>
+                        <NextImage
+                            src={imageProvider({ file: item.banner.url })}
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                        />
+                    </AccessibleLink>
                 </Box>
             )}
-            <Flex
-                direction="column"
-                w="full"
-                p={8}
-                h={{ base: "40%", lg: "full" }}
-            >
+            <Flex direction="column" w="full" p={8} h="full">
                 <Flex w="full" justify="space-between" align="flex-start">
                     <Box>
                         {item.categories && (
@@ -73,7 +71,11 @@ export const Card = ({ item }: Props) => {
                             mb={4}
                             textTransform="capitalize"
                         >
-                            {item.title}
+                            <AccessibleLink
+                                href={("../post/" + item.slug) as string}
+                            >
+                                {item.title}
+                            </AccessibleLink>
                         </Heading>
                     </Box>
                 </Flex>
@@ -82,7 +84,11 @@ export const Card = ({ item }: Props) => {
                 </Text>
                 <Spacer />
                 <HStack spacing={4} w="full">
-                    <IconButton variant="iareSolid" aria-label="socials">
+                    <IconButton
+                        variant="iareSolid"
+                        aria-label="socials"
+                        cursor="not-allowed" // TODO: fix sharing capabilities
+                    >
                         <IoShareSocial />
                     </IconButton>
                 </HStack>

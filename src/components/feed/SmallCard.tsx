@@ -18,7 +18,7 @@ import { Event } from "types/strapi";
 
 export const SmallCard = (props: Event) => {
     return (
-        <AccessibleLinkOverlay href={"event/" + props.slug}>
+        <AccessibleLinkOverlay href={"/event/" + props.slug}>
             <Flex
                 direction="column"
                 bg="white"

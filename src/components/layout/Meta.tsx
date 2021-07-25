@@ -1,11 +1,11 @@
 import Head from "next/head";
 
 const Meta = () => {
-  return (
-    <Head>
-      <title>Project Name</title>
-    </Head>
-  );
+    return (
+        <Head>
+            <title>I:ARE - PREVIEW</title>
+        </Head>
+    );
 };
 
 export default Meta;

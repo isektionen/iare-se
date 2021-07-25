@@ -15,6 +15,7 @@ import { Jobs } from "types/strapi";
 import { imageProvider } from "utils/images";
 
 import NextImage from "next/image";
+import AccessibleLink from "components/AccessibleLink";
 
 interface Props {
     item: Jobs;
@@ -40,12 +41,16 @@ export const JobCard = ({ item }: Props) => {
                     maxW={{ base: "50px", sm: "100px" }}
                     position="relative"
                 >
-                    <NextImage
-                        src={imageProvider({ file: item.company?.logo?.url })}
-                        width={item.company.logo.width as number}
-                        height={item.company.logo.height as number}
-                        layout="intrinsic"
-                    />
+                    <AccessibleLink href={item.slug as string}>
+                        <NextImage
+                            src={imageProvider({
+                                file: item.company?.logo?.url,
+                            })}
+                            width={item.company.logo.width as number}
+                            height={item.company.logo.height as number}
+                            layout="intrinsic"
+                        />
+                    </AccessibleLink>
                 </Box>
             ) : (
                 <Box maxW="100px" maxH="100px" bg="gray.200"></Box>
@@ -54,7 +59,9 @@ export const JobCard = ({ item }: Props) => {
             <Box pl={8}>
                 <Flex align="baseline">
                     <Heading size="md" noOfLines={2}>
-                        {item.title}
+                        <AccessibleLink href={item.slug as string}>
+                            {item.title}
+                        </AccessibleLink>
                     </Heading>
                     {item.company?.sponsor && isAboveLg && (
                         <Badge ml={2} colorScheme="brand" variant="subtle">

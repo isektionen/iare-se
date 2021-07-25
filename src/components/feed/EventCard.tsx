@@ -22,6 +22,7 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { imageProvider, imageSource } from "utils/images";
 
 import NextImage from "next/image";
+import AccessibleLink from "components/AccessibleLink";
 
 export const EventCard = ({ item }: any) => {
     return (
@@ -39,12 +40,14 @@ export const EventCard = ({ item }: any) => {
                     overflow="hidden"
                     position="relative"
                 >
-                    <NextImage
-                        src={imageProvider({ file: item.banner.url })}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="center"
-                    />
+                    <AccessibleLink href={("../event/" + item.slug) as string}>
+                        <NextImage
+                            src={imageProvider({ file: item.banner.url })}
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                        />
+                    </AccessibleLink>
                 </Box>
             )}
             <Flex direction="column" w="full" p={8} h="full">
@@ -63,7 +66,11 @@ export const EventCard = ({ item }: any) => {
                             mb={4}
                             textTransform="capitalize"
                         >
-                            {item.title}
+                            <AccessibleLink
+                                href={("../event/" + item.slug) as string}
+                            >
+                                {item.title}
+                            </AccessibleLink>
                         </Heading>
                     </Box>
                 </Flex>
@@ -81,7 +88,7 @@ export const EventCard = ({ item }: any) => {
                     <Button
                         flex={1}
                         variant="iareSolid"
-                        onClick={() => router.push("event/" + item.slug)}
+                        onClick={() => router.push("../event/" + item.slug)}
                     >
                         OSA
                     </Button>

@@ -12,7 +12,7 @@ import React from "react";
 
 export interface Category {
     label: string;
-    query?: string;
+    query?: () => void;
 }
 
 interface Props {
@@ -20,10 +20,13 @@ interface Props {
 }
 
 const CategoryItem = ({ query, label }: Category) => {
-    const { query: BaseQuery } = useRouter();
-    const isActive = BaseQuery && query && BaseQuery[query];
+    const router = useRouter();
+    // TODO: decouple logic
+    const isActive =
+        Object.values(router.query).includes(label.toLowerCase()) ||
+        (Object.values(router.query).length === 0 &&
+            label.toLowerCase() === "alla kategorier");
 
-    const handleQuery = () => {};
     return (
         <Box
             as="span"
@@ -31,12 +34,14 @@ const CategoryItem = ({ query, label }: Category) => {
             w="full"
             cursor="pointer"
             bg={isActive ? "brand.200" : undefined}
-            onClick={handleQuery}
-            pr={4}
-            transitionProperty="padding-left"
+            fontWeight={isActive ? "bold" : undefined}
+            onClick={query}
+            py={1}
+            px={2}
+            transitionProperty="margin-left"
             transitionDuration="0.5s"
             _hover={{
-                paddingLeft: 2,
+                marginLeft: 2,
             }}
         >
             {label}
@@ -46,6 +51,7 @@ const CategoryItem = ({ query, label }: Category) => {
 
 export const Categories = (props: ListProps & Props) => {
     const { items, ...rest } = props;
+    const router = useRouter();
     const isMd = useBreakpointValue({ base: false, md: true });
     return (
         <Flex direction="column">
@@ -56,9 +62,6 @@ export const Categories = (props: ListProps & Props) => {
                     </Heading>
                     <Box w="160px">
                         <List spacing={2} styleType="none" {...rest}>
-                            <ListItem>
-                                <CategoryItem label="Alla kategorier" />
-                            </ListItem>
                             {items.map((item) => (
                                 <ListItem key={item.label}>
                                     <CategoryItem {...item} />

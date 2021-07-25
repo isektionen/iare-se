@@ -1,19 +1,9 @@
 import {
-    Avatar,
-    Badge,
-    Box,
-    Button,
-    Flex,
-    Heading,
     HStack,
-    Icon,
-    IconButton,
-    Spacer,
     Text,
-    Image,
     VStack,
-    useMediaQuery,
     useBreakpointValue,
+    Flex,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
@@ -22,6 +12,7 @@ import { Feed } from "components/feed/Feed";
 import { MobileCard } from "components/feed/MobileCard";
 import { RouteItem } from "components/sidebar/Pages";
 import { Sidebar } from "components/sidebar/Sidebar";
+import { useSearch } from "hooks/use-search";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticProps } from "next";
 import router from "next/router";
@@ -32,18 +23,22 @@ import { IoShareSocial } from "react-icons/io5";
 import { MdEvent } from "react-icons/md";
 import { RiUserSearchFill } from "react-icons/ri";
 import { Post, Category } from "types/strapi";
-import { getDate, getTimeLeft } from "utils/dates";
-import { imageSource } from "utils/images";
-import { estimateReadingMinutes } from "utils/text";
 
 interface Props {
     posts: Post[];
     categories: Category[];
 }
 
-const FeedView = ({ posts, categories: baseCategories }: Props) => {
+const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
-
+    const { filter, setQuery, clearQuery } = useSearch(
+        () => basePosts,
+        (item) => ({
+            category: item.categories
+                ? item.categories.map((cat) => cat?.name)
+                : [],
+        })
+    );
     // TODO: connect to i18n
     const routes = [
         { label: "Händelser", icon: HiHome, href: "/feed" },
@@ -54,10 +49,18 @@ const FeedView = ({ posts, categories: baseCategories }: Props) => {
             href: "/feed/jobb",
         },
     ];
-    const categories = baseCategories.map((category) => ({
-        label: category.name as string,
-        query: `?=${category.name}`,
-    }));
+
+    const posts = filter(basePosts);
+    const categories = [
+        {
+            label: "Alla kategorier",
+            query: clearQuery,
+        },
+        ...baseCategories.map((category) => ({
+            label: category.name as string,
+            query: () => setQuery({ category: category.name as string }),
+        })),
+    ];
     return (
         <Flex direction={{ base: "column", sm: "row" }}>
             {!isAboveSm && (
@@ -110,6 +113,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     title
                     published_at
                     body
+                    categories {
+                        name
+                    }
                 }
                 categories {
                     name

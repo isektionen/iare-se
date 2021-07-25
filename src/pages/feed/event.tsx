@@ -37,15 +37,27 @@ import { MobileEventCard } from "components/feed/MobileEventCard";
 import { RouteItem } from "components/sidebar/Pages";
 import { EventCard } from "components/feed/EventCard";
 import { SmallCard } from "components/feed/SmallCard";
+import { useSearch } from "hooks/use-search";
 
 interface Props {
     events: Event[];
     categories: EventCategory[];
 }
 
-const EventFeedView = ({ events, categories }: Props) => {
-    const router = useRouter();
+const EventFeedView = ({ events: baseEvents, categories }: Props) => {
+    const { filter, setQuery, clearQuery } = useSearch(
+        () => baseEvents,
+        (item) => ({
+            category: item.category?.name,
+            title: item.title,
+            committee: item.committee?.name,
+            deadline: item.deadline,
+        })
+    );
+
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
+
+    const events = filter(baseEvents);
 
     const routes = [
         { label: "Händelser", icon: HiHome, href: "/feed" },
@@ -57,7 +69,7 @@ const EventFeedView = ({ events, categories }: Props) => {
         },
     ];
 
-    const { current, past } = _.groupBy(
+    const { current = [], past = [] } = _.groupBy(
         _.sortBy(events, "deadline"),
         (item) => {
             return isAfter(new Date(item.deadline), new Date())
@@ -90,13 +102,19 @@ const EventFeedView = ({ events, categories }: Props) => {
             {isAboveSm && (
                 <Sidebar
                     routes={routes}
-                    categories={categories.map((cat) => ({
-                        label: cat.name,
-                        query: `?=${cat.name}`,
-                    }))}
+                    categories={[
+                        {
+                            label: "Alla kategorier",
+                            query: clearQuery,
+                        },
+                        ...categories.map((cat) => ({
+                            label: cat.name,
+                            query: () => setQuery({ category: cat.name }),
+                        })),
+                    ]}
                 />
             )}
-            <VStack spacing={4} w="full" bg="gray.100" overflow="scroll">
+            <VStack spacing={4} w="full" bg="gray.100">
                 <Feed setFeed={() => shorten(current)}>
                     {(item, key) => {
                         if (isAboveSm) {

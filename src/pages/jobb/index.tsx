@@ -122,7 +122,7 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
                 )}
                 <Flex>
                     <VStack spacing={4} w={{ base: "full", lg: "60%" }}>
-                        <Feed setFeed={() => jobs}>
+                        <Feed setFeed={() => jobs} _direction="vertical">
                             {(item, key) => {
                                 if (isAboveSm) {
                                     return <JobCard key={key} item={item} />;

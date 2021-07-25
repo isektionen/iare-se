@@ -32,8 +32,8 @@ export const JobCard = ({ item }: Props) => {
             {item.company?.logo ? (
                 <Box w="max-content" h="max-content" bg={bg} p={2}>
                     <Image
-                        maxW="100px"
-                        maxH="100px"
+                        maxW={{ base: "50px", sm: "100px" }}
+                        maxH={{ base: "50px", sm: "100px" }}
                         src={imageProvider({ file: item.company?.logo?.url })}
                         alt={item.company?.logo?.alternativeText ?? "logotyp"}
                     />
@@ -57,7 +57,11 @@ export const JobCard = ({ item }: Props) => {
                     w="full"
                     color="gray.600"
                     divider={
-                        <Box as="span" px={2} borderLeftWidth="0 !important">
+                        <Box
+                            as="span"
+                            px={{ base: 0.5, sm: 2 }}
+                            borderLeftWidth="0 !important"
+                        >
                             &bull;
                         </Box>
                     }

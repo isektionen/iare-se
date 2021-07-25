@@ -12,9 +12,12 @@ export const Sidebar = ({ routes, categories }: Props) => {
     return (
         <VStack
             spacing={6}
-            h="full"
+            h="auto"
+            position="sticky"
+            bottom="0"
+            top="0"
+            left="0"
             py={4}
-            minW={14}
             px={{ base: 2, md: 12 }}
             bg="gray.50"
         >

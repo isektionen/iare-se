@@ -54,17 +54,18 @@ export const Categories = (props: ListProps & Props) => {
                     <Heading as="h4" size="md" fontWeight="semibold" mb={4}>
                         Kategorier
                     </Heading>
-
-                    <List spacing={2} styleType="none" {...rest}>
-                        <ListItem>
-                            <CategoryItem label="Alla kategorier" />
-                        </ListItem>
-                        {items.map((item) => (
-                            <ListItem key={item.label}>
-                                <CategoryItem {...item} />
+                    <Box w="160px">
+                        <List spacing={2} styleType="none" {...rest}>
+                            <ListItem>
+                                <CategoryItem label="Alla kategorier" />
                             </ListItem>
-                        ))}
-                    </List>
+                            {items.map((item) => (
+                                <ListItem key={item.label}>
+                                    <CategoryItem {...item} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Box>
                 </>
             )}
         </Flex>

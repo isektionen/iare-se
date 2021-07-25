@@ -31,12 +31,13 @@ export interface FeedItem {
 interface Props<T> {
     children: (item: T, key: string) => ReactNode;
     setFeed: () => T[];
+    _direction?: "horizontal" | "vertical" | "both";
 }
 
 export const Feed = <T extends { title?: string; label?: string }>(
     props: Props<T> & StackProps
 ) => {
-    const { setFeed, children, ...rest } = props;
+    const { setFeed, children, _direction = "both", ...rest } = props;
     const { lock } = useScrollLock();
     const feed = setFeed();
     const ref = useRef<HTMLDivElement>(null);
@@ -53,7 +54,7 @@ export const Feed = <T extends { title?: string; label?: string }>(
 
     const isSm = useBreakpointValue({ base: true, sm: false });
 
-    if (isSm) {
+    if (isSm && ["both", "horizontal"].includes(_direction)) {
         return (
             <Box
                 h="55vh"

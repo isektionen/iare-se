@@ -14,6 +14,8 @@ import React from "react";
 import { Jobs } from "types/strapi";
 import { imageProvider } from "utils/images";
 
+import NextImage from "next/image";
+
 interface Props {
     item: Jobs;
 }
@@ -30,12 +32,19 @@ export const JobCard = ({ item }: Props) => {
     return (
         <Flex p={8} align="center" bg="white" w="full" rounded="md">
             {item.company?.logo ? (
-                <Box w="max-content" h="max-content" bg={bg} p={2}>
-                    <Image
-                        maxW={{ base: "50px", sm: "100px" }}
-                        maxH={{ base: "50px", sm: "100px" }}
+                <Box
+                    w="max-content"
+                    h="max-content"
+                    bg={bg}
+                    p={2}
+                    maxW={{ base: "50px", sm: "100px" }}
+                    position="relative"
+                >
+                    <NextImage
                         src={imageProvider({ file: item.company?.logo?.url })}
-                        alt={item.company?.logo?.alternativeText ?? "logotyp"}
+                        width={item.company.logo.width as number}
+                        height={item.company.logo.height as number}
+                        layout="intrinsic"
                     />
                 </Box>
             ) : (

@@ -18,8 +18,9 @@ import { getDate } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
 import { Category, Post } from "types/strapi";
-import { imageSource } from "utils/images";
+import { imageProvider, imageSource } from "utils/images";
 
+import NextImage from "next/image";
 interface Props {
     item: Post;
 }
@@ -36,10 +37,12 @@ export const Card = ({ item }: Props) => {
         >
             {item.banner && (
                 <Box
+                    position="relative"
                     minW={{ base: "full", lg: "50%" }}
                     h={{ base: "60%", lg: "lg" }}
                     overflow="hidden"
                 >
+                    {/*
                     <Image
                         src={imageSource(item.banner, "/news-image.png")}
                         alt={"banner"}
@@ -47,6 +50,12 @@ export const Card = ({ item }: Props) => {
                         w="full"
                         h="full"
                         objectPosition="50% 50%"
+                    />*/}
+                    <NextImage
+                        src={imageProvider({ file: item.banner.url })}
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
                     />
                 </Box>
             )}

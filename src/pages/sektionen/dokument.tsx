@@ -2,7 +2,6 @@ import strapi, { gql, axios } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import loadNamespaces from "next-translate/loadNamespaces";
-import { createPreview } from "lib/pdf";
 
 const DocumentView = (params: any) => {
     const ContentStructure = dynamic(() => import("../chapter/document"));

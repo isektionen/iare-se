@@ -61,7 +61,7 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
     ];
     const categories = baseCategories.map((category) => ({
         label: category.name as string,
-        query: `?=${category.name}`,
+        query: () => {},
     }));
 
     const filters = ["plats", "roll", "bransch"];
@@ -86,15 +86,7 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
                     </HStack>
                 </VStack>
             )}
-            {isAboveSm && (
-                <Sidebar
-                    routes={routes}
-                    categories={categories.map((cat) => ({
-                        label: cat.label,
-                        query: `?=${cat.label}`,
-                    }))}
-                />
-            )}
+            {isAboveSm && <Sidebar routes={routes} categories={categories} />}
             <Box>
                 {!isAboveLg && (
                     <>

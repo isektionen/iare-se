@@ -17,6 +17,7 @@ import { DefHeader } from "types/global";
 import { imageSource } from "utils/images";
 import { useViewportScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { mergeLink } from "utils/mergeHref";
 
 const Header = ({ logo, sections, languages, contact }: DefHeader) => {
     const [isLg] = useMediaQuery(`(min-width: ${customTheme.breakpoints.lg})`);
@@ -34,6 +35,8 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
     useEffect(() => {
         return scrollY.onChange(() => setY(scrollY.get()));
     }, [scrollY]);
+
+    console.log(sections);
     return (
         <>
             <Box
@@ -83,7 +86,20 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                     )}
                     {!isMd && (
                         <MobileNavigation
-                            sections={sections as ComponentHeaderMenuSection[]}
+                            sections={
+                                sections.map((section) => ({
+                                    ...section,
+                                    subSection: section.subSection?.map(
+                                        (sub) => ({
+                                            ...sub,
+                                            href: mergeLink(
+                                                section.href,
+                                                sub?.href as string
+                                            ),
+                                        })
+                                    ),
+                                })) as ComponentHeaderMenuSection[]
+                            }
                             contact={contact as ComponentHeaderContact}
                             languages={languages as ComponentHeaderLanguages[]}
                             mediaQuery={{ isLg, isMd }}

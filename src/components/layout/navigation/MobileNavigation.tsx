@@ -24,6 +24,7 @@ import {
 import { LanguageMenu } from "./LanguageMenu";
 import { MobileMenuItem } from "./MobileMenuItem";
 import { useRouter } from "next/router";
+import { mergeLink } from "utils/mergeHref";
 
 interface Props {
     sections: ComponentHeaderMenuSection[];

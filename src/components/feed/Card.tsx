@@ -18,12 +18,14 @@ import { getDate } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
 import { Category, Post } from "types/strapi";
+import { imageSource } from "utils/images";
 
 interface Props {
     item: Post;
 }
 
 export const Card = ({ item }: Props) => {
+    console.log(item);
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -40,7 +42,7 @@ export const Card = ({ item }: Props) => {
                     overflow="hidden"
                 >
                     <Image
-                        src={item.banner.url}
+                        src={imageSource(item.banner, "/news-image.png")}
                         alt={"banner"}
                         objectFit="cover"
                         w="full"

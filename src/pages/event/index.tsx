@@ -96,7 +96,7 @@ const EventFeedView = ({ events, categories }: Props) => {
                     }))}
                 />
             )}
-            <VStack spacing={4} w="full" bg="gray.100">
+            <VStack spacing={4} w="full" bg="gray.100" overflow="scroll">
                 <Feed setFeed={() => shorten(current)}>
                     {(item, key) => {
                         if (isAboveSm) {

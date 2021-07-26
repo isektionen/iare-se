@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps = async ({
     locales,
     defaultLocale,
 }) => {
-    const locale = "sv-SE";
+    const locale = "sv";
     const { data } = await axios.get("/document?_locale=" + locale);
     return {
         props: {

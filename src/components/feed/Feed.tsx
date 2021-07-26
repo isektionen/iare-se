@@ -58,7 +58,7 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
     const isSm = useBreakpointValue({ base: true, sm: false });
     if (feed.length === 0) {
         return (
-            <Flex justify="center" align="center" w="full" h="50vh">
+            <Flex justify="center" align="center" w="full" h="50vh" {...rest}>
                 <Flex
                     bg="white"
                     rounded="md"

@@ -1,4 +1,7 @@
 import {
+    Box,
+    Flex,
+    Heading,
     Icon,
     Table,
     TableCaption,
@@ -8,6 +11,7 @@ import {
     Thead,
     Tr,
     useBreakpointValue,
+    Text,
 } from "@chakra-ui/react";
 import { useDocument } from "hooks/use-document";
 import { usePagination } from "hooks/use-pagination";
@@ -42,7 +46,12 @@ export const DocumentTable = ({ columns, actions, children }: Props) => {
         xl: "md",
     });
     return (
-        <Table colorScheme="gray" variant="striped" size={size}>
+        <Table
+            colorScheme="gray"
+            variant="striped"
+            size={size}
+            position="relative"
+        >
             <Thead>
                 <Tr>
                     {columns.map((col) => (
@@ -71,6 +80,36 @@ export const DocumentBody = ({ header, actions }: RowProps) => {
 
     const truncate = (text: string, cap: number = 15) =>
         text.length > cap ? text.slice(0, cap) + ".." : text;
+
+    if (currentItems.length === 0) {
+        return (
+            <Tbody position="relative">
+                <Tr position="absolute" w="full" h="32">
+                    <Flex
+                        justify="center"
+                        align="center"
+                        w="full"
+                        h="full"
+                        position="relative"
+                    >
+                        <Flex
+                            bg="white"
+                            rounded="md"
+                            direction="column"
+                            p={8}
+                            align="center"
+                        >
+                            <Box>
+                                <Heading size="md" textAlign="center">
+                                    Inga dokument hittades
+                                </Heading>
+                            </Box>
+                        </Flex>
+                    </Flex>
+                </Tr>
+            </Tbody>
+        );
+    }
     return (
         <Tbody>
             {currentItems.map((item: { [k: string]: any }, i) => (

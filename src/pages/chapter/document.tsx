@@ -71,7 +71,7 @@ const DocumentControl = ({ data }: { data: DocType }) => {
     );
     useEffect(() => {
         if (currentDocument) {
-            const href = makeHref(currentDocument.file?.url);
+            const href = currentDocument.file?.url;
             setDocument({ href });
         }
     }, [currentDocument]);
@@ -167,7 +167,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                             <DocumentCard
                                 isCurrent
                                 label={data.currentStatute?.label}
-                                url={makeHref(data.currentStatute?.file?.url)}
+                                url={data.currentStatute?.file?.url}
                                 createdAt={
                                     data.currentStatute?.file?.created_at
                                 }
@@ -175,9 +175,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                             <DocumentCard
                                 isCurrent
                                 label={data.currentRegulations?.label}
-                                url={makeHref(
-                                    data.currentRegulations?.file?.url
-                                )}
+                                url={data.currentRegulations?.file?.url}
                                 createdAt={
                                     data.currentRegulations?.file?.created_at
                                 }
@@ -185,9 +183,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                             <DocumentCard
                                 isCurrent
                                 label={data.currentFinancialReport?.label}
-                                url={makeHref(
-                                    data.currentFinancialReport?.file?.url
-                                )}
+                                url={data.currentFinancialReport?.file?.url}
                                 createdAt={
                                     data.currentFinancialReport?.file
                                         ?.created_at

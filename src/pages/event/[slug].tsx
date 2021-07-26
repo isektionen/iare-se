@@ -209,7 +209,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         checkoutKey: process.env
                             .NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
                         paymentId: paymentId,
-                        language: "sv-SE",
+                        language: "sv", // TODO: validate that this is valid code
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);

@@ -80,7 +80,7 @@ const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
                 </VStack>
             )}
             {isAboveSm && <Sidebar routes={routes} categories={categories} />}
-            <Feed setFeed={() => posts}>
+            <Feed setFeed={() => posts} bg="gray.100">
                 {(item, key) => {
                     if (isAboveSm) {
                         return <Card item={item} />;

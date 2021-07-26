@@ -92,7 +92,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const handleOrderUpdate = async (ticketId: string) => {
         if (checkout) checkout.freezeCheckout();
         if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${event.id}/${intentionId}`;
+            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.id}/${intentionId}`;
             const res = await fetch(url, {
                 method: "PUT",
                 headers: {
@@ -115,7 +115,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const handleFreeOrder = async (orderBody: IConfirmation) => {
         if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/intent/${intentionId}/complete`;
+            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${intentionId}/complete`;
 
             const diets = dietResult.map((entity) => parseInt(entity.value));
             const allergens = specialDietResult.map((entity) =>

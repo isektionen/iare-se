@@ -78,7 +78,7 @@ const DocumentControl = ({ data }: { data: DocType }) => {
     return (
         <Flex
             position="absolute"
-            zIndex={5}
+            zIndex={2}
             alignSelf="normal"
             bottom={10}
             m={4}
@@ -144,7 +144,12 @@ const DocumentView = ({ locale, document: data }: Props) => {
     };
 
     return (
-        <Flex direction={{ base: "column", md: "row" }} pos="relative">
+        <Flex
+            direction={{ base: "column", md: "row" }}
+            pos="relative"
+            w="full"
+            minH="80vh"
+        >
             <DocumentContainer loading={"LOADING"} fallback={"NO PDF"}>
                 <Flex
                     bg="gray.50"
@@ -152,9 +157,9 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     justify="center"
                     direction="column"
                     p={8}
-                    w="50%"
+                    w={{ base: "full", md: "50%" }}
                 >
-                    <Box mb={8}>
+                    <Box mb={8} w="full">
                         <Heading as="h2" size="lg" mb={8}>
                             Huvuddokument
                         </Heading>

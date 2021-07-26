@@ -46,26 +46,28 @@ export const DocumentTable = ({ columns, actions, children }: Props) => {
         xl: "md",
     });
     return (
-        <Table
-            colorScheme="gray"
-            variant="striped"
-            size={size}
-            position="relative"
-        >
-            <Thead>
-                <Tr>
-                    {columns.map((col) => (
-                        <Th
-                            key={col.label + col.id}
-                            data-table-col={col.label + "_" + col.id}
-                        >
-                            {col.label}
-                        </Th>
-                    ))}
-                </Tr>
-            </Thead>
-            {children(columns, actions)}
-        </Table>
+        <Box flex={1} mb={8}>
+            <Table
+                colorScheme="gray"
+                variant="striped"
+                size={size}
+                position="relative"
+            >
+                <Thead>
+                    <Tr>
+                        {columns.map((col) => (
+                            <Th
+                                key={col.label + col.id}
+                                data-table-col={col.label + "_" + col.id}
+                            >
+                                {col.label}
+                            </Th>
+                        ))}
+                    </Tr>
+                </Thead>
+                {children(columns, actions)}
+            </Table>
+        </Box>
     );
 };
 

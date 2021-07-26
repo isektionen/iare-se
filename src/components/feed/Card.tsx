@@ -45,7 +45,7 @@ export const Card = ({ item }: Props) => {
                 >
                     <AccessibleLink href={("../post/" + item.slug) as string}>
                         <NextImage
-                            src={imageProvider({ file: item.banner.url })}
+                            src={item.banner.url}
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center"

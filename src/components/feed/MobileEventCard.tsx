@@ -31,7 +31,7 @@ export const MobileEventCard = ({ item }: any) => {
                     <Box position="relative" h="full" w="full">
                         {item.banner && (
                             <NextImage
-                                src={imageProvider({ file: item.banner.url })}
+                                src={item.banner.url}
                                 layout="fill"
                                 objectFit="cover"
                                 objectPosition="center"

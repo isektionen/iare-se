@@ -272,7 +272,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 <>
                     <Flex
                         p={{ base: 4, md: 12 }}
-                        bg="gray.200"
+                        bg="gray.100"
                         flex={1}
                         direction="column"
                     >

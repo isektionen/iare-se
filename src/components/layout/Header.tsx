@@ -14,7 +14,7 @@ import {
     ComponentHeaderLanguages,
 } from "../../types/strapi";
 import { DefHeader } from "types/global";
-import { imageSource } from "utils/images";
+import { imageProvider, imageSource } from "utils/images";
 import { useViewportScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { mergeLink } from "utils/mergeHref";
@@ -56,7 +56,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                 <Flex w="full" align="center" h="full" px={{ base: 4, md: 12 }}>
                     <AccessibleLink href="/">
                         <Image
-                            src={imageSource(logo, "/logo.svg")}
+                            src={logo.url}
                             width={77}
                             height={28}
                             alt={logo?.alternativeText ?? ""}

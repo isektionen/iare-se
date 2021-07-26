@@ -20,7 +20,7 @@ const customTheme = extendTheme({
         gray: {
             ...theme.colors.gray,
             50: "#F3F5F5",
-            100: "#ECEFEF",
+            100: "hsla(180, 3%, 88%, 1)", //"#ECEFEF",
             200: "hsla(180, 3%, 88%, 1)",
             300: "hsla(180, 3%, 66%, 1)",
             500: "#90A2A2",

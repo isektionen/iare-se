@@ -36,7 +36,6 @@ export const useSearch = <T extends object>(
     setCollection: Props<T>,
     searchTermMap: (item: T) => { [k: string]: any }
 ) => {
-    const router = useRouter();
     const collection = setCollection()
         .map(searchTermMap)
         .reduce(
@@ -46,6 +45,7 @@ export const useSearch = <T extends object>(
             ],
             [] as any[]
         );
+    const router = useRouter();
     const [result, setResult] = useState(_.pluck(collection, "__sid"));
 
     const setQuery = (query: { [k: string]: string | number }) => {

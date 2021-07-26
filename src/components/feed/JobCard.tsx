@@ -43,9 +43,7 @@ export const JobCard = ({ item }: Props) => {
                 >
                     <AccessibleLink href={item.slug as string}>
                         <NextImage
-                            src={imageProvider({
-                                file: item.company?.logo?.url,
-                            })}
+                            src={item.company?.logo?.url}
                             width={item.company.logo.width as number}
                             height={item.company.logo.height as number}
                             layout="intrinsic"

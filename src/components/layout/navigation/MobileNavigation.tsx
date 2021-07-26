@@ -101,6 +101,7 @@ export const MobileNavigation = (props: Props) => {
                                     mt={2}
                                     variant="iareSolid"
                                     leftIcon={<MdChatBubble />}
+                                    isDisabled={true}
                                     onClick={() => {
                                         onClose();
                                         router.push(props.contact.href);

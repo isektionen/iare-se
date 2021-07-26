@@ -2,7 +2,7 @@ const nextTranslate = require("next-translate");
 const withPlugins = require("next-compose-plugins");
 module.exports = withPlugins([nextTranslate], {
     images: {
-        domains: ["localhost"],
+        domains: ["iare-strapi-backend.s3.eu-north-1.amazonaws.com"],
     },
     reactStrictMode: true,
     target: "serverless",

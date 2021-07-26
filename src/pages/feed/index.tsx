@@ -31,6 +31,7 @@ interface Props {
 
 const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
+
     const { filter, setQuery, clearQuery } = useSearch(
         () => basePosts,
         (item) => ({

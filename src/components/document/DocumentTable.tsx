@@ -87,27 +87,29 @@ export const DocumentBody = ({ header, actions }: RowProps) => {
         return (
             <Tbody position="relative">
                 <Tr position="absolute" w="full" h="32">
-                    <Flex
-                        justify="center"
-                        align="center"
-                        w="full"
-                        h="full"
-                        position="relative"
-                    >
+                    <Td position="absolute" w="full">
                         <Flex
-                            bg="white"
-                            rounded="md"
-                            direction="column"
-                            p={8}
+                            justify="center"
                             align="center"
+                            w="full"
+                            h="full"
+                            position="relative"
                         >
-                            <Box>
-                                <Heading size="md" textAlign="center">
-                                    Inga dokument hittades
-                                </Heading>
-                            </Box>
+                            <Flex
+                                bg="white"
+                                rounded="md"
+                                direction="column"
+                                p={8}
+                                align="center"
+                            >
+                                <Box>
+                                    <Heading size="md" textAlign="center">
+                                        Inga dokument hittades
+                                    </Heading>
+                                </Box>
+                            </Flex>
                         </Flex>
-                    </Flex>
+                    </Td>
                 </Tr>
             </Tbody>
         );

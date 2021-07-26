@@ -11,7 +11,10 @@ import {
     UsersPermissionsUser,
 } from "../../types/strapi";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
-import { Document } from "components/document/Document";
+import Document from "components/document/Document";
+/*const Document = dynamic(import("components/document/Document"), {
+    ssr: false,
+});*/
 import { useDocument } from "hooks/use-document";
 
 import {
@@ -30,7 +33,10 @@ import {
     IoIosArrowDropleftCircle,
     IoIosArrowDroprightCircle,
 } from "react-icons/io";
-import { DocumentCard } from "components/document/DocumentCard";
+import DocumentCard from "components/document/DocumentCard";
+/*const DocumentCard = dynamic(import("components/document/DocumentCard"), {
+    ssr: false,
+});*/
 import { getDate } from "utils/dates";
 import { DocumentListItem } from "components/document/DocumentListItem";
 import { DocumentBody, DocumentTable } from "components/document/DocumentTable";
@@ -43,6 +49,7 @@ import {
     SelectorOptions,
 } from "components/pagination/PageSelector";
 import { HiOutlineDownload } from "react-icons/hi";
+import dynamic from "next/dynamic";
 interface Props {
     document: DocType;
     locale: string;

@@ -10,8 +10,6 @@ import React, {
     useMemo,
     useState,
 } from "react";
-import { pdfjs } from "react-pdf";
-import Fuse from "fuse.js";
 
 interface DocumentProps {
     children: ReactNode;

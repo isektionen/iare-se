@@ -14,7 +14,7 @@ interface Props {
     url?: string;
 }
 
-export const DocumentCard = (props: Props) => {
+const DocumentCard = (props: Props) => {
     let day;
     if (props.createdAt) {
         day = getDate(props.createdAt, "yyyy-MM-dd");
@@ -72,3 +72,5 @@ export const DocumentCard = (props: Props) => {
     }
     return <></>;
 };
+
+export default DocumentCard;

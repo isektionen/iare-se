@@ -16,7 +16,7 @@ const paginate = (pagination: number) =>
 interface Props {
     infinite?: boolean;
 }
-export const Document = (props: Props) => {
+const Document = (props: Props) => {
     const { document, onLoadSuccess } = useDocument();
 
     const [loading, setLoading] = useState(true);
@@ -48,3 +48,5 @@ export const Document = (props: Props) => {
         </Flex>
     );
 };
+
+export default Document;

@@ -8,15 +8,8 @@ import { ApolloProvider } from "@apollo/client";
 import strapi, { gql } from "lib/strapi";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
-import React, { FunctionComponent, StrictMode } from "react";
-import {
-    ComponentHeaderContact,
-    ComponentHeaderLanguages,
-    ComponentHeaderLogo,
-    ComponentHeaderMenuSection,
-    Footer,
-    Header,
-} from "types/strapi";
+import React, { StrictMode } from "react";
+import { Footer, Header } from "types/strapi";
 import { DefFooter, DefHeader } from "types/global";
 import { pdfjs } from "react-pdf";
 
@@ -26,6 +19,7 @@ interface Props extends AppProps {
 }
 
 const App = ({ Component, pageProps, headerProps, footerProps }: Props) => {
+    //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     pdfjs.GlobalWorkerOptions.workerSrc = "../js/pdf.worker.js";
     return (
         <StrictMode>

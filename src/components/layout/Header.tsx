@@ -59,7 +59,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                             src={logo.url}
                             width={77}
                             height={28}
-                            alt={logo?.alternativeText ?? ""}
+                            alt={logo?.alternativeText ?? "Iare logotype"}
                         />
                     </AccessibleLink>
                     <Spacer />

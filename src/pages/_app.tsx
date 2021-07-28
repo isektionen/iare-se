@@ -18,7 +18,13 @@ interface Props extends AppProps {
     footerProps: DefFooter;
 }
 
-const App = ({ Component, pageProps, headerProps, footerProps }: Props) => {
+const App = ({
+    Component,
+    pageProps,
+    headerProps,
+    footerProps,
+    ...rest
+}: Props) => {
     //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     pdfjs.GlobalWorkerOptions.workerSrc = "../js/pdf.worker.js";
     return (
@@ -156,4 +162,4 @@ import appWithI18n from "next-translate/appWithI18n";
 import i18nConfig from "../../i18n";
 import { rest } from "underscore";
 
-export default appWithI18n(App as any, { ...i18nConfig });
+export default App;

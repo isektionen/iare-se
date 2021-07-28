@@ -8,13 +8,12 @@ const Page404 = () => {
                 <Text textAlign="center">Den här sidan finns inte ännu.</Text>
                 <Text>Dessa är tillgängliga:</Text>
                 <ul>
-                    <li>/sektionen/dokument,</li>
+                    <li>/chapter/document,</li>
                     <li>/feed,</li>
                     <li>/feed/event,</li>
-                    <li>/feed/jobb,</li>
+                    <li>/feed/job,</li>
                     <li>/event/[slug],</li>
                     <li>/ticket/[id]</li>
-                    <li>dokument,</li>
                 </ul>
             </Box>
         </Flex>

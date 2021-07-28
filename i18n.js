@@ -1,11 +1,10 @@
 module.exports = {
     locales: ["en", "sv"],
     defaultLocale: "sv",
-    loader: false,
     pages: {
         "*": ["common"],
         "rgx:^/feed/?.*": ["feed"],
+        "/chapter/document": ["document"],
+        "/event/[slug]": ["event"],
     },
-    loadLocaleFrom: (locale, namespace) =>
-        import(`./locales/${locale}/${namespace}`).then((m) => m.default),
 };

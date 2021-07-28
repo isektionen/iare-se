@@ -16,15 +16,7 @@ module.exports = withPlugins([nextTranslate], {
         };
     },
     i18n: {
-        locales: ["en", "sv"], // perhaps change it to regular sv in production
+        locales: ["en", "sv"],
         defaultLocale: "sv",
-        domains: [
-            {
-                domain: "localhost",
-                defaultLocale: "sv",
-                // bypassing sub-paths by redirecting all locales to a single domain, and then taking care of the routing dynamically
-                locales: ["en"],
-            },
-        ],
     },
 });

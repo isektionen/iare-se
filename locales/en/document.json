@@ -1,0 +1,11 @@
+{
+    "headDocuments": "Head Documents",
+    "tableHeader": {
+        "title": "title",
+        "type": "type",
+        "authors": "authors",
+        "date": "date"
+    },
+    "controlPages": "{{currentPage}} of {{pages}}",
+    "noEntriesFound": "No documents found"
+}

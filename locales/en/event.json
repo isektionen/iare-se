@@ -1,0 +1,43 @@
+{
+    "eventDeadlineDescription": {
+        "after": "It was {TIMELEFT} since the rsvp closed",
+        "before": "It is {TIMELEFT} until the rsvp closes"
+    },
+    "diet": {
+        "label": "Diet",
+        "description": "Choose the diet(s) that suit you best",
+        "search": {
+            "placeholder": "Search diets",
+            "createText": "Add as a new diet"
+        }
+    },
+    "allergen": {
+        "label": "Allergy",
+        "description": "Choose the allergens that suit you best",
+        "search": {
+            "placeholder": "Search allergens",
+            "createText": "Add as a new allergen"
+        }
+    },
+    "orderConfirmation": {
+        "title": "Confirmation",
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "email": "Email",
+        "phone": "Phone",
+        "button": {
+            "label": "Rsvp"
+        }
+    },
+    "error":  {
+        "deadline": {
+            "message": "The RSVP for this event has closed!"
+        },
+        "invalidIntention": {
+            "message": "The IID that the browser provided is invalid."
+        }
+    },
+    "badge": {
+        "new": "new"
+    }
+}

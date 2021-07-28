@@ -50,6 +50,10 @@ import {
 } from "components/pagination/PageSelector";
 import { HiOutlineDownload } from "react-icons/hi";
 import dynamic from "next/dynamic";
+
+import setLanguage from "next-translate/setLanguage";
+import { LanguageWrapper } from "components/LanguageWrapper";
+
 interface Props {
     document: DocType;
     locale: string;
@@ -63,14 +67,8 @@ export interface AllDocType {
     type?: string;
 }
 
-const makeHref = (url: string | undefined) => {
-    const base = process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL;
-    if (base && url) {
-        return base + url;
-    }
-};
-
 const DocumentControl = ({ data }: { data: DocType }) => {
+    const { t } = useTranslation("document");
     const { setDocument, document, goBackward, goForward } = useDocument();
 
     const [currentDocument, setCurrentDocument] = useState(
@@ -103,7 +101,10 @@ const DocumentControl = ({ data }: { data: DocType }) => {
                 onClick={goBackward}
             />
             <Text>
-                {document.currentPage || 1} av {document.pages}
+                {t("controlPages", {
+                    currentPage: document.currentPage as number,
+                    pages: document.pages as number,
+                })}
             </Text>
             <IconButton
                 aria-label="go forward"
@@ -125,7 +126,7 @@ const minimize = (key: string) => {
 };
 
 const DocumentView = ({ locale, document: data }: Props) => {
-    const { t, lang } = useTranslation("common");
+    const { t, lang } = useTranslation("document");
     const allRawDocs = data.allDocuments as AllDocType[];
     const docs = allRawDocs.reduce(
         (acc, curr) => [
@@ -148,7 +149,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                 lang
             ),
             type: doc.type,
-            url: makeHref(doc.documentContent?.file?.url),
+            url: doc.documentContent?.file?.url,
             authors:
                 doc?.authors?.map((user) => user.nickname).join(", ") ?? "---",
         }));
@@ -172,13 +173,20 @@ const DocumentView = ({ locale, document: data }: Props) => {
                 >
                     <Box mb={8} w="full">
                         <Heading as="h2" size="lg" mb={8}>
-                            Huvuddokument
+                            {t("headDocuments")}
                         </Heading>
                         <Flex
                             direction="row"
-                            justify={{ base: "flex-start", lg: "space-evenly" }}
+                            justify={{
+                                base: "flex-start",
+                                lg: "space-evenly",
+                            }}
                             w="full"
-                            wrap={{ base: "nowrap", md: "wrap", lg: "nowrap" }}
+                            wrap={{
+                                base: "nowrap",
+                                md: "wrap",
+                                lg: "nowrap",
+                            }}
                         >
                             <DocumentCard
                                 isCurrent
@@ -214,10 +222,22 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     >
                         <DocumentTable
                             columns={[
-                                { label: "Titel", id: "label" },
-                                { label: "Dokument", id: "type" },
-                                { label: "Författare", id: "authors" },
-                                { label: "Datum", id: "date" },
+                                {
+                                    label: t("tableHeader.title"),
+                                    id: "label",
+                                },
+                                {
+                                    label: t("tableHeader.type"),
+                                    id: "type",
+                                },
+                                {
+                                    label: t("tableHeader.authors"),
+                                    id: "authors",
+                                },
+                                {
+                                    label: t("tableHeader.date"),
+                                    id: "date",
+                                },
                             ]}
                             actions={[
                                 {
@@ -295,22 +315,12 @@ const DocumentView = ({ locale, document: data }: Props) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async ({
-    locales,
-    defaultLocale,
-}) => {
-    const locale = "en";
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const { data } = await axios.get("/document?_locale=" + locale);
 
     return {
         props: {
             locale,
-            ...(await loadNamespaces({
-                locales,
-                defaultLocale,
-                locale,
-                pathname: "/chapter/document",
-            })),
             document: data,
         },
     };

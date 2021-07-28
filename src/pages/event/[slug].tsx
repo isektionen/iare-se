@@ -37,14 +37,16 @@ import { EventDeadline } from "components/event/EventDeadline";
 import { BiCalendarExclamation } from "react-icons/bi";
 import { IoWarning } from "react-icons/io5";
 import { EventPasswordProtection } from "components/event/EventPasswordProtection";
-import { useDibs } from "hooks/use-dibs";
+import { CheckoutApi, useDibs } from "hooks/use-dibs";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     event: Event;
     diets: Diet[];
     allergies: Allergy[];
 }
-const EventView = ({ event, diets, allergies }: Props) => {
+const EventView = ({ event, diets, allergies, ...rest }: Props) => {
+    const { t, lang } = useTranslation("event");
     const router = useRouter();
 
     const Dibs = useDibs();
@@ -53,7 +55,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         isBefore(new Date(), new Date(event.deadline))
     );
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [checkout, setCheckout] = useState<any>(null);
+    const [checkout, setCheckout] = useState<CheckoutApi>();
     const [dietResult, setDietResult] = useState<Option[]>([]);
     const [specialDietResult, setSpecialDietResult] = useState<Option[]>([]);
     const [paymentInitialized, setPaymentInitialized] =
@@ -87,6 +89,18 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
         const isValid = await validatePassword(event.id, password);
         setIsAuthenticated(isValid);
+    };
+
+    const handleLanguageChange = () => {
+        const supportedLanguages: { [k: string]: string } = {
+            en: "en-GB",
+            sv: "sv-SE",
+        };
+        if (checkout) {
+            checkout.freezeCheckout();
+            checkout.setLanguage(supportedLanguages[lang]);
+            checkout.thawCheckout();
+        }
     };
 
     const handleOrderUpdate = async (ticketId: string) => {
@@ -236,6 +250,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
     );
 
     useEffect(() => {
+        handleLanguageChange();
+    }, [lang]);
+
+    useEffect(() => {
         if (beforeDeadline) {
             checkoutSession();
         }
@@ -262,10 +280,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
             {event.passwordProtected && !isAuthenticated && (
                 <EventPasswordProtection
                     onSubmit={handlePasswordSubmit}
-                    placeholderText="Ange lösenordet"
-                    showLabel="visa"
-                    hideLabel="dölj"
-                    submitLabel="validera"
+                    placeholderText={t("passwordProtected.placeholder")}
+                    showLabel={t("passwordProtected.showLabel")}
+                    hideLabel={t("passwordProtected.hideLabel")}
+                    submitLabel={t("passwordProtected.validateLabel")}
                 />
             )}
             {(!event.passwordProtected || isAuthenticated) && (
@@ -298,7 +316,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                 title={event.title}
                                 startTime={event.startTime}
                                 place={event.place}
-                                badge={{ color: "green", text: "nyhet" }}
+                                badge={{ color: "green", text: t("badge.new") }}
                             />
                             <EventDiscription description={event.description} />
                             {intendedTickets && intendedTickets?.length > 0 && (
@@ -321,8 +339,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
                             <EventDeadline
                                 deadline={event.deadline}
                                 description={{
-                                    before: "Det är {TIMELEFT} tills osan stänger",
-                                    after: "Det var {TIMELEFT} osan stängde",
+                                    before: t(
+                                        "eventDeadlineDescription.before"
+                                    ),
+                                    after: t("eventDeadlineDescription.after"),
                                 }}
                             />
                             {beforeDeadline &&
@@ -331,21 +351,27 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                     <>
                                         <Divider />
                                         <OptionsInput
-                                            name="Diet"
-                                            description="Ange den diet som passar dig bäst"
+                                            name={t("diet.label")}
+                                            description={t("diet.description")}
                                             options={diets.map((entity) => ({
                                                 value: entity.id,
                                                 label: entity.name,
                                             }))}
                                             result={dietResult}
                                             setResult={setDietResult}
-                                            placeholder="Sök efter dieter"
-                                            createText="Lägg till som ny"
+                                            placeholder={t(
+                                                "diet.search.placeholder"
+                                            )}
+                                            createText={t(
+                                                "diet.search.createText"
+                                            )}
                                         />
                                         <Divider />
                                         <OptionsInput
-                                            name="Specialkost"
-                                            description="Ange det som passar in på dig bäst"
+                                            name={t("allergen.label")}
+                                            description={t(
+                                                "allergen.description"
+                                            )}
                                             options={allergies.map(
                                                 (entity) => ({
                                                     value: entity.id,
@@ -354,8 +380,12 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                             )}
                                             result={specialDietResult}
                                             setResult={setSpecialDietResult}
-                                            placeholder="Sök efter allergier"
-                                            createText="Lägg till som ny"
+                                            placeholder={t(
+                                                "allergen.search.placeholder"
+                                            )}
+                                            createText={t(
+                                                "allergen.search.createText"
+                                            )}
                                         />
                                     </>
                                 )}
@@ -374,37 +404,39 @@ const EventView = ({ event, diets, allergies }: Props) => {
                             )}
                         {beforeDeadline && orderIsFree && !invalidIntention && (
                             <EventConfirmation
-                                title="Konfirmation"
+                                title={t("orderConfirmation.title")}
                                 firstName={{
-                                    label: "Förnamn",
+                                    label: t("orderConfirmation.firstName"),
                                     placeholder: "Iaren",
                                 }}
                                 lastName={{
-                                    label: "Efternamn",
+                                    label: t("orderConfirmation.lastName"),
                                     placeholder: "Portersson",
                                 }}
                                 email={{
-                                    label: "Email",
+                                    label: t("orderConfirmation.email"),
                                     placeholder: "iare@kth.se",
                                 }}
                                 phoneNumber={{
-                                    label: "Telefon",
+                                    label: t("orderConfirmation.phone"),
                                     placeholder: "072-01230123",
                                 }}
-                                button={{ label: "Osa" }}
+                                button={{
+                                    label: t("orderConfirmation.button.label"),
+                                }}
                                 onSubmit={handleFreeOrder}
                             />
                         )}
                         {invalidIntention && (
                             <EventMessage
                                 icon={IoWarning}
-                                message="Det iid:et du har i länken existerar inte"
+                                message={t("error.invalidIntention.message")}
                             />
                         )}
                         {!beforeDeadline && !invalidIntention && (
                             <EventMessage
                                 icon={BiCalendarExclamation}
-                                message="Det här eventet har stängt sin osa"
+                                message={t("error.deadline.message")}
                             />
                         )}
                     </Flex>

@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useDocument } from "hooks/use-document";
 import { usePagination } from "hooks/use-pagination";
+import useTranslation from "next-translate/useTranslation";
 import { AllDocType } from "pages/chapter/document";
 import React, { ReactNode } from "react";
 import { IconType } from "react-icons";
@@ -77,6 +78,7 @@ interface RowProps {
 }
 
 export const DocumentBody = ({ header, actions }: RowProps) => {
+    const { t } = useTranslation("document");
     const { currentItems } = usePagination();
     const { setDocument } = useDocument();
 
@@ -104,7 +106,7 @@ export const DocumentBody = ({ header, actions }: RowProps) => {
                             >
                                 <Box>
                                     <Heading size="md" textAlign="center">
-                                        Inga dokument hittades
+                                        {t("noEntriesFound")}
                                     </Heading>
                                 </Box>
                             </Flex>

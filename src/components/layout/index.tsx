@@ -18,6 +18,7 @@ const Layout = (props: Props) => {
     const { lang } = useTranslation();
     let header: DefHeader;
     let footer: DefFooter;
+
     if (lang === props.header.locale) {
         header = props.header;
         footer = props.footer;

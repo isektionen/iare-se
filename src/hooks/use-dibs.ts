@@ -19,7 +19,7 @@ interface ThemeProps {
     primaryOutlineColor: string;
 }
 
-interface CheckoutApi {
+export interface CheckoutApi {
     on: (event: string, callback: (paymentId?: string) => void) => void;
     send: (event: string, value: any) => void;
     setTheme: (theme: ThemeProps) => void;

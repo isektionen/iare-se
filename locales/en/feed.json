@@ -5,5 +5,17 @@
     "sidebarAllCategories": "All Categories",
     "jobFilters": ["location", "position", "industry"],
     "rsvpButtonLabel": "RSVP",
-    "rsvpDeadlineDescription": "The rsvp closes {{time}}"
+    "rsvpDeadlineDescription": "The rsvp closes {{time}}",
+    "routes": [{
+        "label": "Happenings",
+        "href": "/feed"
+    },
+    {
+        "label": "Event",
+        "href": "/feed/event"
+    },
+    {
+        "label": "Job",
+        "href": "/feed/job"
+    }]
 }

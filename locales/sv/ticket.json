@@ -15,5 +15,5 @@
         "email": "Email",
         "phone": "Telefon"
     },
-    "from": "från"
+    "from": "från {{committee}}"
 }

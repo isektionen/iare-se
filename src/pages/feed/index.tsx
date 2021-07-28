@@ -5,8 +5,6 @@ import {
     useBreakpointValue,
     Flex,
 } from "@chakra-ui/react";
-import AccessibleLink from "components/AccessibleLink";
-import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
 import { Card } from "components/feed/Card";
 import { Feed } from "components/feed/Feed";
 import { MobileCard } from "components/feed/MobileCard";
@@ -24,6 +22,7 @@ import { IoShareSocial } from "react-icons/io5";
 import { MdEvent } from "react-icons/md";
 import { RiUserSearchFill } from "react-icons/ri";
 import { Post, Category } from "types/strapi";
+import { getTranslatedRoutes } from "utils/sidebar";
 
 interface Props {
     posts: Post[];
@@ -32,7 +31,7 @@ interface Props {
 
 const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
-    const { t } = useTranslation("feed");
+    const { t, lang } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(
         () => basePosts,
         (item) => ({
@@ -41,16 +40,8 @@ const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
                 : [],
         })
     );
-    // TODO: connect to i18n
-    const routes = [
-        { label: "Händelser", icon: HiHome, href: "/feed" },
-        { label: "Event", icon: MdEvent, href: "/feed/event" },
-        {
-            label: "Jobb",
-            icon: RiUserSearchFill,
-            href: "/feed/jobb",
-        },
-    ];
+
+    const routes = getTranslatedRoutes(t);
 
     const posts = filter(basePosts);
     const categories = [

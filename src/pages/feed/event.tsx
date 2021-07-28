@@ -39,6 +39,7 @@ import { EventCard } from "components/feed/EventCard";
 import { SmallCard } from "components/feed/SmallCard";
 import { useSearch } from "hooks/use-search";
 import useTranslation from "next-translate/useTranslation";
+import { getTranslatedRoutes } from "utils/sidebar";
 
 interface Props {
     events: Event[];
@@ -46,6 +47,7 @@ interface Props {
 }
 
 const EventFeedView = ({ events: baseEvents, categories }: Props) => {
+    const { t } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(
         () => baseEvents,
         (item) => ({
@@ -60,15 +62,7 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
 
     const events = filter(baseEvents);
 
-    const routes = [
-        { label: "Händelser", icon: HiHome, href: "/feed" },
-        { label: "Event", icon: MdEvent, href: "/feed/event" },
-        {
-            label: "Jobb",
-            icon: RiUserSearchFill,
-            href: "/feed/jobb",
-        },
-    ];
+    const routes = getTranslatedRoutes(t);
 
     const { current = [], past = [] } = _.groupBy(
         _.sortBy(events, "deadline"),
@@ -79,12 +73,9 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
         }
     );
 
-    const [isRow] = useMediaQuery("(min-width: 1300px)");
-
     const shorten = (array: any[], to: number = 5) =>
         array.slice(0, Math.min(array.length, to));
 
-    const { t } = useTranslation("feed");
     return (
         <Flex direction={{ base: "column", sm: "row" }}>
             {!isAboveSm && (

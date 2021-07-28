@@ -31,6 +31,7 @@ import { RouteItem } from "components/sidebar/Pages";
 import { JobCard } from "components/feed/JobCard";
 import { Divider } from "components/Divider";
 import useTranslation from "next-translate/useTranslation";
+import { getTranslatedRoutes } from "utils/sidebar";
 
 interface Props {
     jobs: Jobs[];
@@ -42,21 +43,14 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
     const isAboveLg = useBreakpointValue({ base: false, lg: true });
 
-    const routes = [
-        { label: "Händelser", icon: HiHome, href: "/feed" },
-        { label: "Event", icon: MdEvent, href: "/feed/event" },
-        {
-            label: "Jobb",
-            icon: RiUserSearchFill,
-            href: "/feed/jobb",
-        },
-    ];
+    const routes = getTranslatedRoutes(t);
+
     const categories = baseCategories.map((category) => ({
         label: category.name as string,
         query: () => {},
     }));
 
-    const filters = t("jobFilters", {}, { returnObjects: true });
+    const filters = t("jobFilters", {}, { returnObjects: true }) as string[];
 
     const shorten = (array: any[], to: number = 5) =>
         array.slice(0, Math.min(array.length, to));

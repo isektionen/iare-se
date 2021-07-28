@@ -68,6 +68,11 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     const [intentionId] = useRecoilSSRValue(intentionState);
     const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
 
+    const supportedLanguages: { [k: string]: string } = {
+        en: "en-GB",
+        sv: "sv-SE",
+    };
+
     const nextQueryParams = () => {
         const query = router.asPath.split("?")[1];
         if (!query) return {};
@@ -92,10 +97,6 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     };
 
     const handleLanguageChange = () => {
-        const supportedLanguages: { [k: string]: string } = {
-            en: "en-GB",
-            sv: "sv-SE",
-        };
         if (checkout) {
             checkout.freezeCheckout();
             checkout.setLanguage(supportedLanguages[lang]);
@@ -223,7 +224,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         checkoutKey: process.env
                             .NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
                         paymentId: paymentId,
-                        language: "sv-SE",
+                        language: supportedLanguages[lang],
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);

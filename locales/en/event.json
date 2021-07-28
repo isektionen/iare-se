@@ -1,7 +1,7 @@
 {
     "eventDeadlineDescription": {
         "after": "It was {TIMELEFT} since the rsvp closed",
-        "before": "It is {TIMELEFT} until the rsvp closes"
+        "before": "It's {TIMELEFT} that the rsvp closes"
     },
     "diet": {
         "label": "Diet",

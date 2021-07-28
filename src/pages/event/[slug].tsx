@@ -39,6 +39,7 @@ import { IoWarning } from "react-icons/io5";
 import { EventPasswordProtection } from "components/event/EventPasswordProtection";
 import { CheckoutApi, useDibs } from "hooks/use-dibs";
 import useTranslation from "next-translate/useTranslation";
+import { changeLocaleData } from "utils/lang";
 
 interface Props {
     event: Event;
@@ -467,7 +468,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     const { data } = await strapi.query<{
         event: Event;
         diets: Diet[];
@@ -476,6 +477,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         query: gql`
             query FindEvent($slug: ID!) {
                 event(id: $slug) {
+                    locale
                     id
                     slug
                     title
@@ -510,6 +512,43 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                     passwordProtected {
                         __typename
                     }
+                    localizations {
+                        id
+                        locale
+                        slug
+                        title
+                        description
+                        committee {
+                            name
+                        }
+                        tickets {
+                            Tickets {
+                                id
+                                name
+                                price
+                            }
+                            allowMultiple
+                        }
+                        servingOptions {
+                            servingFood
+                        }
+                        place {
+                            name
+                            detailedStreetInfo {
+                                streetName
+                                streetPostalCode
+                            }
+                            showMap
+                        }
+
+                        startTime
+                        endTime
+                        deadline
+                        published_at
+                        passwordProtected {
+                            __typename
+                        }
+                    }
                 }
                 diets {
                     id
@@ -525,9 +564,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     });
     return {
         props: {
-            event: data.event,
-            diets: data.diets,
-            allergies: data.allergies,
+            event: changeLocaleData(locale, data.event),
+            diets: changeLocaleData(locale, data.diets),
+            allergies: changeLocaleData(locale, data.allergies),
         },
         revalidate: 60,
     };

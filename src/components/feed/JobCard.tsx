@@ -14,14 +14,15 @@ import React from "react";
 import { Jobs } from "types/strapi";
 import { imageProvider } from "utils/images";
 
-import NextImage from "next/image";
 import AccessibleLink from "components/AccessibleLink";
+import { NextImage } from "components/NextImage";
 
 interface Props {
     item: Jobs;
+    priority: boolean;
 }
 
-export const JobCard = ({ item }: Props) => {
+export const JobCard = ({ item, priority }: Props) => {
     let bg = "white";
     if (item.company?.backgroundColor) {
         bg = { porterbrun: "brand.200", white: "white", black: "gray.900" }[
@@ -47,6 +48,7 @@ export const JobCard = ({ item }: Props) => {
                             width={item.company.logo.width as number}
                             height={item.company.logo.height as number}
                             layout="intrinsic"
+                            priority
                         />
                     </AccessibleLink>
                 </Box>

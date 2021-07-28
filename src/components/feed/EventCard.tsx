@@ -21,10 +21,10 @@ import { IoShareSocial } from "react-icons/io5";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { imageProvider, imageSource } from "utils/images";
 
-import NextImage from "next/image";
 import AccessibleLink from "components/AccessibleLink";
+import { NextImage } from "components/NextImage";
 
-export const EventCard = ({ item }: any) => {
+export const EventCard = ({ item, priority }: any) => {
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -34,21 +34,15 @@ export const EventCard = ({ item }: any) => {
             overflow="hidden"
         >
             {item.banner && (
-                <Box
-                    minW={{ base: "full", lg: "50%" }}
-                    minH="320px"
-                    overflow="hidden"
-                    position="relative"
-                >
-                    <AccessibleLink href={("../event/" + item.slug) as string}>
-                        <NextImage
-                            src={item.banner.url}
-                            layout="fill"
-                            objectFit="cover"
-                            objectPosition="center"
-                        />
-                    </AccessibleLink>
-                </Box>
+                <AccessibleLink href={("../event/" + item.slug) as string}>
+                    <NextImage
+                        src={item.banner.url}
+                        layout="intrinsic"
+                        width={item.banner.width as number}
+                        height={item.banner.height as number}
+                        priority={priority}
+                    />
+                </AccessibleLink>
             )}
             <Flex direction="column" w="full" p={8} h="full">
                 <Flex w="full" justify="space-between" align="flex-start">

@@ -24,18 +24,10 @@ import { MdEvent } from "react-icons/md";
 import { RiUserSearchFill } from "react-icons/ri";
 import { Jobs, JobCategory } from "../../types/strapi";
 import _ from "underscore";
-import { isAfter, isBefore } from "date-fns";
-import { NextImage } from "components/NextImage";
-import { imageSource } from "utils/images";
-import { AiOutlineClockCircle } from "react-icons/ai";
-import { getTimeLeft } from "utils/dates";
+
 import { useRouter } from "next/router";
-import { IoShareSocial } from "react-icons/io5";
-import { Card } from "components/feed/Card";
-import { MobileEventCard } from "components/feed/MobileEventCard";
 import { RouteItem } from "components/sidebar/Pages";
-import { EventCard } from "components/feed/EventCard";
-import { SmallCard } from "components/feed/SmallCard";
+
 import { JobCard } from "components/feed/JobCard";
 import { Divider } from "components/Divider";
 
@@ -108,11 +100,23 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
                 <Flex>
                     <VStack spacing={4} w={{ base: "full", lg: "60%" }}>
                         <Feed setFeed={() => jobs} _direction="vertical">
-                            {(item, key) => {
+                            {(item, key, priority) => {
                                 if (isAboveSm) {
-                                    return <JobCard key={key} item={item} />;
+                                    return (
+                                        <JobCard
+                                            key={key}
+                                            item={item}
+                                            priority={priority}
+                                        />
+                                    );
                                 }
-                                return <JobCard key={key} item={item} />;
+                                return (
+                                    <JobCard
+                                        key={key}
+                                        item={item}
+                                        priority={priority}
+                                    />
+                                );
                             }}
                         </Feed>
                     </VStack>

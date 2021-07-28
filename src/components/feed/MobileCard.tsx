@@ -1,16 +1,17 @@
 import { Flex, Heading, Spacer, Avatar, Text, Box } from "@chakra-ui/react";
+import { NextImage } from "components/NextImage";
 import React from "react";
 import { Post } from "types/strapi";
 import { getDate } from "utils/dates";
 import { imageProvider } from "utils/images";
 import { estimateReadingMinutes } from "utils/text";
 
-import NextImage from "next/image";
 interface Props {
     item: Post;
+    priority: boolean;
 }
 
-export const MobileCard = ({ item }: Props) => {
+export const MobileCard = ({ item, priority }: Props) => {
     return (
         <Flex
             position="relative"
@@ -36,6 +37,7 @@ export const MobileCard = ({ item }: Props) => {
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center"
+                            priority={priority}
                         />
                     )}
                 </Box>

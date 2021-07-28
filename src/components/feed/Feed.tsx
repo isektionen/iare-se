@@ -34,7 +34,7 @@ export interface FeedItem {
 }
 
 interface Props<T> {
-    children: (item: T, key: string) => ReactNode;
+    children: (item: T, key: string, priority: boolean) => ReactNode;
     setFeed: () => T[];
     _direction?: "horizontal" | "vertical" | "both";
 }
@@ -54,6 +54,8 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
             });
         }
     };
+
+    const priorityAmount = 5;
 
     const isSm = useBreakpointValue({ base: true, sm: false });
     if (feed.length === 0) {
@@ -101,7 +103,9 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
                     h="full"
                     {...rest}
                 >
-                    {feed.map((item, i) => children(item, "card" + i))}
+                    {feed.map((item, i) =>
+                        children(item, "card" + i, i <= priorityAmount)
+                    )}
                 </HStack>
             </Box>
         );
@@ -109,7 +113,9 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
 
     return (
         <VStack spacing={4} bg="gray.100" w="full" p={4} {...rest}>
-            {feed.map((item, i) => children(item, "card-" + i))}
+            {feed.map((item, i) =>
+                children(item, "card-" + i, i <= priorityAmount)
+            )}
         </VStack>
     );
 };

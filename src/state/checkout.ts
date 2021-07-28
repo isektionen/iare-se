@@ -19,7 +19,6 @@ export const intentionState = atom<string>({
 const createIntention = async (eventId: string) => {
     if (eventId === "-1") return { intentionId: "-1" };
     const url = process.env.NEXT_PUBLIC_DETA_URL + `/intent/${eventId}`;
-    console.log("url", url);
     const res = await fetch(url, { method: "POST" });
     if (!res.ok) return { intentionId: "-1" };
 

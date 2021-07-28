@@ -81,11 +81,13 @@ const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
             )}
             {isAboveSm && <Sidebar routes={routes} categories={categories} />}
             <Feed setFeed={() => posts} bg="gray.100">
-                {(item, key) => {
+                {(item, key, priority) => {
                     if (isAboveSm) {
-                        return <Card item={item} />;
+                        return <Card item={item} priority={priority} />;
                     }
-                    return <MobileCard key={key} item={item} />;
+                    return (
+                        <MobileCard key={key} item={item} priority={priority} />
+                    );
                 }}
             </Feed>
         </Flex>

@@ -4,11 +4,10 @@ import { getDate, getTimeLeft } from "utils/dates";
 import { imageProvider } from "utils/images";
 import { estimateReadingMinutes } from "utils/text";
 
-import NextImage from "next/image";
 import AccessibleLink from "components/AccessibleLink";
-import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
+import { NextImage } from "components/NextImage";
 
-export const MobileEventCard = ({ item }: any) => {
+export const MobileEventCard = ({ item, priority }: any) => {
     return (
         <AccessibleLink href={("../event/" + item.slug) as string}>
             <Flex
@@ -35,6 +34,7 @@ export const MobileEventCard = ({ item }: any) => {
                                 layout="fill"
                                 objectFit="cover"
                                 objectPosition="center"
+                                priority={priority}
                             />
                         )}
                     </Box>

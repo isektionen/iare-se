@@ -20,13 +20,14 @@ import { IoShareSocial } from "react-icons/io5";
 import { Category, Post } from "types/strapi";
 import { imageProvider, imageSource } from "utils/images";
 
-import NextImage from "next/image";
 import AccessibleLink from "components/AccessibleLink";
+import { NextImage } from "components/NextImage";
 interface Props {
     item: Post;
+    priority: boolean;
 }
 
-export const Card = ({ item }: Props) => {
+export const Card = ({ item, priority }: Props) => {
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -37,21 +38,15 @@ export const Card = ({ item }: Props) => {
             maxH="4xl"
         >
             {item.banner && (
-                <Box
-                    position="relative"
-                    minW={{ base: "full", lg: "50%" }}
-                    minH="320px"
-                    overflow="hidden"
-                >
-                    <AccessibleLink href={("../post/" + item.slug) as string}>
-                        <NextImage
-                            src={item.banner.url}
-                            layout="fill"
-                            objectFit="cover"
-                            objectPosition="center"
-                        />
-                    </AccessibleLink>
-                </Box>
+                <AccessibleLink href={("../post/" + item.slug) as string}>
+                    <NextImage
+                        src={item.banner.url}
+                        layout="intrinsic"
+                        width={item.banner.width as number}
+                        height={item.banner.height as number}
+                        priority={priority}
+                    />
+                </AccessibleLink>
             )}
             <Flex direction="column" w="full" p={8} h="full">
                 <Flex w="full" justify="space-between" align="flex-start">

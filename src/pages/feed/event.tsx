@@ -116,11 +116,23 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
             )}
             <VStack spacing={4} w="full" bg="gray.100">
                 <Feed setFeed={() => shorten(current)}>
-                    {(item, key) => {
+                    {(item, key, priority) => {
                         if (isAboveSm) {
-                            return <EventCard key={key} item={item} />;
+                            return (
+                                <EventCard
+                                    key={key}
+                                    item={item}
+                                    priority={priority}
+                                />
+                            );
                         }
-                        return <MobileEventCard key={key} item={item} />;
+                        return (
+                            <MobileEventCard
+                                key={key}
+                                item={item}
+                                priority={priority}
+                            />
+                        );
                     }}
                 </Feed>
                 <HFeed setFeed={() => shorten(past)}>

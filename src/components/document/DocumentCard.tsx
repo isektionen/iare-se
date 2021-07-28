@@ -5,6 +5,7 @@ import { Document, Page } from "react-pdf";
 import { Box, Heading, Skeleton, Text } from "@chakra-ui/react";
 import { getDate } from "utils/dates";
 import { useDocument } from "hooks/use-document";
+import useTranslation from "next-translate/useTranslation";
 interface Props {
     category?: string;
     label: string | undefined;
@@ -15,9 +16,10 @@ interface Props {
 }
 
 const DocumentCard = (props: Props) => {
+    const { lang } = useTranslation();
     let day;
     if (props.createdAt) {
-        day = getDate(props.createdAt, "yyyy-MM-dd");
+        day = getDate(props.createdAt, "yyyy-MM-dd", lang);
     }
 
     const { setDocument } = useDocument();

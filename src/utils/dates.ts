@@ -5,20 +5,36 @@ import {
 } from "date-fns";
 import { enGB, sv } from "date-fns/locale";
 import { ComponentJobYear, Maybe } from "../types/strapi";
+
+const supportedLocales: { [k: string]: any } = {
+    en: enGB,
+    sv,
+};
+
 export const getDate = (
     dateString: string,
-    formatString: string = "EEEE d MMM"
-) => format(new Date(dateString), formatString, { locale: sv });
+    formatString: string = "EEEE d MMM",
+    locale: string = "sv"
+) =>
+    format(new Date(dateString), formatString, {
+        locale: supportedLocales[locale],
+    });
 
-export const getTime = (dateString: string) =>
-    format(new Date(dateString), "HH : mm", { locale: sv });
+export const getTime = (dateString: string, locale: string = "sv") =>
+    format(new Date(dateString), "HH : mm", {
+        locale: supportedLocales[locale],
+    });
 
-export const getTimeLeft = (dateString: string, strict: boolean = false) => {
+export const getTimeLeft = (
+    dateString: string,
+    strict: boolean = false,
+    locale: string = "sv"
+) => {
     const fn = strict ? formatDistanceToNowStrict : formatDistanceToNow;
 
     return fn(new Date(dateString), {
         addSuffix: true,
-        locale: sv,
+        locale: supportedLocales[locale],
     });
 };
 

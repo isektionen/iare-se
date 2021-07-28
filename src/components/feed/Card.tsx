@@ -10,15 +10,10 @@ import {
     IconButton,
     Spacer,
     Text,
-    Image,
 } from "@chakra-ui/react";
 import React from "react";
-import { FeedItem } from "./Feed";
-import { getDate } from "utils/dates";
-import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
-import { Category, Post } from "types/strapi";
-import { imageProvider, imageSource } from "utils/images";
+import { Post } from "types/strapi";
 
 import AccessibleLink from "components/AccessibleLink";
 import { NextImage } from "components/NextImage";

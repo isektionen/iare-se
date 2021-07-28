@@ -15,6 +15,7 @@ import { Card } from "./Card";
 import { isBrowser, isMobile } from "react-device-detect";
 import { HFeed } from "./HFeed";
 import { useScrollLock } from "hooks/use-scroll-lock";
+import useTranslation from "next-translate/useTranslation";
 interface CategoryBadge {
     label: string;
 }
@@ -58,6 +59,8 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
     const priorityAmount = 5;
 
     const isSm = useBreakpointValue({ base: true, sm: false });
+
+    const { t } = useTranslation("feed");
     if (feed.length === 0) {
         return (
             <Flex justify="center" align="center" w="full" h="50vh" {...rest}>
@@ -70,12 +73,9 @@ export const Feed = <T,>(props: Props<T> & StackProps) => {
                 >
                     <Box>
                         <Heading size="lg" textAlign="center">
-                            Inga inlägg
+                            {t("noEntriesHeader")}
                         </Heading>
-                        <Text color="gray.500">
-                            Det verkar som att det saknas inlägg för denna
-                            kategori.
-                        </Text>
+                        <Text color="gray.500">{t("noEntriesBody")}</Text>
                     </Box>
                 </Flex>
             </Flex>

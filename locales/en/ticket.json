@@ -1,0 +1,19 @@
+{
+    "infoLabel": {
+        "paid": {
+            "label": "Paid",
+            "positiveAnswer": "Yes",
+            "negativeAnswer": "No"
+        },
+        "ticket": "Ticket",
+        "date": "Date",
+        "time": "Time",
+        "location": "Location",
+        "name": "Name",
+        "diets": "Diets",
+        "allergens": "Allergens",
+        "email": "Email",
+        "phone": "Phone"
+    },
+    "from": "from {{committee}}"
+}

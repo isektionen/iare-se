@@ -3,6 +3,7 @@ import { formatDistanceToNow, isAfter } from "date-fns";
 import { enGB, sv } from "date-fns/locale";
 import { Flex } from "@chakra-ui/react";
 import { getTimeLeft } from "utils/dates";
+import useTranslation from "next-translate/useTranslation";
 interface Props {
     deadline: string;
     description: {
@@ -11,7 +12,8 @@ interface Props {
     };
 }
 export const DeadlineCounter = (props: Props) => {
-    const timeLeft = getTimeLeft(props.deadline);
+    const { lang } = useTranslation();
+    const timeLeft = getTimeLeft(props.deadline, false, lang);
     const isDue = isAfter(new Date(), new Date(props.deadline));
 
     const description = isDue

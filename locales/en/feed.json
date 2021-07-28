@@ -1,0 +1,9 @@
+{
+    "noEntriesHeader": "No entries",
+    "noEntriesBody": "It seems like there are no found entries",
+    "sidebarCategoriesHeader": "Categories",
+    "sidebarAllCategories": "All Categories",
+    "jobFilters": ["location", "position", "industry"],
+    "rsvpButtonLabel": "RSVP",
+    "rsvpDeadlineDescription": "The rsvp closes {{time}}"
+}

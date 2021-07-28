@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FeedItem } from "./Feed";
-import { getDate, getTimeLeft } from "utils/dates";
+import { getTimeLeft } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -23,8 +23,10 @@ import { imageProvider, imageSource } from "utils/images";
 
 import AccessibleLink from "components/AccessibleLink";
 import { NextImage } from "components/NextImage";
+import useTranslation from "next-translate/useTranslation";
 
 export const EventCard = ({ item, priority }: any) => {
+    const { t, lang } = useTranslation("feed");
     return (
         <Flex
             direction={{ base: "column", lg: "row" }}
@@ -75,7 +77,9 @@ export const EventCard = ({ item, priority }: any) => {
                 <HStack mb={4}>
                     <Icon as={AiOutlineClockCircle} />
                     <Text size="sm">
-                        Osan stänger {getTimeLeft(item.deadline, true)}
+                        {t("rsvpDeadlineDescription", {
+                            time: getTimeLeft(item.deadline, true, lang),
+                        })}
                     </Text>
                 </HStack>
                 <HStack spacing={4}>
@@ -84,7 +88,7 @@ export const EventCard = ({ item, priority }: any) => {
                         variant="iareSolid"
                         onClick={() => router.push("../event/" + item.slug)}
                     >
-                        OSA
+                        {t("rsvpButtonLabel")}
                     </Button>
                     <IconButton variant="iareSolid" aria-label="socials">
                         <IoShareSocial />

@@ -54,6 +54,7 @@ App.getInitialProps = async () => {
         query: gql`
             query {
                 header {
+                    locale
                     logo {
                         alternativeText
                         width
@@ -82,8 +83,40 @@ App.getInitialProps = async () => {
                         label
                         href
                     }
+                    localizations {
+                        locale
+                        logo {
+                            alternativeText
+                            width
+                            height
+                            url
+                        }
+                        sections {
+                            id
+                            label
+                            displayDropDown
+                            href
+                            subSection {
+                                id
+                                label
+                                href
+                                description
+                                icon
+                                color
+                            }
+                        }
+                        languages {
+                            label
+                            code
+                        }
+                        contact {
+                            label
+                            href
+                        }
+                    }
                 }
                 footer {
+                    locale
                     social {
                         id
                         type
@@ -92,6 +125,18 @@ App.getInitialProps = async () => {
                     responsiblePublisher {
                         firstname
                         lastname
+                    }
+                    localizations {
+                        locale
+                        social {
+                            id
+                            type
+                            href
+                        }
+                        responsiblePublisher {
+                            firstname
+                            lastname
+                        }
                     }
                 }
             }
@@ -109,5 +154,6 @@ App.getInitialProps = async () => {
 
 import appWithI18n from "next-translate/appWithI18n";
 import i18nConfig from "../../i18n";
+import { rest } from "underscore";
 
 export default appWithI18n(App as any, { ...i18nConfig });

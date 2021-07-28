@@ -15,6 +15,7 @@ import { OrderAsTicket } from "types/strapi";
 import { getDate, getTime } from "utils/dates";
 import { TicketInfoItem } from "./TicketInfoItem";
 import Image from "next/image";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     ticket: OrderAsTicket;
@@ -25,6 +26,8 @@ const TicketContent = ({ ticket }: Props) => {
     let allergens = [] as string[];
     let tickets = [] as string[];
 
+    const { t, lang } = useTranslation("ticket");
+
     if (
         ticket.consumer?.diets &&
         ticket.consumer?.allergens &&
@@ -34,8 +37,8 @@ const TicketContent = ({ ticket }: Props) => {
         allergens = ticket.consumer.allergens.map((e) => e?.name ?? "");
         tickets = ticket.ticketReference.map((e) => e?.reference ?? "");
     }
-    const date = getDate(ticket.event?.startTime);
-    const time = getTime(ticket.event?.startTime);
+    const date = getDate(ticket.event?.startTime, "EEEE d MMM", lang);
+    const time = getTime(ticket.event?.startTime, lang);
 
     const isPaid = ticket.status === "success";
     return (
@@ -67,10 +70,17 @@ const TicketContent = ({ ticket }: Props) => {
                     </Center>
                     <HStack mt={6} w="full" spacing={4}>
                         <TicketInfoItem
-                            label="Betalt"
-                            value={isPaid ? "Ja" : "Nej"}
+                            label={t("infoLabel.paid.label")}
+                            value={
+                                isPaid
+                                    ? t("infoLabel.paid.positiveAnswer")
+                                    : t("infoLabel.paid.NegativeAnswer")
+                            }
                         />
-                        <TicketInfoItem label="Biljetter" value={tickets} />
+                        <TicketInfoItem
+                            label={t("infoLabel.ticket")}
+                            value={tickets}
+                        />
                     </HStack>
                 </GridItem>
                 <GridItem
@@ -87,37 +97,49 @@ const TicketContent = ({ ticket }: Props) => {
                             {ticket.event?.title}
                         </Text>
                         <Text as="h5" fontSize={10} textTransform="capitalize">
-                            från {ticket.event?.committee?.name}
+                            {t("from", {
+                                committee: ticket.event?.committee
+                                    ?.name as string,
+                            })}
                         </Text>
                     </Box>
                     <VStack w="full" h="full" spacing={4}>
                         <HStack w="full">
-                            <TicketInfoItem label="Datum" value={date} />
-                            <TicketInfoItem label="Tid" value={time} />
+                            <TicketInfoItem
+                                label={t("infoLabel.date")}
+                                value={date}
+                            />
+                            <TicketInfoItem
+                                label={t("infoLabel.time")}
+                                value={time}
+                            />
                         </HStack>
                         <TicketInfoItem
-                            label="Plats"
+                            label={t("infoLabel.location")}
                             value={ticket.event?.place?.name ?? ""}
                         />
                         <Divider />
                         <TicketInfoItem
-                            label="Namn"
+                            label={t("infoLabel.name")}
                             value={`${ticket.consumer?.firstName} ${ticket.consumer?.lastName}`}
                         />
                         <HStack w="full">
-                            <TicketInfoItem label="Diet" value={diets} />
                             <TicketInfoItem
-                                label="Allergier"
+                                label={t("infoLabel.diets")}
+                                value={diets}
+                            />
+                            <TicketInfoItem
+                                label={t("infoLabel.allergens")}
                                 value={allergens}
                             />
                         </HStack>
                         <HStack w="full">
                             <TicketInfoItem
-                                label="Email"
+                                label={t("infoLabel.email")}
                                 value={ticket.consumer?.email ?? ""}
                             />
                             <TicketInfoItem
-                                label="Telefon"
+                                label={t("infoLabel.phone")}
                                 value={ticket.consumer?.phoneNumber ?? ""}
                             />
                         </HStack>

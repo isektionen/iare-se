@@ -30,12 +30,16 @@ export interface GlobalProps {
 
 export interface DefHeader {
     logo: Pick<UploadFile, "height" | "width" | "url" | "alternativeText">;
+    locale: string;
+    localizations: Omit<DefHeader, "localizations">[];
     sections: ComponentHeaderMenuSection[];
     languages: ComponentHeaderLanguages[];
     contact: ComponentHeaderContact;
 }
 
 export interface DefFooter {
+    locale: string;
+    localizations: Omit<DefFooter, "localizations">[];
     social: ComponentFooterSocial[];
     responsiblePublisher: {
         firstname: string;

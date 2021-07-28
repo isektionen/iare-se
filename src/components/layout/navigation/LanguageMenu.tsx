@@ -9,9 +9,10 @@ import {
 import React from "react";
 import Image from "next/image";
 import { FaAngleDown } from "react-icons/fa";
-import { LanguageItem } from "types/header";
 import { ComponentHeaderLanguages } from "types/strapi";
-
+import setLanguage from "next-translate/setLanguage";
+import i18nConfig from "../../../../i18n";
+import useTranslation from "next-translate/useTranslation";
 interface Props {
     standardLanguage: ComponentHeaderLanguages | undefined;
     isMobile?: boolean;
@@ -23,9 +24,18 @@ interface Props {
 }
 
 export const LanguageMenu = (props: Props) => {
+    const { locales } = i18nConfig;
+    const { lang } = useTranslation();
+    const changeLanguage = async (lang: string) => {
+        if (!locales.includes(lang)) return;
+
+        await setLanguage(lang);
+    };
+
+    const currentLanguage = props.languages.find((l) => l.code === lang);
     return (
         <Menu>
-            {({ isOpen }) => (
+            {({ isOpen, onClose }) => (
                 <>
                     {
                         <MenuButton
@@ -33,21 +43,22 @@ export const LanguageMenu = (props: Props) => {
                             as={Button}
                             rightIcon={<FaAngleDown />}
                             variant="outline"
+                            closeOnSelect={true}
                         >
                             <HStack>
-                                {props.standardLanguage ? (
+                                {currentLanguage ? (
                                     <>
                                         <Image
-                                            src={`/${props.standardLanguage.code}.svg`}
+                                            src={`/${currentLanguage.code}.svg`}
                                             width={22}
                                             height={12}
-                                            alt={props.standardLanguage.label}
+                                            alt={currentLanguage.label}
+                                            priority
                                         />
                                         <span>
                                             {props.mediaQuery.isLg ||
                                                 (props.isMobile &&
-                                                    props.standardLanguage
-                                                        .label)}
+                                                    currentLanguage.label)}
                                         </span>
                                     </>
                                 ) : (
@@ -58,7 +69,13 @@ export const LanguageMenu = (props: Props) => {
                     }
                     <MenuList>
                         {props.languages.map((lang) => (
-                            <MenuItem key={lang.code}>
+                            <MenuItem
+                                key={lang.code}
+                                onClick={() => {
+                                    changeLanguage(lang.code as string);
+                                    onClose();
+                                }}
+                            >
                                 <HStack>
                                     <Image
                                         src={`/${lang.code}.svg`}

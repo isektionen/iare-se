@@ -60,6 +60,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
                             width={77}
                             height={28}
                             alt={logo?.alternativeText ?? "Iare logotype"}
+                            priority
                         />
                     </AccessibleLink>
                     <Spacer />

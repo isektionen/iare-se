@@ -38,6 +38,7 @@ import { RouteItem } from "components/sidebar/Pages";
 import { EventCard } from "components/feed/EventCard";
 import { SmallCard } from "components/feed/SmallCard";
 import { useSearch } from "hooks/use-search";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     events: Event[];
@@ -82,6 +83,8 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
 
     const shorten = (array: any[], to: number = 5) =>
         array.slice(0, Math.min(array.length, to));
+
+    const { t } = useTranslation("feed");
     return (
         <Flex direction={{ base: "column", sm: "row" }}>
             {!isAboveSm && (
@@ -92,7 +95,7 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
                         ))}
                     </Flex>
                     <HStack spacing={4} w="full" px={4} fontWeight="bold">
-                        <Text>Alla kategorier</Text>
+                        <Text>{t("sidebarAllCategories")}</Text>
                         {categories.map((cat) => (
                             <Text key={cat.name}>{cat.name}</Text>
                         ))}
@@ -104,7 +107,7 @@ const EventFeedView = ({ events: baseEvents, categories }: Props) => {
                     routes={routes}
                     categories={[
                         {
-                            label: "Alla kategorier",
+                            label: t("sidebarAllCategories"),
                             query: clearQuery,
                         },
                         ...categories.map((cat) => ({

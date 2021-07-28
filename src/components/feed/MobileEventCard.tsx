@@ -1,13 +1,13 @@
 import { Flex, Heading, Spacer, Avatar, Text, Box } from "@chakra-ui/react";
 import React from "react";
-import { getDate, getTimeLeft } from "utils/dates";
-import { imageProvider } from "utils/images";
-import { estimateReadingMinutes } from "utils/text";
+import { getTimeLeft } from "utils/dates";
 
 import AccessibleLink from "components/AccessibleLink";
 import { NextImage } from "components/NextImage";
+import useTranslation from "next-translate/useTranslation";
 
 export const MobileEventCard = ({ item, priority }: any) => {
+    const { t, lang } = useTranslation("feed");
     return (
         <AccessibleLink href={("../event/" + item.slug) as string}>
             <Flex
@@ -66,7 +66,9 @@ export const MobileEventCard = ({ item, priority }: any) => {
                         />
                         <Spacer />
                         <Text size="sm">
-                            Osan stänger {getTimeLeft(item.deadline, true)}
+                            {t("rsvpDeadlineDescription", {
+                                time: getTimeLeft(item.deadline, true, lang),
+                            })}
                         </Text>
                     </Flex>
                     <Flex

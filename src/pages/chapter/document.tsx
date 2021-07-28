@@ -125,7 +125,7 @@ const minimize = (key: string) => {
 };
 
 const DocumentView = ({ locale, document: data }: Props) => {
-    const { t } = useTranslation("common");
+    const { t, lang } = useTranslation("common");
     const allRawDocs = data.allDocuments as AllDocType[];
     const docs = allRawDocs.reduce(
         (acc, curr) => [
@@ -142,7 +142,11 @@ const DocumentView = ({ locale, document: data }: Props) => {
     const handleChangePage = ({ limit, offset }: PageOptions) => {
         return docs.slice(offset, offset + limit).map((doc) => ({
             label: doc.documentContent?.label,
-            date: getDate(doc.documentContent?.file?.created_at, "dd MMM"),
+            date: getDate(
+                doc.documentContent?.file?.created_at,
+                "dd MMM",
+                lang
+            ),
             type: doc.type,
             url: makeHref(doc.documentContent?.file?.url),
             authors:

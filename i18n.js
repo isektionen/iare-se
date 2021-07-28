@@ -4,6 +4,7 @@ module.exports = {
     loader: false,
     pages: {
         "*": ["common"],
+        "rgx:^/feed/?.*": ["feed"],
     },
     loadLocaleFrom: (locale, namespace) =>
         import(`./locales/${locale}/${namespace}`).then((m) => m.default),

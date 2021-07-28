@@ -1,3 +1,7 @@
 {
-    "documentPath": "sektionen/dokument"
+    "documentPath": "sektionen/dokument",
+    "brandingCopyright": "{{year}} Chapter of Industrial Economics",
+    "responsibleAuthor": "Responsible author {{name}}",
+    "responsibleMaintainer": "Developed with 🤎 by webgroup",
+    "": ""
 }

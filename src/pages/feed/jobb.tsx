@@ -30,6 +30,7 @@ import { RouteItem } from "components/sidebar/Pages";
 
 import { JobCard } from "components/feed/JobCard";
 import { Divider } from "components/Divider";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     jobs: Jobs[];
@@ -37,7 +38,7 @@ interface Props {
 }
 
 const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
-    const router = useRouter();
+    const { t } = useTranslation("feed");
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
     const isAboveLg = useBreakpointValue({ base: false, lg: true });
 
@@ -55,7 +56,7 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
         query: () => {},
     }));
 
-    const filters = ["plats", "roll", "bransch"];
+    const filters = t("jobFilters", {}, { returnObjects: true });
 
     const shorten = (array: any[], to: number = 5) =>
         array.slice(0, Math.min(array.length, to));

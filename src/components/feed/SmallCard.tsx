@@ -15,8 +15,10 @@ import { getTimeLeft } from "utils/dates";
 import { MdLocationOn, MdPeople } from "react-icons/md";
 import AccessibleLinkOverlay from "components/AccessibleLinkOverlay";
 import { Event } from "types/strapi";
+import useTranslation from "next-translate/useTranslation";
 
 export const SmallCard = (props: Event) => {
+    const { lang } = useTranslation();
     return (
         <AccessibleLinkOverlay href={"/event/" + props.slug}>
             <Flex
@@ -35,7 +37,7 @@ export const SmallCard = (props: Event) => {
                         <HStack>
                             <Icon as={AiOutlineClockCircle} />
                             <Text size="sm">
-                                {getTimeLeft(props.deadline, true)}
+                                {getTimeLeft(props.deadline, true, lang)}
                             </Text>
                         </HStack>
                     </Flex>
@@ -49,7 +51,7 @@ export const SmallCard = (props: Event) => {
                             <HStack>
                                 <Icon as={AiOutlineClockCircle} />
                                 <Text size="sm">
-                                    {getTimeLeft(props.deadline, true)}
+                                    {getTimeLeft(props.deadline, true, lang)}
                                 </Text>
                             </HStack>
                         </Flex>

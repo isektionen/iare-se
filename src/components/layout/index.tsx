@@ -6,6 +6,7 @@ import Meta from "./Meta";
 import { Box, Container, Flex, VStack } from "@chakra-ui/react";
 import { FooterProps } from "types/footer";
 import { DefHeader, DefFooter } from "types/global";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     header: DefHeader;
@@ -14,9 +15,23 @@ interface Props {
 }
 
 const Layout = (props: Props) => {
+    const { lang } = useTranslation();
+    let header: DefHeader;
+    let footer: DefFooter;
+    if (lang === props.header.locale) {
+        header = props.header;
+        footer = props.footer;
+    } else {
+        header = props.header.localizations.find(
+            (l) => l.locale === lang
+        ) as DefHeader;
+        footer = props.footer.localizations.find(
+            (l) => l.locale === lang
+        ) as DefFooter;
+    }
     return (
         <VStack>
-            <Header {...props.header} />
+            <Header {...header} />
             <Meta />
             <Flex
                 w="full"
@@ -27,9 +42,7 @@ const Layout = (props: Props) => {
             >
                 {props.children}
             </Flex>
-            <Footer
-                {...{ ...props.footer, sections: props.header?.sections ?? [] }}
-            />
+            <Footer {...{ ...footer, sections: header?.sections ?? [] }} />
         </VStack>
     );
 };

@@ -15,6 +15,7 @@ import { Sidebar } from "components/sidebar/Sidebar";
 import { useSearch } from "hooks/use-search";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticProps } from "next";
+import useTranslation from "next-translate/useTranslation";
 import router from "next/router";
 import React from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -31,7 +32,7 @@ interface Props {
 
 const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
-
+    const { t } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(
         () => basePosts,
         (item) => ({
@@ -54,7 +55,7 @@ const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
     const posts = filter(basePosts);
     const categories = [
         {
-            label: "Alla kategorier",
+            label: t("sidebarAllCategories"),
             query: clearQuery,
         },
         ...baseCategories.map((category) => ({
@@ -72,7 +73,6 @@ const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
                         ))}
                     </Flex>
                     <HStack spacing={4} w="full" px={4} fontWeight="bold">
-                        <Text>Alla kategorier</Text>
                         {categories.map((cat) => (
                             <Text key={cat.label}>{cat.label}</Text>
                         ))}

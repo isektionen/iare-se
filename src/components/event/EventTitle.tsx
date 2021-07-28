@@ -1,5 +1,6 @@
 import { Flex, Badge, HStack, Icon, Text } from "@chakra-ui/react";
 import Box from "components/motion/Box";
+import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export const EventTitle = (props: Props) => {
+    const { lang } = useTranslation();
+
     return (
         <Flex justify="space-between" align="center" w="full">
             <Box>
@@ -43,7 +46,7 @@ export const EventTitle = (props: Props) => {
                     <HStack>
                         <Icon as={MdDateRange} />
                         <Text textTransform="capitalize">
-                            {getDate(props.startTime)}
+                            {getDate(props.startTime, "EEEE d MMM", lang)}
                         </Text>
                     </HStack>
                 )}

@@ -1,0 +1,11 @@
+{
+    "headDocuments": "Huvuddokument",
+    "tableHeader": {
+        "title": "titel",
+        "type": "typ",
+        "authors": "författare",
+        "date": "datum"
+    },
+    "controlPages": "{{currentPage}} av {{pages}}",
+    "noEntriesFound": "Inga dokument hittades"
+}

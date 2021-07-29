@@ -158,8 +158,4 @@ App.getInitialProps = async () => {
     }
 };
 
-import appWithI18n from "next-translate/appWithI18n";
-import i18nConfig from "../../i18n";
-import { rest } from "underscore";
-
 export default App;

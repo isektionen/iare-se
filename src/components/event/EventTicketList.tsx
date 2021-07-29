@@ -14,7 +14,10 @@ export const EventTicketList = (props: Props) => {
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: "eventTickets",
         defaultValue: props.currentTickets ? props.currentTickets[0] : "0",
-        onChange: props.onChange,
+        onChange: (value) => {
+            console.log(value);
+            props.onChange(value);
+        },
     });
 
     const group = getRootProps();
@@ -22,7 +25,9 @@ export const EventTicketList = (props: Props) => {
     return (
         <VStack {...group} w="full" pb={2}>
             {props.tickets?.Tickets?.map((ticket, i) => {
-                const radio = getRadioProps({ value: ticket?.id });
+                const radio = getRadioProps({
+                    value: ticket?.ticketUID as string,
+                });
                 return (
                     <Box key={i} w="full">
                         {props.children({ radio, ticket })}

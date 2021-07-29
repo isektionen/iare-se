@@ -1,0 +1,43 @@
+{
+    "eventDeadlineDescription": {
+        "after": "Det var {TIMELEFT} sedan osan stängde",
+        "before": "Det är {TIMELEFT} tills osan stänger"
+    },
+    "diet": {
+        "label": "Diet",
+        "description": "Ange den diet(er) som passar dig bäst",
+        "search": {
+            "placeholder": "Sök efter dieter",
+            "createText": "Lägg till som ny"
+        }
+    },
+    "allergen": {
+        "label": "Allergier",
+        "description": "Ange den allergi(er) som passar dig bäst",
+        "search": {
+            "placeholder": "Sök efter allergier",
+            "createText": "Lägg till som ny"
+        }
+    },
+    "orderConfirmation": {
+        "title": "Konfirmation",
+        "firstName": "Förnamn",
+        "lastName": "Eftername",
+        "email": "Email",
+        "phone": "Telefon",
+        "button": {
+            "label": "Osa"
+        }
+    },
+    "error":  {
+        "deadline": {
+            "message": "Osan för detta event är redan passerad"
+        },
+        "invalidIntention": {
+            "message": "Det IID:et som webbläsaren gav är felaktigt"
+        }
+    },
+    "badge": {
+        "new": "nyhet"
+    }
+}

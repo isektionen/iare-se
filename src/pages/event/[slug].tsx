@@ -46,12 +46,11 @@ interface Props {
     diets: Diet[];
     allergies: Allergy[];
 }
-const EventView = ({ event, diets, allergies, ...rest }: Props) => {
+const EventView = ({ event, diets, allergies }: Props) => {
     const { t, lang } = useTranslation("event");
     const router = useRouter();
 
     const Dibs = useDibs();
-
     const [beforeDeadline] = useState(
         isBefore(new Date(), new Date(event.deadline))
     );
@@ -108,7 +107,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     const handleOrderUpdate = async (ticketId: string) => {
         if (checkout) checkout.freezeCheckout();
         if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.id}/${intentionId}`;
+            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
             const res = await fetch(url, {
                 method: "PUT",
                 headers: {
@@ -188,7 +187,9 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 const { iid } = nextQueryParams();
                 if (!iid) {
                     const { intentionId, paymentId } =
-                        await snapshot.getPromise(intention(event.id));
+                        await snapshot.getPromise(
+                            intention(event.fullfillmentUID as string)
+                        );
                     router.push(`/event/${event.slug}?iid=${intentionId}`);
                     set(intentionState, intentionId);
 
@@ -478,6 +479,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             query FindEvent($slug: ID!) {
                 event(id: $slug) {
                     locale
+                    fullfillmentUID
                     id
                     slug
                     title
@@ -488,6 +490,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     tickets {
                         Tickets {
                             id
+                            ticketUID
                             name
                             price
                         }
@@ -514,6 +517,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     }
                     localizations {
                         id
+                        fullfillmentUID
                         locale
                         slug
                         title
@@ -524,6 +528,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                         tickets {
                             Tickets {
                                 id
+                                ticketUID
                                 name
                                 price
                             }

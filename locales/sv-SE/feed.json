@@ -1,0 +1,21 @@
+{
+    "noEntriesHeader": "Inga inlägg",
+    "noEntriesBody": "Det verkar som att det saknas inlägg för denna kategori",
+    "sidebarCategoriesHeader": "Kategorier",
+    "sidebarAllCategories": "Alla kategorier",
+    "jobFilters": ["plats", "roll", "bransch"],
+    "rsvpButtonLabel": "OSA",
+    "rsvpDeadlineDescription": "Osan stänger {{time}}",
+    "routes": [{
+        "label": "Händelser",
+        "href": "/feed"
+    },
+    {
+        "label": "Event",
+        "href": "/feed/event"
+    },
+    {
+        "label": "Jobb",
+        "href": "/feed/job"
+    }]
+}

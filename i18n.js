@@ -1,6 +1,6 @@
 module.exports = {
-    locales: ["en", "sv"],
-    defaultLocale: "sv",
+    locales: ["en", "sv-SE"],
+    defaultLocale: "sv-SE",
     pages: {
         "*": ["common"],
         "rgx:^/feed/?.*": ["feed"],

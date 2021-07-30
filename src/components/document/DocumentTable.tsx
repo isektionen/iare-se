@@ -16,7 +16,6 @@ import {
 import { useDocument } from "hooks/use-document";
 import { usePagination } from "hooks/use-pagination";
 import useTranslation from "next-translate/useTranslation";
-import { AllDocType } from "pages/chapter/document";
 import React, { ReactNode } from "react";
 import { IconType } from "react-icons";
 

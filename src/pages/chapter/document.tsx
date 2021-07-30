@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
 import {
-    ComponentDocumentDocument,
     ComponentDocumentDocuments,
     Document as DocumentType,
     UsersPermissionsUser,
@@ -58,14 +57,6 @@ import { isSameYear } from "date-fns";
 interface Props {
     data: DocumentType;
     locale: string;
-}
-
-export interface AllDocType {
-    id: string;
-    documentContent?: ComponentDocumentDocument;
-    authors?: UsersPermissionsUser[];
-    __component?: string;
-    type?: string;
 }
 
 type Control = {

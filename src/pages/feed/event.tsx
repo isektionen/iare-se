@@ -176,6 +176,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
             events: data.events,
             categories: data.eventCategories,
         },
+        revalidate: 60 * 2,
     };
 };
 

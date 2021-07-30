@@ -85,7 +85,7 @@ export const MobileNavigation = (props: Props) => {
                             ))}
                             <Spacer />
                             <Flex direction="column">
-                                <LanguageMenu
+                                {/*<LanguageMenu
                                     standardLanguage={
                                         props.languages
                                             ? props.languages.find(
@@ -96,7 +96,8 @@ export const MobileNavigation = (props: Props) => {
                                     languages={props.languages}
                                     mediaQuery={props.mediaQuery}
                                     isMobile
-                                />
+                                /> */}
+
                                 <Button
                                     mt={2}
                                     variant="iareSolid"

@@ -289,6 +289,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
             locale,
             data: data.document,
         },
+        revalidate: 2 * 60,
     };
 };
 

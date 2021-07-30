@@ -30,12 +30,12 @@ export const NavigationButtons = (props: Props) => {
                 aria-label="Search articles"
                 icon={<FaSearch />}
                 variant="outline"
-            />*/}
+            />
             <LanguageMenu
                 standardLanguage={standardLanguage}
                 languages={props.languages}
                 mediaQuery={props.mediaQuery}
-            />
+            />*/}
 
             <Button
                 leftIcon={<MdChatBubble />}

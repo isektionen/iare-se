@@ -83,6 +83,7 @@ export const DocumentContainer = (props: DocumentProps) => {
         onLoadSuccess,
         search: () => console.warn("DEPRECATED UNTIL FURTHER AGREEMENT"),
     };
+
     return (
         <DocumentContext.Provider value={value}>
             {props.children}

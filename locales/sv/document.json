@@ -4,7 +4,13 @@
         "title": "titel",
         "type": "typ",
         "authors": "författare",
-        "date": "datum"
+        "date": "datum",
+        "archive": "arkiverad",
+        "current": "nuvarande"
+    },
+    "boolean": {
+        "true": "ja",
+        "false": "nej"
     },
     "controlPages": "{{currentPage}} av {{pages}}",
     "noEntriesFound": "Inga dokument hittades"

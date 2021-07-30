@@ -4,7 +4,13 @@
         "title": "title",
         "type": "type",
         "authors": "authors",
-        "date": "date"
+        "date": "date",
+        "archive": "archive",
+        "current": "current"
+    },
+    "boolean": {
+        "true": "yes",
+        "false": "no"
     },
     "controlPages": "{{currentPage}} of {{pages}}",
     "noEntriesFound": "No documents found"

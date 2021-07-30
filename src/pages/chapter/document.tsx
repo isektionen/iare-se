@@ -4,10 +4,10 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
-import loadNamespaces from "next-translate/loadNamespaces";
 import {
     ComponentDocumentDocument,
-    Document as DocType,
+    ComponentDocumentDocuments,
+    Document as DocumentType,
     UsersPermissionsUser,
 } from "../../types/strapi";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
@@ -53,9 +53,10 @@ import dynamic from "next/dynamic";
 
 import setLanguage from "next-translate/setLanguage";
 import { LanguageWrapper } from "components/LanguageWrapper";
-
+import _ from "underscore";
+import { isSameYear } from "date-fns";
 interface Props {
-    document: DocType;
+    data: DocumentType;
     locale: string;
 }
 
@@ -67,13 +68,15 @@ export interface AllDocType {
     type?: string;
 }
 
-const DocumentControl = ({ data }: { data: DocType }) => {
+type Control = {
+    data: ComponentDocumentDocuments[];
+};
+
+const DocumentControl = ({ data }: Control) => {
     const { t } = useTranslation("document");
     const { setDocument, document, goBackward, goForward } = useDocument();
 
-    const [currentDocument, setCurrentDocument] = useState(
-        data.currentRegulations
-    );
+    const [currentDocument, setCurrentDocument] = useState(data[0]);
     useEffect(() => {
         if (currentDocument) {
             const href = currentDocument.file?.url;
@@ -125,33 +128,27 @@ const minimize = (key: string) => {
     return key;
 };
 
-const DocumentView = ({ locale, document: data }: Props) => {
+const DocumentView = ({ data }: Props) => {
     const { t, lang } = useTranslation("document");
-    const allRawDocs = data.allDocuments as AllDocType[];
-    const docs = allRawDocs.reduce(
-        (acc, curr) => [
-            ...acc,
-            {
-                ...curr,
-                // @ts-ignore: REST and GraphQL types are not identical
-                type: minimize(curr?.__component ?? ""),
-            },
-        ],
-        [] as AllDocType[]
-    );
+
+    const document = data.document as ComponentDocumentDocuments[];
+
+    const docs = _.chain(document)
+        .sortBy("date")
+        .sortBy("current")
+        .reverse()
+        .value();
 
     const handleChangePage = ({ limit, offset }: PageOptions) => {
         return docs.slice(offset, offset + limit).map((doc) => ({
-            label: doc.documentContent?.label,
-            date: getDate(
-                doc.documentContent?.file?.created_at,
-                "dd MMM",
-                lang
-            ),
-            type: doc.type,
-            url: doc.documentContent?.file?.url,
-            authors:
-                doc?.authors?.map((user) => user.nickname).join(", ") ?? "---",
+            label: doc.name,
+            date: isSameYear(new Date(), new Date(doc.date))
+                ? getDate(doc.date, "dd MMM", lang)
+                : getDate(doc.date, "dd MMM yy", lang),
+            type: doc.category?.name,
+            url: doc.file?.url,
+            archive: doc.archived ? t("boolean.true") : t("boolean.false"),
+            current: doc.current ? t("boolean.true") : t("boolean.false"),
         }));
     };
 
@@ -171,50 +168,6 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     p={8}
                     w={{ base: "full", md: "50%" }}
                 >
-                    <Box mb={8} w="full">
-                        <Heading as="h2" size="lg" mb={8}>
-                            {t("headDocuments")}
-                        </Heading>
-                        <Flex
-                            direction="row"
-                            justify={{
-                                base: "flex-start",
-                                lg: "space-evenly",
-                            }}
-                            w="full"
-                            wrap={{
-                                base: "nowrap",
-                                md: "wrap",
-                                lg: "nowrap",
-                            }}
-                        >
-                            <DocumentCard
-                                isCurrent
-                                label={data.currentStatute?.label}
-                                url={data.currentStatute?.file?.url}
-                                createdAt={
-                                    data.currentStatute?.file?.created_at
-                                }
-                            />
-                            <DocumentCard
-                                isCurrent
-                                label={data.currentRegulations?.label}
-                                url={data.currentRegulations?.file?.url}
-                                createdAt={
-                                    data.currentRegulations?.file?.created_at
-                                }
-                            />
-                            <DocumentCard
-                                isCurrent
-                                label={data.currentFinancialReport?.label}
-                                url={data.currentFinancialReport?.file?.url}
-                                createdAt={
-                                    data.currentFinancialReport?.file
-                                        ?.created_at
-                                }
-                            />
-                        </Flex>
-                    </Box>
                     <PageContainer
                         itemQuantity={docs.length}
                         itemsPerPage={10}
@@ -231,12 +184,12 @@ const DocumentView = ({ locale, document: data }: Props) => {
                                     id: "type",
                                 },
                                 {
-                                    label: t("tableHeader.authors"),
-                                    id: "authors",
-                                },
-                                {
                                     label: t("tableHeader.date"),
                                     id: "date",
+                                },
+                                {
+                                    label: t("tableHeader.current"),
+                                    id: "current",
                                 },
                             ]}
                             actions={[
@@ -307,7 +260,7 @@ const DocumentView = ({ locale, document: data }: Props) => {
                     overflow="hidden"
                     p={8}
                 >
-                    <DocumentControl data={data} />
+                    <DocumentControl data={docs} />
                     <Document />
                 </Flex>
             </DocumentContainer>
@@ -316,12 +269,34 @@ const DocumentView = ({ locale, document: data }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const { data } = await axios.get("/document?_locale=" + locale);
+    //const { data } = await axios.get("/document?_locale=" + locale);
+    //const { data } = await axios.get("/document");
+
+    const { data } = await strapi.query<{ document: DocumentType }>({
+        query: gql`
+            query {
+                document {
+                    document {
+                        name
+                        date
+                        category {
+                            name
+                        }
+                        file {
+                            url
+                        }
+                        archived
+                        current
+                    }
+                }
+            }
+        `,
+    });
 
     return {
         props: {
             locale,
-            document: data,
+            data: data.document,
         },
     };
 };

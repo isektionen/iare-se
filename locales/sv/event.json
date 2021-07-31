@@ -39,5 +39,11 @@
     },
     "badge": {
         "new": "nyhet"
+    },
+    "passwordProtected": {
+        "validateLabel": "validera",
+        "showLabel": "dölj",
+        "hideLabel": "visa",
+        "placeholder": "ange lösenord"
     }
 }

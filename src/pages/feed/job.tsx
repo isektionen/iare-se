@@ -178,7 +178,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
             jobs: data.jobs,
             categories: data.jobCategories,
         },
-        revalidate: 60 * 2,
+        revalidate: 20,
     };
 };
 

@@ -39,5 +39,11 @@
     },
     "badge": {
         "new": "new"
+    },
+    "passwordProtected": {
+        "validateLabel": "validate",
+        "showLabel": "hide",
+        "hideLabel": "show",
+        "placeholder": "provide password"
     }
 }

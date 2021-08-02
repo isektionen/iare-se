@@ -57,15 +57,15 @@ export const OptionsInput = (props: Props) => {
                     inputLeftIcon={<FaSearch />}
                     inputOptions={{
                         variant: "filled",
-                        bg: "porter.100",
+                        bg: "gray.50",
                         _hover: {
-                            bg: "porter.200",
+                            bg: "gray.200",
                         },
                         _active: {
-                            bg: "porter.400",
+                            bg: "gray.300",
                         },
                         _focus: {
-                            bg: "porter.100",
+                            bg: "gray.100",
                             borderColor: "blue.300",
                         },
                     }}

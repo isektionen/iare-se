@@ -15,7 +15,6 @@ const Footer = (props: Props) => {
         <Flex
             as="footer"
             width="full"
-            bg="gray.50"
             pt={8}
             pb={12}
             px={{ base: 4, md: 12 }}

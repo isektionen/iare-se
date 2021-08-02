@@ -41,7 +41,7 @@ const Header = ({ logo, sections, languages, contact }: DefHeader) => {
             <Box
                 ref={ref}
                 py={4}
-                bg="gray.50"
+                bg="white"
                 as="header"
                 position="sticky"
                 transition="box-shadow 0.3s"

@@ -15,6 +15,7 @@ const AccessibleLink = ({
     children,
     as,
     afterClick,
+    ...rest
 }: AccessibleLinkProps) => {
     const router = useRouter();
     const handleAfterClick = () => {
@@ -29,10 +30,12 @@ const AccessibleLink = ({
                 </Box>
             ) : !afterClick && !isExternal ? (
                 <Link href={href} as={as} passHref>
-                    <ChakraLink isExternal={isExternal}>{children}</ChakraLink>
+                    <ChakraLink isExternal={isExternal} {...rest}>
+                        {children}
+                    </ChakraLink>
                 </Link>
             ) : (
-                <ChakraLink isExternal={isExternal} href={href}>
+                <ChakraLink isExternal={isExternal} href={href} {...rest}>
                     {children}
                 </ChakraLink>
             )}

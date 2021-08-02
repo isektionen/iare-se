@@ -1,6 +1,7 @@
 import { theme, extendTheme } from "@chakra-ui/react";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
 import { ButtonStyle as Button } from "./components/buttonStyles";
+import { StepsStyleConfig as Steps } from "chakra-ui-steps";
 const breakpoints = createBreakpoints({
     sm: "30em",
     md: "50em",
@@ -13,7 +14,7 @@ const customTheme = extendTheme({
     fonts: {
         ...theme.fonts,
         body: "Source Sans Pro",
-        heading: "Source Sans Pro",
+        heading: "Oxygen",
     },
     colors: {
         ...theme.colors,
@@ -41,7 +42,7 @@ const customTheme = extendTheme({
         },
     },
     breakpoints,
-    components: { Button },
+    components: { Button, Steps },
 });
 
 export default customTheme;

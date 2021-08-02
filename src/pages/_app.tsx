@@ -1,7 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import "@fontsource/source-sans-pro";
 import customTheme from "styles/customTheme";
 import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
@@ -12,6 +11,14 @@ import React, { StrictMode } from "react";
 import { Footer, Header } from "types/strapi";
 import { DefFooter, DefHeader } from "types/global";
 import { pdfjs } from "react-pdf";
+
+import "@fontsource/source-sans-pro/200.css";
+import "@fontsource/source-sans-pro/300.css";
+import "@fontsource/source-sans-pro/400.css";
+import "@fontsource/source-sans-pro/600.css";
+import "@fontsource/oxygen/300.css";
+import "@fontsource/oxygen/400.css";
+import "@fontsource/oxygen/700.css";
 
 interface Props extends AppProps {
     headerProps: DefHeader;

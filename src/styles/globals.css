@@ -10,7 +10,7 @@ body,
     /*overflow: hidden;*/
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--chakra-colors-gray-50);
+    background-color: "white";
 }
 
 .dibs-checkout-wrapper {

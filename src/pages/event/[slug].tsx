@@ -1,7 +1,13 @@
 import { useRecoilSSRState, useRecoilSSRValue } from "components/RecoilSSR";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { useRecoilCallback } from "recoil";
 import {
     intention,
@@ -19,9 +25,13 @@ import { useRouter } from "next/router";
 import {
     Flex,
     Box,
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
+    Icon,
+    Heading,
+    Text,
+    VStack,
+    Stack,
+    StackDivider,
+    Button,
 } from "@chakra-ui/react";
 import { EventTitle } from "components/event/EventTitle";
 import { EventDiscription } from "components/event/EventDiscription";
@@ -40,6 +50,15 @@ import { EventPasswordProtection } from "components/event/EventPasswordProtectio
 import { CheckoutApi, useDibs } from "hooks/use-dibs";
 import useTranslation from "next-translate/useTranslation";
 import { changeLocaleData } from "utils/lang";
+import AccessibleLink from "components/AccessibleLink";
+import { IoMdArrowDropleft, IoMdArrowDropleftCircle } from "react-icons/io";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { getDate } from "utils/dates";
+import { MdDateRange } from "react-icons/md";
+import { Step, Steps, useSteps } from "chakra-ui-steps";
+import { VStepper } from "components/event/VStepper";
+import { Two } from "components/event/steps/Two";
+import { One } from "components/event/steps/One";
 
 interface Props {
     event: Event;
@@ -273,177 +292,164 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
             netsCheckout.style.width = "100%";
         }
     }, [checkout, orderIsFree]);
+
+    const steps = useMemo(
+        () => [
+            {
+                label: t("step.one"),
+                content: (
+                    <One
+                        label={t("step.one")}
+                        intendedTickets={intendedTickets}
+                        tickets={event.tickets}
+                        handleOrderUpdate={handleOrderUpdate}
+                    />
+                ),
+            },
+            {
+                label: t("step.two"),
+                content: (
+                    <Two
+                        label={t("step.two")}
+                        diets={diets}
+                        allergies={allergies}
+                        dietResult={dietResult}
+                        setDietResult={setDietResult}
+                        specialDietResult={specialDietResult}
+                        setSpecialDietResult={setSpecialDietResult}
+                    />
+                ),
+            },
+            {
+                label: t("step.three"),
+                content: <Box w="full" h="100px" bg="blue"></Box>,
+            },
+        ],
+        [t, allergies, diets, dietResult, specialDietResult]
+    );
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    const goForward = useCallback(() => {
+        setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
+    }, [setActiveStep, activeStep, steps]);
+
+    const goBackward = useCallback(() => {
+        setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
+    }, [setActiveStep, activeStep, steps]);
+    const step = useMemo(() => steps[activeStep], [steps, activeStep]);
+
+    if (event.passwordProtected && !isAuthenticated) {
+        return (
+            <EventPasswordProtection
+                onSubmit={handlePasswordSubmit}
+                placeholderText={t("passwordProtected.placeholder")}
+                showLabel={t("passwordProtected.showLabel")}
+                hideLabel={t("passwordProtected.hideLabel")}
+                submitLabel={t("passwordProtected.validateLabel")}
+            />
+        );
+    }
     return (
         <Flex
-            direction={{ base: "column", md: "row" }}
-            minH="560px"
+            direction="column"
+            bg="white"
             pos="relative"
+            px={16}
+            py={10}
+            height="100vh" // remove after struct
+            _before={{
+                content: '""',
+                bg: "gray.50",
+                position: "absolute",
+                borderTop: "1px solid",
+                borderTopColor: "gray.200",
+                width: "full",
+                left: 0,
+                height: "full",
+                top: "325px",
+            }}
         >
-            {event.passwordProtected && !isAuthenticated && (
-                <EventPasswordProtection
-                    onSubmit={handlePasswordSubmit}
-                    placeholderText={t("passwordProtected.placeholder")}
-                    showLabel={t("passwordProtected.showLabel")}
-                    hideLabel={t("passwordProtected.hideLabel")}
-                    submitLabel={t("passwordProtected.validateLabel")}
-                />
-            )}
-            {(!event.passwordProtected || isAuthenticated) && (
-                <>
-                    <Flex
-                        p={{ base: 4, md: 12 }}
-                        bg="gray.100"
-                        flex={1}
-                        direction="column"
+            <Box w="full">
+                <AccessibleLink
+                    href="/feed/event"
+                    textDecoration="none"
+                    _hover={{ textDecoration: "none" }}
+                >
+                    <Icon as={IoMdArrowDropleft} /> {t("back")}
+                </AccessibleLink>
+                <Heading
+                    my={4}
+                    size="2xl"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                >
+                    {event.title}
+                </Heading>
+                <Text color="gray.600" my={6} noOfLines={5}>
+                    {event.description}
+                </Text>
+            </Box>
+            <Stack
+                direction={{ base: "column", lg: "row" }}
+                spacing={16}
+                h="full"
+                w="full"
+                zIndex="1"
+            >
+                <Box as="aside" w="250px" h="full">
+                    <Box bg="gray.100" rounded="md" p={6} fontWeight="600">
+                        {event.committee?.name}
+                    </Box>
+                    <VStack
+                        mt={14}
+                        spacing={8}
+                        divider={<StackDivider borderColor="gray.200" />}
+                        align="stretch"
                     >
-                        {/*<Breadcrumb pb={2}>
-                            {breadCrumbs.map((b, i) => (
-                                <BreadcrumbItem key={i}>
-                                    <BreadcrumbLink textTransform="capitalize">
-                                        {b}
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                            ))}
-                            <BreadcrumbItem isCurrentPage>
-                                <BreadcrumbLink
+                        <Box>
+                            <Flex align="center">
+                                <Icon as={FaMapMarkerAlt} mr={2} />
+                                <Text
                                     textTransform="capitalize"
-                                    fontWeight="bold"
+                                    fontWeight="600"
                                 >
-                                    {event.title}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            </Breadcrumb>*/}
-                        <Flex direction="column">
-                            <EventTitle
-                                title={event.title}
-                                startTime={event.startTime}
-                                place={event.place}
-                                badge={{ color: "green", text: t("badge.new") }}
-                            />
-                            <EventDiscription description={event.description} />
-                            {intendedTickets && intendedTickets?.length > 0 && (
-                                <EventTicketList
-                                    tickets={event.tickets}
-                                    onChange={handleOrderUpdate}
-                                    currentTickets={intendedTickets}
+                                    {event?.place?.name}
+                                </Text>
+                            </Flex>
+                            <Flex align="center">
+                                <Icon as={MdDateRange} mr={2} />
+                                <Text
+                                    textTransform="capitalize"
+                                    fontWeight="600"
                                 >
-                                    {({ radio, ticket }) => (
-                                        <EventTicketItem
-                                            {...radio}
-                                            ticket={{
-                                                ...ticket,
-                                                currency: "kr",
-                                            }}
-                                        />
+                                    {getDate(
+                                        event.startTime,
+                                        "EEEE d MMM",
+                                        lang
                                     )}
-                                </EventTicketList>
-                            )}
-                            <EventDeadline
-                                deadline={event.deadline}
-                                description={{
-                                    before: t(
-                                        "eventDeadlineDescription.before"
-                                    ),
-                                    after: t("eventDeadlineDescription.after"),
-                                }}
-                            />
-                            {beforeDeadline &&
-                                !invalidIntention &&
-                                event.servingOptions?.servingFood && (
-                                    <>
-                                        <Divider />
-                                        <OptionsInput
-                                            name={t("diet.label")}
-                                            description={t("diet.description")}
-                                            options={diets.map((entity) => ({
-                                                value: entity.id,
-                                                label: entity.name,
-                                            }))}
-                                            result={dietResult}
-                                            setResult={setDietResult}
-                                            placeholder={t(
-                                                "diet.search.placeholder"
-                                            )}
-                                            createText={t(
-                                                "diet.search.createText"
-                                            )}
-                                        />
-                                        <Divider />
-                                        <OptionsInput
-                                            name={t("allergen.label")}
-                                            description={t(
-                                                "allergen.description"
-                                            )}
-                                            options={allergies.map(
-                                                (entity) => ({
-                                                    value: entity.id,
-                                                    label: entity.name,
-                                                })
-                                            )}
-                                            result={specialDietResult}
-                                            setResult={setSpecialDietResult}
-                                            placeholder={t(
-                                                "allergen.search.placeholder"
-                                            )}
-                                            createText={t(
-                                                "allergen.search.createText"
-                                            )}
-                                        />
-                                    </>
-                                )}
-                        </Flex>
-                    </Flex>
-                    <Flex
-                        p={{ base: 4, md: 12 }}
-                        bg="gray.50"
-                        flex={1}
-                        direction="column"
-                    >
-                        {beforeDeadline &&
-                            !orderIsFree &&
-                            !invalidIntention && (
-                                <Box id="checkout" ref={checkoutRef} />
-                            )}
-                        {beforeDeadline && orderIsFree && !invalidIntention && (
-                            <EventConfirmation
-                                title={t("orderConfirmation.title")}
-                                firstName={{
-                                    label: t("orderConfirmation.firstName"),
-                                    placeholder: "Iaren",
-                                }}
-                                lastName={{
-                                    label: t("orderConfirmation.lastName"),
-                                    placeholder: "Portersson",
-                                }}
-                                email={{
-                                    label: t("orderConfirmation.email"),
-                                    placeholder: "iare@kth.se",
-                                }}
-                                phoneNumber={{
-                                    label: t("orderConfirmation.phone"),
-                                    placeholder: "072-01230123",
-                                }}
-                                button={{
-                                    label: t("orderConfirmation.button.label"),
-                                }}
-                                onSubmit={handleFreeOrder}
-                            />
-                        )}
-                        {invalidIntention && (
-                            <EventMessage
-                                icon={IoWarning}
-                                message={t("error.invalidIntention.message")}
-                            />
-                        )}
-                        {!beforeDeadline && !invalidIntention && (
-                            <EventMessage
-                                icon={BiCalendarExclamation}
-                                message={t("error.deadline.message")}
-                            />
-                        )}
-                    </Flex>
-                </>
-            )}
+                                </Text>
+                            </Flex>
+                        </Box>
+                        <VStepper steps={steps} activeStep={activeStep} />
+                    </VStack>
+                </Box>
+                <Box
+                    as="article"
+                    bg="white"
+                    rounded="sm"
+                    shadow="2xl"
+                    flex={1}
+                    borderWidth="1px"
+                    borderColor="gray.200"
+                    h="full"
+                    p={6}
+                >
+                    <Box w="full">{step.content}</Box>
+                    <Button onClick={goBackward}>Back</Button>
+                    <Button onClick={goForward}>Next</Button>
+                </Box>
+            </Stack>
         </Flex>
     );
 };

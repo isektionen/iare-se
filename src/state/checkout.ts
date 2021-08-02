@@ -77,9 +77,16 @@ export const validateIntention = selectorFamily<boolean, string>({
     },
 });
 
+export const forceValue = atom<any>({
+    key: "ATOM/FORCE",
+    default: undefined,
+});
+
 export const ticketsFromIntention = selector<string[] | undefined>({
     key: "SELECTOR/TICKETS",
     get: async ({ get }) => {
+        const _cache = get(forceValue);
+        if (_cache) return [_cache];
         const intentionId = get(intentionState);
         if (intentionId === "-1") return;
         const details = await getDetails(intentionId);

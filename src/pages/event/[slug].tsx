@@ -10,6 +10,8 @@ import React, {
 } from "react";
 import { useRecoilCallback } from "recoil";
 import {
+    forceRefetch,
+    forceValue,
     intention,
     intentionState,
     paymentState,
@@ -32,6 +34,7 @@ import {
     Stack,
     StackDivider,
     Button,
+    Spacer,
 } from "@chakra-ui/react";
 import { EventTitle } from "components/event/EventTitle";
 import { EventDiscription } from "components/event/EventDiscription";
@@ -59,6 +62,7 @@ import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { VStepper } from "components/event/VStepper";
 import { Two } from "components/event/steps/Two";
 import { One } from "components/event/steps/One";
+import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
 
 interface Props {
     event: Event;
@@ -86,6 +90,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     const [paymentId] = useRecoilSSRValue(pidFromIntention);
     const [[_, setPid]] = useRecoilSSRState(paymentState);
     const [intentionId] = useRecoilSSRValue(intentionState);
+    const [[__, setIntentedTickets]] = useRecoilSSRState(forceValue);
     const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
 
     const supportedLanguages: { [k: string]: string } = {
@@ -143,6 +148,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 if (setPid) {
                     setPid(data.paymentId ? data.paymentId : "-1");
                 }
+                if (setIntentedTickets) setIntentedTickets(ticketId);
             }
         }
         if (checkout) checkout.thawCheckout();
@@ -339,6 +345,8 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     }, [setActiveStep, activeStep, steps]);
     const step = useMemo(() => steps[activeStep], [steps, activeStep]);
 
+    const MotionFlex = motion(Flex);
+
     if (event.passwordProtected && !isAuthenticated) {
         return (
             <EventPasswordProtection
@@ -393,7 +401,6 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
             <Stack
                 direction={{ base: "column", lg: "row" }}
                 spacing={16}
-                h="full"
                 w="full"
                 zIndex="1"
             >
@@ -434,7 +441,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         <VStepper steps={steps} activeStep={activeStep} />
                     </VStack>
                 </Box>
-                <Box
+                <MotionFlex
                     as="article"
                     bg="white"
                     rounded="sm"
@@ -442,13 +449,21 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                     flex={1}
                     borderWidth="1px"
                     borderColor="gray.200"
-                    h="full"
+                    direction="column"
                     p={6}
                 >
-                    <Box w="full">{step.content}</Box>
-                    <Button onClick={goBackward}>Back</Button>
-                    <Button onClick={goForward}>Next</Button>
-                </Box>
+                    {step.content}
+                    <Spacer />
+                    <Flex>
+                        <Spacer />
+                        <Button onClick={goBackward} mr={1}>
+                            Back
+                        </Button>
+                        <Button onClick={goForward} ml={1}>
+                            Next
+                        </Button>
+                    </Flex>
+                </MotionFlex>
             </Stack>
         </Flex>
     );

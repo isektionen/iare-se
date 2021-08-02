@@ -1,5 +1,6 @@
 import { Heading } from "@chakra-ui/react";
 import Box from "components/motion/Box";
+import { motion } from "framer-motion";
 import React from "react";
 import { ComponentEventTickets, Maybe } from "types/strapi";
 import { EventTicketItem } from "../EventTicketItem";
@@ -19,8 +20,8 @@ export const One = ({
     handleOrderUpdate,
 }: Props) => {
     return (
-        <Box w="full" h="full">
-            <Heading size="lg" fontWeight="400">
+        <motion.div>
+            <Heading size="lg" fontWeight="700" mb={16}>
                 {label}
             </Heading>
             {intendedTickets && intendedTickets?.length > 0 && (
@@ -40,6 +41,6 @@ export const One = ({
                     )}
                 </EventTicketList>
             )}
-        </Box>
+        </motion.div>
     );
 };

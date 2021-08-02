@@ -1,4 +1,5 @@
 import { Box, Heading, StackDivider, VStack } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { Allergy, Diet } from "types/strapi";
@@ -25,11 +26,11 @@ export const Two = ({
 }: Props) => {
     const { t } = useTranslation("event");
     return (
-        <Box w="full" h="full">
-            <Heading size="lg" fontWeight="400">
+        <motion.div>
+            <Heading size="lg" fontWeight="700" mb={16}>
                 {label}
             </Heading>
-            <VStack mt={8} spacing={14} align="stretch">
+            <VStack spacing={14} align="stretch">
                 <OptionsInput
                     name={t("diet.label")}
                     description={t("diet.description")}
@@ -56,6 +57,6 @@ export const Two = ({
                     createText={t("allergen.search.createText")}
                 />
             </VStack>
-        </Box>
+        </motion.div>
     );
 };

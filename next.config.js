@@ -9,7 +9,8 @@ module.exports = withPlugins([[withBundleAnalyzer], nextTranslate], {
     },
     reactStrictMode: true,
     target: "serverless",
-    /*
+    webpack5: false,
+
     webpack: (config) => {
         return {
             ...config,
@@ -18,7 +19,7 @@ module.exports = withPlugins([[withBundleAnalyzer], nextTranslate], {
                 { canvas: "canvas", critters: "critters" },
             ],
         };
-    },*/
+    },
     i18n: {
         locales: ["en", "sv"],
         defaultLocale: "sv",

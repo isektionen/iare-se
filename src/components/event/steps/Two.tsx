@@ -1,4 +1,4 @@
-import { Box, Heading, StackDivider, VStack } from "@chakra-ui/react";
+import { Box, Divider, Heading, StackDivider, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
@@ -23,13 +23,16 @@ export const Two = ({
     setDietResult,
     specialDietResult,
     setSpecialDietResult,
+    onMount,
 }: Props) => {
     const { t } = useTranslation("event");
+
     return (
-        <motion.div>
-            <Heading size="lg" fontWeight="700" mb={16}>
+        <Box key="step-two">
+            <Heading size="lg" fontWeight="700">
                 {label}
             </Heading>
+            <Divider my={4} />
             <VStack spacing={14} align="stretch">
                 <OptionsInput
                     name={t("diet.label")}
@@ -57,6 +60,6 @@ export const Two = ({
                     createText={t("allergen.search.createText")}
                 />
             </VStack>
-        </motion.div>
+        </Box>
     );
 };

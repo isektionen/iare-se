@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import { useRecoilCallback } from "recoil";
 import {
-    forceRefetch,
     forceValue,
     intention,
     intentionState,
@@ -35,6 +34,7 @@ import {
     StackDivider,
     Button,
     Spacer,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { EventTitle } from "components/event/EventTitle";
 import { EventDiscription } from "components/event/EventDiscription";
@@ -63,6 +63,9 @@ import { VStepper } from "components/event/VStepper";
 import { Two } from "components/event/steps/Two";
 import { One } from "components/event/steps/One";
 import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
+import AnimateHeight from "react-animate-height";
+import { Three } from "components/event/steps/Three";
+import { useLogIntercept } from "hooks/use-log-intercept";
 
 interface Props {
     event: Event;
@@ -119,6 +122,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
         const isValid = await validatePassword(event.id, password);
         setIsAuthenticated(isValid);
+        return isValid;
     };
 
     const handleLanguageChange = () => {
@@ -129,54 +133,62 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
         }
     };
 
-    const handleOrderUpdate = async (ticketId: string) => {
-        if (checkout) checkout.freezeCheckout();
-        if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.id}/${intentionId}`;
-            const res = await fetch(url, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    tickets: [ticketId],
-                }),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setOrderIsFree(data.paymentId ? false : true);
-                if (setPid) {
-                    setPid(data.paymentId ? data.paymentId : "-1");
+    const handleOrderUpdate = useCallback(
+        async (ticketId: string) => {
+            if (checkout) checkout.freezeCheckout();
+            if (intentionId !== "-1") {
+                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.id}/${intentionId}`;
+                const res = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tickets: [ticketId],
+                    }),
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrderIsFree(data.paymentId ? false : true);
+                    if (setPid) {
+                        setPid(data.paymentId ? data.paymentId : "-1");
+                    }
+                    if (setIntentedTickets) setIntentedTickets(ticketId);
                 }
-                if (setIntentedTickets) setIntentedTickets(ticketId);
             }
-        }
-        if (checkout) checkout.thawCheckout();
-    };
+            if (checkout) checkout.thawCheckout();
+        },
+        [checkout, event.id, intentionId, setIntentedTickets, setPid]
+    );
 
-    const handleFreeOrder = async (orderBody: IConfirmation) => {
-        if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${intentionId}/complete`;
+    const handleFreeOrder = useCallback(
+        async (orderBody: IConfirmation) => {
+            if (intentionId !== "-1") {
+                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${intentionId}/complete`;
 
-            const diets = dietResult.map((entity) => parseInt(entity.value));
-            const allergens = specialDietResult.map((entity) =>
-                parseInt(entity.value)
-            );
+                const diets = dietResult.map((entity) =>
+                    parseInt(entity.value)
+                );
+                const allergens = specialDietResult.map((entity) =>
+                    parseInt(entity.value)
+                );
 
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...orderBody,
-                    diets,
-                    allergens,
-                }),
-            });
-            router.push(`/ticket/${intentionId}`);
-        }
-    };
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ...orderBody,
+                        diets,
+                        allergens,
+                    }),
+                });
+                router.push(`/ticket/${intentionId}`);
+            }
+        },
+        [intentionId, dietResult, specialDietResult, router]
+    );
 
     const handleOrderDetails = async () => {
         if (
@@ -205,6 +217,19 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 body: JSON.stringify(body),
             });
         }
+    };
+
+    const registerTicketOnClient = async () => {
+        const { protocol, host } = window.location;
+        const res = await fetch(
+            protocol +
+                "//" +
+                host +
+                "/api/ticket?id=" +
+                intentionId +
+                "&event=" +
+                event.id
+        );
     };
 
     const checkoutSession = useRecoilCallback(
@@ -243,7 +268,8 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                     !invalidIntention &&
                     Dibs &&
                     checkoutRef.current &&
-                    checkoutRef.current?.childElementCount === 0
+                    checkoutRef.current?.childElementCount === 0 &&
+                    activeStep === 2
                 ) {
                     setOrderIsFree(false);
                     const checkoutConfig = {
@@ -254,14 +280,16 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);
-                    _checkout.on("payment-completed", () =>
-                        router.push(`/ticket/${intentionId}`)
+                    _checkout.on(
+                        "payment-completed",
+                        async () => router.push(`/ticket/${intentionId}`)
+                        //await registerTicketOnClient()
                     );
                     _checkout.setTheme({
                         textColor: "#000",
                         primaryColor: "#1A2123",
                         linkColor: "#357AA5",
-                        backgroundColor: "#F3F5F5",
+                        backgroundColor: "#fff",
                         fontFamily: "Source Sans Pro",
                         placeholderColor: "#767676",
                         outlineColor: "#BEBEBE",
@@ -281,23 +309,42 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     }, [lang]);
 
     useEffect(() => {
-        if (beforeDeadline) {
-            checkoutSession();
-        }
-    }, [intentionId, paymentId, orderIsFree]);
-
-    useEffect(() => {
         if (paymentInitialized) {
             handleOrderDetails();
         }
     }, [paymentInitialized]);
 
+    const [isLoaded, setIsLoaded] = useState(false);
     useEffect(() => {
         const netsCheckout = document.getElementById("nets-checkout-iframe");
         if (netsCheckout) {
             netsCheckout.style.width = "100%";
+            netsCheckout.addEventListener("load", () =>
+                setTimeout(() => setIsLoaded(true), 2000)
+            );
+            return () => {
+                netsCheckout.removeEventListener("load", () =>
+                    setIsLoaded(false)
+                );
+            };
         }
     }, [checkout, orderIsFree]);
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    useEffect(() => {
+        if (beforeDeadline && isAuthenticated) {
+            checkoutSession();
+        }
+    }, [
+        intentionId,
+        paymentId,
+        orderIsFree,
+        activeStep,
+        beforeDeadline,
+        checkoutSession,
+        isAuthenticated,
+    ]);
 
     const steps = useMemo(
         () => [
@@ -328,13 +375,33 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
             },
             {
                 label: t("step.three"),
-                content: <Box w="full" h="100px" bg="blue"></Box>,
+                content: (
+                    <Three
+                        label={t("step.three")}
+                        invalidIntention={invalidIntention}
+                        orderIsFree={orderIsFree}
+                        handleFreeOrder={handleFreeOrder}
+                        checkoutRef={checkoutRef}
+                        isLoaded={isLoaded}
+                    />
+                ),
             },
         ],
-        [t, allergies, diets, dietResult, specialDietResult]
+        [
+            t,
+            allergies,
+            diets,
+            dietResult,
+            specialDietResult,
+            handleFreeOrder,
+            handleOrderUpdate,
+            event.tickets,
+            intendedTickets,
+            invalidIntention,
+            orderIsFree,
+            isLoaded,
+        ]
     );
-
-    const [activeStep, setActiveStep] = useState(0);
 
     const goForward = useCallback(() => {
         setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
@@ -345,19 +412,10 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     }, [setActiveStep, activeStep, steps]);
     const step = useMemo(() => steps[activeStep], [steps, activeStep]);
 
-    const MotionFlex = motion(Flex);
+    const ref = useRef<HTMLDivElement>(null);
 
-    if (event.passwordProtected && !isAuthenticated) {
-        return (
-            <EventPasswordProtection
-                onSubmit={handlePasswordSubmit}
-                placeholderText={t("passwordProtected.placeholder")}
-                showLabel={t("passwordProtected.showLabel")}
-                hideLabel={t("passwordProtected.hideLabel")}
-                submitLabel={t("passwordProtected.validateLabel")}
-            />
-        );
-    }
+    const isAboveMd = useBreakpointValue({ base: false, lg: true });
+
     return (
         <Flex
             direction="column"
@@ -365,7 +423,6 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
             pos="relative"
             px={16}
             py={10}
-            height="100vh" // remove after struct
             _before={{
                 content: '""',
                 bg: "gray.50",
@@ -386,34 +443,17 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 >
                     <Icon as={IoMdArrowDropleft} /> {t("back")}
                 </AccessibleLink>
-                <Heading
-                    my={4}
-                    size="2xl"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                >
-                    {event.title}
-                </Heading>
-                <Text color="gray.600" my={6} noOfLines={5}>
-                    {event.description}
-                </Text>
-            </Box>
-            <Stack
-                direction={{ base: "column", lg: "row" }}
-                spacing={16}
-                w="full"
-                zIndex="1"
-            >
-                <Box as="aside" w="250px" h="full">
-                    <Box bg="gray.100" rounded="md" p={6} fontWeight="600">
-                        {event.committee?.name}
-                    </Box>
-                    <VStack
-                        mt={14}
-                        spacing={8}
-                        divider={<StackDivider borderColor="gray.200" />}
-                        align="stretch"
+                <Flex align="center">
+                    <Heading
+                        my={4}
+                        size="2xl"
+                        textTransform="capitalize"
+                        fontWeight="bold"
                     >
+                        {event.title}
+                    </Heading>
+                    <Spacer />
+                    {!isAboveMd && (
                         <Box>
                             <Flex align="center">
                                 <Icon as={FaMapMarkerAlt} mr={2} />
@@ -438,10 +478,70 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                                 </Text>
                             </Flex>
                         </Box>
-                        <VStepper steps={steps} activeStep={activeStep} />
-                    </VStack>
-                </Box>
-                <MotionFlex
+                    )}
+                </Flex>
+                <Text color="gray.600" my={6} noOfLines={5}>
+                    {event.description}
+                </Text>
+            </Box>
+            <Stack
+                direction={{ base: "column", lg: "row" }}
+                spacing={16}
+                w="full"
+                zIndex="1"
+            >
+                {!isAboveMd && (
+                    <Box
+                        bg="gray.100"
+                        w="full"
+                        rounded="md"
+                        p={6}
+                        fontWeight="600"
+                    >
+                        {event.committee?.name}
+                    </Box>
+                )}
+                {isAboveMd && (
+                    <Box as="aside" w="250px" h="full">
+                        <Box bg="gray.100" rounded="md" p={6} fontWeight="600">
+                            {event.committee?.name}
+                        </Box>
+                        <VStack
+                            mt={14}
+                            spacing={8}
+                            divider={<StackDivider borderColor="gray.200" />}
+                            align="stretch"
+                        >
+                            <Box>
+                                <Flex align="center">
+                                    <Icon as={FaMapMarkerAlt} mr={2} />
+                                    <Text
+                                        textTransform="capitalize"
+                                        fontWeight="600"
+                                    >
+                                        {event?.place?.name}
+                                    </Text>
+                                </Flex>
+                                <Flex align="center">
+                                    <Icon as={MdDateRange} mr={2} />
+                                    <Text
+                                        textTransform="capitalize"
+                                        fontWeight="600"
+                                    >
+                                        {getDate(
+                                            event.startTime,
+                                            "EEEE d MMM",
+                                            lang
+                                        )}
+                                    </Text>
+                                </Flex>
+                            </Box>
+                            <VStepper steps={steps} activeStep={activeStep} />
+                        </VStack>
+                    </Box>
+                )}
+
+                <Flex
                     as="article"
                     bg="white"
                     rounded="sm"
@@ -450,20 +550,43 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                     borderWidth="1px"
                     borderColor="gray.200"
                     direction="column"
-                    p={6}
+                    transition="max-height 2s"
+                    minH="45vh"
+                    pos="relative"
+                    p={activeStep < steps.length - 1 ? 6 : undefined}
                 >
-                    {step.content}
-                    <Spacer />
-                    <Flex>
-                        <Spacer />
-                        <Button onClick={goBackward} mr={1}>
-                            Back
-                        </Button>
-                        <Button onClick={goForward} ml={1}>
-                            Next
-                        </Button>
-                    </Flex>
-                </MotionFlex>
+                    {event.passwordProtected && !isAuthenticated ? (
+                        <EventPasswordProtection
+                            onSubmit={handlePasswordSubmit}
+                            placeholderText={t("passwordProtected.placeholder")}
+                            showLabel={t("passwordProtected.showLabel")}
+                            hideLabel={t("passwordProtected.hideLabel")}
+                            submitLabel={t("passwordProtected.validateLabel")}
+                            errorLabel={t("errorLabel")}
+                            successLabel={t("successLabel")}
+                        />
+                    ) : (
+                        <>
+                            {step.content}
+                            <Spacer />
+                            <Flex
+                                p={
+                                    activeStep < steps.length - 1
+                                        ? undefined
+                                        : 6
+                                }
+                            >
+                                <Spacer />
+                                <Button onClick={goBackward} mr={1}>
+                                    Back
+                                </Button>
+                                <Button onClick={goForward} ml={1}>
+                                    Next
+                                </Button>
+                            </Flex>
+                        </>
+                    )}
+                </Flex>
             </Stack>
         </Flex>
     );

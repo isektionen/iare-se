@@ -12,7 +12,7 @@ body,
     -moz-osx-font-smoothing: grayscale;
     background-color: "white";
 }
-
+/*
 .dibs-checkout-wrapper {
     flex: 1 !important;
     padding-top: 2em !important;
@@ -21,6 +21,8 @@ body,
     background-color: var(--chakra-colors-gray-50) !important;
 }
 
+
 .dibs-checkout-wrapper > div {
     border-color: var(--chakra-colors-white) !important;
 }
+*/

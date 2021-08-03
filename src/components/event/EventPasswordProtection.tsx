@@ -2,23 +2,29 @@ import {
     Button,
     Center,
     Flex,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
     Icon,
     Input,
     InputGroup,
     InputRightElement,
+    useToast,
     VStack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, { useEffect } from "react";
 import { BsShieldLockFill } from "react-icons/bs";
 import { IPasswordProtect } from "types/checkout";
 
 interface Props {
-    onSubmit: (values: IPasswordProtect) => void;
+    onSubmit: (values: IPasswordProtect) => Promise<boolean>;
     placeholderText: string;
     showLabel: string;
     hideLabel: string;
     submitLabel: string;
+    errorLabel: string;
+    successLabel: string;
 }
 
 export const EventPasswordProtection = (props: Props) => {
@@ -26,30 +32,57 @@ export const EventPasswordProtection = (props: Props) => {
         handleSubmit,
         register,
         formState: { errors, isSubmitting },
+        setError,
     } = useForm();
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);
+
+    const toast = useToast();
+
+    const id = "password";
+    const onSubmit = async (event: IPasswordProtect) => {
+        const res = await props.onSubmit(event);
+        if (!res && !toast.isActive(id)) {
+            toast({
+                id,
+                position: "bottom",
+                duration: 2500,
+                description: props.errorLabel,
+                status: "error",
+            });
+        } else {
+            toast({
+                id,
+                position: "bottom",
+                duration: 2500,
+                description: props.successLabel,
+                status: "success",
+            });
+        }
+    };
+
     return (
-        <Center w="full">
+        <Flex justify="center" align="center" w="full" h="450px">
             <Flex direction="column" p={4}>
-                <form onSubmit={handleSubmit(props.onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <VStack>
                         <Icon as={BsShieldLockFill} boxSize={24} mb={10} />
                         <InputGroup size="md">
                             <Input
+                                id="password"
                                 pr="4.5rem"
                                 type={show ? "text" : "password"}
                                 placeholder={props.placeholderText}
                                 variant="filled"
-                                bg="porter.100"
+                                bg="gray.50"
                                 _hover={{
-                                    bg: "porter.200",
+                                    bg: "gray.200",
                                 }}
                                 _active={{
-                                    bg: "porter.400",
+                                    bg: "gray.400",
                                 }}
                                 _focus={{
-                                    bg: "porter.100",
+                                    bg: "gray.50",
                                     borderColor: "blue.300",
                                 }}
                                 {...register("password", {
@@ -78,6 +111,6 @@ export const EventPasswordProtection = (props: Props) => {
                     </VStack>
                 </form>
             </Flex>
-        </Center>
+        </Flex>
     );
 };

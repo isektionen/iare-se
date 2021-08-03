@@ -1,6 +1,5 @@
-import { Heading } from "@chakra-ui/react";
+import { Divider, Heading } from "@chakra-ui/react";
 import Box from "components/motion/Box";
-import { motion } from "framer-motion";
 import React from "react";
 import { ComponentEventTickets, Maybe } from "types/strapi";
 import { EventTicketItem } from "../EventTicketItem";
@@ -20,10 +19,11 @@ export const One = ({
     handleOrderUpdate,
 }: Props) => {
     return (
-        <motion.div>
-            <Heading size="lg" fontWeight="700" mb={16}>
+        <Box key="step-one">
+            <Heading size="lg" fontWeight="700">
                 {label}
             </Heading>
+            <Divider my={4} />
             {intendedTickets && intendedTickets?.length > 0 && (
                 <EventTicketList
                     tickets={tickets}
@@ -41,6 +41,6 @@ export const One = ({
                     )}
                 </EventTicketList>
             )}
-        </motion.div>
+        </Box>
     );
 };

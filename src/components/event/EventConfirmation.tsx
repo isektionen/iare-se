@@ -4,6 +4,7 @@ import {
     FormControl,
     FormErrorMessage,
     FormLabel,
+    Heading,
     HStack,
     Input,
     Text,
@@ -45,21 +46,10 @@ export const EventConfirmation = (props: Props) => {
     } = useForm();
 
     return (
-        <Box
-            pb={{ base: 4, md: 12 }}
-            pl={{ base: 4, md: 12 }}
-            pr={{ base: 4, md: 12 }}
-            pt={24}
-        >
-            <Text
-                as="h6"
-                fontSize={24}
-                textTransform="capitalize"
-                fontWeight={500}
-                mb={6}
-            >
+        <Box key="step-three" p={6}>
+            <Heading size="lg" fontWeight="700" mb={16}>
                 {props.title}
-            </Text>
+            </Heading>
             <form onSubmit={handleSubmit(props.onSubmit)} autoComplete="on">
                 <VStack spacing={3}>
                     <HStack spacing={2} w="full">
@@ -72,15 +62,15 @@ export const EventConfirmation = (props: Props) => {
                                 placeholder={props.firstName.placeholder}
                                 autoComplete="on"
                                 variant="filled"
-                                bg="porter.100"
+                                bg="gray.50"
                                 _hover={{
-                                    bg: "porter.200",
+                                    bg: "gray.200",
                                 }}
                                 _active={{
-                                    bg: "porter.400",
+                                    bg: "gray.400",
                                 }}
                                 _focus={{
-                                    bg: "porter.100",
+                                    bg: "gray.50",
                                     borderColor: "blue.300",
                                 }}
                                 {...register("firstName", {
@@ -104,15 +94,15 @@ export const EventConfirmation = (props: Props) => {
                                 placeholder={props.lastName.placeholder}
                                 autoComplete="on"
                                 variant="filled"
-                                bg="porter.100"
+                                bg="gray.50"
                                 _hover={{
-                                    bg: "porter.200",
+                                    bg: "gray.200",
                                 }}
                                 _active={{
-                                    bg: "porter.400",
+                                    bg: "gray.400",
                                 }}
                                 _focus={{
-                                    bg: "porter.100",
+                                    bg: "gray.50",
                                     borderColor: "blue.300",
                                 }}
                                 {...register("lastName", {
@@ -137,15 +127,15 @@ export const EventConfirmation = (props: Props) => {
                             placeholder={props.email.placeholder}
                             autoComplete="on"
                             variant="filled"
-                            bg="porter.100"
+                            bg="gray.50"
                             _hover={{
-                                bg: "porter.200",
+                                bg: "gray.200",
                             }}
                             _active={{
-                                bg: "porter.400",
+                                bg: "gray.400",
                             }}
                             _focus={{
-                                bg: "porter.100",
+                                bg: "gray.50",
                                 borderColor: "blue.300",
                             }}
                             {...register("email", {
@@ -171,15 +161,15 @@ export const EventConfirmation = (props: Props) => {
                             autoComplete="on"
                             type="tel"
                             variant="filled"
-                            bg="porter.100"
+                            bg="gray.50"
                             _hover={{
-                                bg: "porter.200",
+                                bg: "gray.200",
                             }}
                             _active={{
-                                bg: "porter.400",
+                                bg: "gray.400",
                             }}
                             _focus={{
-                                bg: "porter.100",
+                                bg: "gray.50",
                                 borderColor: "blue.300",
                             }}
                             {...register("phoneNumber", {

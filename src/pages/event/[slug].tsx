@@ -62,10 +62,7 @@ import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { VStepper } from "components/event/VStepper";
 import { Two } from "components/event/steps/Two";
 import { One } from "components/event/steps/One";
-import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
-import AnimateHeight from "react-animate-height";
 import { Three } from "components/event/steps/Three";
-import { useLogIntercept } from "hooks/use-log-intercept";
 
 interface Props {
     event: Event;
@@ -132,7 +129,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
         }
     }, [checkout, lang, supportedLanguages]);
 
-<<<<<<< HEAD
     const handleOrderUpdate = useCallback(
         async (ticketId: string) => {
             if (checkout) checkout.freezeCheckout();
@@ -154,26 +150,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         setPid(data.paymentId ? data.paymentId : "-1");
                     }
                     if (setIntentedTickets) setIntentedTickets(ticketId);
-=======
-    const handleOrderUpdate = async (ticketId: string) => {
-        if (checkout) checkout.freezeCheckout();
-        if (intentionId !== "-1") {
-            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
-            const res = await fetch(url, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    tickets: [ticketId],
-                }),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setOrderIsFree(data.paymentId ? false : true);
-                if (setPid) {
-                    setPid(data.paymentId ? data.paymentId : "-1");
->>>>>>> i18n-event
                 }
             }
             if (checkout) checkout.thawCheckout();
@@ -376,7 +352,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 content: (
                     <One
                         label={t("step.one")}
-                        intendedTickets={intendedTickets}
+                        intendedTickets={intendedTickets as string[]}
                         tickets={event.tickets as ComponentEventTickets}
                         handleOrderUpdate={handleOrderUpdate}
                     />
@@ -659,14 +635,9 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     tickets {
                         Tickets {
                             id
-<<<<<<< HEAD
                             swedishName
                             englishName
                             ticketUID
-=======
-                            ticketUID
-                            name
->>>>>>> i18n-event
                             price
                         }
                         allowMultiple
@@ -703,14 +674,9 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                         tickets {
                             Tickets {
                                 id
-<<<<<<< HEAD
                                 swedishName
                                 englishName
                                 ticketUID
-=======
-                                ticketUID
-                                name
->>>>>>> i18n-event
                                 price
                             }
                             allowMultiple

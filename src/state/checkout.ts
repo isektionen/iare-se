@@ -82,7 +82,7 @@ export const forceValue = atom<any>({
     default: undefined,
 });
 
-export const ticketsFromIntention = selector<string[] | undefined>({
+export const ticketsFromIntention = selector<string[]>({
     key: "SELECTOR/TICKETS",
     get: async ({ get }) => {
         const _cache = get(forceValue);

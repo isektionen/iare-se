@@ -16,9 +16,9 @@ export const intentionState = atom<string>({
     default: "-1",
 });
 
-const createIntention = async (eventId: string) => {
-    if (eventId === "-1") return { intentionId: "-1" };
-    const url = process.env.NEXT_PUBLIC_DETA_URL + `/intent/${eventId}`;
+const createIntention = async (fullfillmentUID: string) => {
+    if (fullfillmentUID === "-1") return { intentionId: "-1" };
+    const url = process.env.NEXT_PUBLIC_DETA_URL + `/intent/${fullfillmentUID}`;
     const res = await fetch(url, { method: "POST" });
     if (!res.ok) return { intentionId: "-1" };
 
@@ -112,7 +112,7 @@ export const intention = atomFamily<
     string
 >({
     key: "ATOM/INTENTION",
-    default: (eventId) =>
+    default: (fullfillmentUID) =>
         selector({
             key: "SELECTOR/INTENTION",
             get: async ({ get }) => {
@@ -121,7 +121,7 @@ export const intention = atomFamily<
                 iid = get(intentionState);
                 if (iid === "-1") {
                     const { paymentId, intentionId } = await createIntention(
-                        eventId
+                        fullfillmentUID
                     );
                     if (paymentId) pid = paymentId;
                     iid = intentionId;

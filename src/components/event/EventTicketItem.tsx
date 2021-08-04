@@ -24,7 +24,7 @@ export const EventTicketItem = (props: Props) => {
         onChange,
         "data-radiogroup": props["data-radiogroup"],
     });
-
+    console.log("props", props);
     const input = getInputProps();
     const checkbox = getCheckboxProps();
     return (

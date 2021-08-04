@@ -72,12 +72,11 @@ interface Props {
     diets: Diet[];
     allergies: Allergy[];
 }
-const EventView = ({ event, diets, allergies, ...rest }: Props) => {
+const EventView = ({ event, diets, allergies }: Props) => {
     const { t, lang } = useTranslation("event");
     const router = useRouter();
 
     const Dibs = useDibs();
-
     const [beforeDeadline] = useState(
         isBefore(new Date(), new Date(event.deadline))
     );
@@ -133,6 +132,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
         }
     }, [checkout, lang, supportedLanguages]);
 
+<<<<<<< HEAD
     const handleOrderUpdate = useCallback(
         async (ticketId: string) => {
             if (checkout) checkout.freezeCheckout();
@@ -154,6 +154,26 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         setPid(data.paymentId ? data.paymentId : "-1");
                     }
                     if (setIntentedTickets) setIntentedTickets(ticketId);
+=======
+    const handleOrderUpdate = async (ticketId: string) => {
+        if (checkout) checkout.freezeCheckout();
+        if (intentionId !== "-1") {
+            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tickets: [ticketId],
+                }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOrderIsFree(data.paymentId ? false : true);
+                if (setPid) {
+                    setPid(data.paymentId ? data.paymentId : "-1");
+>>>>>>> i18n-event
                 }
             }
             if (checkout) checkout.thawCheckout();
@@ -238,7 +258,9 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 const { iid } = nextQueryParams();
                 if (!iid) {
                     const { intentionId, paymentId } =
-                        await snapshot.getPromise(intention(event.id));
+                        await snapshot.getPromise(
+                            intention(event.fullfillmentUID as string)
+                        );
                     router.push(`/event/${event.slug}?iid=${intentionId}`);
                     set(intentionState, intentionId);
 
@@ -626,6 +648,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             query FindEvent($slug: ID!) {
                 event(id: $slug) {
                     locale
+                    fullfillmentUID
                     id
                     slug
                     title
@@ -636,9 +659,14 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     tickets {
                         Tickets {
                             id
+<<<<<<< HEAD
                             swedishName
                             englishName
                             ticketUID
+=======
+                            ticketUID
+                            name
+>>>>>>> i18n-event
                             price
                         }
                         allowMultiple
@@ -664,6 +692,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     }
                     localizations {
                         id
+                        fullfillmentUID
                         locale
                         slug
                         title
@@ -674,9 +703,14 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                         tickets {
                             Tickets {
                                 id
+<<<<<<< HEAD
                                 swedishName
                                 englishName
                                 ticketUID
+=======
+                                ticketUID
+                                name
+>>>>>>> i18n-event
                                 price
                             }
                             allowMultiple

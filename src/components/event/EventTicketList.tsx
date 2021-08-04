@@ -28,8 +28,9 @@ export const EventTicketList = (props: Props) => {
     return (
         <VStack {...group} w="full" pb={2}>
             {props.tickets?.Tickets?.map((ticket, i) => {
-                const radio = getRadioProps({ value: ticket?.id });
-
+                const radio = getRadioProps({
+                    value: ticket?.ticketUID as string,
+                });
                 return (
                     <Box key={"event-ticket" + i} w="full">
                         {props.children({ radio, ticket })}

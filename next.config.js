@@ -22,7 +22,7 @@ module.exports = withPlugins([[withBundleAnalyzer], nextTranslate], {
     },
     */
     i18n: {
-        locales: ["en", "sv"],
-        defaultLocale: "sv",
+        locales: ["en", "sv-SE"],
+        defaultLocale: "sv-SE",
     },
 });

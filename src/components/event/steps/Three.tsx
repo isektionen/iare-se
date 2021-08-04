@@ -54,13 +54,16 @@ export const Three = ({
     return (
         <Box w="full" minH="854px" pos="relative">
             {!isLoaded && (
-                <Spinner
-                    pos="absolute"
-                    top="50%"
-                    left="50%"
-                    size="xl"
-                    pointerEvents="none"
-                />
+                <Center
+                    position="absolute"
+                    left="0"
+                    right="0"
+                    top="0"
+                    bottom="50%"
+                    w="full"
+                >
+                    <Spinner size="xl" pointerEvents="none" />
+                </Center>
             )}
             <Box
                 opacity={isLoaded ? 1 : 0}

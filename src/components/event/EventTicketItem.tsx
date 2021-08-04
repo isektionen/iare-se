@@ -1,4 +1,5 @@
 import { Box, Radio, useRadio, Text } from "@chakra-ui/react";
+import useTranslation from "next-translate/useTranslation";
 import React, { ChangeEvent } from "react";
 
 interface Props {
@@ -9,7 +10,9 @@ interface Props {
     "data-radiogroup": boolean;
     ticket: {
         id: number;
-        name: string;
+        swedishName: string;
+        englishName: string;
+        ticketUID: string;
         price: number;
         currency: string;
     };
@@ -24,9 +27,12 @@ export const EventTicketItem = (props: Props) => {
         onChange,
         "data-radiogroup": props["data-radiogroup"],
     });
-    console.log("props", props);
     const input = getInputProps();
     const checkbox = getCheckboxProps();
+
+    const { lang } = useTranslation();
+    const itemName =
+        lang !== "en" ? props.ticket.swedishName : props.ticket.englishName;
     return (
         <Box as="label" w="full">
             <input {...input} />
@@ -60,7 +66,7 @@ export const EventTicketItem = (props: Props) => {
                     onChange={onChange}
                     colorScheme="brand"
                 >
-                    {props.ticket.name}
+                    {itemName}
                 </Radio>
                 <Text>
                     {props.ticket.price} {props.ticket.currency}

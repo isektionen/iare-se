@@ -1,9 +1,9 @@
 import { Box, VStack, Text, BoxProps } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 
 interface Step {
     label: string;
-    content: JSX.Element;
+    content: () => JSX.Element;
 }
 
 interface Props {

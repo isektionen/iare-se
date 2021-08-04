@@ -26,8 +26,12 @@ interface Props {
 
 export const OptionsInput = (props: Props) => {
     return (
-        <Flex direction="row">
-            <Flex direction="column" w="25%">
+        <Flex direction={{ base: "column", md: "row" }}>
+            <Flex
+                direction="column"
+                w={{ base: "100%", md: "25%" }}
+                pb={{ base: 4, md: undefined }}
+            >
                 <Text
                     as="h6"
                     fontSize={18}
@@ -38,7 +42,11 @@ export const OptionsInput = (props: Props) => {
                 </Text>
                 <Text>{props.description}</Text>
             </Flex>
-            <Flex direction="column" w="85%" pl={6}>
+            <Flex
+                direction="column"
+                w={{ base: "100%", md: "85%" }}
+                pl={{ base: undefined, md: 6 }}
+            >
                 <AutoComplete
                     options={props.options}
                     result={props.result}

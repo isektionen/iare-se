@@ -9,11 +9,13 @@ import {
     Input,
     InputGroup,
     InputRightElement,
+    ToastPosition,
+    useBreakpointValue,
     useToast,
     VStack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { BsShieldLockFill } from "react-icons/bs";
 import { IPasswordProtect } from "types/checkout";
 
@@ -25,6 +27,7 @@ interface Props {
     submitLabel: string;
     errorLabel: string;
     successLabel: string;
+    scrollTo: () => void;
 }
 
 export const EventPasswordProtection = (props: Props) => {
@@ -33,19 +36,26 @@ export const EventPasswordProtection = (props: Props) => {
         register,
         formState: { errors, isSubmitting },
         setError,
+        setFocus,
     } = useForm();
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);
 
     const toast = useToast();
 
+    const pos = useBreakpointValue({
+        base: "top",
+        md: "bottom",
+    }) as ToastPosition;
+
+    const isSmall = useBreakpointValue({ base: true, md: false }) as boolean;
     const id = "password";
     const onSubmit = async (event: IPasswordProtect) => {
         const res = await props.onSubmit(event);
         if (!res && !toast.isActive(id)) {
             toast({
                 id,
-                position: "bottom",
+                position: pos,
                 duration: 2500,
                 description: props.errorLabel,
                 status: "error",
@@ -53,16 +63,27 @@ export const EventPasswordProtection = (props: Props) => {
         } else {
             toast({
                 id,
-                position: "bottom",
+                position: pos,
                 duration: 2500,
                 description: props.successLabel,
                 status: "success",
             });
+
+            if (isSmall) props.scrollTo();
         }
     };
 
+    useEffect(() => {
+        setFocus("password");
+    }, [setFocus]);
+
     return (
-        <Flex justify="center" align="center" w="full" h="450px">
+        <Flex
+            justify="center"
+            align="center"
+            w="full"
+            h={{ base: "225px", md: "450px" }}
+        >
             <Flex direction="column" p={4}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <VStack>

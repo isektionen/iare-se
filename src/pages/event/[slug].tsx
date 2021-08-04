@@ -35,6 +35,7 @@ import {
     Button,
     Spacer,
     useBreakpointValue,
+    ScaleFade,
 } from "@chakra-ui/react";
 import { EventTitle } from "components/event/EventTitle";
 import { EventDiscription } from "components/event/EventDiscription";
@@ -63,6 +64,8 @@ import { VStepper } from "components/event/VStepper";
 import { Two } from "components/event/steps/Two";
 import { One } from "components/event/steps/One";
 import { Three } from "components/event/steps/Three";
+import { useScroll } from "hooks/use-scroll";
+import { useSnapshot } from "hooks/use-snapshot";
 
 interface Props {
     event: Event;
@@ -112,8 +115,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
     };
 
     const checkoutRef = useRef<HTMLDivElement>(null);
-
-    //const breadCrumbs = ["Aktuellt", "Events"];
+    const { ref: formRef, scrollTo } = useScroll<HTMLDivElement>({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+    });
 
     const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
         const isValid = await validatePassword(event.id, password);
@@ -133,7 +139,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         async (ticketId: string) => {
             if (checkout) checkout.freezeCheckout();
             if (intentionId !== "-1") {
-                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.id}/${intentionId}`;
+                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
                 const res = await fetch(url, {
                     method: "PUT",
                     headers: {
@@ -154,7 +160,13 @@ const EventView = ({ event, diets, allergies }: Props) => {
             }
             if (checkout) checkout.thawCheckout();
         },
-        [checkout, event.id, intentionId, setIntentedTickets, setPid]
+        [
+            checkout,
+            event.fullfillmentUID,
+            intentionId,
+            setIntentedTickets,
+            setPid,
+        ]
     );
 
     const handleFreeOrder = useCallback(
@@ -349,44 +361,50 @@ const EventView = ({ event, diets, allergies }: Props) => {
         if (event.tickets?.Tickets?.length ?? 0 > 0) {
             _steps.push({
                 label: t("step.one"),
-                content: (
-                    <One
-                        label={t("step.one")}
-                        intendedTickets={intendedTickets as string[]}
-                        tickets={event.tickets as ComponentEventTickets}
-                        handleOrderUpdate={handleOrderUpdate}
-                    />
-                ),
+                content: function OneFactory() {
+                    return (
+                        <One
+                            label={t("step.one")}
+                            intendedTickets={intendedTickets as string[]}
+                            tickets={event.tickets as ComponentEventTickets}
+                            handleOrderUpdate={handleOrderUpdate}
+                        />
+                    );
+                },
             });
         }
         if (event.servingOptions?.servingFood) {
             _steps.push({
                 label: t("step.two"),
-                content: (
-                    <Two
-                        label={t("step.two")}
-                        diets={diets}
-                        allergies={allergies}
-                        dietResult={dietResult}
-                        setDietResult={setDietResult}
-                        specialDietResult={specialDietResult}
-                        setSpecialDietResult={setSpecialDietResult}
-                    />
-                ),
+                content: function TwoFactory() {
+                    return (
+                        <Two
+                            label={t("step.two")}
+                            diets={diets}
+                            allergies={allergies}
+                            dietResult={dietResult}
+                            setDietResult={setDietResult}
+                            specialDietResult={specialDietResult}
+                            setSpecialDietResult={setSpecialDietResult}
+                        />
+                    );
+                },
             });
         }
         _steps.push({
             label: t("step.three"),
-            content: (
-                <Three
-                    label={t("step.three")}
-                    invalidIntention={invalidIntention}
-                    orderIsFree={orderIsFree}
-                    handleFreeOrder={handleFreeOrder}
-                    checkoutRef={checkoutRef}
-                    isLoaded={isLoaded}
-                />
-            ),
+            content: function ThreeFactory() {
+                return (
+                    <Three
+                        label={t("step.three")}
+                        invalidIntention={invalidIntention}
+                        orderIsFree={orderIsFree}
+                        handleFreeOrder={handleFreeOrder}
+                        checkoutRef={checkoutRef}
+                        isLoaded={isLoaded}
+                    />
+                );
+            },
         });
         return _steps;
     }, [
@@ -403,18 +421,27 @@ const EventView = ({ event, diets, allergies }: Props) => {
         orderIsFree,
         isLoaded,
         event.servingOptions,
-    ]);
+    ]) as { label: string; content: () => JSX.Element }[];
+
+    const [prevPages, setPrevPages] = useState<number[]>([]);
 
     const goForward = useCallback(() => {
+        const currentPage = global.window && window.pageYOffset;
+        setPrevPages((old) => [...old, currentPage]);
+
         setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
-    }, [setActiveStep, activeStep, steps]);
+    }, [activeStep, steps.length]);
 
     const goBackward = useCallback(() => {
+        const len = prevPages.length - 1;
+        if (len + 1 > 0) {
+            const y = prevPages[len];
+            setPrevPages((old) => [...old.filter((_, i) => i !== len)]);
+            global.window && window.scrollTo(0, y);
+        }
         setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
-    }, [setActiveStep, activeStep, steps]);
+    }, [prevPages, activeStep, steps.length]);
     const step = useMemo(() => steps[activeStep], [steps, activeStep]);
-
-    const ref = useRef<HTMLDivElement>(null);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
 
@@ -423,8 +450,8 @@ const EventView = ({ event, diets, allergies }: Props) => {
             direction="column"
             bg="white"
             pos="relative"
-            px={16}
-            py={10}
+            px={{ base: 2, md: 16 }}
+            py={{ base: 4, md: 10 }}
             _before={{
                 content: '""',
                 bg: "gray.50",
@@ -434,7 +461,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 width: "full",
                 left: 0,
                 height: "full",
-                top: "325px",
+                top: { base: "240px", md: "285px" },
             }}
         >
             <Box w="full">
@@ -488,7 +515,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             </Box>
             <Stack
                 direction={{ base: "column", lg: "row" }}
-                spacing={16}
+                spacing={{ base: 6, md: 16 }}
                 w="full"
                 zIndex="1"
             >
@@ -544,6 +571,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 )}
 
                 <Flex
+                    ref={formRef}
                     as="article"
                     bg="white"
                     rounded="sm"
@@ -552,13 +580,13 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     borderWidth="1px"
                     borderColor="gray.200"
                     direction="column"
-                    transition="max-height 2s"
-                    minH="45vh"
+                    minH="450px"
                     pos="relative"
                     p={activeStep < steps.length - 1 ? 6 : undefined}
                 >
                     {event.passwordProtected && !isAuthenticated ? (
                         <EventPasswordProtection
+                            scrollTo={scrollTo}
                             onSubmit={handlePasswordSubmit}
                             placeholderText={t("passwordProtected.placeholder")}
                             showLabel={t("passwordProtected.showLabel")}
@@ -569,10 +597,17 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         />
                     ) : (
                         <>
-                            {step.content}
+                            {step.content()}
+
                             <Spacer />
                             <Flex
-                                p={
+                                pt={4}
+                                pb={
+                                    activeStep < steps.length - 1
+                                        ? undefined
+                                        : 6
+                                }
+                                px={
                                     activeStep < steps.length - 1
                                         ? undefined
                                         : 6

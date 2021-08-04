@@ -7,8 +7,8 @@ import { EventTicketList } from "../EventTicketList";
 
 interface Props {
     label: string;
-    intendedTickets: string[] | undefined;
-    tickets: Maybe<ComponentEventTickets> | undefined;
+    intendedTickets: string[];
+    tickets: ComponentEventTickets;
     handleOrderUpdate: any;
 }
 
@@ -24,23 +24,21 @@ export const One = ({
                 {label}
             </Heading>
             <Divider my={4} />
-            {intendedTickets && intendedTickets?.length > 0 && (
-                <EventTicketList
-                    tickets={tickets}
-                    onChange={handleOrderUpdate}
-                    currentTickets={intendedTickets}
-                >
-                    {({ radio, ticket }) => (
-                        <EventTicketItem
-                            {...radio}
-                            ticket={{
-                                ...ticket,
-                                currency: "kr",
-                            }}
-                        />
-                    )}
-                </EventTicketList>
-            )}
+            <EventTicketList
+                tickets={tickets}
+                onChange={handleOrderUpdate}
+                currentTickets={intendedTickets}
+            >
+                {({ radio, ticket }) => (
+                    <EventTicketItem
+                        {...radio}
+                        ticket={{
+                            ...ticket,
+                            currency: "kr",
+                        }}
+                    />
+                )}
+            </EventTicketList>
         </Box>
     );
 };

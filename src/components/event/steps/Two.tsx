@@ -23,7 +23,6 @@ export const Two = ({
     setDietResult,
     specialDietResult,
     setSpecialDietResult,
-    onMount,
 }: Props) => {
     const { t } = useTranslation("event");
 

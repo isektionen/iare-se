@@ -1,4 +1,10 @@
 {
+    "step": {
+        "one": "Välj biljett",
+        "two": "Välj specialkost",
+        "three": "Osa"
+    },
+    "back": "tillbaka",
     "eventDeadlineDescription": {
         "after": "Det var {TIMELEFT} sedan osan stängde",
         "before": "Det är {TIMELEFT} tills osan stänger"
@@ -12,7 +18,7 @@
         }
     },
     "allergen": {
-        "label": "Allergier",
+        "label": "Allergier/Preferenser",
         "description": "Ange den allergi(er) som passar dig bäst",
         "search": {
             "placeholder": "Sök efter allergier",
@@ -42,8 +48,10 @@
     },
     "passwordProtected": {
         "validateLabel": "validera",
-        "showLabel": "dölj",
-        "hideLabel": "visa",
+        "showLabel": "visa",
+        "hideLabel": "dölj",
         "placeholder": "ange lösenord"
-    }
+    },
+    "errorLabel": "Fel lösenord",
+    "successLabel": "Accepterat lösenord"
 }

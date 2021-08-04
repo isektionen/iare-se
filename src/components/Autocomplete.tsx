@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Box,
     Flex,
@@ -13,6 +13,7 @@ import {
     ListProps,
 } from "@chakra-ui/react";
 import { matchSorter } from "match-sorter";
+import { useKeypress } from "hooks/use-keypress";
 
 export interface Option {
     value: string;
@@ -36,10 +37,31 @@ interface Props {
 export const AutoComplete = (props: Props) => {
     const [optionsCopy, setOptionsCopy] = useState<Option[]>(props.options);
     const [displayOptions, setDisplayOptions] = useState<boolean>(false);
-    const [partialResult, setPartialResult] = useState<Option[]>();
+    const [partialResult, setPartialResult] = useState<Option[]>([]);
+    const [cursor, _setCursor] = useState<number>(0);
     const [inputValue, setInputValue] = useState<string>();
 
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const setCursor = useCallback(
+        (offset) => {
+            const len = partialResult.length - 1;
+            const next = cursor + offset;
+
+            const nextCursor =
+                next < 0
+                    ? len
+                    : next > len
+                    ? 0
+                    : Math.max(0, Math.min(next, len));
+            _setCursor(nextCursor);
+        },
+        [cursor, partialResult]
+    );
+
+    const resetCursor = useCallback(() => {
+        _setCursor(0);
+    }, []);
 
     const selectOption = (option: Option) => {
         if (props.result.includes(option)) {
@@ -93,6 +115,24 @@ export const AutoComplete = (props: Props) => {
         }
     };
 
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!partialResult) return;
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const _option = partialResult[cursor];
+            selectOptionFromList(_option);
+            resetCursor();
+        }
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setCursor(1);
+        }
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            setCursor(-1);
+        }
+    };
+
     return (
         <Box>
             {props.result.length > 0 && (
@@ -118,6 +158,7 @@ export const AutoComplete = (props: Props) => {
                 <Input
                     {...props.inputOptions}
                     ref={inputRef}
+                    onKeyDown={onKeyDown}
                     placeholder={
                         props.placeholder ? props.placeholder : "placeholder"
                     }
@@ -136,6 +177,7 @@ export const AutoComplete = (props: Props) => {
                         <ListItem
                             {...props.listItemOptions}
                             key={key}
+                            bg={cursor === key ? "gray.100" : undefined}
                             onClick={() => selectOptionFromList(option)}
                             cursor="pointer"
                         >

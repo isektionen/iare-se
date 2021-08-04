@@ -88,7 +88,7 @@ export const ticketsFromIntention = selector<string[] | undefined>({
         const _cache = get(forceValue);
         if (_cache) return [_cache];
         const intentionId = get(intentionState);
-        if (intentionId === "-1") return;
+        if (intentionId === "-1") return ["-1"];
         const details = await getDetails(intentionId);
         const tickets = details.tickets.map((ticket) => ticket.uid);
         return tickets as string[];

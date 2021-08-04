@@ -13,6 +13,8 @@ export type Scalars = {
   Date: any;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: any;
+  /** Input type for dynamic zone allDocuments of Document */
+  DocumentAllDocumentsDynamicZoneInput: any;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
   /** The `Long` scalar type represents 52-bit integers */
@@ -585,24 +587,116 @@ export type CompanyInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
-export type ComponentDocumentDocumentInput = {
-  name: Scalars['String'];
-  date: Scalars['Date'];
-  category?: Maybe<Scalars['ID']>;
-  file?: Maybe<Scalars['ID']>;
-  archived?: Maybe<Scalars['Boolean']>;
-  current?: Maybe<Scalars['Boolean']>;
+export type ComponentDocumentActionDocument = {
+  __typename?: 'ComponentDocumentActionDocument';
+  id: Scalars['ID'];
+  documentContent?: Maybe<ComponentDocumentDocument>;
+  authors?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
 };
 
-export type ComponentDocumentDocuments = {
-  __typename?: 'ComponentDocumentDocuments';
+
+export type ComponentDocumentActionDocumentAuthorsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type ComponentDocumentActionDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type ComponentDocumentContractDocument = {
+  __typename?: 'ComponentDocumentContractDocument';
   id: Scalars['ID'];
-  name: Scalars['String'];
-  date: Scalars['Date'];
-  category?: Maybe<DocumentCategory>;
+  documentContent?: Maybe<ComponentDocumentDocument>;
+  authors?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
+};
+
+
+export type ComponentDocumentContractDocumentAuthorsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type ComponentDocumentContractDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type ComponentDocumentControlDocument = {
+  __typename?: 'ComponentDocumentControlDocument';
+  id: Scalars['ID'];
+  documentContent?: Maybe<ComponentDocumentDocument>;
+  authors?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
+};
+
+
+export type ComponentDocumentControlDocumentAuthorsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type ComponentDocumentControlDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type ComponentDocumentDocument = {
+  __typename?: 'ComponentDocumentDocument';
+  id: Scalars['ID'];
+  label: Scalars['String'];
   file?: Maybe<UploadFile>;
-  archived: Scalars['Boolean'];
-  current: Scalars['Boolean'];
+};
+
+export type ComponentDocumentDocumentInput = {
+  label: Scalars['String'];
+  file?: Maybe<Scalars['ID']>;
+};
+
+export type ComponentDocumentFinancialReportDocument = {
+  __typename?: 'ComponentDocumentFinancialReportDocument';
+  id: Scalars['ID'];
+  documentContent?: Maybe<ComponentDocumentDocument>;
+};
+
+export type ComponentDocumentFinancialReportDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+};
+
+export type ComponentDocumentFormDocument = {
+  __typename?: 'ComponentDocumentFormDocument';
+  id: Scalars['ID'];
+  documentContent?: Maybe<ComponentDocumentDocument>;
+};
+
+export type ComponentDocumentFormDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+};
+
+export type ComponentDocumentProtocolDocument = {
+  __typename?: 'ComponentDocumentProtocolDocument';
+  id: Scalars['ID'];
+  documentContent?: Maybe<ComponentDocumentDocument>;
+  authors?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
+};
+
+
+export type ComponentDocumentProtocolDocumentAuthorsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type ComponentDocumentProtocolDocumentInput = {
+  documentContent?: Maybe<ComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
 export type ComponentEventInternalDietPreference = {
@@ -638,13 +732,17 @@ export type ComponentEventInternalStreetInput = {
 export type ComponentEventInternalTicket = {
   __typename?: 'ComponentEventInternalTicket';
   id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
+  swedishName?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
+  ticketUID?: Maybe<Scalars['String']>;
+  englishName?: Maybe<Scalars['String']>;
 };
 
 export type ComponentEventInternalTicketInput = {
-  name?: Maybe<Scalars['String']>;
+  swedishName?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
+  ticketUID?: Maybe<Scalars['String']>;
+  englishName?: Maybe<Scalars['String']>;
 };
 
 export type ComponentEventPasswordProtect = {
@@ -1152,7 +1250,10 @@ export type Document = {
   id: Scalars['ID'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
-  document?: Maybe<Array<Maybe<ComponentDocumentDocuments>>>;
+  allDocuments: Array<Maybe<DocumentAllDocumentsDynamicZone>>;
+  currentStatute?: Maybe<ComponentDocumentDocument>;
+  currentFinancialReport?: Maybe<ComponentDocumentDocument>;
+  currentRegulations?: Maybe<ComponentDocumentDocument>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
   localizations?: Maybe<Array<Maybe<Document>>>;
@@ -1166,105 +1267,14 @@ export type DocumentLocalizationsArgs = {
   where?: Maybe<Scalars['JSON']>;
 };
 
-export type DocumentCategory = {
-  __typename?: 'DocumentCategory';
-  id: Scalars['ID'];
-  created_at: Scalars['DateTime'];
-  updated_at: Scalars['DateTime'];
-  name?: Maybe<Scalars['String']>;
-  relatedTo?: Maybe<DocumentCategory>;
-  locale?: Maybe<Scalars['String']>;
-  relatedCategories?: Maybe<Array<Maybe<DocumentCategory>>>;
-  localizations?: Maybe<Array<Maybe<DocumentCategory>>>;
-};
+export type DocumentAllDocumentsDynamicZone = ComponentDocumentControlDocument | ComponentDocumentProtocolDocument | ComponentDocumentActionDocument | ComponentDocumentContractDocument | ComponentDocumentFormDocument | ComponentDocumentFinancialReportDocument;
 
-
-export type DocumentCategoryRelatedCategoriesArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
-};
-
-
-export type DocumentCategoryLocalizationsArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
-};
-
-export type DocumentCategoryAggregator = {
-  __typename?: 'DocumentCategoryAggregator';
-  count?: Maybe<Scalars['Int']>;
-  totalCount?: Maybe<Scalars['Int']>;
-};
-
-export type DocumentCategoryConnection = {
-  __typename?: 'DocumentCategoryConnection';
-  values?: Maybe<Array<Maybe<DocumentCategory>>>;
-  groupBy?: Maybe<DocumentCategoryGroupBy>;
-  aggregate?: Maybe<DocumentCategoryAggregator>;
-};
-
-export type DocumentCategoryConnectionCreated_At = {
-  __typename?: 'DocumentCategoryConnectionCreated_at';
-  key?: Maybe<Scalars['DateTime']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryConnectionId = {
-  __typename?: 'DocumentCategoryConnectionId';
-  key?: Maybe<Scalars['ID']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryConnectionLocale = {
-  __typename?: 'DocumentCategoryConnectionLocale';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryConnectionName = {
-  __typename?: 'DocumentCategoryConnectionName';
-  key?: Maybe<Scalars['String']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryConnectionRelatedTo = {
-  __typename?: 'DocumentCategoryConnectionRelatedTo';
-  key?: Maybe<Scalars['ID']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryConnectionUpdated_At = {
-  __typename?: 'DocumentCategoryConnectionUpdated_at';
-  key?: Maybe<Scalars['DateTime']>;
-  connection?: Maybe<DocumentCategoryConnection>;
-};
-
-export type DocumentCategoryGroupBy = {
-  __typename?: 'DocumentCategoryGroupBy';
-  id?: Maybe<Array<Maybe<DocumentCategoryConnectionId>>>;
-  created_at?: Maybe<Array<Maybe<DocumentCategoryConnectionCreated_At>>>;
-  updated_at?: Maybe<Array<Maybe<DocumentCategoryConnectionUpdated_At>>>;
-  name?: Maybe<Array<Maybe<DocumentCategoryConnectionName>>>;
-  relatedTo?: Maybe<Array<Maybe<DocumentCategoryConnectionRelatedTo>>>;
-  locale?: Maybe<Array<Maybe<DocumentCategoryConnectionLocale>>>;
-};
-
-export type DocumentCategoryInput = {
-  name?: Maybe<Scalars['String']>;
-  relatedCategories?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  relatedTo?: Maybe<Scalars['ID']>;
-  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  locale?: Maybe<Scalars['String']>;
-  created_by?: Maybe<Scalars['ID']>;
-  updated_by?: Maybe<Scalars['ID']>;
-};
 
 export type DocumentInput = {
-  document?: Maybe<Array<Maybe<ComponentDocumentDocumentInput>>>;
+  allDocuments: Array<Scalars['DocumentAllDocumentsDynamicZoneInput']>;
+  currentStatute: ComponentDocumentDocumentInput;
+  currentFinancialReport: ComponentDocumentDocumentInput;
+  currentRegulations: ComponentDocumentDocumentInput;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -1355,6 +1365,7 @@ export type Event = {
   place?: Maybe<ComponentEventPlace>;
   passwordProtected?: Maybe<ComponentEventPasswordProtect>;
   banner?: Maybe<UploadFile>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
   localizations?: Maybe<Array<Maybe<Event>>>;
@@ -1520,6 +1531,12 @@ export type EventConnectionEndTime = {
   connection?: Maybe<EventConnection>;
 };
 
+export type EventConnectionFullfillmentUid = {
+  __typename?: 'EventConnectionFullfillmentUID';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<EventConnection>;
+};
+
 export type EventConnectionId = {
   __typename?: 'EventConnectionId';
   key?: Maybe<Scalars['ID']>;
@@ -1611,6 +1628,7 @@ export type EventGroupBy = {
   place?: Maybe<Array<Maybe<EventConnectionPlace>>>;
   passwordProtected?: Maybe<Array<Maybe<EventConnectionPasswordProtected>>>;
   banner?: Maybe<Array<Maybe<EventConnectionBanner>>>;
+  fullfillmentUID?: Maybe<Array<Maybe<EventConnectionFullfillmentUid>>>;
   locale?: Maybe<Array<Maybe<EventConnectionLocale>>>;
   published_at?: Maybe<Array<Maybe<EventConnectionPublished_At>>>;
 };
@@ -1620,7 +1638,7 @@ export type EventInput = {
   slug?: Maybe<Scalars['String']>;
   committee?: Maybe<Scalars['ID']>;
   category?: Maybe<Scalars['ID']>;
-  tickets?: Maybe<ComponentEventTicketInput>;
+  tickets: ComponentEventTicketInput;
   servingOptions?: Maybe<ComponentEventServingInput>;
   studentOptions?: Maybe<ComponentEventStudentInput>;
   startTime: Scalars['DateTime'];
@@ -1631,6 +1649,7 @@ export type EventInput = {
   passwordProtected?: Maybe<ComponentEventPasswordProtectInput>;
   orders?: Maybe<Array<Maybe<Scalars['ID']>>>;
   banner?: Maybe<Scalars['ID']>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -2006,7 +2025,7 @@ export type LocaleInput = {
 };
 
 
-export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | DocumentCategory | DocumentCategoryConnection | DocumentCategoryAggregator | DocumentCategoryGroupBy | DocumentCategoryConnectionId | DocumentCategoryConnectionCreated_At | DocumentCategoryConnectionUpdated_At | DocumentCategoryConnectionName | DocumentCategoryConnectionRelatedTo | DocumentCategoryConnectionLocale | CreateDocumentCategoryPayload | UpdateDocumentCategoryPayload | DeleteDocumentCategoryPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentDocuments | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
+export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionFullfillmentUid | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentActionDocument | ComponentDocumentContractDocument | ComponentDocumentControlDocument | ComponentDocumentDocument | ComponentDocumentFinancialReportDocument | ComponentDocumentFormDocument | ComponentDocumentProtocolDocument | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2028,9 +2047,6 @@ export type Mutation = {
   createDiet?: Maybe<CreateDietPayload>;
   updateDiet?: Maybe<UpdateDietPayload>;
   deleteDiet?: Maybe<DeleteDietPayload>;
-  createDocumentCategory?: Maybe<CreateDocumentCategoryPayload>;
-  updateDocumentCategory?: Maybe<UpdateDocumentCategoryPayload>;
-  deleteDocumentCategory?: Maybe<DeleteDocumentCategoryPayload>;
   updateDocument?: Maybe<UpdateDocumentPayload>;
   deleteDocument?: Maybe<DeleteDocumentPayload>;
   createEventCategory?: Maybe<CreateEventCategoryPayload>;
@@ -2074,7 +2090,6 @@ export type Mutation = {
   createCommitteeLocalization: Committee;
   createCompanyLocalization: Company;
   createDietLocalization: Diet;
-  createDocumentCategoryLocalization: DocumentCategory;
   createDocumentLocalization: Document;
   createEventCategoryLocalization: EventCategory;
   createEventLocalization: Event;
@@ -2181,21 +2196,6 @@ export type MutationUpdateDietArgs = {
 
 export type MutationDeleteDietArgs = {
   input?: Maybe<DeleteDietInput>;
-};
-
-
-export type MutationCreateDocumentCategoryArgs = {
-  input?: Maybe<CreateDocumentCategoryInput>;
-};
-
-
-export type MutationUpdateDocumentCategoryArgs = {
-  input?: Maybe<UpdateDocumentCategoryInput>;
-};
-
-
-export type MutationDeleteDocumentCategoryArgs = {
-  input?: Maybe<DeleteDocumentCategoryInput>;
 };
 
 
@@ -2382,11 +2382,6 @@ export type MutationCreateDietLocalizationArgs = {
 };
 
 
-export type MutationCreateDocumentCategoryLocalizationArgs = {
-  input: UpdateDocumentCategoryInput;
-};
-
-
 export type MutationCreateDocumentLocalizationArgs = {
   input: UpdateDocumentInput;
 };
@@ -2520,6 +2515,7 @@ export type Order = {
   paymentType?: Maybe<Scalars['String']>;
   paymentMethod?: Maybe<Scalars['String']>;
   intentionId?: Maybe<Scalars['String']>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
 };
 
 export type OrderAsTicket = {
@@ -2544,6 +2540,8 @@ export type OrderInput = {
   paymentType?: Maybe<Scalars['String']>;
   paymentMethod?: Maybe<Scalars['String']>;
   intentionId?: Maybe<Scalars['String']>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
+  checkedInAt?: Maybe<Scalars['DateTime']>;
   created_by?: Maybe<Scalars['ID']>;
   updated_by?: Maybe<Scalars['ID']>;
 };
@@ -2724,9 +2722,6 @@ export type Query = {
   diet?: Maybe<Diet>;
   diets?: Maybe<Array<Maybe<Diet>>>;
   dietsConnection?: Maybe<DietConnection>;
-  documentCategory?: Maybe<DocumentCategory>;
-  documentCategories?: Maybe<Array<Maybe<DocumentCategory>>>;
-  documentCategoriesConnection?: Maybe<DocumentCategoryConnection>;
   document?: Maybe<Document>;
   eventCategory?: Maybe<EventCategory>;
   eventCategories?: Maybe<Array<Maybe<EventCategory>>>;
@@ -2900,31 +2895,6 @@ export type QueryDietsArgs = {
 
 
 export type QueryDietsConnectionArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
-  locale?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryDocumentCategoryArgs = {
-  id: Scalars['ID'];
-  publicationState?: Maybe<PublicationState>;
-};
-
-
-export type QueryDocumentCategoriesArgs = {
-  sort?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  where?: Maybe<Scalars['JSON']>;
-  publicationState?: Maybe<PublicationState>;
-  locale?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryDocumentCategoriesConnectionArgs = {
   sort?: Maybe<Scalars['String']>;
   limit?: Maybe<Scalars['Int']>;
   start?: Maybe<Scalars['Int']>;
@@ -3688,15 +3658,6 @@ export type CreateDietPayload = {
   diet?: Maybe<Diet>;
 };
 
-export type CreateDocumentCategoryInput = {
-  data?: Maybe<DocumentCategoryInput>;
-};
-
-export type CreateDocumentCategoryPayload = {
-  __typename?: 'createDocumentCategoryPayload';
-  documentCategory?: Maybe<DocumentCategory>;
-};
-
 export type CreateEventCategoryInput = {
   data?: Maybe<EventCategoryInput>;
 };
@@ -3821,15 +3782,6 @@ export type DeleteDietInput = {
 export type DeleteDietPayload = {
   __typename?: 'deleteDietPayload';
   diet?: Maybe<Diet>;
-};
-
-export type DeleteDocumentCategoryInput = {
-  where?: Maybe<InputId>;
-};
-
-export type DeleteDocumentCategoryPayload = {
-  __typename?: 'deleteDocumentCategoryPayload';
-  documentCategory?: Maybe<DocumentCategory>;
 };
 
 export type DeleteDocumentPayload = {
@@ -3983,14 +3935,44 @@ export type EditCompanyInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type EditComponentDocumentActionDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type EditComponentDocumentContractDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type EditComponentDocumentControlDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
 export type EditComponentDocumentDocumentInput = {
   id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
-  date?: Maybe<Scalars['Date']>;
-  category?: Maybe<Scalars['ID']>;
+  label?: Maybe<Scalars['String']>;
   file?: Maybe<Scalars['ID']>;
-  archived?: Maybe<Scalars['Boolean']>;
-  current?: Maybe<Scalars['Boolean']>;
+};
+
+export type EditComponentDocumentFinancialReportDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+};
+
+export type EditComponentDocumentFormDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+};
+
+export type EditComponentDocumentProtocolDocumentInput = {
+  id?: Maybe<Scalars['ID']>;
+  documentContent?: Maybe<EditComponentDocumentDocumentInput>;
+  authors?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
 export type EditComponentEventInternalDietPreferenceInput = {
@@ -4006,8 +3988,10 @@ export type EditComponentEventInternalStreetInput = {
 
 export type EditComponentEventInternalTicketInput = {
   id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
+  swedishName?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
+  ticketUID?: Maybe<Scalars['String']>;
+  englishName?: Maybe<Scalars['String']>;
 };
 
 export type EditComponentEventPasswordProtectInput = {
@@ -4201,18 +4185,11 @@ export type EditDietInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
-export type EditDocumentCategoryInput = {
-  name?: Maybe<Scalars['String']>;
-  relatedCategories?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  relatedTo?: Maybe<Scalars['ID']>;
-  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  locale?: Maybe<Scalars['String']>;
-  created_by?: Maybe<Scalars['ID']>;
-  updated_by?: Maybe<Scalars['ID']>;
-};
-
 export type EditDocumentInput = {
-  document?: Maybe<Array<Maybe<EditComponentDocumentDocumentInput>>>;
+  allDocuments: Array<Scalars['DocumentAllDocumentsDynamicZoneInput']>;
+  currentStatute?: Maybe<EditComponentDocumentDocumentInput>;
+  currentFinancialReport?: Maybe<EditComponentDocumentDocumentInput>;
+  currentRegulations?: Maybe<EditComponentDocumentDocumentInput>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -4246,6 +4223,7 @@ export type EditEventInput = {
   passwordProtected?: Maybe<EditComponentEventPasswordProtectInput>;
   orders?: Maybe<Array<Maybe<Scalars['ID']>>>;
   banner?: Maybe<Scalars['ID']>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -4342,6 +4320,8 @@ export type EditOrderInput = {
   paymentType?: Maybe<Scalars['String']>;
   paymentMethod?: Maybe<Scalars['String']>;
   intentionId?: Maybe<Scalars['String']>;
+  fullfillmentUID?: Maybe<Scalars['String']>;
+  checkedInAt?: Maybe<Scalars['DateTime']>;
   created_by?: Maybe<Scalars['ID']>;
   updated_by?: Maybe<Scalars['ID']>;
 };
@@ -4449,16 +4429,6 @@ export type UpdateDietInput = {
 export type UpdateDietPayload = {
   __typename?: 'updateDietPayload';
   diet?: Maybe<Diet>;
-};
-
-export type UpdateDocumentCategoryInput = {
-  where?: Maybe<InputId>;
-  data?: Maybe<EditDocumentCategoryInput>;
-};
-
-export type UpdateDocumentCategoryPayload = {
-  __typename?: 'updateDocumentCategoryPayload';
-  documentCategory?: Maybe<DocumentCategory>;
 };
 
 export type UpdateDocumentInput = {

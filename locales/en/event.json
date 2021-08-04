@@ -1,4 +1,10 @@
 {
+    "step": {
+        "one": "Choose a ticket",
+        "two": "Choose diets",
+        "three": "RSVP"
+    },
+    "back": "back",
     "eventDeadlineDescription": {
         "after": "It was {TIMELEFT} since the rsvp closed",
         "before": "It's {TIMELEFT} that the rsvp closes"
@@ -12,8 +18,8 @@
         }
     },
     "allergen": {
-        "label": "Allergy",
-        "description": "Choose the allergens that suit you best",
+        "label": "Allergy/Preference",
+        "description": "Choose the allergen(s) that suit you best",
         "search": {
             "placeholder": "Search allergens",
             "createText": "Add as a new allergen"
@@ -45,5 +51,7 @@
         "showLabel": "hide",
         "hideLabel": "show",
         "placeholder": "provide password"
-    }
+    },
+    "errorLabel": "Wrong password",
+    "successLabel": "Password accepted"
 }

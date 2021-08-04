@@ -19,7 +19,7 @@ import {
     validateIntention,
     validatePassword,
 } from "state/checkout";
-import { Allergy, Diet, Event } from "types/strapi";
+import { Allergy, ComponentEventTickets, Diet, Event } from "types/strapi";
 import { isBefore } from "date-fns";
 import { useRouter } from "next/router";
 
@@ -96,10 +96,10 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
     const [[__, setIntentedTickets]] = useRecoilSSRState(forceValue);
     const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
 
-    const supportedLanguages: { [k: string]: string } = {
-        en: "en-GB",
-        sv: "sv-SE",
-    };
+    const supportedLanguages = useCallback(
+        (lang) => (lang === "en" ? "en-GB" : "sv-SE"),
+        []
+    );
 
     const nextQueryParams = () => {
         const query = router.asPath.split("?")[1];
@@ -125,13 +125,13 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
         return isValid;
     };
 
-    const handleLanguageChange = () => {
+    const handleLanguageChange = useCallback(() => {
         if (checkout) {
             checkout.freezeCheckout();
-            checkout.setLanguage(supportedLanguages[lang]);
+            checkout.setLanguage(supportedLanguages(lang));
             checkout.thawCheckout();
         }
-    };
+    }, [checkout, lang, supportedLanguages]);
 
     const handleOrderUpdate = useCallback(
         async (ticketId: string) => {
@@ -190,7 +190,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
         [intentionId, dietResult, specialDietResult, router]
     );
 
-    const handleOrderDetails = async () => {
+    const handleOrderDetails = useCallback(async () => {
         if (
             dietResult.length > 0 ||
             specialDietResult.length > 0 ||
@@ -217,7 +217,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                 body: JSON.stringify(body),
             });
         }
-    };
+    }, [intentionId, dietResult, specialDietResult]);
 
     const registerTicketOnClient = async () => {
         const { protocol, host } = window.location;
@@ -276,7 +276,7 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         checkoutKey: process.env
                             .NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
                         paymentId: paymentId,
-                        language: supportedLanguages[lang],
+                        language: supportedLanguages(lang),
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);
@@ -306,13 +306,13 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
 
     useEffect(() => {
         handleLanguageChange();
-    }, [lang]);
+    }, [lang, handleLanguageChange]);
 
     useEffect(() => {
         if (paymentInitialized) {
             handleOrderDetails();
         }
-    }, [paymentInitialized]);
+    }, [paymentInitialized, handleOrderDetails]);
 
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(() => {
@@ -346,20 +346,23 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
         isAuthenticated,
     ]);
 
-    const steps = useMemo(
-        () => [
-            {
+    const steps = useMemo(() => {
+        const _steps = [];
+        if (event.tickets?.Tickets?.length ?? 0 > 0) {
+            _steps.push({
                 label: t("step.one"),
                 content: (
                     <One
                         label={t("step.one")}
                         intendedTickets={intendedTickets}
-                        tickets={event.tickets}
+                        tickets={event.tickets as ComponentEventTickets}
                         handleOrderUpdate={handleOrderUpdate}
                     />
                 ),
-            },
-            {
+            });
+        }
+        if (event.servingOptions?.servingFood) {
+            _steps.push({
                 label: t("step.two"),
                 content: (
                     <Two
@@ -372,36 +375,37 @@ const EventView = ({ event, diets, allergies, ...rest }: Props) => {
                         setSpecialDietResult={setSpecialDietResult}
                     />
                 ),
-            },
-            {
-                label: t("step.three"),
-                content: (
-                    <Three
-                        label={t("step.three")}
-                        invalidIntention={invalidIntention}
-                        orderIsFree={orderIsFree}
-                        handleFreeOrder={handleFreeOrder}
-                        checkoutRef={checkoutRef}
-                        isLoaded={isLoaded}
-                    />
-                ),
-            },
-        ],
-        [
-            t,
-            allergies,
-            diets,
-            dietResult,
-            specialDietResult,
-            handleFreeOrder,
-            handleOrderUpdate,
-            event.tickets,
-            intendedTickets,
-            invalidIntention,
-            orderIsFree,
-            isLoaded,
-        ]
-    );
+            });
+        }
+        _steps.push({
+            label: t("step.three"),
+            content: (
+                <Three
+                    label={t("step.three")}
+                    invalidIntention={invalidIntention}
+                    orderIsFree={orderIsFree}
+                    handleFreeOrder={handleFreeOrder}
+                    checkoutRef={checkoutRef}
+                    isLoaded={isLoaded}
+                />
+            ),
+        });
+        return _steps;
+    }, [
+        t,
+        allergies,
+        diets,
+        dietResult,
+        specialDietResult,
+        handleFreeOrder,
+        handleOrderUpdate,
+        event.tickets,
+        intendedTickets,
+        invalidIntention,
+        orderIsFree,
+        isLoaded,
+        event.servingOptions,
+    ]);
 
     const goForward = useCallback(() => {
         setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
@@ -632,7 +636,9 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                     tickets {
                         Tickets {
                             id
-                            name
+                            swedishName
+                            englishName
+                            ticketUID
                             price
                         }
                         allowMultiple
@@ -668,7 +674,9 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                         tickets {
                             Tickets {
                                 id
-                                name
+                                swedishName
+                                englishName
+                                ticketUID
                                 price
                             }
                             allowMultiple

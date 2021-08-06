@@ -35,37 +35,28 @@ import {
     Button,
     Spacer,
     useBreakpointValue,
-    ScaleFade,
+    Center,
+    Circle,
 } from "@chakra-ui/react";
-import { EventTitle } from "components/event/EventTitle";
-import { EventDiscription } from "components/event/EventDiscription";
-import { EventTicketList } from "components/event/EventTicketList";
-import { EventTicketItem } from "components/event/EventTicketItem";
-import { Divider } from "components/Divider";
-import { OptionsInput } from "components/event/OptionsInput";
+
 import { Option } from "components/Autocomplete";
-import { EventConfirmation } from "components/event/EventConfirmation";
 import { IConfirmation, IPasswordProtect, MinDiet } from "types/checkout";
-import { EventMessage } from "components/event/EventMessage";
-import { EventDeadline } from "components/event/EventDeadline";
-import { BiCalendarExclamation } from "react-icons/bi";
-import { IoWarning } from "react-icons/io5";
 import { EventPasswordProtection } from "components/event/EventPasswordProtection";
 import { CheckoutApi, useDibs } from "hooks/use-dibs";
 import useTranslation from "next-translate/useTranslation";
 import { changeLocaleData } from "utils/lang";
 import AccessibleLink from "components/AccessibleLink";
-import { IoMdArrowDropleft, IoMdArrowDropleftCircle } from "react-icons/io";
+import { IoMdArrowDropleft } from "react-icons/io";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { getDate } from "utils/dates";
 import { MdDateRange } from "react-icons/md";
-import { Step, Steps, useSteps } from "chakra-ui-steps";
+import { BiCheck } from "react-icons/bi";
 import { VStepper } from "components/event/VStepper";
 import { Two } from "components/event/steps/Two";
 import { One } from "components/event/steps/One";
 import { Three } from "components/event/steps/Three";
 import { useScroll } from "hooks/use-scroll";
-import { useSnapshot } from "hooks/use-snapshot";
+import { motion } from "framer-motion";
 
 interface Props {
     event: Event;
@@ -88,6 +79,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         useState<boolean>(false);
     const [orderIsFree, setOrderIsFree] = useState<boolean>(false);
     const [invalidIntention, setInvalidIntention] = useState(false);
+    const [deliverySuccess, setDeliverySuccess] = useState(false);
 
     const [paymentId] = useRecoilSSRValue(pidFromIntention);
     const [[_, setPid]] = useRecoilSSRState(paymentState);
@@ -126,6 +118,11 @@ const EventView = ({ event, diets, allergies }: Props) => {
         setIsAuthenticated(isValid);
         return isValid;
     };
+    const handleDelivery = useCallback(({ success }) => {
+        if (success) {
+            setDeliverySuccess(success);
+        }
+    }, []);
 
     const handleLanguageChange = useCallback(() => {
         if (checkout) {
@@ -192,10 +189,13 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         allergens,
                     }),
                 });
-                router.push(`/ticket/${intentionId}`);
+
+                if (res.ok) {
+                    handleDelivery({ success: true });
+                }
             }
         },
-        [intentionId, dietResult, specialDietResult, router]
+        [intentionId, dietResult, specialDietResult, handleDelivery]
     );
 
     const handleOrderDetails = useCallback(async () => {
@@ -226,19 +226,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
             });
         }
     }, [intentionId, dietResult, specialDietResult]);
-
-    const registerTicketOnClient = async () => {
-        const { protocol, host } = window.location;
-        const res = await fetch(
-            protocol +
-                "//" +
-                host +
-                "/api/ticket?id=" +
-                intentionId +
-                "&event=" +
-                event.id
-        );
-    };
 
     const checkoutSession = useRecoilCallback(
         ({ set, snapshot }) =>
@@ -290,10 +277,8 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         containerId: "checkout",
                     };
                     const _checkout = new Dibs.Checkout(checkoutConfig);
-                    _checkout.on(
-                        "payment-completed",
-                        async () => router.push(`/ticket/${intentionId}`)
-                        //await registerTicketOnClient()
+                    _checkout.on("payment-completed", () =>
+                        handleDelivery({ success: true })
                     );
                     _checkout.setTheme({
                         textColor: "#000",
@@ -445,6 +430,9 @@ const EventView = ({ event, diets, allergies }: Props) => {
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
 
+    const MotionCircle = motion(Circle);
+    const MotionText = motion(Text);
+
     return (
         <Flex
             direction="column"
@@ -461,7 +449,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 width: "full",
                 left: 0,
                 height: "full",
-                top: { base: "240px", md: "285px" },
+                top: { base: "270px", md: "320px" },
             }}
         >
             <Box w="full">
@@ -584,7 +572,74 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     pos="relative"
                     p={activeStep < steps.length - 1 ? 6 : undefined}
                 >
-                    {event.passwordProtected && !isAuthenticated ? (
+                    {deliverySuccess && (
+                        <Box display="grid" placeItems="center" minH="450px">
+                            <Flex align="center" direction="column">
+                                <MotionCircle
+                                    bg="green.100"
+                                    animate={{
+                                        scale: 1,
+                                        transition: {
+                                            duration: 0.8,
+                                            type: "spring",
+                                            bounce: 0.8,
+                                        },
+                                    }}
+                                    initial={{ scale: 0.75 }}
+                                    exit={{ scale: 0.75 }}
+                                    size={24}
+                                >
+                                    <Icon
+                                        as={BiCheck}
+                                        color="green.300"
+                                        boxSize={24}
+                                    />
+                                </MotionCircle>
+                                <Box mt={4} overflow="hidden" h={10}>
+                                    <MotionText
+                                        color="green.300"
+                                        fontSize="2xl"
+                                        fontWeight="bold"
+                                        animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                            transition: {
+                                                type: "spring",
+                                                duration: 0.4,
+                                                delay: 0.2,
+                                            },
+                                        }}
+                                        initial={{ opacity: 0, y: 50 }}
+                                    >
+                                        {t("delivery.status")}
+                                    </MotionText>
+                                </Box>
+                                <Box overflow="hidden" h={8}>
+                                    <MotionText
+                                        fontSize="lg"
+                                        fontWeight="500"
+                                        animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                            transition: {
+                                                type: "spring",
+                                                duration: 0.4,
+                                                delay: 0.4,
+                                            },
+                                        }}
+                                        initial={{ opacity: 0, y: 50 }}
+                                    >
+                                        {t("delivery.message", {
+                                            email: "null",
+                                        })}
+                                    </MotionText>
+                                </Box>
+                            </Flex>
+                        </Box>
+                    )}
+                    {!deliverySuccess &&
+                    event.passwordProtected &&
+                    !isAuthenticated ? (
                         <EventPasswordProtection
                             scrollTo={scrollTo}
                             onSubmit={handlePasswordSubmit}
@@ -597,7 +652,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         />
                     ) : (
                         <>
-                            {step.content()}
+                            {!deliverySuccess && step.content()}
 
                             <Spacer />
                             <Flex

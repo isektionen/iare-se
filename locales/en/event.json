@@ -4,6 +4,10 @@
         "two": "Choose diets",
         "three": "RSVP"
     },
+    "delivery": {
+        "status": "Order recieved",
+        "message": "A ticket was sent to {email}"
+    },
     "back": "back",
     "eventDeadlineDescription": {
         "after": "It was {TIMELEFT} since the rsvp closed",

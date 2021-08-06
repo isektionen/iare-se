@@ -4,6 +4,10 @@
         "two": "Välj specialkost",
         "three": "Osa"
     },
+    "delivery": {
+        "status": "Order mottagen",
+        "message": "En biljett har skickats till {email}"
+    },
     "back": "tillbaka",
     "eventDeadlineDescription": {
         "after": "Det var {TIMELEFT} sedan osan stängde",

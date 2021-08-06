@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
 import {
-    ComponentDocumentDocument,
+    ComponentDocumentDocuments,
     Document as DocumentType,
     UsersPermissionsUser,
 } from "../../types/strapi";
@@ -60,7 +60,7 @@ interface Props {
 }
 
 type Control = {
-    data: ComponentDocumentDocument[];
+    data: ComponentDocumentDocuments[];
 };
 
 const DocumentControl = ({ data }: Control) => {

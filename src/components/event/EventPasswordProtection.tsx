@@ -59,6 +59,7 @@ export const EventPasswordProtection = ({
         md: "bottom",
     }) as ToastPosition;
 
+    const isAboveLarge = useBreakpointValue({ base: false, lg: true });
     const id = "password";
 
     const handlePasswordCheck = async () => {
@@ -83,8 +84,8 @@ export const EventPasswordProtection = ({
     };
 
     useEffect(() => {
-        setFocus("password");
-    }, [setFocus]);
+        if (isAboveLarge) setFocus("password");
+    }, [isAboveLarge, setFocus]);
 
     const handleFocus = () => {
         const dom = document.getElementById("password");

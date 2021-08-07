@@ -79,20 +79,25 @@ export const OrderSummary = ({
                 align="stretch"
             >
                 <Box>
-                    <Heading size="md" fontWeight="700" mb={8}>
+                    <Heading size="md" fontWeight="700" mb={6}>
                         {orderLabel}
                     </Heading>
                     <Flex
                         direction="column"
                         justifyContent="center"
                         alignItems="center"
-                        w={{ xs: "xs", sm: "sm" }}
+                        w={{ base: "xs", sm: "sm" }}
                         mx="auto"
                     >
-                        <Center h={64} w="full" rounded="md" bg="gray.900">
+                        <Center
+                            h={{ base: 40, lg: 64 }}
+                            w="full"
+                            rounded="md"
+                            bg="gray.900"
+                        >
                             <Icon
                                 as={HiOutlineTicket}
-                                boxSize={44}
+                                boxSize={{ base: 24, lg: 44 }}
                                 color="white"
                             />
                         </Center>
@@ -164,7 +169,7 @@ export const OrderSummary = ({
                 <Spacer />
 
                 <Box pr={8}>
-                    <Heading size="md" fontWeight="700" mb={8}>
+                    <Heading size="md" fontWeight="700" mb={6}>
                         {dietLabel}
                     </Heading>
                     <Flex

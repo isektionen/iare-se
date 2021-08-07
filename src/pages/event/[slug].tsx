@@ -44,6 +44,9 @@ import {
     useBreakpointValue,
     Circle,
     Progress,
+    Center,
+    IconButton,
+    createIcon,
 } from "@chakra-ui/react";
 
 import { Option } from "components/Autocomplete";
@@ -66,6 +69,7 @@ import { useScroll } from "hooks/use-scroll";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { OrderSummary } from "components/event/steps/OrderSummary";
+import { BsChevronDoubleDown } from "react-icons/bs";
 
 interface Props {
     event: Event;
@@ -148,7 +152,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const { ref: formRef, scrollTo } = useScroll<HTMLFormElement>({
         behavior: "smooth",
         block: "center",
-        inline: "center",
+        inline: "start",
     });
 
     const handlePasswordSubmit = async () => {
@@ -308,7 +312,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     Dibs &&
                     checkoutRef.current &&
                     checkoutRef.current?.childElementCount === 0 &&
-                    activeStep === 2
+                    activeStep === steps.length - 1
                 ) {
                     setOrderIsFree(false);
                     const checkoutConfig = {
@@ -352,10 +356,13 @@ const EventView = ({ event, diets, allergies }: Props) => {
     }, [paymentInitialized, handleOrderDetails]);
 
     const [isLoaded, setIsLoaded] = useState(false);
+
+    const _orderIsFree = getValues("orderIsFree");
     useEffect(() => {
         const netsCheckout = document.getElementById("nets-checkout-iframe");
         if (netsCheckout) {
             netsCheckout.style.width = "100%";
+
             netsCheckout.addEventListener("load", () =>
                 setTimeout(() => setIsLoaded(true), 2000)
             );
@@ -365,7 +372,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 );
             };
         }
-    }, [checkout, orderIsFree]);
+    }, [checkout, _orderIsFree]);
 
     const [activeStep, setActiveStep] = useState(0);
 
@@ -411,9 +418,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const [prevPages, setPrevPages] = useState<number[]>([]);
 
     const goForward = useCallback(() => {
-        const currentPage = global.window && window.pageYOffset;
-        setPrevPages((old) => [...old, currentPage]);
-
         const ticketUID = getValues("ticket");
         const ticket = event?.tickets?.Tickets?.find(
             (t) => t?.ticketUID === ticketUID
@@ -425,7 +429,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             );
         } else {
             setError("ticket", {
-                message: t("invalidTicketMessage"),
+                message: "invalid ticket",
             });
         }
     }, [
@@ -435,20 +439,31 @@ const EventView = ({ event, diets, allergies }: Props) => {
         setError,
         setValue,
         steps.length,
-        t,
     ]);
 
     const goBackward = useCallback(() => {
         const len = prevPages.length - 1;
         if (len + 1 > 0) {
-            const y = prevPages[len];
             setPrevPages((old) => [...old.filter((_, i) => i !== len)]);
-            global.window && window.scrollTo(0, y);
         }
         setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
     }, [prevPages, activeStep, steps.length]);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
+
+    /*
+    useEffect(() => {
+        const checkoutDom = document.getElementById("checkout");
+        if (checkoutDom) {
+            checkoutDom.style.marginTop = isAboveMd ? "-60px" : "-60px";
+            checkoutDom.style.marginBottom = isAboveMd ? "-60px" : "-60px";
+            checkoutDom.style.marginLeft = isAboveMd ? "-44px" : "-60px";
+            checkoutDom.style.marginRight = isAboveMd ? "-44px" : "-60px";
+        }
+    }, [isAboveMd]);
+    */
+
+    const MotionIconButton = motion(IconButton);
 
     const formStep = useCallback(
         (step) => {
@@ -473,10 +488,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 width: "full",
                 left: 0,
                 height: "full",
-                top: { base: "270px", md: "320px" },
+                top: { base: "100vh", lg: "320px" },
             }}
         >
-            <Box w="full">
+            <Flex direction="column" w="full" h={{ base: "88vh", lg: "full" }}>
                 <AccessibleLink
                     href="/feed/event"
                     textDecoration="none"
@@ -524,7 +539,26 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 <Text color="gray.600" my={6} noOfLines={5}>
                     {event.description}
                 </Text>
-            </Box>
+                <Spacer />
+                {!isAboveMd && (
+                    <Center py={12}>
+                        <MotionIconButton
+                            rounded="full"
+                            variant="iareSolid"
+                            aria-label="go to form"
+                            icon={<BsChevronDoubleDown />}
+                            onClick={() => scrollTo()}
+                            initial={{ y: 0 }}
+                            animate={{ y: 8 }}
+                            transition={{
+                                repeat: Infinity,
+                                duration: 0.5,
+                                repeatType: "mirror",
+                            }}
+                        />
+                    </Center>
+                )}
+            </Flex>
             <Stack
                 direction={{ base: "column", lg: "row" }}
                 spacing={{ base: 6, md: 16 }}
@@ -581,7 +615,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                         </VStack>
                     </Box>
                 )}
-
                 <Flex
                     ref={formRef as any}
                     as="form"
@@ -593,7 +626,8 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     borderWidth="1px"
                     borderColor="gray.200"
                     direction="column"
-                    h={{ base: "780px", xl: "620px" }}
+                    //h={{ base: "calc(100vh - 125px)", lg: "750px" }}
+                    h="calc(100vh - 125px)"
                     w="full"
                     pos="relative"
                     onSubmit={handleSubmit(onSubmit)}
@@ -607,15 +641,22 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     )}
                     <Flex
                         direction="column"
-                        p={
-                            activeStep < steps.length - 1 || orderIsFree
-                                ? 6
-                                : undefined
+                        mt={
+                            !getValues("orderIsFree") &&
+                            activeStep == steps.length - 1
+                                ? "-1px"
+                                : 6
+                        }
+                        mx={
+                            !getValues("orderIsFree") &&
+                            activeStep == steps.length - 1
+                                ? "-1px"
+                                : 6
                         }
                         h="full"
                     >
                         {!isAboveMd && (
-                            <Flex align="center" pb={6}>
+                            <Flex align="center" mb={4}>
                                 <Heading size="xs" fontWeight="light">
                                     {t("stepsMobile", {
                                         activeStep: activeStep + 1,
@@ -693,7 +734,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                 display={activeStep === 4 ? "block" : "none"}
                                 label={t("step.four")}
                                 invalidIntention={invalidIntention}
-                                orderIsFree={orderIsFree}
+                                orderIsFree={getValues("orderIsFree")}
                                 handleFreeOrder={handleFreeOrder}
                                 checkoutRef={checkoutRef}
                                 isLoaded={isLoaded}
@@ -729,9 +770,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     </Flex>
                 </Flex>
             </Stack>
-            <Text as="pre" w="200px">
-                {JSON.stringify(watch())}
-            </Text>
         </Flex>
     );
 };

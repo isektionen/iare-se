@@ -11,6 +11,7 @@ import {
     ListItem,
     ListItemProps,
     ListProps,
+    useOutsideClick,
 } from "@chakra-ui/react";
 import { matchSorter } from "match-sorter";
 import { useKeypress } from "hooks/use-keypress";
@@ -133,6 +134,14 @@ export const AutoComplete = (props: Props) => {
             setCursor(-1);
         }
     };
+
+    useOutsideClick({
+        ref: inputRef,
+        handler: () => {
+            setDisplayOptions(false);
+            resetCursor();
+        },
+    });
     return (
         <Box>
             {props.result.length > 0 && (
@@ -163,6 +172,12 @@ export const AutoComplete = (props: Props) => {
                         props.placeholder ? props.placeholder : "placeholder"
                     }
                     onChange={(e) => filterOptions(e.currentTarget.value)}
+                    onClick={() => {
+                        if (inputRef?.current?.value === "") {
+                            setPartialResult(optionsCopy);
+                        }
+                        setDisplayOptions(true);
+                    }}
                 />
                 {props.inputRightIcon && (
                     <InputRightElement pointerEvents="none">
@@ -172,7 +187,7 @@ export const AutoComplete = (props: Props) => {
             </InputGroup>
 
             {displayOptions && (
-                <List {...props.listOptions}>
+                <List {...props.listOptions} h="30vh" overflowY="scroll">
                     {partialResult?.map((option, key) => (
                         <ListItem
                             {...props.listItemOptions}

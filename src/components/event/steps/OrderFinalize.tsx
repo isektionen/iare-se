@@ -1,4 +1,11 @@
-import { Box, BoxProps, Center, Skeleton, Spinner } from "@chakra-ui/react";
+import {
+    Box,
+    BoxProps,
+    Center,
+    Skeleton,
+    Spinner,
+    useBreakpointValue,
+} from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import React, { useEffect, useState } from "react";
 import { IConfirmation } from "types/checkout";
@@ -25,6 +32,8 @@ export const OrderFinalize = ({
     ...rest
 }: Props) => {
     const { t } = useTranslation("event");
+
+    const isAboveMedium = useBreakpointValue({ base: false, md: true });
 
     if (!invalidIntention && orderIsFree) {
         return (
@@ -55,7 +64,7 @@ export const OrderFinalize = ({
         );
     }
     return (
-        <Box w="full" minH="854px" pos="relative" {...rest}>
+        <Center pos="relative" w="full" h="full" {...rest}>
             {!isLoaded && (
                 <Center
                     position="absolute"
@@ -77,6 +86,6 @@ export const OrderFinalize = ({
             >
                 <Box id="checkout" ref={checkoutRef} />
             </Box>
-        </Box>
+        </Center>
     );
 };

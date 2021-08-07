@@ -1,12 +1,31 @@
 {
     "step": {
+        "zero": "Autentisera",
         "one": "Välj biljett",
         "two": "Välj specialkost",
-        "three": "Osa"
+        "three": "Sammanfattning",
+        "four": "Osa"
     },
+    "required": "Välj minst en biljett",
+    "summary": {
+        "changeMenu": {
+            "label": "Byt biljett"
+        },
+        "order": {
+            "label": "Biljettdetaljer"
+        },
+        "diet": {
+            "label": "Specialkostsdetaljer",
+            "diets": "Dieter",
+            "allergens": "Allergier",
+            "empty": "Ingen"
+        }
+    },
+    "stepsMobile": "Steg {{activeStep}} av {{totalSteps}}",
+
     "delivery": {
         "status": "Order mottagen",
-        "message": "En biljett har skickats till {email}"
+        "message": "En biljett har skickats till {{email}}"
     },
     "back": "tillbaka",
     "eventDeadlineDescription": {

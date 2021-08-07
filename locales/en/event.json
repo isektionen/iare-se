@@ -1,17 +1,36 @@
 {
     "step": {
+        "zero": "Authorize",
         "one": "Choose a ticket",
         "two": "Choose diets",
-        "three": "RSVP"
+        "three": "Order summary",
+        "four": "RSVP"
     },
+    "required": "Choose atleast one type of ticket",
+
+    "summary": {
+        "changeMenu": {
+            "label": "Switch ticket"
+        },
+        "order": {
+            "label": "Ticket details"
+        },
+        "diet": {
+            "label": "Dietary details",
+            "diets": "Diets",
+            "allergens": "Allergens",
+            "empty": "None"
+        }
+    },
+    "stepsMobile": "Step {{activeStep}} of {{totalSteps}}",
     "delivery": {
         "status": "Order recieved",
         "message": "A ticket was sent to {email}"
     },
     "back": "back",
     "eventDeadlineDescription": {
-        "after": "It was {TIMELEFT} since the rsvp closed",
-        "before": "It's {TIMELEFT} that the rsvp closes"
+        "after": "It was {{TIMELEFT}} since the rsvp closed",
+        "before": "It's {{TIMELEFT}} that the rsvp closes"
     },
     "diet": {
         "label": "Diet",

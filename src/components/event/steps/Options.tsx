@@ -1,11 +1,17 @@
-import { Box, Divider, Heading, StackDivider, VStack } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import {
+    Box,
+    BoxProps,
+    Divider,
+    Heading,
+    StackDivider,
+    VStack,
+} from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { Allergy, Diet } from "types/strapi";
 import { OptionsInput } from "../OptionsInput";
 
-interface Props {
+interface Props extends BoxProps {
     label: string;
     diets: Diet[];
     allergies: Allergy[];
@@ -15,7 +21,7 @@ interface Props {
     setSpecialDietResult: any;
 }
 
-export const Two = ({
+export const Options = ({
     label,
     diets,
     allergies,
@@ -23,15 +29,17 @@ export const Two = ({
     setDietResult,
     specialDietResult,
     setSpecialDietResult,
+    ...rest
 }: Props) => {
     const { t } = useTranslation("event");
 
     return (
-        <Box key="step-two">
+        <Box key="step-two" {...rest}>
             <Heading size="lg" fontWeight="700">
                 {label}
             </Heading>
-            <Divider my={4} />
+            <Divider mt={4} mb={8} />
+
             <VStack spacing={14} align="stretch">
                 <OptionsInput
                     name={t("diet.label")}

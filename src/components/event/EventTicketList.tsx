@@ -1,5 +1,11 @@
 import { Box, useRadioGroup, VStack } from "@chakra-ui/react";
-import React, { ReactNode } from "react";
+import { DefaultFieldValues } from "pages/event/[slug]";
+import React, { ReactNode, useMemo } from "react";
+import {
+    ControllerRenderProps,
+    FieldValues,
+    UseFormSetValue,
+} from "react-hook-form";
 import {
     ComponentEventInternalTicket,
     ComponentEventTickets,
@@ -7,6 +13,9 @@ import {
 } from "types/strapi";
 
 interface Props {
+    name: string;
+    field: ControllerRenderProps<DefaultFieldValues, "ticket">;
+    setValue: UseFormSetValue<DefaultFieldValues>;
     tickets: ComponentEventTickets;
     currentTickets: string[];
     onChange: (v: string) => void;
@@ -15,10 +24,21 @@ interface Props {
 }
 
 export const EventTicketList = (props: Props) => {
+    const { currentTickets, setValue } = props;
+    const setDefault = useMemo(() => {
+        const ticket = currentTickets?.length > 0 ? currentTickets[0] : "0";
+        setValue("ticket", ticket);
+        return ticket ?? "0";
+    }, [currentTickets, setValue]);
+
     const { getRootProps, getRadioProps } = useRadioGroup({
-        name: "eventTickets",
-        defaultValue: props.currentTickets ? props.currentTickets[0] : "0",
-        onChange: props.onChange,
+        name: props.name,
+        defaultValue: setDefault,
+        value: props.field.value,
+        onChange: (event) => {
+            props.field.onChange(event);
+            props.onChange(event);
+        },
     });
 
     const group = getRootProps();

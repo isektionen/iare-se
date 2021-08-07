@@ -2,6 +2,7 @@ import { useRecoilSSRState, useRecoilSSRValue } from "components/RecoilSSR";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, {
+    RefObject,
     useCallback,
     useEffect,
     useMemo,
@@ -19,7 +20,13 @@ import {
     validateIntention,
     validatePassword,
 } from "state/checkout";
-import { Allergy, ComponentEventTickets, Diet, Event } from "types/strapi";
+import {
+    Allergy,
+    ComponentEventInternalTicket,
+    ComponentEventTickets,
+    Diet,
+    Event,
+} from "types/strapi";
 import { isBefore } from "date-fns";
 import { useRouter } from "next/router";
 
@@ -35,8 +42,8 @@ import {
     Button,
     Spacer,
     useBreakpointValue,
-    Center,
     Circle,
+    Progress,
 } from "@chakra-ui/react";
 
 import { Option } from "components/Autocomplete";
@@ -46,26 +53,57 @@ import { CheckoutApi, useDibs } from "hooks/use-dibs";
 import useTranslation from "next-translate/useTranslation";
 import { changeLocaleData } from "utils/lang";
 import AccessibleLink from "components/AccessibleLink";
-import { IoMdArrowDropleft } from "react-icons/io";
+import { IoMdArrowDropleft, IoMdArrowDropleftCircle } from "react-icons/io";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { getDate } from "utils/dates";
 import { MdDateRange } from "react-icons/md";
 import { BiCheck } from "react-icons/bi";
 import { VStepper } from "components/event/VStepper";
-import { Two } from "components/event/steps/Two";
-import { One } from "components/event/steps/One";
-import { Three } from "components/event/steps/Three";
+import { Options } from "components/event/steps/Options";
+import { Tickets } from "components/event/steps/Tickets";
+import { OrderFinalize } from "components/event/steps/OrderFinalize";
 import { useScroll } from "hooks/use-scroll";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { OrderSummary } from "components/event/steps/OrderSummary";
 
 interface Props {
     event: Event;
     diets: Diet[];
     allergies: Allergy[];
 }
+
+export interface DefaultFieldValues {
+    password: string;
+    diets: Option[];
+    allergens: Option[];
+    orderIsFree: boolean;
+    ticket: string;
+}
 const EventView = ({ event, diets, allergies }: Props) => {
     const { t, lang } = useTranslation("event");
     const router = useRouter();
+
+    const {
+        watch,
+        register,
+        control,
+        setFocus,
+        setError,
+        setValue,
+        getValues,
+        handleSubmit,
+    } = useForm<DefaultFieldValues>({
+        defaultValues: {
+            password: "",
+            diets: [],
+            allergens: [],
+            orderIsFree: false,
+            ticket: "",
+        },
+    });
+
+    const onSubmit = (data: any) => console.log(data);
 
     const Dibs = useDibs();
     const [beforeDeadline] = useState(
@@ -107,15 +145,19 @@ const EventView = ({ event, diets, allergies }: Props) => {
     };
 
     const checkoutRef = useRef<HTMLDivElement>(null);
-    const { ref: formRef, scrollTo } = useScroll<HTMLDivElement>({
+    const { ref: formRef, scrollTo } = useScroll<HTMLFormElement>({
         behavior: "smooth",
         block: "center",
         inline: "center",
     });
 
-    const handlePasswordSubmit = async ({ password }: IPasswordProtect) => {
+    const handlePasswordSubmit = async () => {
+        const password = getValues("password");
         const isValid = await validatePassword(event.id, password);
         setIsAuthenticated(isValid);
+        if (isValid) {
+            setActiveStep(1);
+        }
         return isValid;
     };
     const handleDelivery = useCallback(({ success }) => {
@@ -342,71 +384,29 @@ const EventView = ({ event, diets, allergies }: Props) => {
     ]);
 
     const steps = useMemo(() => {
-        const _steps = [];
-        if (event.tickets?.Tickets?.length ?? 0 > 0) {
-            _steps.push({
-                label: t("step.one"),
-                content: function OneFactory() {
-                    return (
-                        <One
-                            label={t("step.one")}
-                            intendedTickets={intendedTickets as string[]}
-                            tickets={event.tickets as ComponentEventTickets}
-                            handleOrderUpdate={handleOrderUpdate}
-                        />
-                    );
-                },
-            });
-        }
-        if (event.servingOptions?.servingFood) {
-            _steps.push({
-                label: t("step.two"),
-                content: function TwoFactory() {
-                    return (
-                        <Two
-                            label={t("step.two")}
-                            diets={diets}
-                            allergies={allergies}
-                            dietResult={dietResult}
-                            setDietResult={setDietResult}
-                            specialDietResult={specialDietResult}
-                            setSpecialDietResult={setSpecialDietResult}
-                        />
-                    );
-                },
-            });
-        }
-        _steps.push({
-            label: t("step.three"),
-            content: function ThreeFactory() {
-                return (
-                    <Three
-                        label={t("step.three")}
-                        invalidIntention={invalidIntention}
-                        orderIsFree={orderIsFree}
-                        handleFreeOrder={handleFreeOrder}
-                        checkoutRef={checkoutRef}
-                        isLoaded={isLoaded}
-                    />
-                );
+        return [
+            {
+                label: t("step.zero"),
+                isVisible: event.passwordProtected !== undefined,
             },
-        });
-        return _steps;
-    }, [
-        t,
-        allergies,
-        diets,
-        dietResult,
-        specialDietResult,
-        handleFreeOrder,
-        handleOrderUpdate,
-        event.tickets,
-        intendedTickets,
-        invalidIntention,
-        orderIsFree,
-        isLoaded,
-        event.servingOptions,
-    ]) as { label: string; content: () => JSX.Element }[];
+            {
+                label: t("step.one"),
+                isVisible: true,
+            },
+            {
+                label: t("step.two"),
+                isVisible: event.servingOptions?.servingFood !== undefined,
+            },
+            {
+                label: t("step.three"),
+                isVisible: true,
+            },
+            {
+                label: t("step.four"),
+                isVisible: true,
+            },
+        ];
+    }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
 
     const [prevPages, setPrevPages] = useState<number[]>([]);
 
@@ -414,8 +414,29 @@ const EventView = ({ event, diets, allergies }: Props) => {
         const currentPage = global.window && window.pageYOffset;
         setPrevPages((old) => [...old, currentPage]);
 
-        setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
-    }, [activeStep, steps.length]);
+        const ticketUID = getValues("ticket");
+        const ticket = event?.tickets?.Tickets?.find(
+            (t) => t?.ticketUID === ticketUID
+        );
+        if (ticket) {
+            setValue("orderIsFree", ticket.price === 0);
+            setActiveStep(
+                Math.max(0, Math.min(activeStep + 1, steps.length - 1))
+            );
+        } else {
+            setError("ticket", {
+                message: t("invalidTicketMessage"),
+            });
+        }
+    }, [
+        activeStep,
+        event?.tickets?.Tickets,
+        getValues,
+        setError,
+        setValue,
+        steps.length,
+        t,
+    ]);
 
     const goBackward = useCallback(() => {
         const len = prevPages.length - 1;
@@ -426,19 +447,22 @@ const EventView = ({ event, diets, allergies }: Props) => {
         }
         setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
     }, [prevPages, activeStep, steps.length]);
-    const step = useMemo(() => steps[activeStep], [steps, activeStep]);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
 
-    const MotionCircle = motion(Circle);
-    const MotionText = motion(Text);
+    const formStep = useCallback(
+        (step) => {
+            return activeStep >= step && !deliverySuccess;
+        },
+        [activeStep, deliverySuccess]
+    );
 
     return (
         <Flex
             direction="column"
             bg="white"
             pos="relative"
-            px={{ base: 2, md: 16 }}
+            px={{ base: 3, md: 16 }}
             py={{ base: 4, md: 10 }}
             _before={{
                 content: '""',
@@ -559,127 +583,155 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 )}
 
                 <Flex
-                    ref={formRef}
-                    as="article"
+                    ref={formRef as any}
+                    as="form"
                     bg="white"
                     rounded="sm"
                     shadow="2xl"
                     flex={1}
+                    overflow="hidden"
                     borderWidth="1px"
                     borderColor="gray.200"
                     direction="column"
-                    minH="450px"
+                    h={{ base: "780px", xl: "620px" }}
+                    w="full"
                     pos="relative"
-                    p={activeStep < steps.length - 1 ? 6 : undefined}
+                    onSubmit={handleSubmit(onSubmit)}
                 >
-                    {deliverySuccess && (
-                        <Box display="grid" placeItems="center" minH="450px">
-                            <Flex align="center" direction="column">
-                                <MotionCircle
-                                    bg="green.100"
-                                    animate={{
-                                        scale: 1,
-                                        transition: {
-                                            duration: 0.8,
-                                            type: "spring",
-                                            bounce: 0.8,
-                                        },
-                                    }}
-                                    initial={{ scale: 0.75 }}
-                                    exit={{ scale: 0.75 }}
-                                    size={24}
-                                >
-                                    <Icon
-                                        as={BiCheck}
-                                        color="green.300"
-                                        boxSize={24}
-                                    />
-                                </MotionCircle>
-                                <Box mt={4} overflow="hidden" h={10}>
-                                    <MotionText
-                                        color="green.300"
-                                        fontSize="2xl"
-                                        fontWeight="bold"
-                                        animate={{
-                                            opacity: 1,
-                                            y: 0,
-                                            transition: {
-                                                type: "spring",
-                                                duration: 0.4,
-                                                delay: 0.2,
-                                            },
-                                        }}
-                                        initial={{ opacity: 0, y: 50 }}
-                                    >
-                                        {t("delivery.status")}
-                                    </MotionText>
-                                </Box>
-                                <Box overflow="hidden" h={8}>
-                                    <MotionText
-                                        fontSize="lg"
-                                        fontWeight="500"
-                                        animate={{
-                                            opacity: 1,
-                                            y: 0,
-                                            transition: {
-                                                type: "spring",
-                                                duration: 0.4,
-                                                delay: 0.4,
-                                            },
-                                        }}
-                                        initial={{ opacity: 0, y: 50 }}
-                                    >
-                                        {t("delivery.message", {
-                                            email: "null",
-                                        })}
-                                    </MotionText>
-                                </Box>
-                            </Flex>
-                        </Box>
-                    )}
-                    {!deliverySuccess &&
-                    event.passwordProtected &&
-                    !isAuthenticated ? (
-                        <EventPasswordProtection
-                            scrollTo={scrollTo}
-                            onSubmit={handlePasswordSubmit}
-                            placeholderText={t("passwordProtected.placeholder")}
-                            showLabel={t("passwordProtected.showLabel")}
-                            hideLabel={t("passwordProtected.hideLabel")}
-                            submitLabel={t("passwordProtected.validateLabel")}
-                            errorLabel={t("errorLabel")}
-                            successLabel={t("successLabel")}
+                    {!isAboveMd && (
+                        <Progress
+                            size="xs"
+                            value={(activeStep / steps.length) * 100}
+                            colorScheme="brand"
                         />
-                    ) : (
-                        <>
-                            {!deliverySuccess && step.content()}
+                    )}
+                    <Flex
+                        direction="column"
+                        p={
+                            activeStep < steps.length - 1 || orderIsFree
+                                ? 6
+                                : undefined
+                        }
+                        h="full"
+                    >
+                        {!isAboveMd && (
+                            <Flex align="center" pb={6}>
+                                <Heading size="xs" fontWeight="light">
+                                    {t("stepsMobile", {
+                                        activeStep: activeStep + 1,
+                                        totalSteps: steps.length,
+                                    })}
+                                </Heading>
+                            </Flex>
+                        )}
 
-                            <Spacer />
-                            <Flex
-                                pt={4}
-                                pb={
-                                    activeStep < steps.length - 1
-                                        ? undefined
-                                        : 6
+                        {formStep(0) && (
+                            <EventPasswordProtection
+                                display={activeStep === 0 ? "flex" : "none"}
+                                onSubmit={handlePasswordSubmit}
+                                placeholderText={t(
+                                    "passwordProtected.placeholder"
+                                )}
+                                showLabel={t("passwordProtected.showLabel")}
+                                hideLabel={t("passwordProtected.hideLabel")}
+                                submitLabel={t(
+                                    "passwordProtected.validateLabel"
+                                )}
+                                errorLabel={t("errorLabel")}
+                                successLabel={t("successLabel")}
+                                setFocus={setFocus}
+                                register={register("password", {
+                                    required: "This is required",
+                                })}
+                            />
+                        )}
+                        {formStep(1) && (
+                            <Tickets
+                                control={control}
+                                setValue={setValue}
+                                display={activeStep === 1 ? "block" : "none"}
+                                label={t("step.one")}
+                                intendedTickets={intendedTickets as string[]}
+                                tickets={event.tickets as ComponentEventTickets}
+                                handleOrderUpdate={handleOrderUpdate}
+                            />
+                        )}
+                        {formStep(2) && (
+                            <Options
+                                display={activeStep === 2 ? "block" : "none"}
+                                label={t("step.two")}
+                                diets={diets}
+                                allergies={allergies}
+                                dietResult={getValues("diets")}
+                                setDietResult={(values: any) =>
+                                    setValue("diets", values)
                                 }
-                                px={
-                                    activeStep < steps.length - 1
-                                        ? undefined
-                                        : 6
+                                specialDietResult={getValues("allergens")}
+                                setSpecialDietResult={(values: any) =>
+                                    setValue("allergens", values)
                                 }
-                            >
+                            />
+                        )}
+                        {formStep(3) && (
+                            <OrderSummary
+                                display={activeStep === 3 ? "block" : "none"}
+                                label={t("step.three")}
+                                orderLabel={t("summary.order.label")}
+                                dietLabel={t("summary.diet.label")}
+                                currentTicket={getValues("ticket")}
+                                allTickets={
+                                    event.tickets
+                                        ?.Tickets as ComponentEventInternalTicket[]
+                                }
+                                setValue={setValue}
+                                diets={getValues("diets")}
+                                allergens={getValues("allergens")}
+                            />
+                        )}
+                        {formStep(4) && (
+                            <OrderFinalize
+                                display={activeStep === 4 ? "block" : "none"}
+                                label={t("step.four")}
+                                invalidIntention={invalidIntention}
+                                orderIsFree={orderIsFree}
+                                handleFreeOrder={handleFreeOrder}
+                                checkoutRef={checkoutRef}
+                                isLoaded={isLoaded}
+                            />
+                        )}
+                        <Spacer />
+                        {(formStep(1) || !event.passwordProtected) && (
+                            <Flex mt={4}>
                                 <Spacer />
-                                <Button onClick={goBackward} mr={1}>
+
+                                <Button
+                                    onClick={goBackward}
+                                    isDisabled={
+                                        (event.passwordProtected &&
+                                            activeStep === 1) ||
+                                        activeStep === 0
+                                    }
+                                    mr={1}
+                                    variant="iareSolid"
+                                >
                                     Back
                                 </Button>
-                                <Button onClick={goForward} ml={1}>
+                                <Button
+                                    isDisabled={activeStep === steps.length - 1}
+                                    onClick={goForward}
+                                    ml={1}
+                                    variant="iareSolid"
+                                >
                                     Next
                                 </Button>
                             </Flex>
-                        </>
-                    )}
+                        )}
+                    </Flex>
                 </Flex>
             </Stack>
+            <Text as="pre" w="200px">
+                {JSON.stringify(watch())}
+            </Text>
         </Flex>
     );
 };

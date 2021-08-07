@@ -65,16 +65,13 @@ export const AutoComplete = (props: Props) => {
 
     const selectOption = (option: Option) => {
         if (props.result.includes(option)) {
-            props.setResult((oldResult) => [
-                ...oldResult.filter(
+            props.setResult(
+                props.result.filter(
                     (existingOption) => existingOption.value !== option.value
-                ),
-            ]);
+                )
+            );
         } else {
-            props.setResult((oldResult) => {
-                const r = [...oldResult, option];
-                return r;
-            });
+            props.setResult([...props.result, option]);
         }
     };
 
@@ -120,7 +117,11 @@ export const AutoComplete = (props: Props) => {
         if (event.key === "Enter") {
             event.preventDefault();
             const _option = partialResult[cursor];
-            selectOptionFromList(_option);
+            if (_option === undefined) {
+                createOption();
+            } else {
+                selectOptionFromList(_option);
+            }
             resetCursor();
         }
         if (event.key === "ArrowDown") {
@@ -132,7 +133,6 @@ export const AutoComplete = (props: Props) => {
             setCursor(-1);
         }
     };
-
     return (
         <Box>
             {props.result.length > 0 && (

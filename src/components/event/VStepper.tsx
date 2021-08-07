@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useState } from "react";
 
 interface Step {
     label: string;
-    content: () => JSX.Element;
+    isVisible: boolean;
 }
 
 interface Props {

@@ -1,11 +1,11 @@
-import { Box, Center, Skeleton, Spinner } from "@chakra-ui/react";
+import { Box, BoxProps, Center, Skeleton, Spinner } from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import React, { useEffect, useState } from "react";
 import { IConfirmation } from "types/checkout";
 import { CheckoutSkeleton } from "../CheckoutSkeleton";
 import { EventConfirmation } from "../EventConfirmation";
 
-interface Props {
+interface Props extends BoxProps {
     label: string;
     orderIsFree: boolean;
     invalidIntention: boolean;
@@ -14,13 +14,15 @@ interface Props {
     isLoaded: boolean;
 }
 
-export const Three = ({
+export const OrderFinalize = ({
     invalidIntention,
     orderIsFree,
     handleFreeOrder,
     label,
     checkoutRef,
     isLoaded,
+    onSubmit,
+    ...rest
 }: Props) => {
     const { t } = useTranslation("event");
 
@@ -48,11 +50,12 @@ export const Three = ({
                     label: t("orderConfirmation.button.label"),
                 }}
                 onSubmit={handleFreeOrder}
+                {...rest}
             />
         );
     }
     return (
-        <Box w="full" minH="854px" pos="relative">
+        <Box w="full" minH="854px" pos="relative" {...rest}>
             {!isLoaded && (
                 <Center
                     position="absolute"

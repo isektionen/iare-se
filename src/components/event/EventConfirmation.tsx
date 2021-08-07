@@ -1,6 +1,8 @@
 import {
     Box,
+    BoxProps,
     Button,
+    Divider,
     FormControl,
     FormErrorMessage,
     FormLabel,
@@ -14,7 +16,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { IConfirmation } from "types/checkout";
 
-interface Props {
+interface Props extends Omit<BoxProps, "onSubmit"> {
     title: string;
     firstName: {
         label: string;
@@ -38,7 +40,16 @@ interface Props {
     onSubmit: (values: IConfirmation) => void;
 }
 
-export const EventConfirmation = (props: Props) => {
+export const EventConfirmation = ({
+    title,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    button,
+    onSubmit,
+    ...rest
+}: Props) => {
     const {
         handleSubmit,
         register,
@@ -46,20 +57,22 @@ export const EventConfirmation = (props: Props) => {
     } = useForm();
 
     return (
-        <Box key="step-three" p={6}>
-            <Heading size="lg" fontWeight="700" mb={16}>
-                {props.title}
+        <Box key="step-three" {...rest}>
+            <Heading size="lg" fontWeight="700">
+                {title}
             </Heading>
-            <form onSubmit={handleSubmit(props.onSubmit)} autoComplete="on">
+            <Divider mt={4} mb={8} />
+
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
                 <VStack spacing={3}>
                     <HStack spacing={2} w="full">
                         <FormControl isInvalid={errors.firstName} isRequired>
                             <FormLabel htmlFor="fname">
-                                {props.firstName.label}
+                                {firstName.label}
                             </FormLabel>
                             <Input
                                 id="fname"
-                                placeholder={props.firstName.placeholder}
+                                placeholder={firstName.placeholder}
                                 autoComplete="on"
                                 variant="filled"
                                 bg="gray.50"
@@ -87,11 +100,11 @@ export const EventConfirmation = (props: Props) => {
                         </FormControl>
                         <FormControl isInvalid={errors.lastName} isRequired>
                             <FormLabel htmlFor="lname">
-                                {props.lastName.label}
+                                {lastName.label}
                             </FormLabel>
                             <Input
                                 id="lname"
-                                placeholder={props.lastName.placeholder}
+                                placeholder={lastName.placeholder}
                                 autoComplete="on"
                                 variant="filled"
                                 bg="gray.50"
@@ -119,12 +132,10 @@ export const EventConfirmation = (props: Props) => {
                         </FormControl>
                     </HStack>
                     <FormControl isInvalid={errors.email} isRequired>
-                        <FormLabel htmlFor="email">
-                            {props.email.label}
-                        </FormLabel>
+                        <FormLabel htmlFor="email">{email.label}</FormLabel>
                         <Input
                             id="email"
-                            placeholder={props.email.placeholder}
+                            placeholder={email.placeholder}
                             autoComplete="on"
                             variant="filled"
                             bg="gray.50"
@@ -153,11 +164,11 @@ export const EventConfirmation = (props: Props) => {
                     </FormControl>
                     <FormControl isInvalid={errors.phoneNumber} isRequired>
                         <FormLabel htmlFor="phone">
-                            {props.phoneNumber.label}
+                            {phoneNumber.label}
                         </FormLabel>
                         <Input
                             id="phone"
-                            placeholder={props.phoneNumber.placeholder}
+                            placeholder={phoneNumber.placeholder}
                             autoComplete="on"
                             type="tel"
                             variant="filled"
@@ -189,7 +200,7 @@ export const EventConfirmation = (props: Props) => {
                     type="submit"
                     variant="iareSolid"
                 >
-                    {props.button.label}
+                    {button.label}
                 </Button>
             </form>
         </Box>

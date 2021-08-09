@@ -16,28 +16,23 @@ import { EventConfirmation } from "../EventConfirmation";
 
 interface Props extends BoxProps {
     label: string;
-    orderIsFree: boolean;
+    status: string | ("paid" | "unpaid" | null);
     invalidIntention: boolean;
-    handleFreeOrder: (orderBody: IConfirmation) => Promise<void>;
-    checkoutRef: React.RefObject<HTMLDivElement>;
+    handleOrder: any;
     isLoaded: boolean;
 }
 
 export const OrderFinalize = ({
     invalidIntention,
-    orderIsFree,
-    handleFreeOrder,
+    status,
     label,
-    checkoutRef,
     isLoaded,
     onSubmit,
     ...rest
 }: Props) => {
     const { t } = useTranslation("event");
 
-    const isAboveMedium = useBreakpointValue({ base: false, md: true });
-
-    if (!invalidIntention && orderIsFree) {
+    if (status === "paid") {
         return (
             <EventConfirmation
                 title={label}
@@ -60,13 +55,13 @@ export const OrderFinalize = ({
                 button={{
                     label: t("orderConfirmation.button.label"),
                 }}
-                onSubmit={handleFreeOrder}
+                onSubmit={(e) => console.log(e)}
                 {...rest}
             />
         );
     }
     return (
-        <Center pos="relative" w="full" h="full" {...rest}>
+        <Center pos="relative" w="full" h="calc(100% - 60px)" {...rest}>
             {!isLoaded && (
                 <Center
                     position="absolute"
@@ -80,7 +75,7 @@ export const OrderFinalize = ({
                 </Center>
             )}
             <ScaleFade in={isLoaded}>
-                <Box id="checkout" ref={checkoutRef} />
+                <Box id="checkout" />
             </ScaleFade>
         </Center>
     );

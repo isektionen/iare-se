@@ -52,7 +52,7 @@ import {
 import { Option } from "components/Autocomplete";
 import { IConfirmation, IPasswordProtect, MinDiet } from "types/checkout";
 import { EventPasswordProtection } from "components/event/EventPasswordProtection";
-import { CheckoutApi, useDibs } from "hooks/use-dibs";
+import { CheckoutApi, useNets } from "hooks/use-nets";
 import useTranslation from "next-translate/useTranslation";
 import { changeLocaleData } from "utils/lang";
 import AccessibleLink from "components/AccessibleLink";
@@ -107,9 +107,95 @@ const EventView = ({ event, diets, allergies }: Props) => {
         },
     });
 
-    const onSubmit = (data: any) => console.log(data);
+    const onSubmit = (data: any) => console.log("onsubmit", data);
 
-    const Dibs = useDibs();
+    const {
+        order,
+        isLoaded,
+        reset,
+        hydrateCheckout,
+        setCheckoutConfig,
+        setTheme,
+        setLanguage,
+        setPaymentId,
+        withCheckout,
+        initCheckout,
+    } = useNets({
+        on3DSHandler: (paymentId) => {
+            console.log("3DS", paymentId);
+        },
+        onCompleteHandler: ({ paymentId }) => {
+            console.log("Complete", paymentId);
+        },
+        fullfillmentId: event.fullfillmentUID as string,
+    });
+
+    const supportedLanguages = useCallback(
+        (lang) => (lang === "en" ? "en-GB" : "sv-SE"),
+        []
+    );
+
+    useEffect(() => {
+        hydrateCheckout(async ({ get, validate, createIntention }) => {
+            const iid = get("id");
+            if (iid) {
+                const { intentionId, paymentId } = await validate(iid);
+                return { intentionId, paymentId };
+            }
+            const { intentionId, paymentId } = await createIntention();
+            router.replace(`/event/${event.slug}?id=${intentionId}`);
+            return { intentionId, paymentId };
+        });
+
+        setCheckoutConfig({
+            checkoutKey: process.env.NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
+            language: supportedLanguages(lang),
+            containerId: "checkout",
+        });
+
+        setTheme({
+            textColor: "#000",
+            primaryColor: "#1A2123",
+            linkColor: "#357AA5",
+            backgroundColor: "#fff",
+            fontFamily: "Source Sans Pro",
+            placeholderColor: "#767676",
+            outlineColor: "#BEBEBE",
+            primaryOutlineColor: "#976E49",
+        });
+    }, []);
+
+    const handleOrder = withCheckout<{ ticketId: string }>(
+        async ({ intentionId, status }, ticketId) => {
+            if (status === "unpaid") {
+                setOrderIsFree(true);
+            }
+            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tickets: [ticketId],
+                }),
+            });
+
+            if (res.ok) {
+                const { paymentId } = await res.json();
+                setPaymentId(paymentId);
+            }
+        }
+    );
+
+    useEffect(() => {
+        const handleLanguage = withCheckout(() => {
+            setLanguage(supportedLanguages(lang));
+        });
+
+        handleLanguage();
+    }, [lang, setLanguage, supportedLanguages]);
+
     const [beforeDeadline] = useState(
         isBefore(new Date(), new Date(event.deadline))
     );
@@ -123,32 +209,12 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const [invalidIntention, setInvalidIntention] = useState(false);
     const [deliverySuccess, setDeliverySuccess] = useState(false);
 
-    const [paymentId] = useRecoilSSRValue(pidFromIntention);
-    const [[_, setPid]] = useRecoilSSRState(paymentState);
-    const [intentionId] = useRecoilSSRValue(intentionState);
-    const [[__, setIntentedTickets]] = useRecoilSSRState(forceValue);
-    const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
+    //const [paymentId] = useRecoilSSRValue(pidFromIntention);
+    //const [[_, setPid]] = useRecoilSSRState(paymentState);
+    //const [intentionId] = useRecoilSSRValue(intentionState);
+    //const [[__, setIntentedTickets]] = useRecoilSSRState(forceValue);
+    //const [intendedTickets] = useRecoilSSRValue(ticketsFromIntention);
 
-    const supportedLanguages = useCallback(
-        (lang) => (lang === "en" ? "en-GB" : "sv-SE"),
-        []
-    );
-
-    const nextQueryParams = () => {
-        const query = router.asPath.split("?")[1];
-        if (!query) return {};
-        const pairs = query.split(/[;&]/);
-        const params = pairs.reduce((params, kv) => {
-            const [key, value] = kv.split("=");
-            if (key && value) {
-                return { ...params, [key]: value };
-            }
-            return { ...params };
-        }, {});
-        return params as any;
-    };
-
-    const checkoutRef = useRef<HTMLDivElement>(null);
     const { ref: formRef, scrollTo } = useScroll<HTMLFormElement>({
         behavior: "smooth",
         block: "center",
@@ -164,53 +230,18 @@ const EventView = ({ event, diets, allergies }: Props) => {
         }
         return isValid;
     };
+
+    /*
+    
+
+    
+
+    
     const handleDelivery = useCallback(({ success }) => {
         if (success) {
             setDeliverySuccess(success);
         }
     }, []);
-
-    const handleLanguageChange = useCallback(() => {
-        if (checkout) {
-            checkout.freezeCheckout();
-            checkout.setLanguage(supportedLanguages(lang));
-            checkout.thawCheckout();
-        }
-    }, [checkout, lang, supportedLanguages]);
-
-    const handleOrderUpdate = useCallback(
-        async (ticketId: string) => {
-            if (checkout) checkout.freezeCheckout();
-            if (intentionId !== "-1") {
-                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
-                const res = await fetch(url, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tickets: [ticketId],
-                    }),
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setOrderIsFree(data.paymentId ? false : true);
-                    if (setPid) {
-                        setPid(data.paymentId ? data.paymentId : "-1");
-                    }
-                    if (setIntentedTickets) setIntentedTickets(ticketId);
-                }
-            }
-            if (checkout) checkout.thawCheckout();
-        },
-        [
-            checkout,
-            event.fullfillmentUID,
-            intentionId,
-            setIntentedTickets,
-            setPid,
-        ]
-    );
 
     const handleFreeOrder = useCallback(
         async (orderBody: IConfirmation) => {
@@ -272,7 +303,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             });
         }
     }, [intentionId, dietResult, specialDietResult]);
-
+    
     const checkoutSession = useRecoilCallback(
         ({ set, snapshot }) =>
             async () => {
@@ -300,7 +331,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                 }
                 /** When paymentId is set to "-1" it means that the
                  *  intention started with a free ticket.
-                 */
+                 *-/
                 setOrderIsFree(!paymentId || paymentId === "-1" ? true : false);
 
                 if (
@@ -374,7 +405,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
         }
     }, [checkout, _orderIsFree]);
 
-    const [activeStep, setActiveStep] = useState(0);
 
     useEffect(() => {
         if (beforeDeadline && isAuthenticated) {
@@ -389,6 +419,8 @@ const EventView = ({ event, diets, allergies }: Props) => {
         checkoutSession,
         isAuthenticated,
     ]);
+    */
+    const [activeStep, setActiveStep] = useState(0);
 
     const steps = useMemo(() => {
         return [
@@ -399,7 +431,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             {
                 label: t("step.one"),
                 isVisible: true,
-            },
+            } /*
             {
                 label: t("step.two"),
                 isVisible: event.servingOptions?.servingFood !== undefined,
@@ -407,15 +439,13 @@ const EventView = ({ event, diets, allergies }: Props) => {
             {
                 label: t("step.three"),
                 isVisible: true,
-            },
+            },*/,
             {
                 label: t("step.four"),
                 isVisible: true,
             },
         ];
-    }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
-
-    const [prevPages, setPrevPages] = useState<number[]>([]);
+    }, [event.passwordProtected, t]);
 
     const goForward = useCallback(() => {
         const ticketUID = getValues("ticket");
@@ -424,6 +454,9 @@ const EventView = ({ event, diets, allergies }: Props) => {
         );
         if (ticket) {
             setValue("orderIsFree", ticket.price === 0);
+            if (activeStep + 1 === steps.length - 1) {
+                initCheckout();
+            }
             setActiveStep(
                 Math.max(0, Math.min(activeStep + 1, steps.length - 1))
             );
@@ -436,32 +469,20 @@ const EventView = ({ event, diets, allergies }: Props) => {
         activeStep,
         event?.tickets?.Tickets,
         getValues,
+        initCheckout,
         setError,
         setValue,
         steps.length,
     ]);
 
     const goBackward = useCallback(() => {
-        const len = prevPages.length - 1;
-        if (len + 1 > 0) {
-            setPrevPages((old) => [...old.filter((_, i) => i !== len)]);
+        if (activeStep === steps.length - 1) {
+            reset();
         }
         setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
-    }, [prevPages, activeStep, steps.length]);
+    }, [activeStep, reset, steps.length]);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
-
-    /*
-    useEffect(() => {
-        const checkoutDom = document.getElementById("checkout");
-        if (checkoutDom) {
-            checkoutDom.style.marginTop = isAboveMd ? "-60px" : "-60px";
-            checkoutDom.style.marginBottom = isAboveMd ? "-60px" : "-60px";
-            checkoutDom.style.marginLeft = isAboveMd ? "-44px" : "-60px";
-            checkoutDom.style.marginRight = isAboveMd ? "-44px" : "-60px";
-        }
-    }, [isAboveMd]);
-    */
 
     const MotionIconButton = motion(IconButton);
 
@@ -626,7 +647,6 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     borderWidth="1px"
                     borderColor="gray.200"
                     direction="column"
-                    //h={{ base: "calc(100vh - 125px)", lg: "750px" }}
                     h="calc(100vh - 125px)"
                     w="full"
                     pos="relative"
@@ -686,12 +706,12 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                 setValue={setValue}
                                 display={activeStep === 1 ? "block" : "none"}
                                 label={t("step.one")}
-                                intendedTickets={intendedTickets as string[]}
+                                currentTickets={order ? [order.id] : []}
                                 tickets={event.tickets as ComponentEventTickets}
-                                handleOrderUpdate={handleOrderUpdate}
+                                handleOrder={handleOrder}
                             />
                         )}
-                        {formStep(2) && (
+                        {/*formStep(2) && (
                             <Options
                                 display={activeStep === 2 ? "block" : "none"}
                                 label={t("step.two")}
@@ -706,10 +726,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                     setValue("allergens", values)
                                 }
                             />
-                        )}
-                        {formStep(3) && (
+                            )*/}
+                        {/*formStep(2) && (
                             <OrderSummary
-                                display={activeStep === 3 ? "block" : "none"}
+                                display={activeStep === 2 ? "block" : "none"}
                                 label={t("step.three")}
                                 orderLabel={t("summary.order.label")}
                                 dietLabel={t("summary.diet.label")}
@@ -722,15 +742,14 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                 diets={getValues("diets")}
                                 allergens={getValues("allergens")}
                             />
-                        )}
-                        {formStep(4) && (
+                            )*/}
+                        {formStep(2) && (
                             <OrderFinalize
-                                display={activeStep === 4 ? "block" : "none"}
+                                display={activeStep === 2 ? "block" : "none"}
                                 label={t("step.four")}
+                                status={orderIsFree ? "unpaid" : "paid"}
+                                handleOrder={handleSubmit(onSubmit)}
                                 invalidIntention={invalidIntention}
-                                orderIsFree={getValues("orderIsFree")}
-                                handleFreeOrder={handleFreeOrder}
-                                checkoutRef={checkoutRef}
                                 isLoaded={isLoaded}
                             />
                         )}

@@ -1,0 +1,323 @@
+import { NextRouter, useRouter } from "next/router";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import useScript from "react-script-hook";
+import {
+    atom,
+    atomFamily,
+    selector,
+    useRecoilCallback,
+    useRecoilValue,
+} from "recoil";
+import _ from "underscore";
+interface CheckoutProps {
+    checkoutKey: string;
+    paymentId?: string;
+    language: string;
+    containerId: string;
+}
+
+interface ThemeProps {
+    textColor: string;
+    primaryColor: string;
+    linkColor: string;
+    backgroundColor: string;
+    fontFamily: string;
+    placeholderColor: string;
+    outlineColor: string;
+    primaryOutlineColor: string;
+}
+
+export interface CheckoutApi {
+    on: (event: string, callback: (paymentId?: string) => void) => void;
+    iFrameId: string;
+    send: (event: string, value: any) => void;
+    setTheme: (theme: ThemeProps) => void;
+    setLanguage: (language: string) => void;
+    freezeCheckout: () => void;
+    thawCheckout: () => void;
+}
+
+interface Nets {
+    Checkout: new (config: CheckoutProps) => CheckoutApi;
+}
+
+export type IDSTATEParams = "intentionId" | "paymentId" | "fullfillmentId";
+interface HandlerOptions {
+    get: (param: string) => string | undefined;
+    validate: (
+        intentionId: string
+    ) => Promise<
+        Omit<IDSTATE, "fullfillmentId"> & { ticketId: string | undefined }
+    >;
+    createIntention: () => Promise<
+        Omit<IDSTATE, "fullfillmentId"> & { ticketId: string | undefined }
+    >;
+}
+type HydrateOptions = (
+    options: HandlerOptions
+) => Promise<Omit<IDSTATE, "fullfillmentId">>;
+
+interface IDSTATE {
+    intentionId: string | undefined | null;
+    paymentId: string | undefined | null;
+    fullfillmentId: string | undefined | null;
+}
+
+interface NetsOptions {
+    on3DSHandler: (paymentId?: string) => void;
+    onCompleteHandler: (response: { paymentId: string }) => void;
+    fullfillmentId: string;
+}
+
+const useQuery = (router: NextRouter) => {
+    // this uses nextjs router
+    const query = router.asPath.split("?")[1];
+    if (!query) return {};
+    const pairs = query.split(/[;&]/);
+    const params = pairs.reduce((params, kv) => {
+        const [key, value] = kv.split("=");
+        if (key && value) {
+            return { ...params, [key]: value };
+        }
+        return { ...params };
+    }, {});
+    return params as any;
+};
+
+export const useNets = ({
+    on3DSHandler,
+    onCompleteHandler,
+    fullfillmentId: _fullfillmentId,
+}: NetsOptions) => {
+    const router = useRouter();
+    const [nets, setNets] = useState<Nets | null>(null);
+    const [config, setConfig] = useState<CheckoutProps | null>(null);
+    const [theme, _setTheme] = useState<ThemeProps | null>(null);
+    const [checkout, setCheckout] = useState<CheckoutApi>();
+    const [order, setOrder] = useState<{ id: string }>();
+    const [iframeId, setIframeId] = useState<string>();
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const query = useQuery(router);
+
+    const stateAtom = atom<IDSTATE>({
+        key: "ATOM/IDFAMILY",
+        default: {
+            intentionId: undefined,
+            paymentId: undefined,
+            fullfillmentId: _fullfillmentId,
+        },
+    });
+
+    const validState = selector({
+        key: "SELECTOR/VALIDSTATE",
+        get: ({ get }) => {
+            const atom = get(stateAtom);
+            console.log(atom);
+            const validKeys = ["intentionId", "paymentId", "fullfillmentId"];
+            const status =
+                atom.intentionId && atom.paymentId
+                    ? "paid"
+                    : atom.intentionId && !atom.paymentId
+                    ? "unpaid"
+                    : null;
+            return {
+                status,
+                ...atom,
+            };
+        },
+    });
+
+    const [loading, errors] = useScript({
+        src: process.env.NEXT_PUBLIC_TEST_CHECKOUT
+            ? process.env.NEXT_PUBLIC_TEST_CHECKOUT
+            : process.env.NEXT_PUBLIC_CHECKOUT
+            ? process.env.NEXT_PUBLIC_CHECKOUT
+            : "",
+        onload: () => {
+            setNets(window["Dibs" as any] as unknown as Nets);
+        },
+    });
+
+    const setCheckoutConfig = useCallback((options: CheckoutProps) => {
+        setConfig(options);
+    }, []);
+
+    const setTheme = useCallback((options: ThemeProps) => {
+        _setTheme(options);
+    }, []);
+
+    const hydrateCheckout = useRecoilCallback(
+        ({ set }) =>
+            async (handler: HydrateOptions) => {
+                const get = (param: string) => {
+                    if (query.hasOwnProperty(param)) {
+                        return query[param] as string;
+                    }
+                    return undefined;
+                };
+
+                const validate = async (_intentionId: string) => {
+                    let data = {
+                        intentionId: undefined,
+                        paymentId: undefined,
+                        ticketId: undefined,
+                    };
+                    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${_intentionId}/valid`;
+                    const res = await fetch(url, { method: "GET" });
+                    if (!res.ok) return data;
+                    data = await res.json();
+                    if (data.ticketId) {
+                        setOrder({ id: data.ticketId });
+                    }
+                    return data;
+                };
+
+                const createIntention = async () => {
+                    let data = {
+                        intentionId: undefined,
+                        paymentId: undefined,
+                        ticketId: undefined,
+                        fullfillmentId: _fullfillmentId,
+                    };
+                    if (_fullfillmentId) {
+                        const url =
+                            process.env.NEXT_PUBLIC_DETA_URL +
+                            `/intent/${_fullfillmentId}`;
+                        const res = await fetch(url, { method: "POST" });
+
+                        data = await res.json();
+                        if (data.ticketId) {
+                            setOrder({ id: data.ticketId });
+                        }
+                    }
+                    return {
+                        intentionId: data.intentionId,
+                        paymentId: data.paymentId,
+                        ticketId: data.ticketId,
+                    };
+                };
+
+                const { intentionId, paymentId } = await handler({
+                    get,
+                    validate,
+                    createIntention,
+                });
+                set(stateAtom, {
+                    intentionId,
+                    paymentId,
+                    fullfillmentId: _fullfillmentId,
+                });
+            }
+    );
+
+    const setPaymentId = useRecoilCallback(
+        ({ set }) =>
+            async (paymentId: string) => {
+                set(stateAtom, (currVal) => ({ ...currVal, paymentId }));
+            }
+    );
+
+    const setLanguage = useCallback(
+        (language: string) => {
+            if (checkout) {
+                checkout.setLanguage(language);
+            }
+        },
+        [checkout]
+    );
+
+    const withCheckout = useRecoilCallback(
+        ({ snapshot }) =>
+            <T>(
+                callback: (
+                    options: IDSTATE & { status: "paid" | "unpaid" | null },
+                    order: T
+                ) => any
+            ) => {
+                const { status, intentionId, paymentId, fullfillmentId } =
+                    snapshot.getLoadable(validState).contents;
+
+                return (order: T = null as unknown as T) => {
+                    if (checkout) checkout.freezeCheckout();
+
+                    let res = null;
+                    setOrder({ id: order as unknown as string });
+                    if (status) {
+                        res = callback(
+                            {
+                                status,
+                                intentionId,
+                                paymentId,
+                                fullfillmentId,
+                            },
+                            order
+                        );
+                    }
+                    if (checkout) checkout.thawCheckout();
+                    return res;
+                };
+            }
+    );
+
+    const reset = useCallback(() => {
+        setIsLoaded(false);
+    }, []);
+
+    const initCheckout = useRecoilCallback(({ snapshot }) => async () => {
+        setIframeId("");
+        if (!config)
+            throw new Error("Need to initiate a config before creation");
+        if (!theme) throw new Error("Need to initiate a theme before creation");
+
+        const { status, paymentId } = await snapshot.getPromise(validState);
+
+        if (!status) throw new Error("No valid checkout state");
+        // checkout re-renders for every single init
+        if (nets && config && !errors && theme && status === "paid") {
+            const _checkout = new nets.Checkout({
+                ...config,
+                paymentId: paymentId as string,
+            });
+
+            setIframeId(_checkout.iFrameId);
+            _checkout.setTheme(theme);
+            _checkout.on("pay-initialized", (_paymentId) => {
+                on3DSHandler(_paymentId);
+                _checkout.send("payment-order-finalized", true);
+            });
+            _checkout.on("payment-completed", (response) => {
+                onCompleteHandler(response as unknown as { paymentId: string });
+            });
+            setCheckout(_checkout);
+        }
+    });
+
+    useEffect(() => {
+        if (iframeId) {
+            const node = document.getElementById(iframeId);
+            if (node) {
+                node.addEventListener("load", () =>
+                    setTimeout(() => setIsLoaded(true), 1500)
+                );
+                return () => {
+                    node.removeEventListener("load", () => setIsLoaded(false));
+                };
+            }
+        }
+    }, [iframeId, isLoaded]);
+
+    return {
+        order,
+        isLoaded,
+        reset,
+        initCheckout,
+        setCheckoutConfig,
+        setCheckout,
+        setLanguage,
+        setPaymentId,
+        hydrateCheckout,
+        setTheme,
+        withCheckout,
+    };
+};

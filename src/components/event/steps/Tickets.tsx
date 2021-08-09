@@ -21,24 +21,23 @@ import { EventTicketList } from "../EventTicketList";
 
 interface Props extends BoxProps {
     label: string;
-    intendedTickets: string[];
+    currentTickets: string[];
     tickets: ComponentEventTickets;
-    handleOrderUpdate: any;
+    handleOrder: any;
     control: Control<DefaultFieldValues>;
     setValue: UseFormSetValue<DefaultFieldValues>;
 }
 
 export const Tickets = ({
     label,
-    intendedTickets,
+    currentTickets,
     tickets,
-    handleOrderUpdate,
+    handleOrder,
     control,
     setValue,
     ...rest
 }: Props) => {
     const name = "ticket";
-
     const { t } = useTranslation();
     const {
         field,
@@ -48,20 +47,20 @@ export const Tickets = ({
         name,
         rules: { required: { value: true, message: t("required") } },
     });
-    const firstTicket = intendedTickets ? intendedTickets[0] : "-1";
+    const firstTicket = currentTickets ? currentTickets[0] : "-1";
 
     const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {
         if (
-            intendedTickets &&
-            intendedTickets.length > 0 &&
+            currentTickets &&
+            currentTickets.length > 0 &&
             firstTicket !== "-1"
         ) {
             const id = setTimeout(() => setHydrated(true), 350);
             return () => clearTimeout(id);
         }
-    }, [intendedTickets, firstTicket]);
+    }, [currentTickets, firstTicket]);
     return (
         <Box key="step-one" h="full" {...rest}>
             <Heading size="lg" fontWeight="700">
@@ -80,8 +79,8 @@ export const Tickets = ({
                         field={field}
                         setValue={setValue}
                         tickets={tickets}
-                        onChange={handleOrderUpdate}
-                        currentTickets={intendedTickets}
+                        onChange={handleOrder}
+                        currentTickets={currentTickets}
                     >
                         {({ radio, ticket }) => (
                             <EventTicketItem

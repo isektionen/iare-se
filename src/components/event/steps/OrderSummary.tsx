@@ -168,7 +168,7 @@ export const OrderSummary = ({
                 </Box>
                 <Spacer />
 
-                <Box pr={8}>
+                <Box pr={8} flex={1}>
                     <Heading size="md" fontWeight="700" mb={6}>
                         {dietLabel}
                     </Heading>

@@ -641,13 +641,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     )}
                     <Flex
                         direction="column"
-                        mt={
-                            !getValues("orderIsFree") &&
-                            activeStep == steps.length - 1
-                                ? "-1px"
-                                : 6
-                        }
-                        mx={
+                        p={
                             !getValues("orderIsFree") &&
                             activeStep == steps.length - 1
                                 ? "-1px"
@@ -740,6 +734,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                                 isLoaded={isLoaded}
                             />
                         )}
+                        {formStep(5) && <div></div>}
                         <Spacer />
                         {(formStep(1) || !event.passwordProtected) && (
                             <Flex mt={4}>

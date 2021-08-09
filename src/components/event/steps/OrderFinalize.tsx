@@ -1,7 +1,9 @@
 import {
+    AspectRatio,
     Box,
     BoxProps,
     Center,
+    ScaleFade,
     Skeleton,
     Spinner,
     useBreakpointValue,
@@ -77,15 +79,9 @@ export const OrderFinalize = ({
                     <Spinner size="xl" pointerEvents="none" />
                 </Center>
             )}
-            <Box
-                opacity={isLoaded ? 1 : 0}
-                h="full"
-                w="full"
-                transitionProperty="opacity"
-                transitionDuration="0.5s"
-            >
+            <ScaleFade in={isLoaded}>
                 <Box id="checkout" ref={checkoutRef} />
-            </Box>
+            </ScaleFade>
         </Center>
     );
 };

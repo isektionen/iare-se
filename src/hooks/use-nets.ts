@@ -1,12 +1,15 @@
 import { NextRouter, useRouter } from "next/router";
+import { DefaultFieldValues } from "pages/event/[slug]";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useScript from "react-script-hook";
 import {
     atom,
     atomFamily,
+    RecoilValue,
     selector,
     useRecoilCallback,
     useRecoilValue,
+    useRecoilValueLoadable,
 } from "recoil";
 import _ from "underscore";
 interface CheckoutProps {
@@ -44,10 +47,25 @@ interface Nets {
 export type IDSTATEParams = "intentionId" | "paymentId" | "fullfillmentId";
 interface HandlerOptions {
     get: (param: string) => string | undefined;
-    validate: (
-        intentionId: string
-    ) => Promise<
-        Omit<IDSTATE, "fullfillmentId"> & { ticketId: string | undefined }
+    validate: (intentionId: string) => Promise<
+        Omit<IDSTATE, "fullfillmentId"> & {
+            ticketId: string | undefined;
+            consumer: {
+                firstName: string;
+                lastName: string;
+                email: string;
+                phoneNumber: string;
+                diets: {
+                    id: number;
+                    name: string;
+                }[];
+                allergens: {
+                    id: number;
+                    name: string;
+                }[];
+            } | null;
+            status: "visited" | "pending" | "failed" | "success" | undefined;
+        }
     >;
     createIntention: () => Promise<
         Omit<IDSTATE, "fullfillmentId"> & { ticketId: string | undefined }
@@ -113,7 +131,7 @@ export const useNets = ({
         key: "SELECTOR/VALIDSTATE",
         get: ({ get }) => {
             const atom = get(stateAtom);
-            console.log(atom);
+            //console.log(atom);
             const validKeys = ["intentionId", "paymentId", "fullfillmentId"];
             const status =
                 atom.intentionId && atom.paymentId
@@ -162,14 +180,14 @@ export const useNets = ({
                         intentionId: undefined,
                         paymentId: undefined,
                         ticketId: undefined,
+                        status: undefined,
+                        consumer: null,
                     };
                     const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${_intentionId}/valid`;
                     const res = await fetch(url, { method: "GET" });
                     if (!res.ok) return data;
                     data = await res.json();
-                    if (data.ticketId) {
-                        setOrder({ id: data.ticketId });
-                    }
+
                     return data;
                 };
 
@@ -187,9 +205,6 @@ export const useNets = ({
                         const res = await fetch(url, { method: "POST" });
 
                         data = await res.json();
-                        if (data.ticketId) {
-                            setOrder({ id: data.ticketId });
-                        }
                     }
                     return {
                         intentionId: data.intentionId,
@@ -242,7 +257,7 @@ export const useNets = ({
                     if (checkout) checkout.freezeCheckout();
 
                     let res = null;
-                    setOrder({ id: order as unknown as string });
+                    //setOrder({ id: order as unknown as string });
                     if (status) {
                         res = callback(
                             {
@@ -274,7 +289,7 @@ export const useNets = ({
 
         if (!status) throw new Error("No valid checkout state");
         // checkout re-renders for every single init
-        if (nets && config && !errors && theme && status === "paid") {
+        if (nets && config && !errors && theme) {
             const _checkout = new nets.Checkout({
                 ...config,
                 paymentId: paymentId as string,
@@ -294,7 +309,7 @@ export const useNets = ({
     });
 
     useEffect(() => {
-        if (iframeId) {
+        if (iframeId && iframeId !== "") {
             const node = document.getElementById(iframeId);
             if (node) {
                 node.addEventListener("load", () =>
@@ -307,6 +322,26 @@ export const useNets = ({
         }
     }, [iframeId, isLoaded]);
 
+    const UseRecoil = <T>(recoilValue: RecoilValue<T>) => {
+        const { state, contents } = useRecoilValueLoadable(recoilValue);
+        switch (state) {
+            case "hasValue":
+                return contents;
+            case "loading":
+                return undefined;
+            case "hasError":
+                return contents;
+        }
+    };
+
+    const getPaymentId = useRecoilCallback<[], IDSTATE>(
+        ({ snapshot }) =>
+            () => {
+                const loadable = snapshot.getLoadable(stateAtom);
+                return loadable.contents ? loadable.contents : undefined;
+            }
+    );
+
     return {
         order,
         isLoaded,
@@ -316,6 +351,7 @@ export const useNets = ({
         setCheckout,
         setLanguage,
         setPaymentId,
+        getPaymentId,
         hydrateCheckout,
         setTheme,
         withCheckout,

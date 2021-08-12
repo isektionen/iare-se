@@ -5,7 +5,7 @@ module.exports = {
         "*": ["common"],
         "rgx:^/feed/?.*": ["feed"],
         "/chapter/document": ["document"],
-        "/event/[slug]": ["event"],
+        "/event/[slug]": ["event", "ticket"],
         "/ticket/[id]": ["ticket"],
     },
 };

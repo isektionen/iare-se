@@ -1,4 +1,5 @@
 {
+    "fetching": "Fetching event data",
     "step": {
         "zero": "Authorize",
         "one": "Choose a ticket",

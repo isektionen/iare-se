@@ -15,7 +15,6 @@ import {
 interface Props {
     name: string;
     field: ControllerRenderProps<DefaultFieldValues, "ticket">;
-    setValue: UseFormSetValue<DefaultFieldValues>;
     tickets: ComponentEventTickets;
     currentTickets: string[];
     onChange: (v: string) => void;
@@ -24,12 +23,12 @@ interface Props {
 }
 
 export const EventTicketList = (props: Props) => {
-    const { currentTickets, setValue } = props;
+    const { currentTickets } = props;
     const setDefault = useMemo(() => {
         const ticket = currentTickets?.length > 0 ? currentTickets[0] : "0";
-        setValue("ticket", ticket);
+        //setValue("ticket", ticket);
         return ticket ?? "0";
-    }, [currentTickets, setValue]);
+    }, [currentTickets]);
 
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: props.name,

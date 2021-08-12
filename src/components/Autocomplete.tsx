@@ -135,15 +135,18 @@ export const AutoComplete = (props: Props) => {
         }
     };
 
+    const boxRef = useRef<HTMLDivElement>(null);
     useOutsideClick({
-        ref: inputRef,
+        ref: boxRef,
         handler: () => {
-            setDisplayOptions(false);
-            resetCursor();
+            if (displayOptions) {
+                setDisplayOptions(false);
+                resetCursor();
+            }
         },
     });
     return (
-        <Box>
+        <Box ref={boxRef}>
             {props.result.length > 0 && (
                 <Flex my={2} w="full" wrap="wrap">
                     {props.result.map((option, key) => (
@@ -187,7 +190,7 @@ export const AutoComplete = (props: Props) => {
             </InputGroup>
 
             {displayOptions && (
-                <List {...props.listOptions} h="30vh" overflowY="scroll">
+                <List {...props.listOptions} maxH="30vh" overflowY="scroll">
                     {partialResult?.map((option, key) => (
                         <ListItem
                             {...props.listItemOptions}

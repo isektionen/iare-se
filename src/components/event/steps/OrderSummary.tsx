@@ -16,6 +16,7 @@ import {
     Tag,
     TagCloseButton,
     TagLabel,
+    useMenuButton,
     VStack,
     Wrap,
 } from "@chakra-ui/react";
@@ -34,7 +35,7 @@ interface Props extends BoxProps {
     allTickets: ComponentEventInternalTicket[];
     diets: Option[];
     allergens: Option[];
-    setValue: any;
+    setTicket: any;
 }
 
 export const OrderSummary = ({
@@ -43,7 +44,7 @@ export const OrderSummary = ({
     dietLabel,
     currentTicket,
     allTickets,
-    setValue,
+    setTicket,
     diets,
     allergens,
     ...rest
@@ -64,9 +65,9 @@ export const OrderSummary = ({
     );
 
     const handleChange = (ticket: ComponentEventInternalTicket) => {
-        setValue("ticket", ticket.ticketUID);
-        setValue("orderIsFree", ticket.price === 0);
+        setTicket(ticket.ticketUID);
     };
+
     return (
         <Box key="step-four" h="full" {...rest}>
             <Heading size="lg" fontWeight="700">
@@ -140,6 +141,7 @@ export const OrderSummary = ({
                                         fontSize="xs"
                                         fontWeight="bold"
                                         color="white"
+                                        type="button"
                                         _hover={{
                                             bg: "gray.700",
                                         }}
@@ -179,15 +181,11 @@ export const OrderSummary = ({
                         mx="auto"
                     >
                         <Flex w="full" align="center">
-                            <Heading size="xs">
+                            <Heading size="xs" mr={4}>
                                 {t("summary.diet.diets")}
                             </Heading>
                             <Spacer />
-                            <Stack
-                                direction={{ base: "column", xl: "row" }}
-                                spacing={4}
-                                align="flex-end"
-                            >
+                            <Wrap direction="row" spacing={2} align="flex-end">
                                 {diets.length > 0 &&
                                     diets.map((option) => (
                                         <Tag
@@ -197,7 +195,6 @@ export const OrderSummary = ({
                                             colorScheme="blackAlpha"
                                         >
                                             <TagLabel>{option.label}</TagLabel>
-                                            <TagCloseButton />
                                         </Tag>
                                     ))}
                                 {diets.length === 0 && (
@@ -211,18 +208,15 @@ export const OrderSummary = ({
                                         </TagLabel>
                                     </Tag>
                                 )}
-                            </Stack>
+                            </Wrap>
                         </Flex>
                         <Divider my={8} />
                         <Flex w="full" align="center">
-                            <Heading size="xs">
+                            <Heading size="xs" mr={4}>
                                 {t("summary.diet.allergens")}
                             </Heading>
                             <Spacer />
-                            <Stack
-                                direction={{ base: "column", xl: "row" }}
-                                spacing={4}
-                            >
+                            <Wrap direction="row" spacing={2} align="flex-end">
                                 {allergens.length > 0 &&
                                     allergens.map((option) => (
                                         <Tag
@@ -232,18 +226,6 @@ export const OrderSummary = ({
                                             colorScheme="blackAlpha"
                                         >
                                             <TagLabel>{option.label}</TagLabel>
-                                            <TagCloseButton
-                                                onClick={() =>
-                                                    setValue(
-                                                        "allergens",
-                                                        allergens.filter(
-                                                            (a) =>
-                                                                a.label !==
-                                                                option.label
-                                                        )
-                                                    )
-                                                }
-                                            />
                                         </Tag>
                                     ))}
                                 {allergens.length === 0 && (
@@ -257,7 +239,7 @@ export const OrderSummary = ({
                                         </TagLabel>
                                     </Tag>
                                 )}
-                            </Stack>
+                            </Wrap>
                         </Flex>
                     </Flex>
                 </Box>

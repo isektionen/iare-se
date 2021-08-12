@@ -1,4 +1,5 @@
 {
+    "fetching": "Laddar event data",
     "step": {
         "zero": "Autentisera",
         "one": "Välj biljett",

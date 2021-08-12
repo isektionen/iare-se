@@ -1,5 +1,7 @@
 /*@ts-ignore*/
 
+import { axios } from "lib/strapi";
+
 export const imageSource = (remote: any, local: string) => {
     if (remote && remote.url) {
         return process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL + remote.url;
@@ -19,4 +21,10 @@ export const imageProvider = ({ file, provider = "local" }: Props) => {
     };
 
     return strapiMediaProviders[provider] + file;
+};
+
+export const generateQRCode = async (intentionId: string) => {
+    const url = `/orders/${intentionId}/ticket`;
+    const { data } = await axios.get(url);
+    return data;
 };

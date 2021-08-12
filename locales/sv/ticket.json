@@ -1,4 +1,9 @@
 {
+    "success": {
+        "heading": "Order mottagen!",
+        "description": "Tack för ditt köp! Vi kommer emaila ett biljettkvitto till {{email}}.",
+        "cta": "Visa biljett"
+    },
     "infoLabel": {
         "paid": {
             "label": "Betalt",
@@ -15,5 +20,7 @@
         "email": "Email",
         "phone": "Telefon"
     },
-    "from": "från {{committee}}"
+    "from": "från {{committee}}",
+    "noDiets": "Inga",
+    "noAllergens": "Inga"
 }

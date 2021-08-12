@@ -33,7 +33,6 @@ interface Props extends Omit<BoxProps, "onSubmit" | "scrollTo"> {
     submitLabel: string;
     errorLabel: string;
     successLabel: string;
-    setFocus: UseFormSetFocus<FieldValues>;
     register: any;
 }
 
@@ -45,7 +44,6 @@ export const EventPasswordProtection = ({
     submitLabel,
     errorLabel,
     successLabel,
-    setFocus,
     register,
     ...rest
 }: Props) => {
@@ -83,14 +81,11 @@ export const EventPasswordProtection = ({
         }
     };
 
-    useEffect(() => {
-        if (isAboveLarge) setFocus("password");
-    }, [isAboveLarge, setFocus]);
-
-    const handleFocus = () => {
-        const dom = document.getElementById("password");
-        dom?.removeAttribute("readonly");
-        dom?.removeAttribute("aria-readonly");
+    const onKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            await handlePasswordCheck();
+        }
     };
     return (
         <Flex justify="center" align="center" w="full" h="full" {...rest}>
@@ -99,10 +94,8 @@ export const EventPasswordProtection = ({
                     <Icon as={BsShieldLockFill} boxSize={24} mb={10} />
                     <InputGroup size="md">
                         <Input
-                            readOnly
                             autoComplete="new-password"
-                            onFocus={handleFocus}
-                            onClick={handleFocus}
+                            onKeyDown={async (e) => await onKeyDown(e)}
                             id="password"
                             pr="4.5rem"
                             type={show ? "text" : "password"}
@@ -131,7 +124,6 @@ export const EventPasswordProtection = ({
                         mt={6}
                         isFullWidth
                         onClick={async () => await handlePasswordCheck()}
-                        type="submit"
                         variant="iareSolid"
                     >
                         {submitLabel}

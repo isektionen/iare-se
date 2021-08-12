@@ -1,4 +1,10 @@
 {
+    "success": {
+        "heading": "Order recieved!",
+        "description": "Thanks for your purchase! We will shortly send out a ticketreceipt to {{email}}.",
+        "cta": "Show ticket"
+
+    },
     "infoLabel": {
         "paid": {
             "label": "Paid",
@@ -15,5 +21,8 @@
         "email": "Email",
         "phone": "Phone"
     },
-    "from": "from {{committee}}"
+    "from": "from {{committee}}",
+    "noDiets": "None",
+    "noAllergens": "None"
+
 }

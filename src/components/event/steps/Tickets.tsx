@@ -25,7 +25,6 @@ interface Props extends BoxProps {
     tickets: ComponentEventTickets;
     handleOrder: any;
     control: Control<DefaultFieldValues>;
-    setValue: UseFormSetValue<DefaultFieldValues>;
 }
 
 export const Tickets = ({
@@ -34,7 +33,6 @@ export const Tickets = ({
     tickets,
     handleOrder,
     control,
-    setValue,
     ...rest
 }: Props) => {
     const name = "ticket";
@@ -45,7 +43,12 @@ export const Tickets = ({
     } = useController({
         control,
         name,
-        rules: { required: { value: true, message: t("required") } },
+        rules: {
+            required: {
+                value: true,
+                message: "atleast one ticket is required to proceed",
+            },
+        },
     });
     const firstTicket = currentTickets ? currentTickets[0] : "-1";
 
@@ -77,7 +80,6 @@ export const Tickets = ({
                     <EventTicketList
                         name={name}
                         field={field}
-                        setValue={setValue}
                         tickets={tickets}
                         onChange={handleOrder}
                         currentTickets={currentTickets}

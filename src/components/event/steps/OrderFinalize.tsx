@@ -17,22 +17,26 @@ import { EventConfirmation } from "../EventConfirmation";
 interface Props extends BoxProps {
     label: string;
     status: string | ("paid" | "unpaid" | null);
-    invalidIntention: boolean;
     handleOrder: any;
     isLoaded: boolean;
+    isSubmitting: boolean;
+    register: any;
+    errors: any;
 }
 
 export const OrderFinalize = ({
-    invalidIntention,
     status,
     label,
     isLoaded,
-    onSubmit,
+    handleOrder,
+    register,
+    errors,
+    isSubmitting,
     ...rest
 }: Props) => {
     const { t } = useTranslation("event");
 
-    if (status === "paid") {
+    if (status === "unpaid") {
         return (
             <EventConfirmation
                 title={label}
@@ -55,8 +59,11 @@ export const OrderFinalize = ({
                 button={{
                     label: t("orderConfirmation.button.label"),
                 }}
-                onSubmit={(e) => console.log(e)}
+                onSubmit={handleOrder}
                 {...rest}
+                register={register}
+                errors={errors}
+                isSubmitting={isSubmitting}
             />
         );
     }

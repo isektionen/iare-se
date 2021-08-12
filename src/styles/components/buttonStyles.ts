@@ -13,6 +13,7 @@ export const ButtonStyle = {
             color: "white",
             _hover: {
                 bg: "gray.700",
+                _disabled: "gray.800",
             },
         }),
     },

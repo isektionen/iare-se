@@ -149,7 +149,7 @@ export const useNets = ({
     });
 
     const [loading, errors] = useScript({
-        src: checkoutSrc,
+        src: checkoutSrc as string,
         onload: () => {
             setNets(window["Dibs" as any] as unknown as Nets);
         },

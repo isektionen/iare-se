@@ -14,3 +14,6 @@ export const estimateReadingMinutes = ({
     if (minutes > 1) return `${minutes} ${suffix[1]}`;
     return `${minutes} ${suffix[0]}`;
 };
+
+export const validateEmail = (email: string) =>
+    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);

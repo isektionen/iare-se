@@ -9,9 +9,12 @@ import { mergeLink } from "utils/mergeHref";
 export const Flyout = ({ subSection, href }: ComponentHeaderMenuSection) => (
     <React.Fragment>
         <SimpleGrid
+            borderTopColor="gray.50"
+            borderWidth="1px"
             columns={{ base: 1, md: 3, lg: 5 }}
             pos="relative"
             bg="white"
+            shadow="lg"
             gap={{ base: 6, sm: 8 }}
             px={5}
             py={6}

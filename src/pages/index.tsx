@@ -21,7 +21,7 @@ import { GetStaticProps } from "next";
 import React from "react";
 
 const Home = () => {
-    return <div>home</div>;
+    return <Box h="100vh">Home</Box>;
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

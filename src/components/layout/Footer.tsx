@@ -4,6 +4,7 @@ import { DefFooter } from "types/global";
 import { ComponentHeaderMenuSection } from "types/strapi";
 import { Branding } from "./footer/Branding";
 import { ListSection } from "./footer/ListSection";
+import { NewsLetter } from "./footer/NewsLetter";
 import { Social } from "./footer/Social";
 
 interface Props extends DefFooter {
@@ -20,14 +21,7 @@ const Footer = () => {
             px={{ base: 4, md: 12 }}
             direction={{ base: "column-reverse", lg: "row" }}
         >
-            {/*<Branding
-                responsiblePublisher={`${props.responsiblePublisher.firstname} ${props.responsiblePublisher.lastname}`}
-            />
-            <Spacer />
-            <Flex direction="column" pt={{ base: 10, lg: 0 }} pos="relative">
-                <ListSection sections={props.sections} />
-                <Social socials={props.social} />
-            </Flex>*/}
+            <NewsLetter />
         </Flex>
     );
 };

@@ -20,6 +20,7 @@
     "@fontsource/lexend": "^4.4.5",
     "@fontsource/oxygen": "^4.5.0",
     "@fontsource/source-sans-pro": "^4.4.5",
+    "@mailchimp/mailchimp_marketing": "^3.0.57",
     "@mdx-js/react": "^1.6.22",
     "@next/bundle-analyzer": "^11.0.1",
     "axios": "^0.21.1",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.5",
     "@graphql-codegen/typescript": "^1.22.3",
+    "@types/mailchimp__mailchimp_marketing": "^3.0.2",
     "@types/mdx-js__react": "^1.5.4",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.9",

@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/react";
+import { Button, chakra } from "@chakra-ui/react";
 import { LinkComponent } from "components/LinkComponent";
 import React from "react";
 import { IoIosArrowDown } from "react-icons/io";
@@ -12,7 +12,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
             <Box role="group" key={"section" + section.id}>
                 <Button
                     bg="white"
-                    color="gray.700"
+                    color="gray.600"
                     alignItems="center"
                     fontSize="md"
                     _hover={{ color: "gray.900" }}
@@ -22,6 +22,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
                     {section.label}
                 </Button>
                 <Box
+                    pt={2}
                     pos="absolute"
                     left={0}
                     w="full"
@@ -41,7 +42,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
             key={"section" + section.id}
             href={section.href}
             bg="white"
-            color="gray.700"
+            color="gray.600"
             alignItems="center"
             fontSize="md"
             _hover={{ color: "gray.900" }}

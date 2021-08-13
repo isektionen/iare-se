@@ -25,13 +25,7 @@ interface Props extends AppProps {
     footerProps: DefFooter;
 }
 
-const App = ({
-    Component,
-    pageProps,
-    headerProps,
-    footerProps,
-    ...rest
-}: Props) => {
+const App = ({ Component, pageProps, ...rest }: Props) => {
     //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     pdfjs.GlobalWorkerOptions.workerSrc = "../js/pdf.worker.js";
     return (
@@ -46,7 +40,7 @@ const App = ({
                             />
                         </Head>
 
-                        <Layout header={headerProps} footer={footerProps}>
+                        <Layout>
                             <Component {...pageProps} />
                         </Layout>
                     </ApolloProvider>
@@ -58,7 +52,7 @@ const App = ({
 
 let headerCache: DefHeader | null = null;
 let footerCache: DefFooter | null = null;
-
+/*
 App.getInitialProps = async () => {
     if (headerCache && footerCache) {
         return { headerProps: headerCache, footerProps: footerCache };
@@ -164,5 +158,6 @@ App.getInitialProps = async () => {
         };
     }
 };
+*/
 
 export default App;

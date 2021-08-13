@@ -9,14 +9,14 @@ import { DefHeader, DefFooter } from "types/global";
 import useTranslation from "next-translate/useTranslation";
 
 interface Props {
-    header: DefHeader;
-    footer: DefFooter;
+    //header: DefHeader;
+    //footer: DefFooter;
     children: ReactNode;
 }
 
 const Layout = (props: Props) => {
     const { lang } = useTranslation();
-    let header: DefHeader;
+    /*let header: DefHeader;
     let footer: DefFooter;
 
     if (lang === props.header.locale) {
@@ -29,11 +29,11 @@ const Layout = (props: Props) => {
         footer = props.footer.localizations.find(
             (l) => l.locale === lang
         ) as DefFooter;
-    }
+    }*/
 
     return (
         <VStack>
-            <Header {...header} />
+            <Header />
             <Meta />
             <Flex
                 w="full"
@@ -44,7 +44,7 @@ const Layout = (props: Props) => {
             >
                 {props.children}
             </Flex>
-            <Footer {...{ ...footer, sections: header?.sections ?? [] }} />
+            <Footer />
         </VStack>
     );
 };

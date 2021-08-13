@@ -5,6 +5,8 @@ import {
     MenuList,
     MenuItem,
     Button,
+    ButtonProps,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import React from "react";
 import Image from "next/image";
@@ -13,17 +15,15 @@ import { ComponentHeaderLanguages } from "types/strapi";
 import setLanguage from "next-translate/setLanguage";
 import i18nConfig from "../../../../i18n";
 import useTranslation from "next-translate/useTranslation";
-interface Props {
+import { IoIosArrowDown } from "react-icons/io";
+interface Props extends ButtonProps {
     standardLanguage: ComponentHeaderLanguages | undefined;
     isMobile?: boolean;
     languages: ComponentHeaderLanguages[];
-    mediaQuery: {
-        isLg?: boolean;
-        isMd?: boolean;
-    };
 }
 
 export const LanguageMenu = (props: Props) => {
+    const { standardLanguage, isMobile, languages, ...rest } = props;
     const { locales } = i18nConfig;
     const { lang } = useTranslation();
     const changeLanguage = async (lang: string) => {
@@ -32,7 +32,12 @@ export const LanguageMenu = (props: Props) => {
         await setLanguage(lang);
     };
 
-    const currentLanguage = props.languages.find((l) => l.code === lang);
+    const currentLanguage = languages.find((l) => l.code === lang);
+
+    const variants = useBreakpointValue({
+        base: isMobile ? currentLanguage?.label : "",
+        lg: currentLanguage?.label,
+    });
     return (
         <Menu>
             {({ isOpen, onClose }) => (
@@ -41,9 +46,10 @@ export const LanguageMenu = (props: Props) => {
                         <MenuButton
                             isActive={isOpen}
                             as={Button}
-                            rightIcon={<FaAngleDown />}
+                            rightIcon={<IoIosArrowDown />}
                             variant="outline"
                             closeOnSelect={true}
+                            {...rest}
                         >
                             <HStack>
                                 {currentLanguage ? (
@@ -55,11 +61,7 @@ export const LanguageMenu = (props: Props) => {
                                             alt={currentLanguage.label}
                                             priority
                                         />
-                                        <span>
-                                            {props.mediaQuery.isLg ||
-                                                (props.isMobile &&
-                                                    currentLanguage.label)}
-                                        </span>
+                                        <span>{variants}</span>
                                     </>
                                 ) : (
                                     <span>-</span>
@@ -68,7 +70,7 @@ export const LanguageMenu = (props: Props) => {
                         </MenuButton>
                     }
                     <MenuList>
-                        {props.languages.map((lang) => (
+                        {languages.map((lang) => (
                             <MenuItem
                                 key={lang.code}
                                 onClick={() => {

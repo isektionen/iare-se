@@ -10,7 +10,7 @@ interface Props extends DefFooter {
     sections: ComponentHeaderMenuSection[];
 }
 
-const Footer = (props: Props) => {
+const Footer = () => {
     return (
         <Flex
             as="footer"
@@ -20,14 +20,14 @@ const Footer = (props: Props) => {
             px={{ base: 4, md: 12 }}
             direction={{ base: "column-reverse", lg: "row" }}
         >
-            <Branding
+            {/*<Branding
                 responsiblePublisher={`${props.responsiblePublisher.firstname} ${props.responsiblePublisher.lastname}`}
             />
             <Spacer />
             <Flex direction="column" pt={{ base: 10, lg: 0 }} pos="relative">
                 <ListSection sections={props.sections} />
                 <Social socials={props.social} />
-            </Flex>
+            </Flex>*/}
         </Flex>
     );
 };

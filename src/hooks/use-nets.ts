@@ -288,10 +288,11 @@ export const useNets = ({
         if (!status) throw new Error("No valid checkout state");
         // checkout re-renders for every single init
         if (nets && config && !errors && theme) {
-            const _checkout = new nets.Checkout({
+            const _config = {
                 ...config,
                 paymentId: paymentId as string,
-            });
+            };
+            const _checkout = new nets.Checkout(_config);
 
             setIframeId(_checkout.iFrameId);
             _checkout.setTheme(theme);
@@ -319,18 +320,6 @@ export const useNets = ({
             }
         }
     }, [iframeId, isLoaded]);
-
-    const UseRecoil = <T>(recoilValue: RecoilValue<T>) => {
-        const { state, contents } = useRecoilValueLoadable(recoilValue);
-        switch (state) {
-            case "hasValue":
-                return contents;
-            case "loading":
-                return undefined;
-            case "hasError":
-                return contents;
-        }
-    };
 
     const getPaymentId = useRecoilCallback<[], IDSTATE>(
         ({ snapshot }) =>

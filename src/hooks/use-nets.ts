@@ -85,6 +85,7 @@ interface NetsOptions {
     on3DSHandler: (paymentId?: string) => void;
     onCompleteHandler: (response: { paymentId: string }) => void;
     fullfillmentId: string;
+    checkoutSrc?: string;
 }
 
 const useQuery = (router: NextRouter) => {
@@ -106,6 +107,7 @@ export const useNets = ({
     on3DSHandler,
     onCompleteHandler,
     fullfillmentId: _fullfillmentId,
+    checkoutSrc = process.env.NEXT_PUBLIC_TEST_CHECKOUT,
 }: NetsOptions) => {
     const router = useRouter();
     const [nets, setNets] = useState<Nets | null>(null);
@@ -147,11 +149,7 @@ export const useNets = ({
     });
 
     const [loading, errors] = useScript({
-        src: process.env.NEXT_PUBLIC_TEST_CHECKOUT
-            ? process.env.NEXT_PUBLIC_TEST_CHECKOUT
-            : process.env.NEXT_PUBLIC_CHECKOUT
-            ? process.env.NEXT_PUBLIC_CHECKOUT
-            : "",
+        src: checkoutSrc,
         onload: () => {
             setNets(window["Dibs" as any] as unknown as Nets);
         },

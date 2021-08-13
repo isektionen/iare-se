@@ -143,6 +143,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             finalizeOrder();
         },
         fullfillmentId: event.fullfillmentUID as string,
+        checkoutSrc: process.env.NEXT_PUBLIC_CHECKOUT,
     });
 
     const supportedLanguages = useCallback(
@@ -388,7 +389,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         });
 
         setCheckoutConfig({
-            checkoutKey: process.env.NEXT_PUBLIC_TEST_CHECKOUT_KEY as string,
+            checkoutKey: process.env.NEXT_PUBLIC_CHECKOUT_KEY as string,
             language: supportedLanguages(lang),
             containerId: "checkout",
         });

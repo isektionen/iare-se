@@ -1,4 +1,5 @@
-import strapi, { gql } from "lib/strapi";
+import { Deta } from "lib/deta";
+import strapi, { gql, Strapi } from "lib/strapi";
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { ComponentEventTicketReference } from "types/strapi";
 export const eventId = atom<string>({
@@ -18,7 +19,7 @@ export const intentionState = atom<string>({
 
 const createIntention = async (fullfillmentUID: string) => {
     if (fullfillmentUID === "-1") return { intentionId: "-1" };
-    const url = process.env.NEXT_PUBLIC_DETA_URL + `/intent/${fullfillmentUID}`;
+    const url = Deta`/intent/${fullfillmentUID}`;
     const res = await fetch(url, { method: "POST" });
     if (!res.ok) return { intentionId: "-1" };
 
@@ -35,7 +36,7 @@ const createIntention = async (fullfillmentUID: string) => {
 export const getDetails = async (
     intentionId: string
 ): Promise<{ tickets: ComponentEventTicketReference[]; paymentId: string }> => {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/details`;
+    const url = Strapi`/orders/${intentionId}/details`;
     const res = await fetch(url, { method: "GET" });
     if (!res.ok)
         return {
@@ -48,7 +49,7 @@ export const getDetails = async (
 };
 
 export const validIntentionId = async (intentionId: string) => {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/valid`;
+    const url = Strapi`/orders/${intentionId}/valid`;
     const res = await fetch(url, { method: "GET" });
     if (!res.ok) return false;
 
@@ -57,7 +58,7 @@ export const validIntentionId = async (intentionId: string) => {
 };
 
 export const validatePassword = async (eventId: string, password: string) => {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/events/${eventId}/password`;
+    const url = Strapi`/events/${eventId}/password`;
     const res = await fetch(url, {
         method: "POST",
         headers: {

@@ -27,7 +27,6 @@ import { Event, EventCategory } from "../../types/strapi";
 import _ from "underscore";
 import { isAfter, isBefore } from "date-fns";
 import { NextImage } from "components/NextImage";
-import { imageSource } from "utils/images";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { getTimeLeft } from "utils/dates";
 import { useRouter } from "next/router";

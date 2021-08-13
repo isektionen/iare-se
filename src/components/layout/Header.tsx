@@ -14,7 +14,6 @@ import {
     ComponentHeaderLanguages,
 } from "../../types/strapi";
 import { DefHeader } from "types/global";
-import { imageProvider, imageSource } from "utils/images";
 import { useViewportScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { mergeLink } from "utils/mergeHref";

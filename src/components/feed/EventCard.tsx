@@ -19,7 +19,6 @@ import { getTimeLeft } from "utils/dates";
 import router from "next/router";
 import { IoShareSocial } from "react-icons/io5";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { imageProvider, imageSource } from "utils/images";
 
 import AccessibleLink from "components/AccessibleLink";
 import { NextImage } from "components/NextImage";

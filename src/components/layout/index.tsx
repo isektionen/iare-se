@@ -30,6 +30,7 @@ const Layout = (props: Props) => {
             (l) => l.locale === lang
         ) as DefFooter;
     }
+
     return (
         <VStack>
             <Header {...header} />

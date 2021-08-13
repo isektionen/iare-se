@@ -1,3 +1,5 @@
+import { Deta } from "lib/deta";
+import { Strapi } from "lib/strapi";
 import { NextRouter, useRouter } from "next/router";
 import { DefaultFieldValues } from "pages/event/[slug]";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -103,11 +105,39 @@ const useQuery = (router: NextRouter) => {
     return params as any;
 };
 
+const stateAtom = atom<IDSTATE>({
+    key: "ATOM/IDFAMILY",
+    default: {
+        intentionId: undefined,
+        paymentId: undefined,
+        fullfillmentId: undefined,
+    },
+});
+
+const validState = selector({
+    key: "SELECTOR/VALIDSTATE",
+    get: ({ get }) => {
+        const atom = get(stateAtom);
+        //console.log(atom);
+        const validKeys = ["intentionId", "paymentId", "fullfillmentId"];
+        const status =
+            atom.intentionId && atom.paymentId
+                ? "paid"
+                : atom.intentionId && !atom.paymentId
+                ? "unpaid"
+                : null;
+        return {
+            status,
+            ...atom,
+        };
+    },
+});
+
 export const useNets = ({
     on3DSHandler,
     onCompleteHandler,
     fullfillmentId: _fullfillmentId,
-    checkoutSrc = process.env.NEXT_PUBLIC_TEST_CHECKOUT,
+    checkoutSrc = process.env.NEXT_PUBLIC_CHECKOUT_SRC,
 }: NetsOptions) => {
     const router = useRouter();
     const [nets, setNets] = useState<Nets | null>(null);
@@ -119,34 +149,6 @@ export const useNets = ({
     const [isLoaded, setIsLoaded] = useState(false);
 
     const query = useQuery(router);
-
-    const stateAtom = atom<IDSTATE>({
-        key: "ATOM/IDFAMILY",
-        default: {
-            intentionId: undefined,
-            paymentId: undefined,
-            fullfillmentId: _fullfillmentId,
-        },
-    });
-
-    const validState = selector({
-        key: "SELECTOR/VALIDSTATE",
-        get: ({ get }) => {
-            const atom = get(stateAtom);
-            //console.log(atom);
-            const validKeys = ["intentionId", "paymentId", "fullfillmentId"];
-            const status =
-                atom.intentionId && atom.paymentId
-                    ? "paid"
-                    : atom.intentionId && !atom.paymentId
-                    ? "unpaid"
-                    : null;
-            return {
-                status,
-                ...atom,
-            };
-        },
-    });
 
     const [loading, errors] = useScript({
         src: checkoutSrc as string,
@@ -181,7 +183,7 @@ export const useNets = ({
                         status: undefined,
                         consumer: null,
                     };
-                    const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${_intentionId}/valid`;
+                    const url = Strapi`/orders/${_intentionId}/valid`;
                     const res = await fetch(url, { method: "GET" });
                     if (!res.ok) return data;
                     data = await res.json();
@@ -197,9 +199,7 @@ export const useNets = ({
                         fullfillmentId: _fullfillmentId,
                     };
                     if (_fullfillmentId) {
-                        const url =
-                            process.env.NEXT_PUBLIC_DETA_URL +
-                            `/intent/${_fullfillmentId}`;
+                        const url = Deta`/intent/${_fullfillmentId}`;
                         const res = await fetch(url, { method: "POST" });
 
                         data = await res.json();

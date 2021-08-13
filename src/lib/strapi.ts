@@ -1,17 +1,28 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import baseAxios from "axios";
 
+const Strapi = (
+    path: TemplateStringsArray,
+    ...variables: (string | number)[]
+) => {
+    return (
+        process.env.NEXT_PUBLIC_STRAPI +
+        path.map((p, i) => p + (variables[i] ? variables[i] : "")).join("")
+    );
+};
+const getUri = () => Strapi`/graphql`;
+
 const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_STRAPI_GQL,
+    uri: getUri(),
     cache: new InMemoryCache(),
 });
 
 const axios = baseAxios.create({
-    baseURL: process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL,
+    baseURL: process.env.NEXT_PUBLIC_STRAPI,
 });
 
 const strapi = client;
 
 export default strapi;
 
-export { gql, axios };
+export { gql, axios, Strapi };

@@ -3,7 +3,9 @@ const withPlugins = require("next-compose-plugins");
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true",
 });
-module.exports = withPlugins([[withBundleAnalyzer], nextTranslate], {
+const getEnv = require("./env");
+
+module.exports = withPlugins([getEnv, [withBundleAnalyzer], nextTranslate], {
     images: {
         domains: ["iare-strapi-backend.s3.eu-north-1.amazonaws.com"],
     },

@@ -1,5 +1,5 @@
 import { useRecoilSSRState, useRecoilSSRValue } from "components/RecoilSSR";
-import strapi, { axios, gql } from "lib/strapi";
+import strapi, { axios, gql, Strapi } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, {
     RefObject,
@@ -72,6 +72,7 @@ import _ from "underscore";
 import { OrderComplete } from "components/event/steps/OrderComplete";
 import { generateQRCode } from "utils/images";
 import { SkeletonSpinner } from "components/SkeletonSpinner";
+import { Deta } from "lib/deta";
 interface Props {
     event: Event;
     diets: Diet[];
@@ -143,7 +144,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             finalizeOrder();
         },
         fullfillmentId: event.fullfillmentUID as string,
-        checkoutSrc: process.env.NEXT_PUBLIC_CHECKOUT,
+        checkoutSrc: process.env.NEXT_PUBLIC_CHECKOUT_SRC,
     });
 
     const supportedLanguages = useCallback(
@@ -172,7 +173,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
             if (orderIsFree) {
                 // send customer details to strapi
                 const { firstName, lastName, email, phoneNumber } = order;
-                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${intentionId}/complete`;
+                const url = Deta`/intent/${intentionId}/complete`;
                 res = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -188,7 +189,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     }),
                 });
             } else {
-                const url = `${process.env.NEXT_PUBLIC_STRAPI_BACKEND_URL}/orders/${intentionId}/diets`;
+                const url = Strapi`/orders/${intentionId}/diets`;
                 const body = _.reduce(
                     [
                         {
@@ -262,7 +263,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
                     skipMessage,
                 };
             } else if (paymentId) {
-                const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${paymentId}`;
+                const url = Deta`/intent/${paymentId}`;
                 const res = await fetch(url, { method: "GET" });
                 if (res.ok) {
                     const data = await res.json();
@@ -410,7 +411,7 @@ const EventView = ({ event, diets, allergies }: Props) => {
         async ({ intentionId }, ticketId) => {
             setStatus("pending");
 
-            const url = `${process.env.NEXT_PUBLIC_DETA_URL}/intent/${event.fullfillmentUID}/${intentionId}`;
+            const url = Deta`/intent/${event.fullfillmentUID}/${intentionId}`;
             const res = await fetch(url, {
                 method: "PUT",
                 headers: {

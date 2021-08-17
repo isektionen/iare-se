@@ -39,13 +39,21 @@ import { SmallCard } from "components/feed/SmallCard";
 import { useSearch } from "hooks/use-search";
 import useTranslation from "next-translate/useTranslation";
 import { getTranslatedRoutes } from "utils/sidebar";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { DefHeader, LayoutProps } from "types/global";
 
 interface Props {
     events: Event[];
     categories: EventCategory[];
 }
 
-const EventFeedView = ({ events: baseEvents, categories }: Props) => {
+const EventFeedView = ({
+    header,
+    footer,
+    events: baseEvents,
+    categories,
+}: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
     const { t } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(
         () => baseEvents,
@@ -172,6 +180,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     });
     return {
         props: {
+            ...(await fetchHydration()),
             events: data.events,
             categories: data.eventCategories,
         },

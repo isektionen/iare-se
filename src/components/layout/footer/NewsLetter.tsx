@@ -1,7 +1,18 @@
-import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
+import {
+    Input,
+    InputGroup,
+    InputRightElement,
+    Button,
+    Flex,
+    Box,
+    Heading,
+    Text,
+    Spacer,
+    Circle,
+} from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import { client } from "lib/mailchimp";
+import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { validateEmail } from "utils/text";
@@ -12,8 +23,9 @@ interface DefaultFields {
 
 export const NewsLetter = () => {
     const toast = useToast();
+    const { t } = useTranslation("common");
 
-    const { handleSubmit, watch, register } = useForm<DefaultFields>();
+    const { handleSubmit, register } = useForm<DefaultFields>();
 
     const submit = async (data: DefaultFields) => {
         if (validateEmail(data.email)) {
@@ -38,31 +50,61 @@ export const NewsLetter = () => {
         });
     };
     return (
-        <>
-            <pre>{JSON.stringify(watch())}</pre>
-            <form onSubmit={handleSubmit(submit)}>
-                <Input
-                    id="email"
-                    placeholder=""
-                    autoComplete="on"
-                    variant="filled"
-                    bg="gray.50"
-                    _hover={{
-                        bg: "gray.200",
-                    }}
-                    _active={{
-                        bg: "gray.400",
-                    }}
-                    _focus={{
-                        bg: "gray.50",
-                        borderColor: "blue.300",
-                    }}
-                    {...register("email")}
-                />
-                <Button variant="iareSolid" type="submit">
-                    Subscribe
-                </Button>
-            </form>
-        </>
+        <Flex
+            rounded="md"
+            borderWidth="1px"
+            borderColor="gray.200"
+            align="stretch"
+            w="full"
+            h={48}
+            direction="row"
+            p={6}
+        >
+            <Circle bg="gray.50" size={16}>
+                <Heading size="lg">👋</Heading>
+            </Circle>
+            <Flex direction="column" ml={4} w="full">
+                <Box>
+                    <Heading size="lg" color="gray.500">
+                        {t("footer.newsletter.title")}
+                    </Heading>
+                    <Text my={2}>{t("footer.newsletter.description")}</Text>
+                </Box>
+                <Spacer />
+                <Box as="form" onSubmit={handleSubmit(submit)}>
+                    <InputGroup>
+                        <Input
+                            isFullWidth
+                            id="email"
+                            autoComplete="on"
+                            variant="filled"
+                            bg="gray.50"
+                            _hover={{
+                                bg: "gray.200",
+                            }}
+                            _active={{
+                                bg: "gray.400",
+                            }}
+                            _focus={{
+                                bg: "gray.50",
+                                borderColor: "blue.300",
+                            }}
+                            {...register("email")}
+                        />
+                        <InputRightElement w="10rem">
+                            <Button
+                                h="1.75rem"
+                                size="sm"
+                                variant="iareSolid"
+                                type="submit"
+                                mx={2}
+                            >
+                                {t("footer.newletter.subscribe")}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                </Box>
+            </Flex>
+        </Flex>
     );
 };

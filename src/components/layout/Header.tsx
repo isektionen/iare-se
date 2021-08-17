@@ -15,105 +15,27 @@ import {
     DrawerOverlay,
     useBreakpointValue,
 } from "@chakra-ui/react";
-import { ComponentHeaderMenuSection } from "../../types/strapi";
-import { DefHeader } from "types/global";
 import { useViewportScroll } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { mergeLink } from "utils/mergeHref";
 import React from "react";
-import strapi, { gql } from "lib/strapi";
-import { IoIosArrowDown } from "react-icons/io";
 import { AiOutlineMenu } from "react-icons/ai";
-import { availableIcons } from "utils/icon";
 import { LinkComponent } from "components/LinkComponent";
 import { MdChatBubble } from "react-icons/md";
-import { LanguageMenu } from "./navigation/LanguageMenu";
-import useTranslation from "next-translate/useTranslation";
-import router from "next/router";
+import { LanguageMenu } from "./header/LanguageMenu";
 import { IoCloseCircle } from "react-icons/io5";
-import { MobileMenuItem } from "./navigation/MobileMenuItem";
-import { Flyout } from "./navigation/Flyout";
-import { Logo } from "./navigation/NavLogo";
-import { Section } from "./navigation/Section";
-
-const getHeader = async () => {
-    const { data } = await strapi.query<{ header: DefHeader }>({
-        query: gql`
-            query {
-                header {
-                    locale
-                    logo {
-                        alternativeText
-                        width
-                        height
-                        url
-                    }
-                    sections {
-                        id
-                        label
-                        displayDropDown
-                        href
-                        subSection {
-                            id
-                            label
-                            href
-                            description
-                            icon
-                            color
-                        }
-                    }
-                    languages {
-                        label
-                        code
-                    }
-                    contact {
-                        label
-                        href
-                    }
-                    localizations {
-                        locale
-                        logo {
-                            alternativeText
-                            width
-                            height
-                            url
-                        }
-                        sections {
-                            id
-                            label
-                            displayDropDown
-                            href
-                            subSection {
-                                id
-                                label
-                                href
-                                description
-                                icon
-                                color
-                            }
-                        }
-                        languages {
-                            label
-                            code
-                        }
-                        contact {
-                            label
-                            href
-                        }
-                    }
-                }
-            }
-        `,
-    });
-
-    if (data) {
-        return data.header;
-    }
-};
+import { MobileMenuItem } from "./header/MobileMenuItem";
+import { Logo } from "./header/Logo";
+import { Section } from "./header/Section";
+import { useRecoilValue } from "recoil";
+import { headerState } from "state/layout";
 
 const Header = () => {
+    /*const { logo, sections, languages, contact } =
+        useRecoilSSRValue(headerState);*/
+
+    const { logo, languages, contact, sections } = useRecoilValue(headerState);
     const { onClose, onOpen, isOpen } = useDisclosure();
-    const [header, setHeader] = useState<DefHeader>();
+    //const [header, setHeader] = useState<DefHeader>();
 
     const { scrollY } = useViewportScroll();
     const [y, setY] = useState(0);
@@ -122,29 +44,18 @@ const Header = () => {
     const { height = 0 } = ref.current?.getBoundingClientRect() ?? {};
 
     useEffect(() => {
-        (async () => {
-            setHeader(await getHeader());
-        })();
-    });
-
-    useEffect(() => {
         return scrollY.onChange(() => setY(scrollY.get()));
     }, [scrollY]);
 
     const contactVariants = useBreakpointValue({
         base: "",
-        lg: header?.contact.label,
+        lg: contact.label,
     });
 
     const currentLanguage = useMemo(
-        () => header?.languages.find((l) => l.code === "se"),
-        [header?.languages]
+        () => languages.find((l) => l.code === "se"),
+        [languages]
     );
-    if (!header) {
-        return <></>;
-    }
-
-    const { logo, sections, languages, contact } = header;
 
     return (
         <React.Fragment>
@@ -169,7 +80,7 @@ const Header = () => {
                     mx="auto"
                 >
                     <AccessibleLink href="/">
-                        <Logo logo={logo} />
+                        <Logo priority />
                     </AccessibleLink>
                     <Box display={{ base: "none", md: "inline-flex" }} ml={10}>
                         <HStack spacing={1}>

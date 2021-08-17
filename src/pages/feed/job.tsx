@@ -32,13 +32,21 @@ import { JobCard } from "components/feed/JobCard";
 import { Divider } from "components/Divider";
 import useTranslation from "next-translate/useTranslation";
 import { getTranslatedRoutes } from "utils/sidebar";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { DefHeader, LayoutProps } from "types/global";
 
 interface Props {
     jobs: Jobs[];
     categories: JobCategory[];
 }
 
-const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
+const JobFeedView = ({
+    header,
+    footer,
+    jobs,
+    categories: baseCategories,
+}: LayoutProps<Props>) => {
+    useHydrater({ header });
     const { t } = useTranslation("feed");
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
     const isAboveLg = useBreakpointValue({ base: false, lg: true });
@@ -135,7 +143,7 @@ const JobFeedView = ({ jobs, categories: baseCategories }: Props) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const { data } = await strapi.query<{
         jobs: Jobs[];
         jobCategories: JobCategory[];
@@ -175,6 +183,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     });
     return {
         props: {
+            ...(await fetchHydration()),
             jobs: data.jobs,
             categories: data.jobCategories,
         },

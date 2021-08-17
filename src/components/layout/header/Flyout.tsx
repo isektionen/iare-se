@@ -27,6 +27,7 @@ export const Flyout = ({ subSection, href }: ComponentHeaderMenuSection) => (
 
                         return (
                             <AccessibleLink
+                                key={"flyout-section" + section.id}
                                 href={mergeLink(href, section.href)}
                                 m={-3}
                                 p={3}

@@ -54,6 +54,8 @@ import setLanguage from "next-translate/setLanguage";
 import { LanguageWrapper } from "components/LanguageWrapper";
 import _ from "underscore";
 import { isSameYear } from "date-fns";
+import { DefHeader, LayoutProps } from "types/global";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -119,7 +121,8 @@ const minimize = (key: string) => {
     return key;
 };
 
-const DocumentView = ({ data }: Props) => {
+const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
     const { t, lang } = useTranslation("document");
 
     const document = data.document as ComponentDocumentDocuments[];
@@ -260,9 +263,6 @@ const DocumentView = ({ data }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    //const { data } = await axios.get("/document?_locale=" + locale);
-    //const { data } = await axios.get("/document");
-
     const { data } = await strapi.query<{ document: DocumentType }>({
         query: gql`
             query {
@@ -286,6 +286,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
     return {
         props: {
+            ...(await fetchHydration()),
             locale,
             data: data.document,
         },

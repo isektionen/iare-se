@@ -21,6 +21,8 @@ import { HiHome } from "react-icons/hi";
 import { IoShareSocial } from "react-icons/io5";
 import { MdEvent } from "react-icons/md";
 import { RiUserSearchFill } from "react-icons/ri";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { DefHeader, LayoutProps } from "types/global";
 import { Post, Category } from "types/strapi";
 import { getTranslatedRoutes } from "utils/sidebar";
 
@@ -29,7 +31,13 @@ interface Props {
     categories: Category[];
 }
 
-const FeedView = ({ posts: basePosts, categories: baseCategories }: Props) => {
+const FeedView = ({
+    header,
+    footer,
+    posts: basePosts,
+    categories: baseCategories,
+}: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
     const { t, lang } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(
@@ -119,6 +127,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     });
     return {
         props: {
+            ...(await fetchHydration()),
             posts: data.posts,
             categories: data.categories,
         },

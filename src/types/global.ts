@@ -1,3 +1,4 @@
+import { Layout } from "state/layout";
 import { FooterProps } from "./footer";
 import { HeaderProps } from "./header";
 import {
@@ -37,6 +38,8 @@ export interface DefHeader {
     contact: ComponentHeaderContact;
 }
 
+export type LayoutProps<T> = T & Layout;
+
 export interface DefFooter {
     locale: string;
     localizations: Omit<DefFooter, "localizations">[];
@@ -45,4 +48,5 @@ export interface DefFooter {
         firstname: string;
         lastname: string;
     };
+    logo: Pick<UploadFile, "height" | "width" | "url" | "alternativeText">;
 }

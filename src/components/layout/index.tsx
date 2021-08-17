@@ -16,20 +16,6 @@ interface Props {
 
 const Layout = (props: Props) => {
     const { lang } = useTranslation();
-    /*let header: DefHeader;
-    let footer: DefFooter;
-
-    if (lang === props.header.locale) {
-        header = props.header;
-        footer = props.footer;
-    } else {
-        header = props.header.localizations.find(
-            (l) => l.locale === lang
-        ) as DefHeader;
-        footer = props.footer.localizations.find(
-            (l) => l.locale === lang
-        ) as DefFooter;
-    }*/
 
     return (
         <VStack>

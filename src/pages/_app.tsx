@@ -4,11 +4,10 @@ import Head from "next/head";
 import customTheme from "styles/customTheme";
 import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
-import strapi, { gql } from "lib/strapi";
+import strapi from "lib/strapi";
 import { RecoilRoot } from "recoil";
 import Layout from "components/layout";
-import React, { StrictMode } from "react";
-import { Footer, Header } from "types/strapi";
+import React, { StrictMode, Suspense } from "react";
 import { DefFooter, DefHeader } from "types/global";
 import { pdfjs } from "react-pdf";
 
@@ -25,9 +24,10 @@ interface Props extends AppProps {
     footerProps: DefFooter;
 }
 
-const App = ({ Component, pageProps, ...rest }: Props) => {
+const App = ({ Component, pageProps }: Props) => {
     //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
     pdfjs.GlobalWorkerOptions.workerSrc = "../js/pdf.worker.js";
+
     return (
         <StrictMode>
             <RecoilRoot>
@@ -49,115 +49,5 @@ const App = ({ Component, pageProps, ...rest }: Props) => {
         </StrictMode>
     );
 };
-
-let headerCache: DefHeader | null = null;
-let footerCache: DefFooter | null = null;
-/*
-App.getInitialProps = async () => {
-    if (headerCache && footerCache) {
-        return { headerProps: headerCache, footerProps: footerCache };
-    }
-    const { data } = await strapi.query<{ header: Header; footer: Footer }>({
-        query: gql`
-            query {
-                header {
-                    locale
-                    logo {
-                        alternativeText
-                        width
-                        height
-                        url
-                    }
-                    sections {
-                        id
-                        label
-                        displayDropDown
-                        href
-                        subSection {
-                            id
-                            label
-                            href
-                            description
-                            icon
-                            color
-                        }
-                    }
-                    languages {
-                        label
-                        code
-                    }
-                    contact {
-                        label
-                        href
-                    }
-                    localizations {
-                        locale
-                        logo {
-                            alternativeText
-                            width
-                            height
-                            url
-                        }
-                        sections {
-                            id
-                            label
-                            displayDropDown
-                            href
-                            subSection {
-                                id
-                                label
-                                href
-                                description
-                                icon
-                                color
-                            }
-                        }
-                        languages {
-                            label
-                            code
-                        }
-                        contact {
-                            label
-                            href
-                        }
-                    }
-                }
-                footer {
-                    locale
-                    social {
-                        id
-                        type
-                        href
-                    }
-                    responsiblePublisher {
-                        firstname
-                        lastname
-                    }
-                    localizations {
-                        locale
-                        social {
-                            id
-                            type
-                            href
-                        }
-                        responsiblePublisher {
-                            firstname
-                            lastname
-                        }
-                    }
-                }
-            }
-        `,
-    });
-    if (data) {
-        headerCache = data.header as DefHeader;
-        footerCache = data.footer as DefFooter;
-        return {
-            headerProps: data.header as DefHeader,
-            footerProps: data.footer,
-        };
-    }
-};
-*/
 
 export default App;

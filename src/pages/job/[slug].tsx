@@ -13,12 +13,15 @@ import { useRouter } from "next/router";
 import { DeadlineCounter } from "components/DeadlineCounter";
 import { isBefore } from "date-fns";
 import AccessibleLink from "components/AccessibleLink";
+import { DefHeader, LayoutProps } from "types/global";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
 interface Props {
     job: Jobs;
     mdx: MDXRemoteSerializeResult;
 }
 
-const JobView = ({ job, mdx }: Props) => {
+const JobView = ({ header, footer, job, mdx }: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
     const router = useRouter();
     const cta = job.contact?.find((c) => c?.type === "cta");
 
@@ -148,6 +151,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     return {
         props: {
+            ...(await fetchHydration()),
             job: data.job,
             mdx: await serialize(data.job.body),
         },

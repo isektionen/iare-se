@@ -73,6 +73,8 @@ import { OrderComplete } from "components/event/steps/OrderComplete";
 import { generateQRCode } from "utils/images";
 import { SkeletonSpinner } from "components/SkeletonSpinner";
 import { Deta } from "lib/deta";
+import { DefHeader, LayoutProps } from "types/global";
+import { fetchHydration, getHeader, useHydrater } from "state/layout";
 interface Props {
     event: Event;
     diets: Diet[];
@@ -97,7 +99,15 @@ export type TicketData = Partial<DefaultFieldValues> & {
     skipMessage?: boolean;
 };
 
-const EventView = ({ event, diets, allergies }: Props) => {
+const EventView = ({
+    header,
+    footer,
+    event,
+    diets,
+    allergies,
+}: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
+
     const { t, lang } = useTranslation("event");
     const router = useRouter();
 
@@ -410,7 +420,10 @@ const EventView = ({ event, diets, allergies }: Props) => {
     const handleOrder = withCheckout<string>(
         async ({ intentionId }, ticketId) => {
             setStatus("pending");
-
+            if (!intentionId || !event.fullfillmentUID || !ticketId) {
+                setStatus("failed");
+                return;
+            }
             const url = Deta`/intent/${event.fullfillmentUID}/${intentionId}`;
             const res = await fetch(url, {
                 method: "PUT",
@@ -965,6 +978,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     });
     return {
         props: {
+            ...(await fetchHydration()),
             event: changeLocaleData(locale, data.event),
             diets: changeLocaleData(locale, data.diets),
             allergies: changeLocaleData(locale, data.allergies),

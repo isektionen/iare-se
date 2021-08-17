@@ -73,18 +73,9 @@ export const RecoilSSRState = <T,>({
     }
 };
 
-export const useRecoilSSRValue = <T,>(
-    recoilValue: RecoilValue<T>
-): [T | undefined, boolean, undefined | T] => {
-    const data = useRecoilValueLoadable(recoilValue);
-    switch (data.state) {
-        case "hasValue":
-            return [data.contents, false, undefined];
-        case "loading":
-            return [undefined, true, undefined];
-        case "hasError":
-            return [undefined, false, data.contents];
-    }
+export const useRecoilSSRValue = <T,>(recoilValue: RecoilValue<T>): T => {
+    const { state, contents } = useRecoilValueLoadable(recoilValue);
+    return contents;
 };
 
 export const useRecoilSSRState = <T,>(

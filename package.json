@@ -5,7 +5,8 @@
   "author": "John Landeholt <Yonda AB>",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "prefetch": "node prefetch",
+    "build": "node prefetch && next build",
     "start": "next start",
     "lint": "next lint",
     "prettify": "prettier --write src",
@@ -29,6 +30,7 @@
     "framer-motion": "^4.1.17",
     "fuse.js": "^6.4.6",
     "graphql": "^15.5.1",
+    "graphql-request": "^3.5.0",
     "jsonwebtoken": "^8.5.1",
     "match-sorter": "^6.3.0",
     "next": "^11.0.0",

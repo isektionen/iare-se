@@ -1,4 +1,4 @@
-import { Flex, Icon, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Icon, IconButton } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import React from "react";
 import {
@@ -7,6 +7,8 @@ import {
     FaInstagram,
     FaDiscord,
 } from "react-icons/fa";
+import { useRecoilValue } from "recoil";
+import { layout } from "state/layout";
 import { ComponentFooterSocial } from "types/strapi";
 
 const getSocial = ({ type }: ComponentFooterSocial) => {
@@ -24,24 +26,15 @@ const getSocial = ({ type }: ComponentFooterSocial) => {
     }
 };
 
-interface Props {
-    socials: ComponentFooterSocial[];
-}
-
-export const Social = (props: Props) => {
+export const Social = () => {
+    const { social } = useRecoilValue(layout("footer"));
     return (
-        <Flex
-            alignSelf={{ base: "inherit", lg: "flex-end" }}
-            pt={{ base: 8, lg: 0 }}
-        >
-            {props.socials &&
-                props.socials.map((social) => {
-                    const iconProps = getSocial(social);
+        <Box>
+            {social &&
+                social.map((item) => {
+                    const iconProps = getSocial(item);
                     return (
-                        <AccessibleLink
-                            key={social.id}
-                            href={social?.href ?? "#"}
-                        >
+                        <AccessibleLink key={item.id} href={item?.href ?? "#"}>
                             <IconButton
                                 fontSize="3xl"
                                 variant="ghost"
@@ -50,6 +43,6 @@ export const Social = (props: Props) => {
                         </AccessibleLink>
                     );
                 })}
-        </Flex>
+        </Box>
     );
 };

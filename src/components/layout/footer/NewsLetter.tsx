@@ -55,8 +55,8 @@ export const NewsLetter = () => {
             borderWidth="1px"
             borderColor="gray.200"
             align="stretch"
-            w="full"
             h={48}
+            shadow="2xl"
             direction="row"
             p={6}
         >
@@ -79,6 +79,7 @@ export const NewsLetter = () => {
                             autoComplete="on"
                             variant="filled"
                             bg="gray.50"
+                            placeholder={t("footer.newsletter.placeholder")}
                             _hover={{
                                 bg: "gray.200",
                             }}
@@ -91,7 +92,7 @@ export const NewsLetter = () => {
                             }}
                             {...register("email")}
                         />
-                        <InputRightElement w="10rem">
+                        <InputRightElement w="7rem">
                             <Button
                                 h="1.75rem"
                                 size="sm"
@@ -99,7 +100,7 @@ export const NewsLetter = () => {
                                 type="submit"
                                 mx={2}
                             >
-                                {t("footer.newletter.subscribe")}
+                                {t("footer.newsletter.subscribe")}
                             </Button>
                         </InputRightElement>
                     </InputGroup>

@@ -1,7 +1,18 @@
 {
-    "documentPath": "chapter/document",
-    "brandingCopyright": "{{year}} Sektionen för Industriell Ekonomi",
-    "responsibleAuthor": "Ansvarig utgivare {{name}}",
-    "responsibleMaintainer": "Utvecklad med 🤎 av webgroup",
-    "":""
+    "footer": {
+        "copyright": "{{year}} Sektionen för Industriell Ekonomi",
+        "publisher": "Ansvarig utgivare {{name}}",
+        "developer": "Utvecklad av John Landeholt",
+        "contact": "Kontakta oss",
+        "newsletter": {
+            "title": "Prenumerera på vårt veckobrev!",
+            "description": "Håll dig uppdaterad inom sektionen",
+            "subscribe": "Prenumerera",
+            "placeholder": "example@kth.se"
+
+        },
+        "privacyPolicy": "integritetspolicy"
+        
+    }
+    
 }

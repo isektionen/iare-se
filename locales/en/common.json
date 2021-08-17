@@ -1,7 +1,16 @@
-{
-    "documentPath": "sektionen/dokument",
-    "brandingCopyright": "{{year}} Chapter of Industrial Economics",
-    "responsibleAuthor": "Responsible author {{name}}",
-    "responsibleMaintainer": "Developed with 🤎 by webgroup",
-    "": ""
+{   
+    "footer": {
+        "publisher": "Responsible publisher {{name}}",
+        "developer": "Developed by John Landeholt",
+        "copyright": "{{year}} Chapter of Industrial Economics",
+        "contact": "Contact us",
+        "newsletter": {
+            "title": "Subscribe to our newsletter!",
+            "description": "Keep you updated with news within the chapter",
+            "subscribe": "Subscribe",
+            "placeholder": "example@kth.se"
+        },
+        "privacyPolicy": "Privacy policy"
+        
+    }
 }

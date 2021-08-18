@@ -23,6 +23,7 @@ import { Developer } from "./footer/Developer";
 import { Privacy } from "./footer/Privacy";
 import { Publisher } from "./footer/Publisher";
 import { PageSection } from "./footer/PageSection";
+import { Contact } from "./footer/Contact";
 
 const Footer = () => {
     const { t } = useTranslation("common");
@@ -45,13 +46,7 @@ const Footer = () => {
                 >
                     <Divider borderColor="gray.100" />
                 </Flex>
-                <Button
-                    bg="white"
-                    variant="outline"
-                    rightIcon={<BsBoxArrowUp />}
-                >
-                    {t("footer.contact")}
-                </Button>
+                <Contact />
             </Flex>
 
             <Flex w="full" direction={{ base: "column-reverse", lg: "row" }}>

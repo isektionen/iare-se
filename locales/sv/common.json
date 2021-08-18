@@ -3,7 +3,16 @@
         "copyright": "{{year}} Sektionen för Industriell Ekonomi",
         "publisher": "Ansvarig utgivare {{name}}",
         "developer": "Utvecklad av John Landeholt",
-        "contact": "Kontakta oss",
+        "contact": {
+            "trigger": "Kontakta oss",
+            "title": "Säg Hej!",
+            "description": "Visste du att vi indekare älskar att hjälpa varandra? Nyfiken på något, hör av dig!",
+            "fullname": "Fullständigt namn",
+            "email": "Email",
+            "message": "Meddelande",
+            "submit": "skicka"
+
+        },
         "newsletter": {
             "title": "Prenumerera på vårt veckobrev!",
             "description": "Håll dig uppdaterad inom sektionen",
@@ -19,8 +28,18 @@
             "trigger": "Feedback",
             "header": "Feedbacklådan",
             "submit": "Skicka",
-            "publishable": "Jag tillåter sektionen att publicera min feedback (valfritt)"
-
+            "publishable": "Jag tillåter sektionen att publicera min feedback (valfritt)",
+            "textarea": "Jag vill hylla käraste Ivan för att han alltid ställer upp!",
+            "alert": {
+                "header": "Osparad text",
+                "body": "Du har text som inte blivit sparad, vill du avsluta?",
+                "cancel": "Avbryt",
+                "submit": "Ja"
+            },
+            "toast": {
+                "title": "Feedback inskickad",
+                "description": "Tack för din feedback! Kommunikationsnämnden kommer snart granska den!"
+            }
         }
     }
     

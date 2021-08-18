@@ -3,7 +3,15 @@
         "publisher": "Responsible publisher {{name}}",
         "developer": "Developed by John Landeholt",
         "copyright": "{{year}} Chapter of Industrial Economics",
-        "contact": "Contact us",
+        "contact": {
+            "trigger": "Contact us",
+            "title": "Say Hello",
+            "description": "Did you know that a \"Indekare\" loves to help eachother? Got a question? Let's chat!",
+            "fullname": "Fullname",
+            "email": "Email",
+            "message": "Message",
+            "submit": "submit"
+        },
         "newsletter": {
             "title": "Subscribe to our newsletter!",
             "description": "Keep you updated with news within the chapter",
@@ -18,7 +26,18 @@
             "trigger": "Feedback",
             "header": "Feedbackbox",
             "submit": "send",
-            "publishable": "I allow the chapter to publish my feedback (optional)"
+            "publishable": "I allow the chapter to publish my feedback (optional)",
+            "textarea": "I wanna celebrate my lovely Ivan because he will always help!",
+            "alert": {
+                "header": "Unsaved text",
+                "body": "You have some unsaved text, do you want to cancel it?",
+                "cancel": "Cancel",
+                "submit": "Yes"
+            },
+            "toast": {
+                "title": "Feedback recieved",
+                "description": "Thanks for your feedback! The communication committee will soon review it!"
+            }
         }
     }
 }

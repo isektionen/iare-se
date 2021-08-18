@@ -1,5 +1,6 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import baseAxios from "axios";
+import auth from "../../prefetch/static/auth.json";
 
 const Strapi = (
     path: TemplateStringsArray,
@@ -19,6 +20,9 @@ const client = new ApolloClient({
 
 const axios = baseAxios.create({
     baseURL: process.env.NEXT_PUBLIC_STRAPI,
+    headers: {
+        Authorization: `Bearer ${auth.token}`,
+    },
 });
 
 const strapi = client;

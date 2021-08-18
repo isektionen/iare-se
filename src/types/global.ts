@@ -1,9 +1,11 @@
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { Layout } from "state/layout";
 import { FooterProps } from "./footer";
 import { HeaderProps } from "./header";
 import {
     ComponentFooterSocial,
     ComponentHeaderContact,
+    ComponentHeaderFeedbackbox,
     ComponentHeaderLanguages,
     ComponentHeaderLogo,
     ComponentHeaderMenuSection,
@@ -36,6 +38,7 @@ export interface DefHeader {
     sections: ComponentHeaderMenuSection[];
     languages: ComponentHeaderLanguages[];
     contact: ComponentHeaderContact;
+    feedbackbox: Pick<ComponentHeaderFeedbackbox, "description"> | null;
 }
 
 export type LayoutProps<T> = T & Layout;

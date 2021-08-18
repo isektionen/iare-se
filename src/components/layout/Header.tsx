@@ -28,6 +28,7 @@ import { Logo } from "./header/Logo";
 import { Section } from "./header/Section";
 import { useRecoilValue } from "recoil";
 import { headerState } from "state/layout";
+import { Feedback } from "./header/Feedback";
 
 const Header = () => {
     /*const { logo, sections, languages, contact } =
@@ -94,7 +95,8 @@ const Header = () => {
                     </Box>
                     <Spacer />
                     <Flex alignItems="center">
-                        <HStack spacing={1}>
+                        <HStack spacing={2}>
+                            <Feedback />
                             <LanguageMenu
                                 standardLanguage={currentLanguage}
                                 languages={languages}
@@ -105,10 +107,13 @@ const Header = () => {
                                 as={Button}
                                 size="sm"
                                 href={contact.href}
-                                leftIcon={<MdChatBubble />}
                                 isDisabled={true}
                                 display={{ base: "none", md: "flex" }}
                             >
+                                <Icon
+                                    as={MdChatBubble}
+                                    mr={{ base: 0, lg: 2 }}
+                                />
                                 {contactVariants}
                             </LinkComponent>
                             <IconButton
@@ -174,6 +179,7 @@ const Header = () => {
                                     variant="iareSolid"
                                     leftIcon={<MdChatBubble />}
                                     isDisabled={true}
+                                    isFullWidth
                                 >
                                     {contact.label}
                                 </LinkComponent>

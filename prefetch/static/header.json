@@ -6,6 +6,9 @@
         "height": 70,
         "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_dc256dcc5a.svg"
     },
+    "feedbackbox": {
+        "description": "Har någon fin själ hjälpt till extra mycket? \nHar någon nämnd gjort något helt fantastiskt? \nVill du sprida kärlek?"
+    },
     "sections": [
         {
             "id": "1",
@@ -101,6 +104,7 @@
                 "height": 70,
                 "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_dc256dcc5a.svg"
             },
+            "feedbackbox": null,
             "sections": [
                 {
                     "id": "5",

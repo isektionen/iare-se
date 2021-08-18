@@ -868,6 +868,16 @@ export type ComponentHeaderContactInput = {
   href: Scalars['String'];
 };
 
+export type ComponentHeaderFeedbackbox = {
+  __typename?: 'ComponentHeaderFeedbackbox';
+  id: Scalars['ID'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ComponentHeaderFeedbackboxInput = {
+  description?: Maybe<Scalars['String']>;
+};
+
 export type ComponentHeaderLanguageInput = {
   label: Scalars['String'];
   code?: Maybe<Scalars['String']>;
@@ -1677,6 +1687,83 @@ export type EventInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type Feedback = {
+  __typename?: 'Feedback';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  emotion?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
+  published_at?: Maybe<Scalars['DateTime']>;
+};
+
+export type FeedbackAggregator = {
+  __typename?: 'FeedbackAggregator';
+  count?: Maybe<Scalars['Int']>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type FeedbackConnection = {
+  __typename?: 'FeedbackConnection';
+  values?: Maybe<Array<Maybe<Feedback>>>;
+  groupBy?: Maybe<FeedbackGroupBy>;
+  aggregate?: Maybe<FeedbackAggregator>;
+};
+
+export type FeedbackConnectionContent = {
+  __typename?: 'FeedbackConnectionContent';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackConnectionCreated_At = {
+  __typename?: 'FeedbackConnectionCreated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackConnectionEmotion = {
+  __typename?: 'FeedbackConnectionEmotion';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackConnectionId = {
+  __typename?: 'FeedbackConnectionId';
+  key?: Maybe<Scalars['ID']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackConnectionPublished_At = {
+  __typename?: 'FeedbackConnectionPublished_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackConnectionUpdated_At = {
+  __typename?: 'FeedbackConnectionUpdated_at';
+  key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<FeedbackConnection>;
+};
+
+export type FeedbackGroupBy = {
+  __typename?: 'FeedbackGroupBy';
+  id?: Maybe<Array<Maybe<FeedbackConnectionId>>>;
+  created_at?: Maybe<Array<Maybe<FeedbackConnectionCreated_At>>>;
+  updated_at?: Maybe<Array<Maybe<FeedbackConnectionUpdated_At>>>;
+  emotion?: Maybe<Array<Maybe<FeedbackConnectionEmotion>>>;
+  content?: Maybe<Array<Maybe<FeedbackConnectionContent>>>;
+  published_at?: Maybe<Array<Maybe<FeedbackConnectionPublished_At>>>;
+};
+
+export type FeedbackInput = {
+  emotion?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
 export type FileInfoInput = {
   name?: Maybe<Scalars['String']>;
   alternativeText?: Maybe<Scalars['String']>;
@@ -1742,6 +1829,7 @@ export type Header = {
   languages?: Maybe<Array<Maybe<ComponentHeaderLanguages>>>;
   contact?: Maybe<ComponentHeaderContact>;
   logo?: Maybe<UploadFile>;
+  feedbackbox?: Maybe<ComponentHeaderFeedbackbox>;
   locale?: Maybe<Scalars['String']>;
   localizations?: Maybe<Array<Maybe<Header>>>;
 };
@@ -1759,6 +1847,7 @@ export type HeaderInput = {
   languages?: Maybe<Array<ComponentHeaderLanguageInput>>;
   contact: ComponentHeaderContactInput;
   logo?: Maybe<Scalars['ID']>;
+  feedbackbox?: Maybe<ComponentHeaderFeedbackboxInput>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   created_by?: Maybe<Scalars['ID']>;
@@ -2047,7 +2136,7 @@ export type LocaleInput = {
 };
 
 
-export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | DocumentCategory | DocumentCategoryConnection | DocumentCategoryAggregator | DocumentCategoryGroupBy | DocumentCategoryConnectionId | DocumentCategoryConnectionCreated_At | DocumentCategoryConnectionUpdated_At | DocumentCategoryConnectionName | DocumentCategoryConnectionRelatedTo | DocumentCategoryConnectionLocale | CreateDocumentCategoryPayload | UpdateDocumentCategoryPayload | DeleteDocumentCategoryPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionFullfillmentUid | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | EmailDesignerEmailTemplate | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentDocuments | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
+export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | DocumentCategory | DocumentCategoryConnection | DocumentCategoryAggregator | DocumentCategoryGroupBy | DocumentCategoryConnectionId | DocumentCategoryConnectionCreated_At | DocumentCategoryConnectionUpdated_At | DocumentCategoryConnectionName | DocumentCategoryConnectionRelatedTo | DocumentCategoryConnectionLocale | CreateDocumentCategoryPayload | UpdateDocumentCategoryPayload | DeleteDocumentCategoryPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionFullfillmentUid | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Feedback | FeedbackConnection | FeedbackAggregator | FeedbackGroupBy | FeedbackConnectionId | FeedbackConnectionCreated_At | FeedbackConnectionUpdated_At | FeedbackConnectionEmotion | FeedbackConnectionContent | FeedbackConnectionPublished_At | CreateFeedbackPayload | UpdateFeedbackPayload | DeleteFeedbackPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | EmailDesignerEmailTemplate | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentDocuments | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderFeedbackbox | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2080,6 +2169,9 @@ export type Mutation = {
   createEvent?: Maybe<CreateEventPayload>;
   updateEvent?: Maybe<UpdateEventPayload>;
   deleteEvent?: Maybe<DeleteEventPayload>;
+  createFeedback?: Maybe<CreateFeedbackPayload>;
+  updateFeedback?: Maybe<UpdateFeedbackPayload>;
+  deleteFeedback?: Maybe<DeleteFeedbackPayload>;
   updateFooter?: Maybe<UpdateFooterPayload>;
   deleteFooter?: Maybe<DeleteFooterPayload>;
   updateHeader?: Maybe<UpdateHeaderPayload>;
@@ -2278,6 +2370,21 @@ export type MutationUpdateEventArgs = {
 
 export type MutationDeleteEventArgs = {
   input?: Maybe<DeleteEventInput>;
+};
+
+
+export type MutationCreateFeedbackArgs = {
+  input?: Maybe<CreateFeedbackInput>;
+};
+
+
+export type MutationUpdateFeedbackArgs = {
+  input?: Maybe<UpdateFeedbackInput>;
+};
+
+
+export type MutationDeleteFeedbackArgs = {
+  input?: Maybe<DeleteFeedbackInput>;
 };
 
 
@@ -2778,6 +2885,9 @@ export type Query = {
   event?: Maybe<Event>;
   events?: Maybe<Array<Maybe<Event>>>;
   eventsConnection?: Maybe<EventConnection>;
+  feedback?: Maybe<Feedback>;
+  feedbacks?: Maybe<Array<Maybe<Feedback>>>;
+  feedbacksConnection?: Maybe<FeedbackConnection>;
   footer?: Maybe<Footer>;
   header?: Maybe<Header>;
   jobCategory?: Maybe<JobCategory>;
@@ -3030,6 +3140,29 @@ export type QueryEventsConnectionArgs = {
   start?: Maybe<Scalars['Int']>;
   where?: Maybe<Scalars['JSON']>;
   locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryFeedbackArgs = {
+  id: Scalars['ID'];
+  publicationState?: Maybe<PublicationState>;
+};
+
+
+export type QueryFeedbacksArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+  publicationState?: Maybe<PublicationState>;
+};
+
+
+export type QueryFeedbacksConnectionArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
 };
 
 
@@ -3759,6 +3892,15 @@ export type CreateEventPayload = {
   event?: Maybe<Event>;
 };
 
+export type CreateFeedbackInput = {
+  data?: Maybe<FeedbackInput>;
+};
+
+export type CreateFeedbackPayload = {
+  __typename?: 'createFeedbackPayload';
+  feedback?: Maybe<Feedback>;
+};
+
 export type CreateJobCategoryInput = {
   data?: Maybe<JobCategoryInput>;
 };
@@ -3897,6 +4039,15 @@ export type DeleteEventInput = {
 export type DeleteEventPayload = {
   __typename?: 'deleteEventPayload';
   event?: Maybe<Event>;
+};
+
+export type DeleteFeedbackInput = {
+  where?: Maybe<InputId>;
+};
+
+export type DeleteFeedbackPayload = {
+  __typename?: 'deleteFeedbackPayload';
+  feedback?: Maybe<Feedback>;
 };
 
 export type DeleteFileInput = {
@@ -4157,6 +4308,11 @@ export type EditComponentHeaderContactInput = {
   href?: Maybe<Scalars['String']>;
 };
 
+export type EditComponentHeaderFeedbackboxInput = {
+  id?: Maybe<Scalars['ID']>;
+  description?: Maybe<Scalars['String']>;
+};
+
 export type EditComponentHeaderLanguageInput = {
   id?: Maybe<Scalars['ID']>;
   label?: Maybe<Scalars['String']>;
@@ -4312,6 +4468,14 @@ export type EditEventInput = {
   updated_by?: Maybe<Scalars['ID']>;
 };
 
+export type EditFeedbackInput = {
+  emotion?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
 export type EditFileInput = {
   name?: Maybe<Scalars['String']>;
   alternativeText?: Maybe<Scalars['String']>;
@@ -4347,6 +4511,7 @@ export type EditHeaderInput = {
   languages?: Maybe<Array<Maybe<EditComponentHeaderLanguageInput>>>;
   contact?: Maybe<EditComponentHeaderContactInput>;
   logo?: Maybe<Scalars['ID']>;
+  feedbackbox?: Maybe<EditComponentHeaderFeedbackboxInput>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   created_by?: Maybe<Scalars['ID']>;
@@ -4550,6 +4715,16 @@ export type UpdateEventInput = {
 export type UpdateEventPayload = {
   __typename?: 'updateEventPayload';
   event?: Maybe<Event>;
+};
+
+export type UpdateFeedbackInput = {
+  where?: Maybe<InputId>;
+  data?: Maybe<EditFeedbackInput>;
+};
+
+export type UpdateFeedbackPayload = {
+  __typename?: 'updateFeedbackPayload';
+  feedback?: Maybe<Feedback>;
 };
 
 export type UpdateFooterInput = {

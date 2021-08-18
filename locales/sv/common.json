@@ -13,6 +13,15 @@
         },
         "privacyPolicy": "integritetspolicy"
         
+    },
+    "header": {
+        "feedback": {
+            "trigger": "Feedback",
+            "header": "Feedbacklådan",
+            "submit": "Skicka",
+            "publishable": "Jag tillåter sektionen att publicera min feedback (valfritt)"
+
+        }
     }
     
 }

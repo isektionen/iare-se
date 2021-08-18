@@ -87,11 +87,13 @@ const AccordionSection = ({
                     direction="column"
                     borderColor="gray.100"
                 >
-                    <Flex align="center" w="full" justify="space-between">
-                        <Text fontWeight="700" size="lg">
-                            {label}
-                        </Text>
-                        <AccordionButton w="auto">
+                    <AccordionButton>
+                        <Flex
+                            align="center"
+                            w="full"
+                            flex={1}
+                            justify="space-between"
+                        >
                             <MotionBox
                                 display="flex"
                                 justifyContent="center"
@@ -99,10 +101,13 @@ const AccordionSection = ({
                                 animate={isExpanded ? "open" : "closed"}
                                 variants={variants}
                             >
+                                <Text fontWeight="700" size="lg">
+                                    {label}
+                                </Text>
                                 <Icon as={BsPlus} boxSize={5} />
                             </MotionBox>
-                        </AccordionButton>
-                    </Flex>
+                        </Flex>
+                    </AccordionButton>
 
                     <AccordionPanel>
                         <ListContainer subSection={subSection} />

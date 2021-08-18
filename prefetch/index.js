@@ -1,9 +1,10 @@
 const fs = require("fs");
 const header = require("./resolvers/header");
 const footer = require("./resolvers/footer");
+const auth = require("./resolvers/auth");
 
 const config = {
-    resolvers: [header, footer],
+    resolvers: [header, footer, auth],
 };
 
 const prefetch = () => {

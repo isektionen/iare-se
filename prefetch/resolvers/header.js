@@ -13,6 +13,9 @@ const resolver = async () => {
                 height
                 url
             }
+            feedbackbox {
+                description
+              }
             sections {
                 id
                 label
@@ -43,6 +46,9 @@ const resolver = async () => {
                     height
                     url
                 }
+                feedbackbox {
+                    description
+                  }
                 sections {
                     id
                     label

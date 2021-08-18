@@ -12,5 +12,13 @@
         },
         "privacyPolicy": "Privacy policy"
         
+    },
+    "header": {
+        "feedback": {
+            "trigger": "Feedback",
+            "header": "Feedbackbox",
+            "submit": "send",
+            "publishable": "I allow the chapter to publish my feedback (optional)"
+        }
     }
 }

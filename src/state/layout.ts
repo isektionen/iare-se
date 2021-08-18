@@ -5,7 +5,7 @@ import { DefFooter, DefHeader } from "types/global";
 import defaultHeaderState from "../../prefetch/static/header.json";
 import defaultFooterState from "../../prefetch/static/footer.json";
 import _ from "underscore";
-import { Footer, Header } from "types/strapi";
+import { serialize } from "next-mdx-remote/serialize";
 
 const getHeaderFromFile = () => {
     return defaultHeaderState as DefHeader;
@@ -53,7 +53,7 @@ export const useHydrater = (data: {
                 .filter(_.isObject)
                 .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {})
                 .value();
-            setLayout((oldLayout) => ({ ...oldLayout, newData }));
+            setLayout({ ..._layout, ...newData });
         }
     }, []);
 };
@@ -149,6 +149,9 @@ export const getHeader = async () => {
                         height
                         url
                     }
+                    feedbackbox {
+                        description
+                    }
                     sections {
                         id
                         label
@@ -179,6 +182,9 @@ export const getHeader = async () => {
                             height
                             url
                         }
+                        feedbackbox {
+                            description
+                        }
                         sections {
                             id
                             label
@@ -206,6 +212,5 @@ export const getHeader = async () => {
             }
         `,
     });
-
     return data.header;
 };

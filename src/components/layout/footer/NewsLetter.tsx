@@ -9,6 +9,7 @@ import {
     Text,
     Spacer,
     Circle,
+    Center,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import { client } from "lib/mailchimp";
@@ -55,15 +56,25 @@ export const NewsLetter = () => {
             borderWidth="1px"
             borderColor="gray.200"
             align="stretch"
-            h={48}
+            minH={48}
             shadow="2xl"
-            direction="row"
+            direction={{ base: "column", md: "row" }}
             p={6}
         >
-            <Circle bg="gray.50" size={16}>
-                <Heading size="lg">👋</Heading>
-            </Circle>
-            <Flex direction="column" ml={4} w="full">
+            <Center
+                w={{ base: "full", md: "50%" }}
+                mb={{ base: 10, md: 0 }}
+                mr={{ base: 0, md: 4 }}
+            >
+                <Circle bg="gray.50" size={16}>
+                    <Heading size="lg">👋</Heading>
+                </Circle>
+            </Center>
+            <Flex
+                direction="column"
+                w="full"
+                textAlign={{ base: "center", md: "left" }}
+            >
                 <Box>
                     <Heading size="lg" color="gray.500">
                         {t("footer.newsletter.title")}

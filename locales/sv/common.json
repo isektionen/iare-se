@@ -7,9 +7,18 @@
             "trigger": "Kontakta oss",
             "title": "Säg Hej!",
             "description": "Visste du att vi indekare älskar att hjälpa varandra? Nyfiken på något, hör av dig!",
-            "fullname": "Fullständigt namn",
-            "email": "Email",
-            "message": "Meddelande",
+            "fullname": {
+                "label": "Fullständigt namn",
+                "message": "Ange ett alias"
+            },
+            "email": {
+                "label": "Email",
+                "message": "Ange en emailadress"
+            },
+            "message": {
+                "label": "Meddelande",
+                "message": "Ange ett meddelande"
+            },
             "submit": "skicka"
 
         },
@@ -37,8 +46,16 @@
                 "submit": "Ja"
             },
             "toast": {
-                "title": "Feedback inskickad",
-                "description": "Tack för din feedback! Kommunikationsnämnden kommer snart granska den!"
+                "success": {
+
+                    "title": "Feedback inskickad",
+                    "description": "Tack för din feedback! Kommunikationsnämnden kommer snart granska den!"
+                },
+                "error": {
+
+                    "title": "Feedbacken kunde inte skickas",
+                    "description": "För att kunna hjälpa oss, så krävs det att feedbacken har innehåll"
+                }
             }
         }
     }

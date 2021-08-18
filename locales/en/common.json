@@ -7,9 +7,18 @@
             "trigger": "Contact us",
             "title": "Say Hello",
             "description": "Did you know that a \"Indekare\" loves to help eachother? Got a question? Let's chat!",
-            "fullname": "Fullname",
-            "email": "Email",
-            "message": "Message",
+            "fullname": {
+                "label": "Fullname",
+                "message": "Provide an alias"
+            },
+            "email": {
+                "label": "Email",
+                "message": "Provide an email"
+            },
+            "message": {
+                "label": "Message",
+                "message": "Provide a message"
+            },
             "submit": "submit"
         },
         "newsletter": {
@@ -35,8 +44,16 @@
                 "submit": "Yes"
             },
             "toast": {
-                "title": "Feedback recieved",
-                "description": "Thanks for your feedback! The communication committee will soon review it!"
+                "success": {
+                    "title": "Feedback recieved",
+                    "description": "Thanks for your feedback! The communication committee will soon review it!"
+
+                },
+                "error": {
+                    "title": "Couldn't send feedback",
+                    "description": "In order for a feedback to be valuable for both you and us, it needs to have a body"
+
+                }
             }
         }
     }

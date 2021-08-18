@@ -10,11 +10,6 @@ import {
 } from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { BsBoxArrowUp } from "react-icons/bs";
-import { DefFooter } from "types/global";
-import { ComponentHeaderMenuSection } from "types/strapi";
-import { Branding } from "./footer/Branding";
-import { ListSection } from "./footer/ListSection";
 import { NewsLetter } from "./footer/NewsLetter";
 import { Social } from "./footer/Social";
 import { Logo } from "./footer/Logo";

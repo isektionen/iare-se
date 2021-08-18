@@ -68,7 +68,7 @@ const Header = () => {
                 transition="box-shadow 0.3s"
                 w="full"
                 maxH={16}
-                zIndex={3}
+                zIndex={11}
                 top={0}
                 left={0}
                 right={0}

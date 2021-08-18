@@ -29,7 +29,6 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
-    Input,
     AlertDialog,
     AlertDialogBody,
     AlertDialogContent,
@@ -39,7 +38,6 @@ import {
     FormControl,
     useToast,
 } from "@chakra-ui/react";
-import { MDXLayout } from "components/mdx/Layout";
 import useTranslation from "next-translate/useTranslation";
 import React, { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
@@ -261,14 +259,21 @@ export const Feedback = () => {
                 onCloseDrawer();
             }
             toast({
-                title: t("header.feedback.toast.title"),
-                description: t("header.feedback.toast.description"),
+                title: t("header.feedback.toast.success.title"),
+                description: t("header.feedback.toast.success.description"),
                 status: "success",
                 duration: 3500,
                 isClosable: true,
             });
             return;
         }
+        toast({
+            title: t("header.feedback.toast.error.title"),
+            description: t("header.feedback.toast.error.description"),
+            status: "error",
+            duration: 3500,
+            isClosable: true,
+        });
     };
 
     return (

@@ -534,6 +534,7 @@ const EventView = ({
 
     return (
         <Flex
+            overflow="hidden"
             direction="column"
             bg="white"
             pos="relative"

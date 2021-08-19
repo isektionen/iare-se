@@ -4,6 +4,18 @@
         "publisher": "Ansvarig utgivare {{name}}",
         "developer": "Utvecklad av John Landeholt",
         "contact": {
+            "toast": {
+                "success": {
+                    "title": "Hurra! Vi fick din kontaktförfrågan",
+                    "description": "En styrelsemedlem kommer snart att kontakta dig!"
+
+                },
+                "error": {
+                    "title": "Mailet kunde inte skickas",
+                    "description": "Något fel skedde! Kolla en extra koll om allt är på sin plats!"
+
+                }
+            },
             "trigger": "Kontakta oss",
             "title": "Säg Hej!",
             "description": "Visste du att vi indekare älskar att hjälpa varandra? Nyfiken på något, hör av dig!",

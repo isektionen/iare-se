@@ -94,6 +94,9 @@ const AccordionSection = ({
                             flex={1}
                             justify="space-between"
                         >
+                            <Text fontWeight="700" size="lg">
+                                {label}
+                            </Text>
                             <MotionBox
                                 display="flex"
                                 justifyContent="center"
@@ -101,9 +104,6 @@ const AccordionSection = ({
                                 animate={isExpanded ? "open" : "closed"}
                                 variants={variants}
                             >
-                                <Text fontWeight="700" size="lg">
-                                    {label}
-                                </Text>
                                 <Icon as={BsPlus} boxSize={5} />
                             </MotionBox>
                         </Flex>

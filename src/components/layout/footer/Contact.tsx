@@ -22,21 +22,23 @@ import {
     Text,
     Textarea,
     useDisclosure,
+    useToast,
     VStack,
 } from "@chakra-ui/react";
-import { axios } from "lib/strapi";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { isMobile } from "react-device-detect";
 import { useForm } from "react-hook-form";
 import { BsBoxArrowUp } from "react-icons/bs";
 
-const Form = () => {
+const Form = ({ onComplete }: { onComplete: () => void }) => {
     const { t } = useTranslation("common");
+    const toast = useToast();
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
+        reset,
     } = useForm();
 
     const onSubmit = async (data: any) => {
@@ -48,8 +50,24 @@ const Form = () => {
             },
         });
         if (result.ok) {
-            console.log("yay");
+            onComplete();
+            reset();
+            toast({
+                title: t("footer.contact.toast.success.title"),
+                description: t("footer.contact.toast.success.description"),
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
+            return;
         }
+        toast({
+            title: t("footer.contact.toast.error.title"),
+            description: t("footer.contact.toast.error.description"),
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
     };
     return (
         <Flex
@@ -104,7 +122,13 @@ const Form = () => {
                 </FormHelperText>
             </FormControl>
             <Spacer />
-            <Button mt={4} type="submit" variant="iareSolid" isFullWidth>
+            <Button
+                mt={4}
+                type="submit"
+                variant="iareSolid"
+                isFullWidth
+                isLoading={isSubmitting}
+            >
                 {t("footer.contact.submit")}
             </Button>
         </Flex>
@@ -140,7 +164,7 @@ export const Contact = () => {
                         <DrawerCloseButton />
 
                         <DrawerBody>
-                            <Form />
+                            <Form onComplete={onClose} />
                         </DrawerBody>
                     </DrawerContent>
                 </Drawer>
@@ -150,21 +174,25 @@ export const Contact = () => {
 
     return (
         <Popover placement="top-end">
-            <PopoverTrigger>
-                <Button
-                    bg="white"
-                    variant="outline"
-                    rightIcon={<BsBoxArrowUp />}
-                >
-                    {t("footer.contact.trigger")}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent shadow="xl" rounded="lg">
-                <PopoverArrow />
-                <PopoverBody>
-                    <Form />
-                </PopoverBody>
-            </PopoverContent>
+            {({ isOpen, onClose }) => (
+                <>
+                    <PopoverTrigger>
+                        <Button
+                            bg="white"
+                            variant="outline"
+                            rightIcon={<BsBoxArrowUp />}
+                        >
+                            {t("footer.contact.trigger")}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent shadow="xl" rounded="lg">
+                        <PopoverArrow />
+                        <PopoverBody>
+                            <Form onComplete={onClose} />
+                        </PopoverBody>
+                    </PopoverContent>
+                </>
+            )}
         </Popover>
     );
 };

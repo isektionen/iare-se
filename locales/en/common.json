@@ -4,6 +4,18 @@
         "developer": "Developed by John Landeholt",
         "copyright": "{{year}} Chapter of Industrial Economics",
         "contact": {
+            "toast": {
+                "success": {
+                    "title": "Contact made",
+                    "description": "Thanks for contacting us! A board member will shortly contact you"
+
+                },
+                "error": {
+                    "title": "Email couldn't be sent",
+                    "description": "Something might be missing, check an extra time!"
+
+                }
+            },
             "trigger": "Contact us",
             "title": "Say Hello",
             "description": "Did you know that a \"Indekare\" loves to help eachother? Got a question? Let's chat!",

@@ -15,12 +15,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-        const result = await axios.post(Strapi`/remote-services/mail`, {
+        await axios.post(Strapi`/remote-services/send/2`, {
             to: email,
             fullname,
             message,
         });
-        return res.status(200).json({});
+        await axios.post(Strapi`/remote-services/send/4`, {
+            to: process.env.CONTACT_RECIPIENT,
+            fullname,
+            email,
+            message,
+        });
+        return res.status(200).json({ status: "ok" });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "something unexpected happend" });

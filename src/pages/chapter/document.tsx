@@ -5,28 +5,19 @@ import useTranslation from "next-translate/useTranslation";
 import {
     ComponentDocumentDocuments,
     Document as DocumentType,
-    Maybe,
 } from "../../types/strapi";
-import Document from "components/document/Document";
 
 import {
     Box,
-    Button,
     Center,
     chakra,
     Divider,
     Flex,
-    Grid,
-    GridItem,
-    Heading,
     Icon,
-    IconButton,
     Menu,
     MenuButton,
-    MenuDivider,
     MenuItem,
     MenuList,
-    SimpleGrid,
     Spacer,
     Tag,
     Text,
@@ -35,37 +26,15 @@ import {
     useOutsideClick,
     Wrap,
 } from "@chakra-ui/react";
-import { LayoutWrapper } from "components/layout/LayoutWrapper";
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-
-import {
-    IoIosArrowDropleftCircle,
-    IoIosArrowDroprightCircle,
-} from "react-icons/io";
-
-import { getDate } from "utils/dates";
-import { DocumentBody, DocumentTable } from "components/document/DocumentTable";
-import {
-    PageContainer,
-    PageOptions,
-} from "components/pagination/PageContainer";
-import { PageSelector } from "components/pagination/PageSelector";
-import { HiDotsVertical, HiOutlineDownload } from "react-icons/hi";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { HiDotsVertical } from "react-icons/hi";
 
 import _ from "underscore";
-import { isSameYear } from "date-fns";
 import { LayoutProps } from "types/global";
 import { fetchHydration, useHydrater } from "state/layout";
 import { NextImage } from "components/NextImage";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
 import { useDocument } from "state/document";
-import { isMobile } from "react-device-detect";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -89,19 +58,19 @@ const ItemThumbnail = ({
             : fullCategoryName;
 
     const doc = useDocument();
-    const openDocument = () => {
+    const openDocument = useCallback(() => {
         if (file?.url) {
             doc({
                 file: file.url,
                 title: name,
             });
         }
-    };
+    }, [doc, file?.url, name]);
 
     const handleFocus = useCallback(() => {
         setIsFocused(true);
         openDocument();
-    }, []);
+    }, [openDocument]);
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick({
         ref,

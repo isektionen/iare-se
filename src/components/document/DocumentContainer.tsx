@@ -18,6 +18,9 @@ import {
     DrawerOverlay,
     Input,
     HStack,
+    Placement,
+    useBreakpointValue,
+    SlideDirection,
 } from "@chakra-ui/react";
 import {
     DocumentContext,
@@ -52,10 +55,14 @@ const Document = ({ file }: { file: string }) => {
 export const DocumentContainer = () => {
     const { onClose, isOpen, file, title } = useDocumentContext();
     const { t } = useTranslation("document");
+    const placementVariant = useBreakpointValue({
+        base: "left",
+        md: "right",
+    }) as SlideDirection;
     return (
         <Drawer
             isOpen={isOpen}
-            placement="right"
+            placement={placementVariant}
             size={isMobile ? "full" : "lg"}
             onClose={onClose}
             isFullHeight

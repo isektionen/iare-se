@@ -34,7 +34,9 @@ import { LayoutProps } from "types/global";
 import { fetchHydration, useHydrater } from "state/layout";
 import { NextImage } from "components/NextImage";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
-import { useDocument } from "state/document";
+import { useDocument, useFilter, useFilterContext } from "state/document";
+import { getDate } from "utils/dates";
+import { FilterOptions } from "components/document/FilterOptions";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -46,6 +48,7 @@ const ItemThumbnail = ({
     businessYear,
     current,
     category,
+    date,
     size = 250,
 }: ComponentDocumentDocuments & { size: number }) => {
     const { t } = useTranslation("document");
@@ -181,6 +184,9 @@ const ItemThumbnail = ({
                     <Text fontWeight="semibold" fontSize="xl" color="gray.700">
                         {name}
                     </Text>
+                    <Text fontSize="md" color="gray.700">
+                        {getDate(date, "dd MMM yyyy")}
+                    </Text>
                     <Divider my={4} borderColor="gray.200" />
                     <Flex w="full" align="flex-start">
                         <Box>
@@ -210,18 +216,17 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t, lang } = useTranslation("document");
 
-    const documents = useMemo(
-        () =>
-            data.document
-                ? (data.document as unknown as ComponentDocumentDocuments[])
-                : [],
-        [data.document]
+    const documents = useFilterContext(
+        data.document
+            ? (data.document as unknown as ComponentDocumentDocuments[])
+            : []
     );
     const sizeVariant = useBreakpointValue({ base: 200, md: 120 }) as number;
     return (
         <>
             <DocumentContainer />
             <Box py={16}>
+                <FilterOptions />
                 <Wrap
                     shouldWrapChildren
                     spacing={4}

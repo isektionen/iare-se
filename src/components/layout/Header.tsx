@@ -1,4 +1,11 @@
-import { Box, Circle, Flex, HStack, SimpleGrid } from "@chakra-ui/layout";
+import {
+    Box,
+    BoxProps,
+    Circle,
+    Flex,
+    HStack,
+    SimpleGrid,
+} from "@chakra-ui/layout";
 import Image from "next/image";
 import AccessibleLink from "components/AccessibleLink";
 import {
@@ -30,7 +37,7 @@ import { useRecoilValue } from "recoil";
 import { headerState } from "state/layout";
 import { Feedback } from "./header/Feedback";
 
-const Header = () => {
+const Header = (props: BoxProps) => {
     /*const { logo, sections, languages, contact } =
         useRecoilSSRValue(headerState);*/
 
@@ -73,6 +80,7 @@ const Header = () => {
                 left={0}
                 right={0}
                 shadow={y > height ? "base" : undefined}
+                {...props}
             >
                 <Flex
                     alignItems="center"

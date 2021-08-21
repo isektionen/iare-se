@@ -7,23 +7,42 @@ import {
     Document as DocumentType,
     Maybe,
 } from "../../types/strapi";
-import { DocumentContainer } from "../../components/document/DocumentContainer";
 import Document from "components/document/Document";
-
-import { useDocument } from "hooks/use-document";
 
 import {
     Box,
     Button,
     Center,
+    chakra,
+    Divider,
     Flex,
+    Grid,
+    GridItem,
+    Heading,
+    Icon,
     IconButton,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
     SimpleGrid,
     Spacer,
+    Tag,
     Text,
+    Tooltip,
+    useBreakpointValue,
+    useOutsideClick,
+    Wrap,
 } from "@chakra-ui/react";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 import {
     IoIosArrowDropleftCircle,
@@ -37,107 +56,183 @@ import {
     PageOptions,
 } from "components/pagination/PageContainer";
 import { PageSelector } from "components/pagination/PageSelector";
-import { HiOutlineDownload } from "react-icons/hi";
+import { HiDotsVertical, HiOutlineDownload } from "react-icons/hi";
 
 import _ from "underscore";
 import { isSameYear } from "date-fns";
 import { LayoutProps } from "types/global";
 import { fetchHydration, useHydrater } from "state/layout";
 import { NextImage } from "components/NextImage";
+import { DocumentContainer } from "../../components/document/DocumentContainer";
+import { useDocument } from "state/document";
+import { isMobile } from "react-device-detect";
 interface Props {
     data: DocumentType;
     locale: string;
 }
 
-type Control = {
-    data: ComponentDocumentDocuments[];
-};
-
-const DocumentControl = ({ data }: Control) => {
-    const { t } = useTranslation("document");
-    const { setDocument, document, goBackward, goForward } = useDocument();
-
-    const [currentDocument, setCurrentDocument] = useState(data[0]);
-    useEffect(() => {
-        if (currentDocument) {
-            const href = currentDocument.file?.url;
-            setDocument({ href });
-        }
-    }, [currentDocument]);
-    return (
-        <Flex
-            position="absolute"
-            zIndex={2}
-            alignSelf="normal"
-            bottom={10}
-            m={4}
-            bg="gray.900"
-            color="white"
-            justifyContent="space-evenly"
-            align="center"
-            p={2}
-        >
-            <IconButton
-                aria-label="go back"
-                icon={<IoIosArrowDropleftCircle />}
-                variant="iareSolid"
-                disabled={document.currentPage === 1}
-                onClick={goBackward}
-            />
-            <Text>
-                {t("controlPages", {
-                    currentPage: document.currentPage as number,
-                    pages: document.pages as number,
-                })}
-            </Text>
-            <IconButton
-                aria-label="go forward"
-                icon={<IoIosArrowDroprightCircle />}
-                variant="iareSolid"
-                disabled={document.currentPage === document.pages}
-                onClick={goForward}
-            />
-        </Flex>
-    );
-};
-
 const ItemThumbnail = ({
     file,
     name,
+    businessYear,
+    current,
+    category,
     size = 250,
 }: ComponentDocumentDocuments & { size: number }) => {
+    const { t } = useTranslation("document");
+    const [isFocused, setIsFocused] = useState(false);
     const { thumbnail } = file?.formats ?? { thumbnail: undefined };
+    const fullCategoryName = category?.name ?? undefined;
+    const categoryName =
+        fullCategoryName && fullCategoryName.length > 18
+            ? fullCategoryName.slice(0, 18) + "..."
+            : fullCategoryName;
+
+    const doc = useDocument();
+    const openDocument = () => {
+        if (file?.url) {
+            doc({
+                file: file.url,
+                title: name,
+            });
+        }
+    };
+
+    const handleFocus = useCallback(() => {
+        setIsFocused(true);
+        openDocument();
+    }, []);
+    const ref = useRef<HTMLDivElement>(null);
+    useOutsideClick({
+        ref,
+        handler: () => setIsFocused(false),
+    });
     return (
         <Box
-            p={4}
+            ref={ref}
+            p={2}
             rounded="lg"
-            bg="gray.50"
-            w={60}
-            h={64}
-            borderColor="gray.100"
+            transition="all 0.35s"
+            bg={"gray.50"}
+            w={72}
+            borderColor={isFocused ? "gray.500" : "gray.100"}
             borderWidth="1px"
-            shadow="md"
+            shadow={isFocused ? "lg" : "md"}
+            cursor="pointer"
+            onClick={handleFocus}
         >
-            <Center w="full" p={6}>
-                <Center
-                    bg="white"
-                    p={2}
-                    rounded="2xl"
-                    clipPath="polygon(0% 100%, 0% 0%, 80% 0%, 100% 15%, 100% 100%)"
-                    width={Math.SQRT1_2 * size * 1.1}
-                    height={size * 1.1}
-                >
-                    {thumbnail && (
-                        <NextImage
-                            src={thumbnail.url}
-                            width={Math.SQRT1_2 * size}
-                            height={1 * size}
-                            layout="intrinsic"
-                        />
+            <Flex align="center">
+                {categoryName && (
+                    <Box>
+                        <Tooltip hasArrow label={fullCategoryName}>
+                            <Tag
+                                fontWeight="bold"
+                                colorScheme={isFocused ? "brand" : "gray"}
+                            >
+                                <Text>{categoryName}</Text>
+                            </Tag>
+                        </Tooltip>
+                    </Box>
+                )}
+                <Spacer />
+                <Menu>
+                    {({ isOpen, onClose }) => (
+                        <>
+                            <MenuButton
+                                isActive={isOpen}
+                                px={4}
+                                py={2}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
+                                transition="all 0.2s"
+                            >
+                                <Icon as={HiDotsVertical} boxSize={5} />
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openDocument();
+                                        onClose();
+                                    }}
+                                >
+                                    {t("thumbnail.menu.open")}
+                                </MenuItem>
+                                {file?.url && (
+                                    <MenuItem
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onClose();
+                                        }}
+                                    >
+                                        <chakra.a
+                                            href={file.url}
+                                            download={name}
+                                            target="_blank"
+                                        >
+                                            {t("thumbnail.menu.download")}
+                                        </chakra.a>
+                                    </MenuItem>
+                                )}
+                                {!file?.url && (
+                                    <MenuItem isDisabled>
+                                        {t("thumbnail.menu.download")}
+                                    </MenuItem>
+                                )}
+                            </MenuList>
+                        </>
                     )}
+                </Menu>
+            </Flex>
+            <Box p={4}>
+                <Center w="full" pb={4}>
+                    <Center
+                        bg="white"
+                        p={2}
+                        rounded="2xl"
+                        clipPath="polygon(0% 100%, 0% 0%, 80% 0%, 100% 15%, 100% 100%)"
+                        width={Math.SQRT1_2 * size * 1.1}
+                        height={size * 1.1}
+                    >
+                        {thumbnail && (
+                            <NextImage
+                                src={thumbnail.url}
+                                width={Math.SQRT1_2 * size}
+                                height={1 * size}
+                                layout="intrinsic"
+                            />
+                        )}
+                        {!thumbnail && (
+                            <chakra.span fontWeight="bold">PDF</chakra.span>
+                        )}
+                    </Center>
                 </Center>
-            </Center>
-            <Flex>{name}</Flex>
+                <Flex align="center" direction="column">
+                    <Text fontWeight="semibold" fontSize="xl" color="gray.700">
+                        {name}
+                    </Text>
+                    <Divider my={4} borderColor="gray.200" />
+                    <Flex w="full" align="flex-start">
+                        <Box>
+                            <Text fontWeight="semibold">
+                                {t("thumbnail.businessYear")}
+                            </Text>
+                            <Text color="gray.500">
+                                {businessYear ? businessYear : "---"}
+                            </Text>
+                        </Box>
+                        <Spacer />
+                        <Box>
+                            {current && (
+                                <Tag fontWeight="bold" colorScheme="brand">
+                                    {t("thumbnail.activeDocument")}
+                                </Tag>
+                            )}
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Box>
         </Box>
     );
 };
@@ -153,19 +248,26 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
                 : [],
         [data.document]
     );
-    console.log(documents);
+    const sizeVariant = useBreakpointValue({ base: 200, md: 120 }) as number;
     return (
-        <Box>
-            <SimpleGrid
-                gap={4}
-                columns={{ base: 1, md: 2, lg: 3 }}
-                alignItems="start"
-            >
-                {documents.map((d, i) => (
-                    <ItemThumbnail key={"thumbnail-" + i} {...d} size={120} />
-                ))}
-            </SimpleGrid>
-        </Box>
+        <>
+            <DocumentContainer />
+            <Box py={16}>
+                <Wrap
+                    shouldWrapChildren
+                    spacing={4}
+                    justify={{ base: "center", md: "flex-start" }}
+                >
+                    {documents.map((d, i) => (
+                        <ItemThumbnail
+                            key={"thumbnail-" + i}
+                            {...d}
+                            size={sizeVariant}
+                        />
+                    ))}
+                </Wrap>
+            </Box>
+        </>
     );
 };
 
@@ -186,6 +288,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
                         }
                         archived
                         current
+                        businessYear
                     }
                 }
             }

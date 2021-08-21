@@ -1,17 +1,14 @@
 {
-    "headDocuments": "Huvuddokument",
-    "tableHeader": {
-        "title": "titel",
-        "type": "typ",
-        "authors": "författare",
-        "date": "datum",
-        "archive": "arkiverad",
-        "current": "nuvarande"
-    },
-    "boolean": {
-        "true": "ja",
-        "false": "nej"
-    },
-    "controlPages": "{{currentPage}} av {{pages}}",
-    "noEntriesFound": "Inga dokument hittades"
+    "thumbnail": {
+        "businessYear": "Verksamhetsår:",
+        "activeDocument": "Verkande",
+        "menu": {
+            "open": "Öppna...",
+            "download": "Ladda ner"
+        },
+        "drawer": {
+            "download": "Ladda ner",
+            "close": "Stäng"
+        }
+    }
 }

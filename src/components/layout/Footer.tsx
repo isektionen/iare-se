@@ -1,5 +1,6 @@
 import {
     Box,
+    BoxProps,
     Button,
     Center,
     Divider,
@@ -20,10 +21,10 @@ import { Publisher } from "./footer/Publisher";
 import { PageSection } from "./footer/PageSection";
 import { Contact } from "./footer/Contact";
 
-const Footer = () => {
+const Footer = (props: BoxProps) => {
     const { t } = useTranslation("common");
     return (
-        <Flex as="footer" width="full" pb={12} direction="column">
+        <Flex as="footer" width="full" pb={12} direction="column" {...props}>
             <Flex py={12}>
                 <Logo />
                 <Flex

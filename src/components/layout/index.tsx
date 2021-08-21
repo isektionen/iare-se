@@ -18,13 +18,13 @@ const Layout = (props: Props) => {
     const { lang } = useTranslation();
 
     return (
-        <VStack align="flex-start" px={{ base: 4, md: 12 }}>
-            <Header />
+        <VStack align="flex-start">
+            <Header px={{ base: 4, md: 12 }} />
             <Meta />
-            <Box bg="white" w="full">
+            <Box bg="white" w="full" px={{ base: 4, md: 12 }}>
                 {props.children}
             </Box>
-            <Footer />
+            <Footer px={{ base: 4, md: 12 }} />
         </VStack>
     );
 };

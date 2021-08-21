@@ -1,8 +1,30 @@
+import { Button } from "@chakra-ui/button";
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter,
+    chakra,
+    AspectRatio,
+    Drawer,
+    DrawerBody,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    Input,
+    HStack,
+} from "@chakra-ui/react";
 import {
     DocumentContext,
     DocumentType,
     NewDocumentType,
 } from "hooks/use-document";
+import useTranslation from "next-translate/useTranslation";
 import React, {
     ReactNode,
     useCallback,
@@ -10,83 +32,61 @@ import React, {
     useMemo,
     useState,
 } from "react";
+import { isMobile } from "react-device-detect";
+import { useDocumentContext } from "state/document";
 
-interface DocumentProps {
-    children: ReactNode;
-    loading: ReactNode;
-    fallback: ReactNode;
-}
-
-export const DocumentContainer = (props: DocumentProps) => {
-    const { loading, fallback } = props;
-    const [documentState, _setDocument] = useState<DocumentType>({
-        href: undefined,
-        currentPage: undefined,
-        pages: undefined,
-    });
-
-    const setDocument = (newDocument: NewDocumentType) => {
-        _setDocument({
-            href: newDocument?.href ?? documentState.href,
-            currentPage: newDocument.currentPage || 1,
-            pages: newDocument?.pages ?? documentState.pages,
-        });
-    };
-
-    const goForward = useCallback(() => {
-        if (
-            documentState.currentPage &&
-            documentState.pages &&
-            documentState.currentPage < documentState.pages
-        ) {
-            setDocument({
-                currentPage: documentState.currentPage + 1,
-            });
-        }
-    }, [documentState]);
-
-    const changePage = useCallback(
-        (pageNumber: number) => {
-            if (documentState.pages && pageNumber < documentState.pages)
-                setDocument({ currentPage: pageNumber });
-        },
-        [documentState]
-    );
-
-    const goBackward = useCallback(() => {
-        if (
-            documentState.currentPage &&
-            documentState.pages &&
-            documentState.currentPage > 0
-        ) {
-            setDocument({
-                currentPage: documentState.currentPage - 1,
-            });
-        }
-    }, [documentState]);
-
-    const onLoadSuccess = useCallback(
-        ({ _pdfInfo }) => {
-            const { numPages } = _pdfInfo;
-            setDocument({ pages: numPages });
-        },
-        [documentState.href]
-    );
-
-    const value = {
-        document: documentState,
-        setDocument,
-        goForward,
-        goBackward,
-        loading,
-        fallback,
-        onLoadSuccess,
-        search: () => console.warn("DEPRECATED UNTIL FURTHER AGREEMENT"),
-    };
-
+const Document = ({ file }: { file: string }) => {
     return (
-        <DocumentContext.Provider value={value}>
-            {props.children}
-        </DocumentContext.Provider>
+        <AspectRatio h="full" ratio={1 / Math.SQRT2}>
+            <iframe
+                id="pdfiframe"
+                frameBorder="0"
+                allowFullScreen
+                scrolling="auto"
+                src={`https://docs.google.com/viewer?url=${file}&embedded=true&pagemode=thumbs`}
+            />
+        </AspectRatio>
+    );
+};
+
+export const DocumentContainer = () => {
+    const { onClose, isOpen, file, title } = useDocumentContext();
+    const { t } = useTranslation("document");
+    return (
+        <Drawer
+            isOpen={isOpen}
+            placement="right"
+            size={isMobile ? "full" : "lg"}
+            onClose={onClose}
+            isFullHeight
+            onEsc={onClose}
+        >
+            <DrawerOverlay />
+            <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerHeader>{title}</DrawerHeader>
+
+                <DrawerBody>{file && <Document file={file} />}</DrawerBody>
+
+                <DrawerFooter>
+                    <HStack spacing={2}>
+                        {file && (
+                            <Button
+                                as="a"
+                                variant="iareSolid"
+                                href={file}
+                                download={title}
+                                target="_blank"
+                            >
+                                {t("thumbnail.drawer.download")}
+                            </Button>
+                        )}
+                        <Button variant="outline" mr={3} onClick={onClose}>
+                            {t("thumbnail.drawer.close")}
+                        </Button>
+                    </HStack>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     );
 };

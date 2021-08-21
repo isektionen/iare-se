@@ -1,61 +1,49 @@
 import strapi, { gql, axios } from "lib/strapi";
-import { GetStaticPaths, GetStaticProps } from "next";
-
-import { useRouter } from "next/router";
+import { GetStaticProps } from "next";
 
 import useTranslation from "next-translate/useTranslation";
 import {
     ComponentDocumentDocuments,
     Document as DocumentType,
-    UsersPermissionsUser,
+    Maybe,
 } from "../../types/strapi";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
 import Document from "components/document/Document";
-/*const Document = dynamic(import("components/document/Document"), {
-    ssr: false,
-});*/
+
 import { useDocument } from "hooks/use-document";
 
 import {
     Box,
     Button,
+    Center,
     Flex,
-    Heading,
     IconButton,
+    SimpleGrid,
     Spacer,
     Text,
 } from "@chakra-ui/react";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
     IoIosArrowDropleftCircle,
     IoIosArrowDroprightCircle,
 } from "react-icons/io";
-import DocumentCard from "components/document/DocumentCard";
-/*const DocumentCard = dynamic(import("components/document/DocumentCard"), {
-    ssr: false,
-});*/
+
 import { getDate } from "utils/dates";
-import { DocumentListItem } from "components/document/DocumentListItem";
 import { DocumentBody, DocumentTable } from "components/document/DocumentTable";
 import {
     PageContainer,
     PageOptions,
 } from "components/pagination/PageContainer";
-import {
-    PageSelector,
-    SelectorOptions,
-} from "components/pagination/PageSelector";
+import { PageSelector } from "components/pagination/PageSelector";
 import { HiOutlineDownload } from "react-icons/hi";
-import dynamic from "next/dynamic";
 
-import setLanguage from "next-translate/setLanguage";
-import { LanguageWrapper } from "components/LanguageWrapper";
 import _ from "underscore";
 import { isSameYear } from "date-fns";
-import { DefHeader, LayoutProps } from "types/global";
-import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { LayoutProps } from "types/global";
+import { fetchHydration, useHydrater } from "state/layout";
+import { NextImage } from "components/NextImage";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -113,152 +101,71 @@ const DocumentControl = ({ data }: Control) => {
     );
 };
 
-const minimize = (key: string) => {
-    const match = key.match(/document\.(.+)-document/);
-    if (match) {
-        return match[1];
-    }
-    return key;
+const ItemThumbnail = ({
+    file,
+    name,
+    size = 250,
+}: ComponentDocumentDocuments & { size: number }) => {
+    const { thumbnail } = file?.formats ?? { thumbnail: undefined };
+    return (
+        <Box
+            p={4}
+            rounded="lg"
+            bg="gray.50"
+            w={60}
+            h={64}
+            borderColor="gray.100"
+            borderWidth="1px"
+            shadow="md"
+        >
+            <Center w="full" p={6}>
+                <Center
+                    bg="white"
+                    p={2}
+                    rounded="2xl"
+                    clipPath="polygon(0% 100%, 0% 0%, 80% 0%, 100% 15%, 100% 100%)"
+                    width={Math.SQRT1_2 * size * 1.1}
+                    height={size * 1.1}
+                >
+                    {thumbnail && (
+                        <NextImage
+                            src={thumbnail.url}
+                            width={Math.SQRT1_2 * size}
+                            height={1 * size}
+                            layout="intrinsic"
+                        />
+                    )}
+                </Center>
+            </Center>
+            <Flex>{name}</Flex>
+        </Box>
+    );
 };
 
 const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t, lang } = useTranslation("document");
 
-    const document = data.document as ComponentDocumentDocuments[];
-
-    const docs = _.chain(document)
-        .sortBy("date")
-        .sortBy("current")
-        .reverse()
-        .value();
-
-    const handleChangePage = ({ limit, offset }: PageOptions) => {
-        return docs.slice(offset, offset + limit).map((doc) => ({
-            label: doc.name,
-            date: isSameYear(new Date(), new Date(doc.date))
-                ? getDate(doc.date, "dd MMM", lang)
-                : getDate(doc.date, "dd MMM yy", lang),
-            type: doc.category?.name,
-            url: doc.file?.url,
-            archive: doc.archived ? t("boolean.true") : t("boolean.false"),
-            current: doc.current ? t("boolean.true") : t("boolean.false"),
-        }));
-    };
-
+    const documents = useMemo(
+        () =>
+            data.document
+                ? (data.document as unknown as ComponentDocumentDocuments[])
+                : [],
+        [data.document]
+    );
+    console.log(documents);
     return (
-        <Flex
-            direction={{ base: "column", md: "row" }}
-            pos="relative"
-            w="full"
-            minH="80vh"
-        >
-            <DocumentContainer loading={"LOADING"} fallback={"NO PDF"}>
-                <Flex
-                    bg="gray.50"
-                    order={{ base: 1, md: 0 }}
-                    justify="center"
-                    direction="column"
-                    p={8}
-                    w={{ base: "full", md: "50%" }}
-                >
-                    <PageContainer
-                        itemQuantity={docs.length}
-                        itemsPerPage={10}
-                        onChangePage={handleChangePage}
-                    >
-                        <DocumentTable
-                            columns={[
-                                {
-                                    label: t("tableHeader.title"),
-                                    id: "label",
-                                },
-                                {
-                                    label: t("tableHeader.type"),
-                                    id: "type",
-                                },
-                                {
-                                    label: t("tableHeader.date"),
-                                    id: "date",
-                                },
-                                {
-                                    label: t("tableHeader.current"),
-                                    id: "current",
-                                },
-                            ]}
-                            actions={[
-                                {
-                                    id: "download",
-                                    icon: HiOutlineDownload,
-                                    onClick: (row) =>
-                                        window &&
-                                        window.open(row.url, "_blank"),
-                                },
-                            ]}
-                        >
-                            {(header, actions) => (
-                                <DocumentBody
-                                    header={header}
-                                    actions={actions}
-                                />
-                            )}
-                        </DocumentTable>
-                        <Box
-                            as={PageSelector}
-                            pageSize={3}
-                            d="flex"
-                            justifyContent="space-evenly"
-                            next={
-                                <IconButton
-                                    aria-label="next"
-                                    icon={<IoIosArrowDroprightCircle />}
-                                    variant="iareSolid"
-                                />
-                            }
-                            previous={
-                                <IconButton
-                                    aria-label="previous"
-                                    icon={<IoIosArrowDropleftCircle />}
-                                    variant="iareSolid"
-                                />
-                            }
-                        >
-                            {({
-                                page,
-                                isActive,
-                                onClick,
-                            }: {
-                                page: number;
-                                isActive: boolean;
-                                onClick: () => void;
-                            }) => (
-                                <Button
-                                    p={4}
-                                    bg={isActive ? "gray.200" : "gray.50"}
-                                    onClick={onClick}
-                                >
-                                    {page}
-                                </Button>
-                            )}
-                        </Box>
-                    </PageContainer>
-                </Flex>
-                <Flex
-                    order={{ base: 0, md: 1 }}
-                    w={{ base: "full", md: "50%" }}
-                    bg="gray.200"
-                    position="relative"
-                    justify="center"
-                    align="center"
-                    maxH="90vh"
-                    overflow="hidden"
-                    p={8}
-                >
-                    <DocumentControl data={docs} />
-                    <Document />
-                </Flex>
-            </DocumentContainer>
-        </Flex>
+        <Box>
+            <SimpleGrid
+                gap={4}
+                columns={{ base: 1, md: 2, lg: 3 }}
+                alignItems="start"
+            >
+                {documents.map((d, i) => (
+                    <ItemThumbnail key={"thumbnail-" + i} {...d} size={120} />
+                ))}
+            </SimpleGrid>
+        </Box>
     );
 };
 
@@ -275,6 +182,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
                         }
                         file {
                             url
+                            formats
                         }
                         archived
                         current
@@ -283,7 +191,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
             }
         `,
     });
-
     return {
         props: {
             ...(await fetchHydration()),

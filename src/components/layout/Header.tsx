@@ -72,7 +72,6 @@ const Header = () => {
                 top={0}
                 left={0}
                 right={0}
-                px={{ base: 4, md: 12 }}
                 shadow={y > height ? "base" : undefined}
             >
                 <Flex

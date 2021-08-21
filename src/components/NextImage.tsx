@@ -25,7 +25,7 @@ export const NextImage = (props: NextImageProps) => {
         ...rest
     } = props;
     return (
-        <Flex position="relative" overflow="hidden" h="full" {...rest}>
+        <Flex w="max-content" {...rest}>
             {layout === "fill" && (
                 <Image
                     alt={alt || "image"}

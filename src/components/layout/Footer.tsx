@@ -23,13 +23,7 @@ import { Contact } from "./footer/Contact";
 const Footer = () => {
     const { t } = useTranslation("common");
     return (
-        <Flex
-            as="footer"
-            width="full"
-            pb={12}
-            px={{ base: 4, md: 12 }}
-            direction="column"
-        >
+        <Flex as="footer" width="full" pb={12} direction="column">
             <Flex py={12}>
                 <Logo />
                 <Flex

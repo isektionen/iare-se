@@ -77,10 +77,11 @@ interface IFilterType {
     type: "boolean" | "datetime" | "string";
     option: Option;
     onClose: () => void;
-    dispatch: (action: Action) => void;
 }
 
-const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
+const FilterType = ({ type, option, onClose }: IFilterType) => {
+    const { dispatch, state } = useFilter();
+
     const { startDate, endDate, reset } = useDatepickerState();
     const options = {
         string: [
@@ -146,7 +147,7 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
             case "boolean":
                 dispatch({
                     type: "add",
-                    id: `boolean-${option.value}`,
+                    id: `${type}-${option.value}`,
                     title: `is ${option.label}`,
                     contentType: type,
 
@@ -161,7 +162,7 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
                 const inputValue = inputRef.current?.value || "NA";
                 dispatch({
                     type: "add",
-                    id: `string-${option.value}`,
+                    id: `${type}-${option.value}`,
                     title: `${
                         option.label
                     } ${selected?.label.toLowerCase()} ${inputValue}`,
@@ -181,7 +182,7 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
                 const date = getDateLabel(startDate, endDate);
                 dispatch({
                     type: "add",
-                    id: `datetime-${option.value}`,
+                    id: `${type}-${option.value}`,
                     title: `${
                         option.label
                     } ${selected?.label.toLowerCase()} ${date}`,
@@ -199,6 +200,9 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
         }
     };
 
+    if (state.some((item) => item.id === `${type}-${option.value}`)) {
+        return <></>;
+    }
     return (
         <Box w="full">
             <HStack spacing={2}>
@@ -282,7 +286,6 @@ export const FilterOptions = () => {
     };
 
     const { dispatch, state } = useFilter();
-
     return (
         <Wrap shouldWrapChildren spacing={2} mb={6}>
             {state.map((f) => (
@@ -307,7 +310,6 @@ export const FilterOptions = () => {
                                             key={`boolean-${option.value}-button`}
                                             option={option}
                                             onClose={onClose}
-                                            dispatch={dispatch}
                                         />
                                     ))}
 
@@ -317,7 +319,6 @@ export const FilterOptions = () => {
                                             key={`string-${option.value}-button`}
                                             option={option}
                                             onClose={onClose}
-                                            dispatch={dispatch}
                                         />
                                     ))}
                                     {types.datetime.map((option) => (
@@ -326,7 +327,6 @@ export const FilterOptions = () => {
                                             key={`datetime-${option.value}-button`}
                                             option={option}
                                             onClose={onClose}
-                                            dispatch={dispatch}
                                         />
                                     ))}
                                 </VStack>

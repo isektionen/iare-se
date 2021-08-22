@@ -23,22 +23,26 @@ import {
     PopoverContent,
     PopoverHeader,
     PopoverTrigger,
+    Spacer,
     Tag,
     Text,
 } from "@chakra-ui/react";
+import { Datepicker, getDateLabel } from "components/datepicker/Datepicker";
+import {
+    isBefore,
+    isEqual,
+    isWithinInterval,
+    isAfter,
+    isSameDay,
+    addDays,
+    subDays,
+} from "date-fns";
 import useTranslation from "next-translate/useTranslation";
-import React, {
-    useCallback,
-    useMemo,
-    useReducer,
-    useRef,
-    useState,
-} from "react";
-import { IconContext, IconType } from "react-icons";
+import React, { useRef, useState } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+import { useDatepickerState } from "state/datepicker";
 import { Action, useFilter } from "state/document";
-import { ComponentDocumentDocuments } from "types/strapi";
 import _ from "underscore";
 
 type Option = { label: string; value?: string };
@@ -77,15 +81,48 @@ interface IFilterType {
 }
 
 const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
+    const { startDate, endDate, reset } = useDatepickerState();
     const options = {
         string: [
-            { label: "Contains", value: "contains" },
-            { label: "Starts with", value: "startsWith" },
+            {
+                label: "Contains",
+                method: (value: string, inputValue: string) =>
+                    value.toLowerCase().includes(inputValue.toLowerCase()),
+            },
+            {
+                label: "Starts with",
+                method: (value: string, inputValue: string) =>
+                    value.toLowerCase().startsWith(inputValue.toLowerCase()),
+            },
         ],
         datetime: [
-            { label: "Is Between" },
-            { label: "Is" },
-            { label: "Is Before" },
+            {
+                label: "Is Between",
+                method: (
+                    value: Date,
+                    startDate: Date,
+                    endDate: Date
+                ): boolean =>
+                    isWithinInterval(value, {
+                        start: subDays(startDate, 1),
+                        end: addDays(endDate, 1),
+                    }),
+            },
+            {
+                label: "Is Exact",
+                method: (value: Date, startDate: Date, _unused: any): boolean =>
+                    isSameDay(value, startDate),
+            },
+            {
+                label: "Is Before",
+                method: (value: Date, startDate: Date, _unused: any): boolean =>
+                    isBefore(value, startDate),
+            },
+            {
+                label: "Is After",
+                method: (value: Date, startDate: Date, _unused: any): boolean =>
+                    isAfter(value, startDate),
+            },
         ],
         boolean: [
             { label: "Is", method: (value: boolean) => value },
@@ -95,7 +132,16 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
 
     const [selected, setSelected] = useState(_.first(options[type]));
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const handleFilter = () => {
+        const toPath = (path: string) => {
+            if (path.includes(".")) {
+                return path.split(".");
+            }
+            return path;
+        };
+
         switch (type) {
             case "boolean":
                 dispatch({
@@ -110,20 +156,95 @@ const FilterType = ({ type, option, onClose, dispatch }: IFilterType) => {
                         return res;
                     },
                 });
+                break;
+            case "string":
+                const inputValue = inputRef.current?.value || "NA";
+                dispatch({
+                    type: "add",
+                    id: `string-${option.value}`,
+                    title: `${
+                        option.label
+                    } ${selected?.label.toLowerCase()} ${inputValue}`,
+                    contentType: type,
+
+                    boundary: (item) => {
+                        /* @ts-ignore */
+                        return selected.method(
+                            /* @ts-ignore */
+                            _.get(item, toPath(option.value as string)),
+                            inputValue
+                        );
+                    },
+                });
+                break;
+            case "datetime":
+                const date = getDateLabel(startDate, endDate);
+                dispatch({
+                    type: "add",
+                    id: `datetime-${option.value}`,
+                    title: `${
+                        option.label
+                    } ${selected?.label.toLowerCase()} ${date}`,
+                    contentType: type,
+
+                    boundary: (item) => {
+                        const _date = new Date(item[option.value as "date"]);
+                        /* @ts-ignore */
+                        const res = selected.method(_date, startDate, endDate);
+                        return res;
+                    },
+                });
+                reset();
+                break;
         }
     };
 
     return (
-        <Box>
+        <Box w="full">
             <HStack spacing={2}>
-                <FilterMenu
-                    options={options[type]}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-                <Tag size="lg" fontWeight="bold">
-                    {option.label}
-                </Tag>
+                {type === "boolean" && (
+                    <>
+                        <FilterMenu
+                            options={options[type]}
+                            selected={selected}
+                            setSelected={setSelected as any}
+                        />
+                        <Tag size="lg" fontWeight="bold">
+                            {option.label}
+                        </Tag>
+                    </>
+                )}
+                {type === "string" && (
+                    <>
+                        <Tag size="lg" fontWeight="bold" isTruncated>
+                            {option.label}
+                        </Tag>
+                        <FilterMenu
+                            options={options[type]}
+                            selected={selected}
+                            setSelected={setSelected as any}
+                        />
+                        <Input w={32} ref={inputRef} size="sm" rounded="lg" />
+                    </>
+                )}
+                {type === "datetime" && (
+                    <>
+                        <Tag size="lg" fontWeight="bold" isTruncated>
+                            {option.label}
+                        </Tag>
+                        <FilterMenu
+                            options={options[type]}
+                            selected={selected}
+                            setSelected={setSelected as any}
+                        />
+                        <Datepicker
+                            isInterval={
+                                selected && selected.label === "Is Between"
+                            }
+                        />
+                    </>
+                )}
+                <Spacer />
                 <Button
                     variant="iareSolid"
                     size="sm"
@@ -143,9 +264,14 @@ export const FilterOptions = () => {
     const { t } = useTranslation("filter");
 
     const types = {
-        string: ["name", "businessYear", "category.name"],
+        string: [
+            { label: "Name", value: "name" },
+            { label: "Business year", value: "businessYear" },
+            { label: "Category", value: "category.name" },
+        ],
         datetime: [
             {
+                label: "Date",
                 value: "date",
             },
         ],
@@ -172,7 +298,7 @@ export const FilterOptions = () => {
                                 {t("add")}
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent>
+                        <PopoverContent w="450px">
                             <PopoverBody>
                                 <VStack align="flex-start">
                                     {types.boolean.map((option) => (
@@ -185,7 +311,24 @@ export const FilterOptions = () => {
                                         />
                                     ))}
 
-                                    <Flex></Flex>
+                                    {types.string.map((option) => (
+                                        <FilterType
+                                            type={"string"}
+                                            key={`string-${option.value}-button`}
+                                            option={option}
+                                            onClose={onClose}
+                                            dispatch={dispatch}
+                                        />
+                                    ))}
+                                    {types.datetime.map((option) => (
+                                        <FilterType
+                                            type={"datetime"}
+                                            key={`datetime-${option.value}-button`}
+                                            option={option}
+                                            onClose={onClose}
+                                            dispatch={dispatch}
+                                        />
+                                    ))}
                                 </VStack>
                             </PopoverBody>
                         </PopoverContent>

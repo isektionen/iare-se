@@ -108,7 +108,7 @@ const selectMonth = selector({
             }).map(dateMap),
         ];
         const weekdayLabels = eachDayOfInterval({
-            start: addDays(startOfDay(today), firstDayOfWeek),
+            start: startOfDay(today),
             end: addDays(endOfWeek(today), firstDayOfWeek),
         }).map((date) => format(date, "EEE"));
         return {
@@ -233,6 +233,8 @@ export const useDatepicker = ({ isInterval }: useDatepickerProps) => {
     const [{ focusedInput, startDate, endDate }, setState] =
         useRecoilState(dateState);
 
+    const reset = () => setState(defaultState);
+
     const onDatesChange = ({
         focusedInput = START_DATE,
         startDate,
@@ -260,6 +262,7 @@ export const useDatepicker = ({ isInterval }: useDatepickerProps) => {
         }));
     }, [activeMonths, firstDayOfWeek, isInterval, setState]);
     return {
+        reset,
         startDate,
         endDate: endDate && isInterval ? endDate : null,
         firstDayOfWeek,

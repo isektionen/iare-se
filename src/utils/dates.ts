@@ -31,7 +31,7 @@ export const getTimeLeft = (
     locale: string = "sv"
 ) => {
     const fn = strict ? formatDistanceToNowStrict : formatDistanceToNow;
-
+    /* @ts-ignore */
     return fn(new Date(dateString), {
         addSuffix: true,
         locale: supportedLocales[locale],

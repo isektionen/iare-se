@@ -34,9 +34,10 @@ import { LayoutProps } from "types/global";
 import { fetchHydration, useHydrater } from "state/layout";
 import { NextImage } from "components/NextImage";
 import { DocumentContainer } from "../../components/document/DocumentContainer";
-import { useDocument, useFilter, useFilterContext } from "state/document";
+import { useDocument, useFuseFilter } from "state/document";
 import { getDate } from "utils/dates";
-import { FilterOptions } from "components/document/FilterOptions";
+import { SearchBar } from "components/document/SearchBar";
+import { isMobile } from "react-device-detect";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -86,7 +87,8 @@ const ItemThumbnail = ({
             rounded="lg"
             transition="all 0.35s"
             bg={"gray.50"}
-            w={72}
+            // cannot see why "full" isn't working
+            w={{ base: "calc(100vw - 2em)", sm: 72 }}
             borderColor={isFocused ? "gray.500" : "gray.100"}
             borderWidth="1px"
             shadow={isFocused ? "lg" : "md"}
@@ -216,21 +218,27 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t, lang } = useTranslation("document");
 
-    const documents = useFilterContext(
+    /*const documents = useFilterContext(
         data.document
             ? (data.document as unknown as ComponentDocumentDocuments[])
             : []
+    );*/
+
+    const documents = useFuseFilter(
+        (data.document as unknown as ComponentDocumentDocuments[]) || []
     );
+
     const sizeVariant = useBreakpointValue({ base: 200, md: 120 }) as number;
     return (
         <>
             <DocumentContainer />
             <Box py={16}>
-                <FilterOptions />
+                <SearchBar />
                 <Wrap
+                    w="full"
                     shouldWrapChildren
                     spacing={4}
-                    justify={{ base: "center", md: "flex-start" }}
+                    justify={isMobile ? "center" : "flex-start"}
                 >
                     {documents.map((d, i) => (
                         <ItemThumbnail

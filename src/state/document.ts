@@ -1,12 +1,21 @@
+import { SelectOption } from "components/document/SearchBar";
+import { isWithinInterval, subDays } from "date-fns";
+import addDays from "date-fns/addDays";
+import Fuse from "fuse.js";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { IconContext } from "react-icons";
 import {
     atom,
+    atomFamily,
+    selector,
     selectorFamily,
     useRecoilState,
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
 import { ComponentDocumentDocuments, UploadFile } from "types/strapi";
+import _ from "underscore";
+import { useDatepickerState } from "./datepicker";
 
 interface IDocument {
     file: null | string;
@@ -122,24 +131,148 @@ const filterSelector = selectorFamily({
         },
 });
 
-//import _ from "underscore";
-
 export const useFilterContext = (docs: ComponentDocumentDocuments[]) => {
-    /*const types = _.chain(docs)
-        .first()
-        .omit("__typename", "id")
-        .pairs()
-        .reduce((acc, [k, v]) => {
-            const t = typeof v;
-            if (_.has(acc, t)) {
-                return { ...acc, [t]: [...acc[t], k] };
-            }
-            return { ...acc, [t]: [k] };
-        }, {} as { [k: string]: any[] })
-        .value();
-    console.log(types);
-    */
-
     const filtered = useRecoilValue(filterSelector(docs));
     return filtered;
+};
+
+interface IFuseState {
+    searchTerm: string | null;
+}
+
+const fuseState = atom<IFuseState>({
+    key: "ATOM/FUSE",
+    default: {
+        searchTerm: null,
+    },
+});
+
+export interface QueryState {
+    category: null | SelectOption[];
+    businessYear: null | SelectOption[];
+}
+
+const queryState = atom<QueryState>({
+    key: "ATOMFAM/SELECT",
+    default: {
+        category: null,
+        businessYear: null,
+    },
+});
+
+const selectFuse = selector({
+    key: "SELECTOR/FUSE",
+    get: ({ get }) => {
+        const { searchTerm } = get(fuseState);
+        return searchTerm;
+    },
+});
+
+export const useFuseRegister = () => {
+    const setSearchTerm = useSetRecoilState(fuseState);
+
+    const inputRef = useRef<HTMLInputElement>(null);
+    const register = {
+        ref: inputRef,
+        onChange: useCallback(() => {
+            if (!inputRef.current) return;
+            const node = inputRef.current;
+            const searchTerm = node.value;
+            setSearchTerm((state) => ({ ...state, searchTerm }));
+        }, [setSearchTerm]),
+    };
+
+    const [options, setOptions] = useRecoilState(queryState);
+
+    const useSelection = useCallback(() => {
+        return {
+            options,
+            setOptions:
+                (key: keyof typeof options) => (options: SelectOption[]) =>
+                    setOptions((_state) => ({
+                        ..._state,
+                        [key]: options,
+                    })),
+        };
+    }, [options, setOptions]);
+    return { register, useSelection };
+};
+
+export const useFuseFilter = (docs: ComponentDocumentDocuments[]) => {
+    let data = docs;
+
+    const searchTerm = useRecoilValue(selectFuse);
+    const { startDate, endDate } = useDatepickerState();
+    const [{ category, businessYear }, setQueryParams] =
+        useRecoilState(queryState);
+
+    const applyFilter = (data: ComponentDocumentDocuments[]) => {
+        let _data = data;
+        if (category) {
+            const filters = category
+                .filter((item) => item.isSelected)
+                .map((item) => item.value);
+            if (filters.length > 0) {
+                _data = _data.filter((item) =>
+                    filters.includes(item.category?.name as string)
+                );
+            }
+        }
+
+        if (businessYear) {
+            const filters = businessYear
+                .filter((item) => item.isSelected)
+                .map((item) => item.value);
+            if (filters.length > 0) {
+                _data = _data.filter((item) =>
+                    filters.includes(item.businessYear as string)
+                );
+            }
+        }
+        if (startDate && endDate) {
+            _data = _data.filter((item) =>
+                isWithinInterval(new Date(item.date), {
+                    start: subDays(startDate, 1),
+                    end: addDays(endDate, 1),
+                })
+            );
+        }
+        return _data;
+    };
+
+    useEffect(() => {
+        const category = data
+            .map((item) => ({
+                isSelected: false,
+                label: item.category?.name,
+                value: item.category?.name,
+            }))
+            .filter((item) => item.label !== undefined) as SelectOption[];
+
+        const businessYear = data.map((item) => ({
+            isSelected: false,
+            label: item.businessYear,
+            value: item.businessYear,
+        })) as SelectOption[];
+
+        setQueryParams({
+            category: _.unique(category, "value"),
+            businessYear: _.unique(businessYear, "value"),
+        });
+    }, [data, setQueryParams]);
+
+    const fuse = useMemo(
+        () =>
+            new Fuse(data, {
+                keys: ["name", "category.name", "businessYear"],
+            }),
+        [data]
+    );
+
+    if (searchTerm) {
+        const result = fuse.search(searchTerm);
+        return applyFilter(result.map((r) => r.item));
+    }
+
+    return applyFilter(data);
 };

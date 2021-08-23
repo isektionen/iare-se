@@ -1,12 +1,4 @@
-import {
-    Box,
-    BoxProps,
-    Circle,
-    Flex,
-    HStack,
-    SimpleGrid,
-} from "@chakra-ui/layout";
-import Image from "next/image";
+import { Box, BoxProps, Flex, HStack } from "@chakra-ui/layout";
 import AccessibleLink from "components/AccessibleLink";
 import {
     Button,
@@ -14,7 +6,6 @@ import {
     Icon,
     Spacer,
     useDisclosure,
-    Text,
     IconButton,
     Drawer,
     DrawerBody,

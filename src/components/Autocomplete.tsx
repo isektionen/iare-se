@@ -14,7 +14,6 @@ import {
     useOutsideClick,
 } from "@chakra-ui/react";
 import { matchSorter } from "match-sorter";
-import { useKeypress } from "hooks/use-keypress";
 
 export interface Option {
     value: string;

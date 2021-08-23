@@ -13,9 +13,26 @@ import {
     CloseButton,
     SimpleGrid,
     Box,
+    useDisclosure,
+    useOutsideClick,
+    HStack,
+    Tag,
+    Menu,
+    MenuButton,
+    MenuList,
+    VStack,
+    Drawer,
+    DrawerBody,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    Input,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoChevronBack, IoChevronForward, IoClose } from "react-icons/io5";
 import { useDatepicker, useDay, useMonth } from "state/datepicker";
@@ -92,7 +109,7 @@ export const getDateLabel = (startDate: Date | null, endDate: Date | null) => {
 };
 
 export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
-    const { startDate, endDate, goToNextMonths, goToPreviousMonths } =
+    const { reset, startDate, endDate, goToNextMonths, goToPreviousMonths } =
         useDatepicker({ isInterval });
     const month = useMonth();
 
@@ -100,18 +117,39 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
         const _date = getDateLabel(startDate, endDate);
         return _date || "Date";
     }, [endDate, startDate]);
-    return (
-        <Popover>
-            {({ onClose }) => (
-                <>
-                    <PopoverTrigger>
-                        <Button size="sm" rightIcon={<IoIosArrowDown />}>
-                            {date}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverHeader>
+
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    if (isMobile) {
+        return (
+            <>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    rightIcon={<IoIosArrowDown />}
+                    onClick={onOpen}
+                >
+                    <HStack spacing={4}>
+                        <Text>{date}</Text>
+                        {date !== "Date" && (
+                            <Tag
+                                colorScheme="brand"
+                                fontWeight="bold"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    reset();
+                                }}
+                            >
+                                Reset
+                            </Tag>
+                        )}
+                    </HStack>
+                </Button>
+                <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerHeader>
                             <Flex>
                                 <Text>{month && month.monthLabel}</Text>
                                 <Spacer />
@@ -136,13 +174,79 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                                     onClick={onClose}
                                 />
                             </Flex>
-                        </PopoverHeader>
-                        <PopoverBody>
+                        </DrawerHeader>
+
+                        <DrawerBody pb={12}>
                             <Month />
-                        </PopoverBody>
-                    </PopoverContent>
-                </>
-            )}
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </>
+        );
+    }
+
+    return (
+        <Popover
+            closeOnEsc
+            closeOnBlur
+            returnFocusOnClose={false}
+            onClose={onClose}
+            onOpen={onOpen}
+            isOpen={isOpen}
+        >
+            <PopoverTrigger>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    rightIcon={<IoIosArrowDown />}
+                >
+                    <HStack spacing={4}>
+                        <Text>{date}</Text>
+                        {date !== "Date" && (
+                            <Tag
+                                colorScheme="brand"
+                                fontWeight="bold"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    reset();
+                                }}
+                            >
+                                Reset
+                            </Tag>
+                        )}
+                    </HStack>
+                </Button>
+            </PopoverTrigger>
+
+            <PopoverContent>
+                <PopoverArrow />
+                <PopoverHeader>
+                    <Flex>
+                        <Text>{month && month.monthLabel}</Text>
+                        <Spacer />
+                        <NavButton
+                            icon={<IoChevronBack />}
+                            onClick={goToPreviousMonths}
+                        />
+                        <NavButton
+                            icon={<IoChevronForward onClick={goToNextMonths} />}
+                        />
+                        <IconButton
+                            ml={2}
+                            isRound
+                            variant="ghost"
+                            aria-label="close"
+                            icon={<IoClose />}
+                            size="xs"
+                            onClick={onClose}
+                        />
+                    </Flex>
+                </PopoverHeader>
+                <PopoverBody>
+                    <Month />
+                </PopoverBody>
+            </PopoverContent>
         </Popover>
     );
 };

@@ -12,7 +12,6 @@ import {
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { AutoComplete, Option } from "components/Autocomplete";
-import { useKeypress } from "hooks/use-keypress";
 
 interface Props {
     name: string;

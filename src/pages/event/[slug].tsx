@@ -75,6 +75,7 @@ import { SkeletonSpinner } from "components/SkeletonSpinner";
 import { Deta } from "lib/deta";
 import { DefHeader, LayoutProps } from "types/global";
 import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { WrapPadding } from "components/browser/WrapPadding";
 interface Props {
     event: Event;
     diets: Diet[];
@@ -603,20 +604,22 @@ const EventView = ({
                 <Spacer />
                 {!isAboveMd && (
                     <Center py={12}>
-                        <MotionIconButton
-                            rounded="full"
-                            variant="iareSolid"
-                            aria-label="go to form"
-                            icon={<BsChevronDoubleDown />}
-                            onClick={() => scrollTo()}
-                            initial={{ y: 0 }}
-                            animate={{ y: 8 }}
-                            transition={{
-                                repeat: Infinity,
-                                duration: 0.5,
-                                repeatType: "mirror",
-                            }}
-                        />
+                        <WrapPadding>
+                            <MotionIconButton
+                                rounded="full"
+                                variant="iareSolid"
+                                aria-label="go to form"
+                                icon={<BsChevronDoubleDown />}
+                                onClick={() => scrollTo()}
+                                initial={{ y: 0 }}
+                                animate={{ y: 8 }}
+                                transition={{
+                                    repeat: Infinity,
+                                    duration: 0.5,
+                                    repeatType: "mirror",
+                                }}
+                            />
+                        </WrapPadding>
                     </Center>
                 )}
             </Flex>

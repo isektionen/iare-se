@@ -13,19 +13,28 @@ export const Developer = () => {
             <Text>{t("footer.developer")}</Text>
             <Text>
                 <AccessibleLink
-                    href="https://vercel.com"
+                    href="https://vercel.com?utm_source=isektionen&utm_campaign=oss"
                     isExternal
                     textDecoration="none"
                     onMouseEnter={() => setHover(true)}
                     onMouseLeave={() => setHover(false)}
+                    py={2}
+                    px={4}
+                    transition="all 0.5s ease-out"
+                    rounded="md"
+                    _hover={{
+                        bg: "black",
+                        color: "white",
+                    }}
                 >
                     Powered by{" "}
                     <chakra.span
-                        color={isHover ? "#0070F3" : "#000"}
-                        transition="all 0.2s ease-in"
+                        color={isHover ? "#0070F3" : "black"}
+                        transition="color 0.2s ease-in"
                     >
-                        ▲ Vercel
-                    </chakra.span>{" "}
+                        ▲
+                    </chakra.span>
+                    <b>Vercel</b>
                 </AccessibleLink>
             </Text>
         </VStack>

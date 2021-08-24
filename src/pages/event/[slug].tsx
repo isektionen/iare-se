@@ -52,12 +52,10 @@ import { IoMdArrowDropleft, IoMdArrowDropleftCircle } from "react-icons/io";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { getDate } from "utils/dates";
 import { MdDateRange } from "react-icons/md";
-import { BiCheck } from "react-icons/bi";
 import { VStepper } from "components/event/VStepper";
 import { Options } from "components/event/steps/Options";
 import { Tickets } from "components/event/steps/Tickets";
 import { OrderFinalize } from "components/event/steps/OrderFinalize";
-import { useScroll } from "hooks/use-scroll";
 import { motion } from "framer-motion";
 import {
     FieldPath,
@@ -76,6 +74,7 @@ import { Deta } from "lib/deta";
 import { DefHeader, LayoutProps } from "types/global";
 import { fetchHydration, getHeader, useHydrater } from "state/layout";
 import { WrapPadding } from "components/browser/WrapPadding";
+import { Link, Element } from "react-scroll";
 interface Props {
     event: Event;
     diets: Diet[];
@@ -459,12 +458,6 @@ const EventView = ({
         isBefore(new Date(), new Date(event.deadline))
     );
 
-    const { ref: formRef, scrollTo } = useScroll<HTMLFormElement>({
-        behavior: "smooth",
-        block: "center",
-        inline: "start",
-    });
-
     const handlePasswordSubmit = async () => {
         const password = getValues("password");
         const isValid = await validatePassword(event.id, password);
@@ -605,20 +598,26 @@ const EventView = ({
                 {!isAboveMd && (
                     <Center py={12}>
                         <WrapPadding>
-                            <MotionIconButton
-                                rounded="full"
-                                variant="iareSolid"
-                                aria-label="go to form"
-                                icon={<BsChevronDoubleDown />}
-                                onClick={() => scrollTo()}
-                                initial={{ y: 0 }}
-                                animate={{ y: 8 }}
-                                transition={{
-                                    repeat: Infinity,
-                                    duration: 0.5,
-                                    repeatType: "mirror",
-                                }}
-                            />
+                            <Link
+                                to="eventform"
+                                smooth={true}
+                                duration={500}
+                                offset={-40}
+                            >
+                                <MotionIconButton
+                                    rounded="full"
+                                    variant="iareSolid"
+                                    aria-label="go to form"
+                                    icon={<BsChevronDoubleDown />}
+                                    initial={{ y: 0 }}
+                                    animate={{ y: 8 }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 0.5,
+                                        repeatType: "mirror",
+                                    }}
+                                />
+                            </Link>
                         </WrapPadding>
                     </Center>
                 )}
@@ -686,7 +685,6 @@ const EventView = ({
                 )}
 
                 <Flex
-                    ref={formRef as any}
                     as="form"
                     overflow="hidden"
                     direction="column"
@@ -701,159 +699,169 @@ const EventView = ({
                     pos="relative"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <SkeletonSpinner
-                        size="xl"
-                        loadingDescription={t("fetching")}
-                        isLoaded={status === "ready" || activeStep >= 0}
-                        headingStyles={{ fontWeight: "light", size: "md" }}
-                    >
-                        {!isAboveMd && activeStep < steps.length && (
-                            <Progress
-                                size="xs"
-                                value={(activeStep / steps.length) * 100}
-                                colorScheme="brand"
-                            />
-                        )}
-                        <Flex
-                            direction="column"
-                            p={6}
-                            minH="650px"
-                            justify="center"
-                            display={
-                                activeStep < steps.length ? "flex" : "none"
-                            }
+                    <Element name="eventform">
+                        <SkeletonSpinner
+                            size="xl"
+                            loadingDescription={t("fetching")}
+                            isLoaded={status === "ready" || activeStep >= 0}
+                            headingStyles={{ fontWeight: "light", size: "md" }}
                         >
-                            {!isAboveMd && (
-                                <Flex align="center" mb={4}>
-                                    <Heading size="xs" fontWeight="light">
-                                        {t("stepsMobile", {
-                                            activeStep: activeStep + 1,
-                                            totalSteps: steps.length,
-                                        })}
-                                    </Heading>
-                                </Flex>
-                            )}
-
-                            {formStep(0) && (
-                                <EventPasswordProtection
-                                    display={activeStep === 0 ? "flex" : "none"}
-                                    flex={1}
-                                    onSubmit={handlePasswordSubmit}
-                                    placeholderText={t(
-                                        "passwordProtected.placeholder"
-                                    )}
-                                    showLabel={t("passwordProtected.showLabel")}
-                                    hideLabel={t("passwordProtected.hideLabel")}
-                                    submitLabel={t(
-                                        "passwordProtected.validateLabel"
-                                    )}
-                                    errorLabel={t("errorLabel")}
-                                    successLabel={t("successLabel")}
-                                    register={register("password", {
-                                        required: "This is required",
-                                    })}
+                            {!isAboveMd && activeStep < steps.length && (
+                                <Progress
+                                    size="xs"
+                                    value={(activeStep / steps.length) * 100}
+                                    colorScheme="brand"
                                 />
                             )}
-                            {formStep(1) && (
-                                <Tickets
-                                    control={control}
-                                    display={
-                                        activeStep === 1 ? "block" : "none"
-                                    }
-                                    label={t("step.one")}
-                                    currentTickets={[getValues("ticket")]}
-                                    tickets={
-                                        event.tickets as ComponentEventTickets
-                                    }
-                                    handleOrder={handleOrder}
-                                />
-                            )}
-                            {formStep(2) && (
-                                <Options
-                                    display={
-                                        activeStep === 2 ? "block" : "none"
-                                    }
-                                    label={t("step.two")}
-                                    diets={diets}
-                                    allergies={allergies}
-                                    dietResult={dietResults}
-                                    setDietResult={setDiets}
-                                    specialDietResult={allergenResults}
-                                    setSpecialDietResult={setAllergens}
-                                />
-                            )}
-                            {formStep(3) && (
-                                <OrderSummary
-                                    display={
-                                        activeStep === 3 ? "block" : "none"
-                                    }
-                                    label={t("step.three")}
-                                    orderLabel={t("summary.order.label")}
-                                    dietLabel={t("summary.diet.label")}
-                                    currentTicket={getValues("ticket")}
-                                    allTickets={
-                                        event.tickets
-                                            ?.Tickets as ComponentEventInternalTicket[]
-                                    }
-                                    setTicket={handleOrder}
-                                    diets={getValues("diets")}
-                                    allergens={getValues("allergens")}
-                                />
-                            )}
-                            {formStep(4) && (
-                                <OrderFinalize
-                                    display={
-                                        activeStep === 4 ? "block" : "none"
-                                    }
-                                    label={t("step.four")}
-                                    status={orderIsFree ? "unpaid" : "paid"}
-                                    handleOrder={() => handleSubmit(onSubmit)}
-                                    isSubmitting={isSubmitting}
-                                    isLoaded={isLoaded}
-                                    register={register}
-                                    errors={errors}
-                                />
-                            )}
-
-                            {(formStep(1) || !event.passwordProtected) && (
-                                <>
-                                    <Spacer />
-                                    <Flex mt={4}>
-                                        <Spacer />
-
-                                        <Button
-                                            onClick={goBackward}
-                                            isDisabled={
-                                                (event.passwordProtected &&
-                                                    activeStep === 1) ||
-                                                activeStep === 0
-                                            }
-                                            mr={1}
-                                            variant="iareSolid"
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            isDisabled={
-                                                activeStep ===
-                                                    steps.length - 1 ||
-                                                status !== "ready"
-                                            }
-                                            onClick={goForward}
-                                            isLoading={status === "pending"}
-                                            ml={1}
-                                            variant="iareSolid"
-                                        >
-                                            Next
-                                        </Button>
+                            <Flex
+                                direction="column"
+                                p={6}
+                                minH="650px"
+                                justify="center"
+                                display={
+                                    activeStep < steps.length ? "flex" : "none"
+                                }
+                            >
+                                {!isAboveMd && (
+                                    <Flex align="center" mb={4}>
+                                        <Heading size="xs" fontWeight="light">
+                                            {t("stepsMobile", {
+                                                activeStep: activeStep + 1,
+                                                totalSteps: steps.length,
+                                            })}
+                                        </Heading>
                                     </Flex>
-                                </>
+                                )}
+
+                                {formStep(0) && (
+                                    <EventPasswordProtection
+                                        display={
+                                            activeStep === 0 ? "flex" : "none"
+                                        }
+                                        flex={1}
+                                        onSubmit={handlePasswordSubmit}
+                                        placeholderText={t(
+                                            "passwordProtected.placeholder"
+                                        )}
+                                        showLabel={t(
+                                            "passwordProtected.showLabel"
+                                        )}
+                                        hideLabel={t(
+                                            "passwordProtected.hideLabel"
+                                        )}
+                                        submitLabel={t(
+                                            "passwordProtected.validateLabel"
+                                        )}
+                                        errorLabel={t("errorLabel")}
+                                        successLabel={t("successLabel")}
+                                        register={register("password", {
+                                            required: "This is required",
+                                        })}
+                                    />
+                                )}
+                                {formStep(1) && (
+                                    <Tickets
+                                        control={control}
+                                        display={
+                                            activeStep === 1 ? "block" : "none"
+                                        }
+                                        label={t("step.one")}
+                                        currentTickets={[getValues("ticket")]}
+                                        tickets={
+                                            event.tickets as ComponentEventTickets
+                                        }
+                                        handleOrder={handleOrder}
+                                    />
+                                )}
+                                {formStep(2) && (
+                                    <Options
+                                        display={
+                                            activeStep === 2 ? "block" : "none"
+                                        }
+                                        label={t("step.two")}
+                                        diets={diets}
+                                        allergies={allergies}
+                                        dietResult={dietResults}
+                                        setDietResult={setDiets}
+                                        specialDietResult={allergenResults}
+                                        setSpecialDietResult={setAllergens}
+                                    />
+                                )}
+                                {formStep(3) && (
+                                    <OrderSummary
+                                        display={
+                                            activeStep === 3 ? "block" : "none"
+                                        }
+                                        label={t("step.three")}
+                                        orderLabel={t("summary.order.label")}
+                                        dietLabel={t("summary.diet.label")}
+                                        currentTicket={getValues("ticket")}
+                                        allTickets={
+                                            event.tickets
+                                                ?.Tickets as ComponentEventInternalTicket[]
+                                        }
+                                        setTicket={handleOrder}
+                                        diets={getValues("diets")}
+                                        allergens={getValues("allergens")}
+                                    />
+                                )}
+                                {formStep(4) && (
+                                    <OrderFinalize
+                                        display={
+                                            activeStep === 4 ? "block" : "none"
+                                        }
+                                        label={t("step.four")}
+                                        status={orderIsFree ? "unpaid" : "paid"}
+                                        handleOrder={() =>
+                                            handleSubmit(onSubmit)
+                                        }
+                                        isSubmitting={isSubmitting}
+                                        isLoaded={isLoaded}
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                )}
+
+                                {(formStep(1) || !event.passwordProtected) && (
+                                    <>
+                                        <Spacer />
+                                        <Flex mt={4}>
+                                            <Spacer />
+
+                                            <Button
+                                                onClick={goBackward}
+                                                isDisabled={
+                                                    (event.passwordProtected &&
+                                                        activeStep === 1) ||
+                                                    activeStep === 0
+                                                }
+                                                mr={1}
+                                                variant="iareSolid"
+                                            >
+                                                Back
+                                            </Button>
+                                            <Button
+                                                isDisabled={
+                                                    activeStep ===
+                                                        steps.length - 1 ||
+                                                    status !== "ready"
+                                                }
+                                                onClick={goForward}
+                                                isLoading={status === "pending"}
+                                                ml={1}
+                                                variant="iareSolid"
+                                            >
+                                                Next
+                                            </Button>
+                                        </Flex>
+                                    </>
+                                )}
+                            </Flex>
+                            {formStep(5) && (
+                                <OrderComplete orderData={ticketData} />
                             )}
-                        </Flex>
-                        {formStep(5) && (
-                            <OrderComplete orderData={ticketData} />
-                        )}
-                    </SkeletonSpinner>
+                        </SkeletonSpinner>
+                    </Element>
                 </Flex>
             </Stack>
         </Flex>

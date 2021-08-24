@@ -7,6 +7,7 @@ import { Box, Container, Flex, VStack } from "@chakra-ui/react";
 import { FooterProps } from "types/footer";
 import { DefHeader, DefFooter } from "types/global";
 import useTranslation from "next-translate/useTranslation";
+import { isMobile } from "react-device-detect";
 
 interface Props {
     //header: DefHeader;
@@ -18,10 +19,10 @@ const Layout = (props: Props) => {
     const { lang } = useTranslation();
 
     return (
-        <VStack align="flex-start">
+        <VStack overflowX="hidden">
             <Header px={{ base: 4, md: 12 }} />
             <Meta />
-            <Box bg="white" w="full">
+            <Box bg="white" w="100vw">
                 {props.children}
             </Box>
             <Footer px={{ base: 4, md: 12 }} />

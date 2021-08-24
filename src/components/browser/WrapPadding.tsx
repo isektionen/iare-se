@@ -7,5 +7,5 @@ interface Props {
 }
 
 export const WrapPadding = ({ children }: Props) => {
-    return <Box pb={isMobileSafari ? 16 : 0}>{children}</Box>;
+    return <Box pb={isMobileSafari ? 32 : 0}>{children}</Box>;
 };

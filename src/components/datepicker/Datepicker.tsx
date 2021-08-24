@@ -30,6 +30,7 @@ import {
     DrawerOverlay,
     Input,
 } from "@chakra-ui/react";
+import { WrapPadding } from "components/browser/WrapPadding";
 import { format } from "date-fns";
 import React, { useMemo, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
@@ -175,9 +176,10 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                                 />
                             </Flex>
                         </DrawerHeader>
-
                         <DrawerBody pb={12}>
-                            <Month />
+                            <WrapPadding>
+                                <Month />
+                            </WrapPadding>
                         </DrawerBody>
                     </DrawerContent>
                 </Drawer>

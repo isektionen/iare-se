@@ -21,6 +21,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { StringOrNumber } from "@chakra-ui/utils";
+import { WrapPadding } from "components/browser/WrapPadding";
 import { Datepicker } from "components/datepicker/Datepicker";
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
@@ -84,18 +85,20 @@ const SelectMenu = ({ label, options, setOptions }: ISelect) => {
                         <DrawerHeader>{label}</DrawerHeader>
 
                         <DrawerBody pb={12}>
-                            <CheckboxGroup onChange={handleChange}>
-                                <VStack spacing={2} align="stretch" p={2}>
-                                    {options.map((option) => (
-                                        <Checkbox
-                                            value={option.value}
-                                            key={option.label}
-                                        >
-                                            {option.label}
-                                        </Checkbox>
-                                    ))}
-                                </VStack>
-                            </CheckboxGroup>
+                            <WrapPadding>
+                                <CheckboxGroup onChange={handleChange}>
+                                    <VStack spacing={2} align="stretch" p={2}>
+                                        {options.map((option) => (
+                                            <Checkbox
+                                                value={option.value}
+                                                key={option.label}
+                                            >
+                                                {option.label}
+                                            </Checkbox>
+                                        ))}
+                                    </VStack>
+                                </CheckboxGroup>
+                            </WrapPadding>
                         </DrawerBody>
                     </DrawerContent>
                 </Drawer>

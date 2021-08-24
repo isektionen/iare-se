@@ -22,6 +22,7 @@ import {
     useBreakpointValue,
     SlideDirection,
 } from "@chakra-ui/react";
+import { WrapPadding } from "components/browser/WrapPadding";
 import {
     DocumentContext,
     DocumentType,
@@ -70,29 +71,31 @@ export const DocumentContainer = () => {
         >
             <DrawerOverlay />
             <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>{title}</DrawerHeader>
+                <WrapPadding>
+                    <DrawerCloseButton />
+                    <DrawerHeader>{title}</DrawerHeader>
 
-                <DrawerBody>{file && <Document file={file} />}</DrawerBody>
+                    <DrawerBody>{file && <Document file={file} />}</DrawerBody>
 
-                <DrawerFooter>
-                    <HStack spacing={2}>
-                        {file && (
-                            <Button
-                                as="a"
-                                variant="iareSolid"
-                                href={file}
-                                download={title}
-                                target="_blank"
-                            >
-                                {t("thumbnail.drawer.download")}
+                    <DrawerFooter>
+                        <HStack spacing={2}>
+                            {file && (
+                                <Button
+                                    as="a"
+                                    variant="iareSolid"
+                                    href={file}
+                                    download={title}
+                                    target="_blank"
+                                >
+                                    {t("thumbnail.drawer.download")}
+                                </Button>
+                            )}
+                            <Button variant="outline" mr={3} onClick={onClose}>
+                                {t("thumbnail.drawer.close")}
                             </Button>
-                        )}
-                        <Button variant="outline" mr={3} onClick={onClose}>
-                            {t("thumbnail.drawer.close")}
-                        </Button>
-                    </HStack>
-                </DrawerFooter>
+                        </HStack>
+                    </DrawerFooter>
+                </WrapPadding>
             </DrawerContent>
         </Drawer>
     );

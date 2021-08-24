@@ -232,7 +232,7 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
     return (
         <>
             <DocumentContainer />
-            <Box py={16}>
+            <Box py={16} px={{ base: 3, md: 16 }}>
                 <SearchBar />
                 <Wrap
                     w="full"

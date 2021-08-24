@@ -26,6 +26,13 @@ import {
     ButtonGroup,
     Avatar,
     Tooltip,
+    Drawer,
+    DrawerBody,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
@@ -42,9 +49,40 @@ import {
     IoIosSearch,
 } from "react-icons/io";
 import { isMobile } from "react-device-detect";
+import { WrapPadding } from "components/browser/WrapPadding";
 
 const ContactMenu = (props: ButtonProps) => {
     const { onToggle, ...controls } = useDisclosure();
+
+    if (isMobile) {
+        return (
+            <>
+                <Button variant="outline" onClick={controls.onOpen} w="full">
+                    <Flex w="full" align="center">
+                        <Text>Styrelsen</Text>
+                        <Spacer />
+                        <IoIosArrowDown />
+                    </Flex>
+                </Button>
+                <Drawer
+                    placement="bottom"
+                    {...controls}
+                    returnFocusOnClose={false}
+                >
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerHeader>Group</DrawerHeader>
+
+                        <DrawerBody>
+                            <WrapPadding>
+                                <Text>item</Text>
+                            </WrapPadding>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </>
+        );
+    }
     return (
         <Menu {...controls}>
             <MenuButton
@@ -93,7 +131,9 @@ const ContactSelector = () => {
                     direction={{ base: "column-reverse", sm: "row" }}
                     spacing={4}
                 >
-                    <ContactMenu w={{ base: "full", sm: 72 }} />
+                    <Box w="full">
+                        <ContactMenu w={{ base: "full", sm: 72 }} />
+                    </Box>
                     <ContactSearch />
                 </Stack>
                 <Box
@@ -153,7 +193,10 @@ const StackItem = () => {
                     />
                 </Tooltip>
             )}
-            <Stack direction={{ base: "column", sm: "row" }} spacing={4}>
+            <Stack
+                direction={{ base: "column", sm: "row" }}
+                spacing={{ base: 1, sm: 4 }}
+            >
                 <Text fontWeight="600">John Landeholt</Text>
                 {!isMobile && <Text fontWeight="thin">·</Text>}
                 <Text color="gray.600">Webmaster</Text>

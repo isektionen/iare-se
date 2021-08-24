@@ -1,6 +1,6 @@
 {
-    "label_one": "{{count}} {{item}} included",
-    "label_other": "{{count}} {{item}} included",
+    "label_one": "{{count}} {{item}} selected",
+    "label_other": "{{count}} {{item}} selected",
     "menu": {
         "category": {
             "label": "Categories",

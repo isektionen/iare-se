@@ -131,7 +131,7 @@ const ContactSelector = () => {
                     direction={{ base: "column-reverse", sm: "row" }}
                     spacing={4}
                 >
-                    <Box w="full">
+                    <Box w={{ base: "full", sm: 72 }}>
                         <ContactMenu w={{ base: "full", sm: 72 }} />
                     </Box>
                     <ContactSearch />

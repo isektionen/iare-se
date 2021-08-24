@@ -4,7 +4,7 @@ module.exports = {
     pages: {
         "*": ["common"],
         "rgx:^/feed/?.*": ["feed"],
-        "/chapter/document": ["document", "filter"],
+        "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/event/[slug]": ["event", "ticket"],
         "/ticket/[id]": ["ticket"],
     },

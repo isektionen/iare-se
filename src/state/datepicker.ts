@@ -26,7 +26,11 @@ import {
     isBefore,
     differenceInDays,
     isWithinInterval,
+    Locale,
+    startOfWeek,
 } from "date-fns";
+import { enGB } from "date-fns/locale";
+import useTranslation from "next-translate/useTranslation";
 import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 import {
     atom,
@@ -44,6 +48,7 @@ interface DefaultState {
     activeMonth: Date;
     firstDayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6;
     isInterval: boolean;
+    locale: Locale;
 }
 
 const defaultState = {
@@ -53,6 +58,7 @@ const defaultState = {
     focusedInput: null,
     activeMonth: new Date(),
     isInterval: true,
+    locale: enGB,
 };
 
 const dateState = atom<DefaultState>({
@@ -77,7 +83,7 @@ const selectDay = selectorFamily({
 const selectMonth = selector({
     key: "SELECTOR/DATEPICKER/MONTH",
     get: ({ get }) => {
-        const { activeMonth, firstDayOfWeek } = get(dateState);
+        const { activeMonth, firstDayOfWeek, locale } = get(dateState);
         const month = activeMonth;
         const today = new Date();
         const date = month;
@@ -108,11 +114,11 @@ const selectMonth = selector({
             }).map(dateMap),
         ];
         const weekdayLabels = eachDayOfInterval({
-            start: startOfDay(today),
+            start: addDays(startOfWeek(today), firstDayOfWeek),
             end: addDays(endOfWeek(today), firstDayOfWeek),
-        }).map((date) => format(date, "EEE"));
+        }).map((date) => format(date, "EEE", { locale }));
         return {
-            monthLabel: format(date, "MMMM yyyy"),
+            monthLabel: format(date, "MMMM yyyy", { locale }),
             weekdayLabels,
             days,
         };
@@ -227,9 +233,10 @@ export const useDay = (_date: Date) => {
 
 interface useDatepickerProps {
     isInterval?: boolean;
+    locale: Locale;
 }
 
-export const useDatepicker = ({ isInterval }: useDatepickerProps) => {
+export const useDatepicker = ({ isInterval, locale }: useDatepickerProps) => {
     const [{ focusedInput, startDate, endDate }, setState] =
         useRecoilState(dateState);
 
@@ -252,6 +259,13 @@ export const useDatepicker = ({ isInterval }: useDatepickerProps) => {
             numberOfMonths: 1,
         });
 
+    const setLocale = useCallback(
+        (locale: Locale) => {
+            setState((state) => ({ ...state, locale }));
+        },
+        [setState]
+    );
+
     useEffect(() => {
         const { date } = activeMonths[0];
         setState((state) => ({
@@ -259,11 +273,14 @@ export const useDatepicker = ({ isInterval }: useDatepickerProps) => {
             activeMonth: date,
             firstDayOfWeek,
             isInterval: isInterval ? true : false,
+            locale,
         }));
-    }, [activeMonths, firstDayOfWeek, isInterval, setState]);
+    }, [activeMonths, firstDayOfWeek, isInterval, locale, setState]);
+
     return {
         reset,
         startDate,
+        setLocale,
         endDate: endDate && isInterval ? endDate : null,
         firstDayOfWeek,
         goToPreviousMonths,

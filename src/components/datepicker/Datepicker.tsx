@@ -4,34 +4,25 @@ import {
     PopoverTrigger,
     PopoverContent,
     PopoverArrow,
-    PopoverCloseButton,
     PopoverHeader,
     PopoverBody,
     Text,
     Flex,
     Spacer,
-    CloseButton,
     SimpleGrid,
-    Box,
     useDisclosure,
-    useOutsideClick,
     HStack,
-    Tag,
-    Menu,
-    MenuButton,
-    MenuList,
-    VStack,
     Drawer,
     DrawerBody,
-    DrawerCloseButton,
     DrawerContent,
-    DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
-    Input,
+    Tag,
 } from "@chakra-ui/react";
 import { WrapPadding } from "components/browser/WrapPadding";
 import { format } from "date-fns";
+import { useDynamicLocale } from "hooks/use-format";
+import useTranslation from "next-translate/useTranslation";
 import React, { useMemo, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { IoIosArrowDown } from "react-icons/io";
@@ -110,14 +101,20 @@ export const getDateLabel = (startDate: Date | null, endDate: Date | null) => {
 };
 
 export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
+    const { t, lang } = useTranslation("datepicker");
+
+    const locale = useDynamicLocale();
+
     const { reset, startDate, endDate, goToNextMonths, goToPreviousMonths } =
-        useDatepicker({ isInterval });
+        useDatepicker({ isInterval, locale });
     const month = useMonth();
+
+    const label = t("label");
 
     const date = useMemo(() => {
         const _date = getDateLabel(startDate, endDate);
-        return _date || "Date";
-    }, [endDate, startDate]);
+        return _date || label;
+    }, [endDate, label, startDate]);
 
     const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -132,7 +129,7 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                 >
                     <HStack spacing={4}>
                         <Text>{date}</Text>
-                        {date !== "Date" && (
+                        {date !== label && (
                             <Tag
                                 colorScheme="brand"
                                 fontWeight="bold"
@@ -142,7 +139,7 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                                     reset();
                                 }}
                             >
-                                Reset
+                                {t("reset")}
                             </Tag>
                         )}
                     </HStack>
@@ -152,7 +149,9 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                     <DrawerContent>
                         <DrawerHeader>
                             <Flex>
-                                <Text>{month && month.monthLabel}</Text>
+                                <Text textTransform="capitalize">
+                                    {month && month.monthLabel}
+                                </Text>
                                 <Spacer />
                                 <NavButton
                                     icon={<IoChevronBack />}
@@ -204,7 +203,7 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                 >
                     <HStack spacing={4}>
                         <Text>{date}</Text>
-                        {date !== "Date" && (
+                        {date !== label && (
                             <Tag
                                 colorScheme="brand"
                                 fontWeight="bold"
@@ -214,7 +213,7 @@ export const Datepicker = ({ isInterval = true }: DatepickerProps) => {
                                     reset();
                                 }}
                             >
-                                Reset
+                                {t("reset")}
                             </Tag>
                         )}
                     </HStack>

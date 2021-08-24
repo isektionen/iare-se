@@ -1,0 +1,16 @@
+{
+    "label_one": "{{count}} {{item}} vald",
+    "label_other": "{{count}} {{item}} valda",
+    "menu": {
+        "category": {
+            "label": "Kategorier",
+            "label_one": "kategori",
+            "label_other": "kategorier"
+        },
+        "businessYear": {
+            "label": "Verksamhetsår",
+            "label_one": "Verksamhetsår",
+            "label_other": "Verksamhetsår"
+        }
+    }
+}

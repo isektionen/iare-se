@@ -23,10 +23,10 @@ import {
 import { StringOrNumber } from "@chakra-ui/utils";
 import { WrapPadding } from "components/browser/WrapPadding";
 import { Datepicker } from "components/datepicker/Datepicker";
+import useTranslation from "next-translate/useTranslation";
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import { IoIosArrowDown } from "react-icons/io";
-import { SetterOrUpdater } from "recoil";
 import { useFuseRegister, QueryState } from "state/document";
 
 export interface SelectOption {
@@ -42,17 +42,22 @@ interface ISelect {
 }
 
 const SelectMenu = ({ label, options, setOptions }: ISelect) => {
+    const { t } = useTranslation("searchbar");
+
     const selected = useMemo(() => {
         const _options = options.filter((option) => option.isSelected);
         if (_options.length > 0) {
             const _label = _options.map((item) => item.label).join(", ");
             if (_label.length > 25) {
-                return `${_options.length} items selected`;
+                return t("label", {
+                    count: _options.length,
+                    item: t(`menu.${label}.label`, { count: _options.length }),
+                });
             }
             return _label;
         }
-        return label;
-    }, [label, options]);
+        return t(`menu.${label}.label`);
+    }, [label, options, t]);
 
     const handleChange = useCallback(
         (value: StringOrNumber[]) => {
@@ -137,6 +142,8 @@ const SelectMenu = ({ label, options, setOptions }: ISelect) => {
 };
 
 export const SearchBar = () => {
+    const { t } = useTranslation("searchbar");
+
     const { register, useSelection } = useFuseRegister();
     const {
         options: { category, businessYear },
@@ -152,14 +159,14 @@ export const SearchBar = () => {
 
                 {category && (
                     <SelectMenu
-                        label="Categories"
+                        label={"category"}
                         options={category}
                         setOptions={setOptions("category")}
                     />
                 )}
                 {businessYear && (
                     <SelectMenu
-                        label="Business Year"
+                        label={"businessYear"}
                         options={businessYear}
                         setOptions={setOptions("businessYear")}
                     />

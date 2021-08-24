@@ -1,0 +1,16 @@
+{
+    "label_one": "{{count}} {{item}} included",
+    "label_other": "{{count}} {{item}} included",
+    "menu": {
+        "category": {
+            "label": "Categories",
+            "label_one": "category",
+            "label_other": "categories"
+        },
+        "businessYear": {
+            "label": "Business year",
+            "label_one": "business year",
+            "label_other": "business years"
+        }
+    }
+}

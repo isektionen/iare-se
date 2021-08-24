@@ -25,7 +25,7 @@ export const NextImage = (props: NextImageProps) => {
         ...rest
     } = props;
     return (
-        <Flex w="max-content" {...rest}>
+        <Flex w="max-content" h="fit-content" {...rest}>
             {layout === "fill" && (
                 <Image
                     alt={alt || "image"}
@@ -43,6 +43,8 @@ export const NextImage = (props: NextImageProps) => {
                     width={width}
                     height={height}
                     layout={layout}
+                    objectFit={objectFit || "contain"}
+                    objectPosition={objectPosition || "center"}
                     priority={priority ? true : false}
                 />
             )}

@@ -29,12 +29,8 @@ import { headerState } from "state/layout";
 import { Feedback } from "./header/Feedback";
 
 const Header = (props: BoxProps) => {
-    /*const { logo, sections, languages, contact } =
-        useRecoilSSRValue(headerState);*/
-
-    const { logo, languages, contact, sections } = useRecoilValue(headerState);
+    const { languages, contact, sections } = useRecoilValue(headerState);
     const { onClose, onOpen, isOpen } = useDisclosure();
-    //const [header, setHeader] = useState<DefHeader>();
 
     const { scrollY } = useViewportScroll();
     const [y, setY] = useState(0);
@@ -105,7 +101,6 @@ const Header = (props: BoxProps) => {
                                 as={Button}
                                 size="sm"
                                 href={contact.href}
-                                isDisabled={true}
                                 display={{ base: "none", md: "flex" }}
                             >
                                 <Icon
@@ -176,7 +171,6 @@ const Header = (props: BoxProps) => {
                                     mt={2}
                                     variant="iareSolid"
                                     leftIcon={<MdChatBubble />}
-                                    isDisabled={true}
                                     isFullWidth
                                 >
                                     {contact.label}

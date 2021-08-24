@@ -16,10 +16,8 @@ interface Props {
 }
 
 const Layout = (props: Props) => {
-    const { lang } = useTranslation();
-
     return (
-        <VStack overflowX="hidden">
+        <VStack overflowX="hidden" align="stretch">
             <Header px={{ base: 4, md: 12 }} />
             <Meta />
             <Box bg="white" w="100vw">

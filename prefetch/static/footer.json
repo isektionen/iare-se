@@ -12,9 +12,11 @@
             "href": "https://www.instagram.com/isektionen_kth/"
         }
     ],
-    "responsiblePublisher": {
-        "firstname": "Annie",
-        "lastname": "Holgersson"
+    "representative": {
+        "user": {
+            "firstname": "Annie",
+            "lastname": "Holgersson"
+        }
     },
     "logo": {
         "alternativeText": "",
@@ -37,9 +39,11 @@
                     "href": "https://www.instagram.com/isektionen_kth/"
                 }
             ],
-            "responsiblePublisher": {
-                "firstname": "Annie",
-                "lastname": "Holgersson"
+            "representative": {
+                "user": {
+                    "firstname": "Annie",
+                    "lastname": "Holgersson"
+                }
             },
             "logo": {
                 "alternativeText": "",

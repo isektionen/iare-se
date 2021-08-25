@@ -5,7 +5,6 @@ import { DefFooter, DefHeader } from "types/global";
 import defaultHeaderState from "../../prefetch/static/header.json";
 import defaultFooterState from "../../prefetch/static/footer.json";
 import _ from "underscore";
-import { serialize } from "next-mdx-remote/serialize";
 
 const getHeaderFromFile = () => {
     return defaultHeaderState as DefHeader;
@@ -101,9 +100,11 @@ export const getFooter = async () => {
                         type
                         href
                     }
-                    responsiblePublisher {
-                        firstname
-                        lastname
+                    representative {
+                        user {
+                            firstname
+                            lastname
+                        }
                     }
                     logo {
                         alternativeText
@@ -118,9 +119,11 @@ export const getFooter = async () => {
                             type
                             href
                         }
-                        responsiblePublisher {
-                            firstname
-                            lastname
+                        representative {
+                            user {
+                                firstname
+                                lastname
+                            }
                         }
                         logo {
                             alternativeText

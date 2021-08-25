@@ -47,9 +47,11 @@ export interface DefFooter {
     locale: string;
     localizations: Omit<DefFooter, "localizations">[];
     social: ComponentFooterSocial[];
-    responsiblePublisher: {
-        firstname: string;
-        lastname: string;
+    representative: {
+        user: {
+            firstname: string;
+            lastname: string;
+        };
     };
     logo: Pick<UploadFile, "height" | "width" | "url" | "alternativeText">;
 }

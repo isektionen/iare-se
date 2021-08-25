@@ -33,6 +33,7 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
@@ -126,13 +127,13 @@ const ContactSelector = () => {
             borderColor="gray.200"
         >
             <VStack spacing={4} align="stretch">
-                <Heading size="lg">{t("recipent")}</Heading>
+                <Heading size="lg">{t("recipient")}</Heading>
                 <Stack
                     direction={{ base: "column-reverse", sm: "row" }}
                     spacing={4}
                 >
-                    <Box w={{ base: "full", sm: 72 }}>
-                        <ContactMenu w={{ base: "full", sm: 72 }} />
+                    <Box w={{ base: "full", sm: 60 }}>
+                        <ContactMenu w={{ base: "full", sm: 60 }} />
                     </Box>
                     <ContactSearch />
                 </Stack>
@@ -172,6 +173,7 @@ const ContactSelector = () => {
 
 const StackItem = () => {
     const { t } = useTranslation("contact");
+    const isAboveMd = useBreakpointValue({ base: true, md: false });
     return (
         <HStack
             borderTopWidth="0"
@@ -183,27 +185,21 @@ const StackItem = () => {
             py={2}
             spacing={4}
         >
-            {!isMobile && (
-                <Tooltip label="John Landeholt">
-                    <Avatar
-                        name="John Landeholt"
-                        rounded="md"
-                        size="sm"
-                        mr={4}
-                    />
-                </Tooltip>
-            )}
+            <Tooltip label="John Landeholt">
+                <Avatar name="John Landeholt" rounded="md" size="sm" />
+            </Tooltip>
             <Stack
                 direction={{ base: "column", sm: "row" }}
                 spacing={{ base: 1, sm: 4 }}
+                align={{ base: "flex-start", sm: "center" }}
             >
                 <Text fontWeight="600">John Landeholt</Text>
-                {!isMobile && <Text fontWeight="thin">·</Text>}
+                {!isAboveMd && <Text fontWeight="thin">·</Text>}
                 <Text color="gray.600">Webmaster</Text>
             </Stack>
             <Spacer />
             <Button variant="iareSolid" size="xs">
-                {!isMobile && t("contact")}
+                {!isAboveMd && t("contact")}
                 <Icon as={IoIosArrowForward} />
             </Button>
         </HStack>
@@ -214,7 +210,6 @@ const GridItem = () => {
     const [isHover, setHover] = useState(false);
     return (
         <Flex
-            position="relative"
             transition="box-shadow 0.2s ease-in"
             shadow={isHover ? "xl" : "md"}
             rounded="md"
@@ -222,31 +217,11 @@ const GridItem = () => {
             bg="white"
             maxH="200px"
             overflow="hidden"
+            onTouchStart={() => setHover(true)}
+            onTouchEnd={() => setHover(false)}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <Flex
-                position="absolute"
-                top="70%"
-                p={2}
-                h="30px"
-                w="full"
-                left="0"
-                zIndex="1"
-                justify="center"
-            >
-                <Tag
-                    colorScheme="brand"
-                    size="sm"
-                    borderColor="brand.50"
-                    borderWidth="1px"
-                    fontWeight="medium"
-                    rounded="full"
-                    shadow="lg"
-                >
-                    Ordförande CMi
-                </Tag>
-            </Flex>
             <NextImage
                 borderTopRadius="lg"
                 overflow="hidden"
@@ -263,7 +238,27 @@ const GridItem = () => {
                 src="https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/photo_1542156822_6924d1a71ace_4ec5bc5630.webp"
                 priority
             />
-            <Box p={2}>
+            <Box p={2} position="relative">
+                <Flex
+                    position="absolute"
+                    top="-16px"
+                    p={2}
+                    h="30px"
+                    w="full"
+                    left="0"
+                    zIndex="1"
+                    justify="center"
+                >
+                    <Tag
+                        colorScheme="brand"
+                        size="sm"
+                        fontWeight="medium"
+                        rounded="full"
+                        shadow="lg"
+                    >
+                        Ordförande CMi
+                    </Tag>
+                </Flex>
                 <AccessibleLink href="/">Item</AccessibleLink>
             </Box>
         </Flex>

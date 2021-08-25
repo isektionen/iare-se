@@ -6,14 +6,13 @@ import { layout } from "state/layout";
 
 export const Publisher = () => {
     const { t } = useTranslation("common");
-    const { responsiblePublisher } = useRecoilValue(layout("footer"));
+    const {
+        representative: { user },
+    } = useRecoilValue(layout("footer"));
     return (
         <Text>
             {t("footer.publisher", {
-                name:
-                    responsiblePublisher.firstname +
-                    " " +
-                    responsiblePublisher.lastname,
+                name: user.firstname + " " + user.lastname,
             })}
         </Text>
     );

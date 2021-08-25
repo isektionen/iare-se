@@ -12,9 +12,11 @@ const resolver = async () => {
                 type
                 href
             }
-            responsiblePublisher {
-                firstname
-                lastname
+            representative {
+                user {
+                    firstname
+                    lastname
+                }
             }
             logo {
                 alternativeText
@@ -29,9 +31,11 @@ const resolver = async () => {
                     type
                     href
                 }
-                responsiblePublisher {
-                    firstname
-                    lastname
+                representative {
+                    user {
+                        firstname
+                        lastname
+                    }
                 }
                 logo {
                     alternativeText

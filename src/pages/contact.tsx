@@ -40,7 +40,7 @@ import { LinkComponent } from "components/LinkComponent";
 import { NextImage } from "components/NextImage";
 import { GetStaticPaths, GetStaticProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { fetchHydration, useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import {
@@ -51,16 +51,42 @@ import {
 } from "react-icons/io";
 import { isMobile } from "react-device-detect";
 import { WrapPadding } from "components/browser/WrapPadding";
+import strapi, { gql } from "lib/strapi";
+import { CommitteeObjectiveConnection, Representative } from "types/strapi";
+import _ from "underscore";
 
-const ContactMenu = (props: ButtonProps) => {
+type Item = {
+    value: string;
+    isSelected: boolean;
+};
+interface IContactMenu extends ButtonProps {
+    items: Item[];
+    setItems: (items: Item[]) => void;
+}
+
+const ContactMenu = ({ items, setItems, ...props }: IContactMenu) => {
     const { onToggle, ...controls } = useDisclosure();
+
+    const selected = items.find((item) => item.isSelected)?.value;
+
+    const handleSelect = useCallback(
+        (item: Item) => {
+            setItems(
+                items.map((_item) => ({
+                    ..._item,
+                    isSelected: _item.value === item.value,
+                }))
+            );
+        },
+        [items, setItems]
+    );
 
     if (isMobile) {
         return (
             <>
-                <Button variant="outline" onClick={controls.onOpen} w="full">
+                <Button variant="outline" onClick={controls.onOpen} {...props}>
                     <Flex w="full" align="center">
-                        <Text>Styrelsen</Text>
+                        <Text textTransform="capitalize">{selected}</Text>
                         <Spacer />
                         <IoIosArrowDown />
                     </Flex>
@@ -76,7 +102,16 @@ const ContactMenu = (props: ButtonProps) => {
 
                         <DrawerBody>
                             <WrapPadding>
-                                <Text>item</Text>
+                                {items.map((item) => (
+                                    <Button
+                                        textTransform="capitalize"
+                                        key={item.value}
+                                        variant="ghost"
+                                        onClick={() => handleSelect(item)}
+                                    >
+                                        {item.value}
+                                    </Button>
+                                ))}
                             </WrapPadding>
                         </DrawerBody>
                     </DrawerContent>
@@ -90,13 +125,22 @@ const ContactMenu = (props: ButtonProps) => {
                 textAlign="left"
                 as={Button}
                 variant="outline"
+                textTransform="capitalize"
                 rightIcon={<IoIosArrowDown />}
                 {...props}
             >
-                Styrelsen
+                {selected}
             </MenuButton>
             <MenuList>
-                <MenuItem>item</MenuItem>
+                {items.map((item) => (
+                    <MenuItem
+                        textTransform="capitalize"
+                        key={item.value}
+                        onClick={() => handleSelect(item)}
+                    >
+                        {item.value}
+                    </MenuItem>
+                ))}
             </MenuList>
         </Menu>
     );
@@ -113,8 +157,31 @@ const ContactSearch = () => {
         </InputGroup>
     );
 };
-const ContactSelector = () => {
+const ContactSelector = ({ representatives }: Props) => {
     const { t } = useTranslation("contact");
+
+    const [items, setSelected] = useState<Item[]>(
+        _.keys(representatives).map((rep, i) => ({
+            value: rep,
+            isSelected: i === 0,
+        }))
+    );
+
+    const selected = useMemo(
+        () => items.find((item) => item.isSelected),
+        [items]
+    );
+
+    const specificRepresentatives = useMemo(() => {
+        if (selected) {
+            const group = representatives[
+                selected.value
+            ].flat() as Representative[];
+            return group || [];
+        }
+        return [];
+    }, [representatives, selected]);
+
     return (
         <Box
             w={{ base: "full", lg: "3xl" }}
@@ -132,9 +199,12 @@ const ContactSelector = () => {
                     direction={{ base: "column-reverse", sm: "row" }}
                     spacing={4}
                 >
-                    <Box w={{ base: "full", sm: 60 }}>
-                        <ContactMenu w={{ base: "full", sm: 60 }} />
-                    </Box>
+                    <ContactMenu
+                        w={{ base: "full", sm: 60 }}
+                        items={items}
+                        setItems={setSelected}
+                    />
+
                     <ContactSearch />
                 </Stack>
                 <Box
@@ -150,20 +220,10 @@ const ContactSelector = () => {
                         align="stretch"
                         pb={1}
                     >
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
-                        <StackItem />
+                        {specificRepresentatives.length > 0 &&
+                            specificRepresentatives.map((rep) => (
+                                <StackItem key={rep.id} {...rep} />
+                            ))}
                     </VStack>
                 </Box>
             </VStack>
@@ -171,9 +231,33 @@ const ContactSelector = () => {
     );
 };
 
-const StackItem = () => {
+const capitalize = (text: string) =>
+    text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
+const StackItem = (representative: Representative) => {
     const { t } = useTranslation("contact");
     const isAboveMd = useBreakpointValue({ base: true, md: false });
+
+    const roles = useMemo(
+        () =>
+            representative?.committee_roles
+                ?.map((item) => {
+                    return (
+                        item?.abbreviation?.toUpperCase() ||
+                        capitalize(item?.role ?? "")
+                    );
+                })
+                .join(", ") ?? "",
+        [representative.committee_roles]
+    );
+    const fullName = useMemo(
+        () =>
+            representative.user?.firstname +
+            " " +
+            representative.user?.lastname,
+        [representative.user?.firstname, representative.user?.lastname]
+    );
+
     return (
         <HStack
             borderTopWidth="0"
@@ -185,17 +269,22 @@ const StackItem = () => {
             py={2}
             spacing={4}
         >
-            <Tooltip label="John Landeholt">
-                <Avatar name="John Landeholt" rounded="md" size="sm" />
+            <Tooltip label={fullName}>
+                <Avatar
+                    name={fullName}
+                    rounded="md"
+                    size="sm"
+                    src={representative.cover?.formats.thumbnail}
+                />
             </Tooltip>
             <Stack
                 direction={{ base: "column", sm: "row" }}
                 spacing={{ base: 1, sm: 4 }}
                 align={{ base: "flex-start", sm: "center" }}
             >
-                <Text fontWeight="600">John Landeholt</Text>
+                <Text fontWeight="600">{fullName}</Text>
                 {!isAboveMd && <Text fontWeight="thin">·</Text>}
-                <Text color="gray.600">Webmaster</Text>
+                <Text color="gray.600">{roles}</Text>
             </Stack>
             <Spacer />
             <Button variant="iareSolid" size="xs">
@@ -206,8 +295,24 @@ const StackItem = () => {
     );
 };
 
-const GridItem = () => {
+interface GridItemProps {
+    representative: Representative;
+}
+
+const GridItem = (representative: Representative) => {
     const [isHover, setHover] = useState(false);
+
+    const roles = useMemo(
+        () => representative.committee_roles,
+        [representative.committee_roles]
+    );
+    const fullName = useMemo(
+        () =>
+            representative.user?.firstname +
+            " " +
+            representative.user?.lastname,
+        [representative.user?.firstname, representative.user?.lastname]
+    );
     return (
         <Flex
             transition="box-shadow 0.2s ease-in"
@@ -229,7 +334,6 @@ const GridItem = () => {
                 filter={isHover ? "brightness(115%)" : "brightness(100%)"}
                 w="100%"
                 h="80%"
-                bg="green.200"
                 layout="intrinsic"
                 width={300 * 3}
                 height={200 * 3}
@@ -249,23 +353,30 @@ const GridItem = () => {
                     zIndex="1"
                     justify="center"
                 >
-                    <Tag
-                        colorScheme="brand"
-                        size="sm"
-                        fontWeight="medium"
-                        rounded="full"
-                        shadow="lg"
-                    >
-                        Ordförande CMi
-                    </Tag>
+                    {roles?.map((item, key) => (
+                        <Tag
+                            key={item?.id ?? key}
+                            colorScheme="brand"
+                            size="sm"
+                            fontWeight="medium"
+                            rounded="full"
+                            shadow="lg"
+                        >
+                            {item?.role}
+                        </Tag>
+                    ))}
                 </Flex>
-                <AccessibleLink href="/">Item</AccessibleLink>
+                <AccessibleLink href="/">{fullName}</AccessibleLink>
             </Box>
         </Flex>
     );
 };
 
-const ContactGrid = () => {
+interface ContactGridProps {
+    representatives: Representative[];
+}
+
+const ContactGrid = ({ representatives }: ContactGridProps) => {
     const { t } = useTranslation("contact");
     return (
         <VStack
@@ -287,10 +398,9 @@ const ContactGrid = () => {
                 columns={{ base: 1, lg: 2 }}
                 spacing={4}
             >
-                <GridItem />
-                <GridItem />
-                <GridItem />
-                <GridItem />
+                {representatives.slice(0, 3).map((rep) => (
+                    <GridItem key={rep.id} {...rep} />
+                ))}
             </SimpleGrid>
             <Spacer />
             <LinkComponent as={Button} href="/" size="sm" variant="ghost">
@@ -301,28 +411,99 @@ const ContactGrid = () => {
     );
 };
 
-const ContactView = ({ header, footer }: LayoutProps<{}>) => {
+interface Props {
+    representatives: Record<string, Representative[]>;
+}
+
+const ContactView = ({
+    header,
+    footer,
+    representatives,
+}: LayoutProps<Props>) => {
     useHydrater({ header, footer });
 
+    const featuredContacts = useMemo(() => {
+        const reps = _.chain(representatives)
+            .values()
+            .flatten()
+            .value() as Representative[];
+        return _.unique(
+            reps.filter((rep) => rep.featured_contact),
+            "id"
+        );
+    }, [representatives]);
+
     return (
-        <Stack
-            w="full"
-            justify="center"
-            align="stretch"
-            spacing={10}
-            direction={{ base: "column", lg: "row" }}
-            py={16}
-            px={{ base: 3, md: 32 }}
-        >
-            <ContactSelector />
-            <ContactGrid />
-        </Stack>
+        <>
+            <pre>{JSON.stringify(representatives, null, 2)}</pre>
+            <Stack
+                w="full"
+                justify="center"
+                align="stretch"
+                spacing={10}
+                direction={{ base: "column", lg: "row" }}
+                py={16}
+                px={{ base: 3, md: 32 }}
+            >
+                <ContactSelector representatives={representatives} />
+                <ContactGrid representatives={featuredContacts} />
+            </Stack>
+        </>
     );
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
+    const { data: _data } = await strapi.query<{
+        representatives: Representative[];
+    }>({
+        query: gql`
+            query {
+                representatives(where: { hidden: false }) {
+                    user {
+                        firstname
+                        lastname
+                    }
+                    cover {
+                        formats
+                        url
+                    }
+                    contact
+                    featured_contact
+                    committee_objectives {
+                        objective
+                        committee_roles {
+                            role
+                            abbreviation
+                        }
+                    }
+                }
+            }
+        `,
+    });
+
+    const objectives = _.chain(_data.representatives)
+        .pluck("committee_objectives")
+        .flatten()
+        .pluck("objective")
+        .unique()
+        .value();
+
+    const representatives = objectives.reduce((acc, objective) => {
+        const newItems = _data.representatives.filter((rep) =>
+            rep.committee_objectives
+                ?.map((o) => o?.objective)
+                .includes(objective)
+        );
+
+        if (_.has(acc, objective)) {
+            return { ...acc, [objective]: [...acc[objective], ...newItems] };
+        }
+        return { ...acc, [objective]: newItems };
+    }, {});
+
     return {
         props: {
+            representatives,
             ...(await fetchHydration()),
         },
     };

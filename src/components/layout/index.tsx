@@ -10,17 +10,15 @@ import useTranslation from "next-translate/useTranslation";
 import { isMobile } from "react-device-detect";
 
 interface Props {
-    //header: DefHeader;
-    //footer: DefFooter;
     children: ReactNode;
 }
 
 const Layout = (props: Props) => {
     return (
-        <VStack overflowX="hidden" align="stretch">
+        <VStack align="stretch" overflowX="hidden">
             <Header px={{ base: 4, md: 12 }} />
             <Meta />
-            <Box bg="white" w="100vw">
+            <Box bg="white" w="100vw" pt={24}>
                 {props.children}
             </Box>
             <Footer px={{ base: 4, md: 12 }} />

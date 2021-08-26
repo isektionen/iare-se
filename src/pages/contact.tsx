@@ -34,6 +34,9 @@ import {
     DrawerHeader,
     DrawerOverlay,
     useBreakpointValue,
+    Grid,
+    GridItem,
+    BoxProps,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
@@ -52,7 +55,12 @@ import {
 import { isMobile } from "react-device-detect";
 import { WrapPadding } from "components/browser/WrapPadding";
 import strapi, { gql } from "lib/strapi";
-import { CommitteeObjectiveConnection, Representative } from "types/strapi";
+import {
+    CommitteeFunction,
+    CommitteeObjective,
+    CommitteeObjectiveConnection,
+    Representative,
+} from "types/strapi";
 import _ from "underscore";
 
 type Item = {
@@ -214,17 +222,15 @@ const ContactSelector = ({ representatives }: Props) => {
                     borderWidth="1px"
                     rounded="lg"
                 >
-                    <VStack
-                        spacing={0}
-                        overflow="hidden"
-                        align="stretch"
-                        pb={1}
+                    <Grid
+                        templateColumns="15% 35% 35% 15%"
+                        templateRows={`repeat(${specificRepresentatives.length},1fr)`}
                     >
                         {specificRepresentatives.length > 0 &&
                             specificRepresentatives.map((rep) => (
                                 <StackItem key={rep.id} {...rep} />
                             ))}
-                    </VStack>
+                    </Grid>
                 </Box>
             </VStack>
         </Box>
@@ -233,6 +239,25 @@ const ContactSelector = ({ representatives }: Props) => {
 
 const capitalize = (text: string) =>
     text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
+interface IGridTableItem extends BoxProps {
+    children: JSX.Element[] | JSX.Element;
+}
+const GridTableItem = ({ children, ...props }: IGridTableItem) => {
+    return (
+        <GridItem
+            colSpan={1}
+            rowSpan={1}
+            borderBottomWidth="1px"
+            display="flex"
+            alignItems="center"
+            h="60px"
+            {...props}
+        >
+            {children}
+        </GridItem>
+    );
+};
 
 const StackItem = (representative: Representative) => {
     const { t } = useTranslation("contact");
@@ -259,39 +284,30 @@ const StackItem = (representative: Representative) => {
     );
 
     return (
-        <HStack
-            borderTopWidth="0"
-            borderLeftWidth="0"
-            borderRightWidth="0"
-            borderBottomWidth="1px"
-            h="60px"
-            px={6}
-            py={2}
-            spacing={4}
-        >
-            <Tooltip label={fullName}>
-                <Avatar
-                    name={fullName}
-                    rounded="md"
-                    size="sm"
-                    src={representative.cover?.formats.thumbnail}
-                />
-            </Tooltip>
-            <Stack
-                direction={{ base: "column", sm: "row" }}
-                spacing={{ base: 1, sm: 4 }}
-                align={{ base: "flex-start", sm: "center" }}
-            >
+        <>
+            <GridTableItem pl={2}>
+                <Tooltip label={fullName}>
+                    <Avatar
+                        name={fullName}
+                        rounded="md"
+                        size="sm"
+                        src={representative.cover?.formats.thumbnail}
+                    />
+                </Tooltip>
+            </GridTableItem>
+            <GridTableItem>
                 <Text fontWeight="600">{fullName}</Text>
-                {!isAboveMd && <Text fontWeight="thin">·</Text>}
+            </GridTableItem>
+            <GridTableItem>
                 <Text color="gray.600">{roles}</Text>
-            </Stack>
-            <Spacer />
-            <Button variant="iareSolid" size="xs">
-                {!isAboveMd && t("contact")}
-                <Icon as={IoIosArrowForward} />
-            </Button>
-        </HStack>
+            </GridTableItem>
+            <GridTableItem pr={2}>
+                <Button variant="iareSolid" size="xs" pr={2}>
+                    {!isAboveMd && t("contact")}
+                    <Icon as={IoIosArrowForward} />
+                </Button>
+            </GridTableItem>
+        </>
     );
 };
 
@@ -299,7 +315,7 @@ interface GridItemProps {
     representative: Representative;
 }
 
-const GridItem = (representative: Representative) => {
+const CustomGridItem = (representative: Representative) => {
     const [isHover, setHover] = useState(false);
 
     const roles = useMemo(
@@ -362,7 +378,7 @@ const GridItem = (representative: Representative) => {
                             rounded="full"
                             shadow="lg"
                         >
-                            {item?.role}
+                            {item?.role && capitalize(item?.role)}
                         </Tag>
                     ))}
                 </Flex>
@@ -399,7 +415,7 @@ const ContactGrid = ({ representatives }: ContactGridProps) => {
                 spacing={4}
             >
                 {representatives.slice(0, 3).map((rep) => (
-                    <GridItem key={rep.id} {...rep} />
+                    <CustomGridItem key={rep.id} {...rep} />
                 ))}
             </SimpleGrid>
             <Spacer />
@@ -423,19 +439,19 @@ const ContactView = ({
     useHydrater({ header, footer });
 
     const featuredContacts = useMemo(() => {
-        const reps = _.chain(representatives)
+        return _.chain(representatives)
             .values()
             .flatten()
-            .value() as Representative[];
-        return _.unique(
-            reps.filter((rep) => rep.featured_contact),
-            "id"
-        );
+            .filter((rep) =>
+                rep.committee_roles.some(
+                    (role: CommitteeFunction) => role.featured_role
+                )
+            )
+            .value();
     }, [representatives]);
 
     return (
         <>
-            <pre>{JSON.stringify(representatives, null, 2)}</pre>
             <Stack
                 w="full"
                 justify="center"
@@ -453,7 +469,7 @@ const ContactView = ({
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { data: _data } = await strapi.query<{
+    const { data } = await strapi.query<{
         representatives: Representative[];
     }>({
         query: gql`
@@ -464,42 +480,142 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                         lastname
                     }
                     cover {
-                        formats
                         url
+                        formats
                     }
-                    contact
-                    featured_contact
+                    committee_roles {
+                        role
+                        featured_role
+
+                        abbreviation
+                        committee_objectives {
+                            objective
+                        }
+                    }
                     committee_objectives {
                         objective
-                        committee_roles {
-                            role
-                            abbreviation
-                        }
                     }
                 }
             }
         `,
     });
 
-    const objectives = _.chain(_data.representatives)
+    const objectives = _.chain(data.representatives)
         .pluck("committee_objectives")
         .flatten()
         .pluck("objective")
         .unique()
-        .value();
+        .value() as string[];
 
-    const representatives = objectives.reduce((acc, objective) => {
-        const newItems = _data.representatives.filter((rep) =>
-            rep.committee_objectives
-                ?.map((o) => o?.objective)
-                .includes(objective)
-        );
+    /**
+     * Group by objectives & filtering relevant objectives per representative
+     * 
+     * Conversion example:
+     * 
+     *  From: [
+                {
+                    user: {
+                        firstname: 'porter',
+                        lastname: 'brun',
+                    },
+                    committee_roles: [
+                        {
+                            committee_objectives: [
+                                {
+                                    objective: 'a'
+                                },
+                                {
+                                    objective: 'b'
+                                },
+                            ],
+                        }, ...
+                    ]
+                },
+                ...
+            ]
+            
+        To: {
+            a: [
+                {
+                user: {
+                    firstname: 'porter',
+                    lastname: 'brun',
+                },
+                committee_roles: [
+                    {
+                        committee_objectives: [
+                            {
+                                objective: 'a'
+                            }
+                        ],
+                    }
+                ]
 
-        if (_.has(acc, objective)) {
-            return { ...acc, [objective]: [...acc[objective], ...newItems] };
+            },
+            ...
+            ],
+            b: [
+                {
+                    user: {
+                        firstname: 'porter',
+                        lastname: 'brun',
+                    },
+                    committee_roles: [
+                        {
+                            committee_objectives: [
+                                {
+                                    objective: 'b'
+                                }
+                            ],
+                        }
+                    ]
+        
+                },
+                ...
+            ]
         }
-        return { ...acc, [objective]: newItems };
-    }, {});
+
+    
+     */
+
+    const representatives = _.chain(objectives)
+        .reduce((acc, obj) => {
+            const it = data.representatives
+                .filter((rep) => {
+                    if (!rep) return false;
+                    const roles = _.propertyOf(rep)("committee_roles");
+                    if (!roles) return false;
+                    return _.chain(roles)
+                        .pluck("committee_objectives")
+                        .flatten()
+                        .pluck("objective")
+                        .some((o) => o === obj)
+                        .value();
+                })
+                .map((rep) => _.omit(rep, "committee_objectives"))
+                .map((rep) => {
+                    const roles = rep?.committee_roles?.map((role) => ({
+                        ...role,
+                        committee_objectives:
+                            role?.committee_objectives?.filter(
+                                (_obj) => _obj?.objective === obj
+                            ),
+                    })) as CommitteeFunction[];
+
+                    return {
+                        ...rep,
+                        committee_roles: _.reject(
+                            roles,
+                            (_obj) => _obj?.committee_objectives?.length === 0
+                        ),
+                    };
+                }) as Representative[];
+            if (_.has(acc, obj)) {
+                return { ...acc, [obj]: [...acc[obj], ...it] };
+            }
+            return { ...acc, [obj]: [...it] };
+        }, {} as Record<string, Representative[]>)
+        .value();
 
     return {
         props: {

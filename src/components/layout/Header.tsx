@@ -58,7 +58,7 @@ const Header = (props: BoxProps) => {
                 ref={ref}
                 py={4}
                 bg="white"
-                position="sticky"
+                position="fixed"
                 transition="box-shadow 0.3s"
                 w="full"
                 maxH={16}

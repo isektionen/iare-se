@@ -3,5 +3,8 @@
     "recipient": "Find",
     "search": "Search",
     "quickstart": "Elected members",
-    "browse": "browse for more members"
+    "browse": "browse for more members",
+    "selector": {
+        "all": "all"
+    }
 }

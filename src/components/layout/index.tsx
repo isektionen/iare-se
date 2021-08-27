@@ -4,10 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Meta from "./Meta";
 import { Box, Container, Flex, VStack } from "@chakra-ui/react";
-import { FooterProps } from "types/footer";
-import { DefHeader, DefFooter } from "types/global";
-import useTranslation from "next-translate/useTranslation";
-import { isMobile } from "react-device-detect";
+import { MailPortal } from "./MailPortal";
 
 interface Props {
     children: ReactNode;
@@ -15,7 +12,7 @@ interface Props {
 
 const Layout = (props: Props) => {
     return (
-        <VStack align="stretch" overflowX="hidden">
+        <VStack align="stretch" overflowX="hidden" position="relative">
             <Header px={{ base: 4, md: 12 }} />
             <Meta />
             <Box bg="white" w="100vw" pt={24}>

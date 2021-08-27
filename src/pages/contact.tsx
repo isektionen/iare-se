@@ -43,7 +43,7 @@ import { LinkComponent } from "components/LinkComponent";
 import { NextImage } from "components/NextImage";
 import { GetStaticPaths, GetStaticProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchHydration, useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import {
@@ -59,9 +59,14 @@ import {
     CommitteeFunction,
     CommitteeObjective,
     CommitteeObjectiveConnection,
-    Representative,
+    Representative as BaseRepresentative,
 } from "types/strapi";
 import _ from "underscore";
+import Fuse from "fuse.js";
+
+interface Representative extends BaseRepresentative {
+    tags: string[];
+}
 
 type Item = {
     value: string;
@@ -79,6 +84,7 @@ const ContactMenu = ({ items, setItems, ...props }: IContactMenu) => {
 
     const handleSelect = useCallback(
         (item: Item) => {
+            controls.onClose();
             setItems(
                 items.map((_item) => ({
                     ..._item,
@@ -86,7 +92,7 @@ const ContactMenu = ({ items, setItems, ...props }: IContactMenu) => {
                 }))
             );
         },
-        [items, setItems]
+        [controls, items, setItems]
     );
 
     if (isMobile) {
@@ -110,16 +116,18 @@ const ContactMenu = ({ items, setItems, ...props }: IContactMenu) => {
 
                         <DrawerBody>
                             <WrapPadding>
-                                {items.map((item) => (
-                                    <Button
-                                        textTransform="capitalize"
-                                        key={item.value}
-                                        variant="ghost"
-                                        onClick={() => handleSelect(item)}
-                                    >
-                                        {item.value}
-                                    </Button>
-                                ))}
+                                <VStack spacing={2} align="flex-start">
+                                    {items.map((item) => (
+                                        <Button
+                                            textTransform="capitalize"
+                                            key={item.value}
+                                            variant="ghost"
+                                            onClick={() => handleSelect(item)}
+                                        >
+                                            {item.value}
+                                        </Button>
+                                    ))}
+                                </VStack>
                             </WrapPadding>
                         </DrawerBody>
                     </DrawerContent>
@@ -154,41 +162,83 @@ const ContactMenu = ({ items, setItems, ...props }: IContactMenu) => {
     );
 };
 
-const ContactSearch = () => {
+interface IContactSearch {
+    onSearch: (searchTerm: string) => void;
+}
+
+const ContactSearch = ({ onSearch }: IContactSearch) => {
     return (
         <InputGroup>
             <InputLeftElement pointerEvents="none">
                 <Icon as={IoIosSearch} />
             </InputLeftElement>
 
-            <Input type="search" variant="outline" placeholder="Search..." />
+            <Input
+                type="search"
+                variant="outline"
+                placeholder="Search..."
+                onChange={(e) => onSearch(e.target.value)}
+            />
         </InputGroup>
     );
 };
-const ContactSelector = ({ representatives }: Props) => {
+
+interface ContactProps {
+    representatives: Record<string, Representative[]>;
+    objectives: Option[];
+}
+const ContactSelector = ({ representatives, objectives }: ContactProps) => {
     const { t } = useTranslation("contact");
 
+    const allLabel = t("selector.all");
+
     const [items, setSelected] = useState<Item[]>(
-        _.keys(representatives).map((rep, i) => ({
-            value: rep,
-            isSelected: i === 0,
-        }))
+        objectives.map((obj) => {
+            return {
+                value: obj.label,
+                isSelected: obj.label === t("selector.all"),
+            };
+        })
     );
 
+    useEffect(() => {
+        const _items = objectives.map((obj) => {
+            return {
+                value: obj.label,
+                isSelected: obj.label === allLabel,
+            };
+        });
+        setSelected(_items);
+    }, [allLabel, objectives]);
+
     const selected = useMemo(
-        () => items.find((item) => item.isSelected),
+        () => items?.find((item) => item.isSelected),
         [items]
     );
 
+    const [searchTerm, setSearchTerm] = useState<string>();
     const specificRepresentatives = useMemo(() => {
-        if (selected) {
+        if (searchTerm && searchTerm !== "") {
+            const group = representatives[allLabel];
+            const fuse = new Fuse(group, {
+                keys: ["user.firstname", "user.lastname", "tags"],
+                threshold: 0.3,
+            });
+            const result = fuse.search(searchTerm);
+            return _.pluck(result, "item") || [];
+        }
+        if (
+            selected &&
+            representatives &&
+            _.has(representatives, selected.value)
+        ) {
             const group = representatives[
                 selected.value
             ].flat() as Representative[];
             return group || [];
         }
         return [];
-    }, [representatives, selected]);
+    }, [allLabel, representatives, searchTerm, selected]);
 
     return (
         <Box
@@ -213,7 +263,7 @@ const ContactSelector = ({ representatives }: Props) => {
                         setItems={setSelected}
                     />
 
-                    <ContactSearch />
+                    <ContactSearch onSearch={setSearchTerm} />
                 </Stack>
                 <Box
                     h="md"
@@ -223,7 +273,10 @@ const ContactSelector = ({ representatives }: Props) => {
                     rounded="lg"
                 >
                     <Grid
-                        templateColumns="15% 35% 35% 15%"
+                        templateColumns={{
+                            base: "25% 50% 25%",
+                            md: "15% 60% 25%",
+                        }}
                         templateRows={`repeat(${specificRepresentatives.length},1fr)`}
                     >
                         {specificRepresentatives.length > 0 &&
@@ -251,7 +304,8 @@ const GridTableItem = ({ children, ...props }: IGridTableItem) => {
             borderBottomWidth="1px"
             display="flex"
             alignItems="center"
-            h="60px"
+            py={1}
+            minH="60px"
             {...props}
         >
             {children}
@@ -263,18 +317,25 @@ const StackItem = (representative: Representative) => {
     const { t } = useTranslation("contact");
     const isAboveMd = useBreakpointValue({ base: true, md: false });
 
-    const roles = useMemo(
-        () =>
-            representative?.committee_roles
-                ?.map((item) => {
-                    return (
-                        item?.abbreviation?.toUpperCase() ||
-                        capitalize(item?.role ?? "")
-                    );
-                })
-                .join(", ") ?? "",
-        [representative.committee_roles]
-    );
+    const roles = useMemo(() => {
+        const role = _.pluck(
+            representative.committee_roles as CommitteeFunction[],
+            "role"
+        ).map(capitalize);
+
+        const abbreviation = _.pluck(
+            representative.committee_roles as CommitteeFunction[],
+            "abbreviation"
+        ).map((text, i) => {
+            if (!text) return role[i];
+            return text?.toUpperCase();
+        });
+
+        return {
+            role: role.join(", "),
+            abbreviation: abbreviation.join(", "),
+        };
+    }, [representative.committee_roles]);
     const fullName = useMemo(
         () =>
             representative.user?.firstname +
@@ -282,7 +343,6 @@ const StackItem = (representative: Representative) => {
             representative.user?.lastname,
         [representative.user?.firstname, representative.user?.lastname]
     );
-
     return (
         <>
             <GridTableItem pl={2}>
@@ -290,18 +350,26 @@ const StackItem = (representative: Representative) => {
                     <Avatar
                         name={fullName}
                         rounded="md"
-                        size="sm"
+                        size="md"
                         src={representative.cover?.formats.thumbnail}
                     />
                 </Tooltip>
             </GridTableItem>
-            <GridTableItem>
+            <GridTableItem
+                flexDirection="column"
+                alignItems="flex-start"
+                justifyContent="center"
+            >
                 <Text fontWeight="600">{fullName}</Text>
+                <Tooltip label={roles.role}>
+                    <Text color="gray.600">
+                        {roles?.abbreviation || (roles?.role as string)}
+                    </Text>
+                </Tooltip>
             </GridTableItem>
-            <GridTableItem>
-                <Text color="gray.600">{roles}</Text>
-            </GridTableItem>
+
             <GridTableItem pr={2}>
+                <Spacer />
                 <Button variant="iareSolid" size="xs" pr={2}>
                     {!isAboveMd && t("contact")}
                     <Icon as={IoIosArrowForward} />
@@ -310,10 +378,6 @@ const StackItem = (representative: Representative) => {
         </>
     );
 };
-
-interface GridItemProps {
-    representative: Representative;
-}
 
 const CustomGridItem = (representative: Representative) => {
     const [isHover, setHover] = useState(false);
@@ -427,16 +491,45 @@ const ContactGrid = ({ representatives }: ContactGridProps) => {
     );
 };
 
+interface Option {
+    label: string;
+    value: string | number;
+}
 interface Props {
+    objectives: string[] | Option[];
     representatives: Record<string, Representative[]>;
 }
 
 const ContactView = ({
     header,
     footer,
-    representatives,
+    objectives: baseObjectives,
+    representatives: baseRepresentatives,
 }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
+    const { t } = useTranslation("contact");
+    const allLabel = t("selector.all");
+
+    const objectives = useMemo(() => {
+        const allLabel = t("selector.all");
+        return [allLabel, ...baseObjectives].map((obj, i) => ({
+            value: i,
+            label: obj as string,
+        }));
+    }, [baseObjectives, t]);
+    const representatives = useMemo(
+        () =>
+            _.chain(baseRepresentatives)
+                .pairs()
+                .reduce((acc, [k, v]) => {
+                    if (k === "__all__") {
+                        return { ...acc, [allLabel]: v };
+                    }
+                    return { ...acc, [k]: v };
+                }, {})
+                .value(),
+        [allLabel, baseRepresentatives]
+    );
 
     const featuredContacts = useMemo(() => {
         return _.chain(representatives)
@@ -461,7 +554,10 @@ const ContactView = ({
                 py={16}
                 px={{ base: 3, md: 32 }}
             >
-                <ContactSelector representatives={representatives} />
+                <ContactSelector
+                    objectives={objectives as Option[]}
+                    representatives={representatives}
+                />
                 <ContactGrid representatives={featuredContacts} />
             </Stack>
         </>
@@ -484,6 +580,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                         formats
                     }
                     committee_roles {
+                        contact
                         role
                         featured_role
 
@@ -506,6 +603,22 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         .pluck("objective")
         .unique()
         .value() as string[];
+
+    const generateTags = (roles: CommitteeFunction[]) =>
+        _.chain(
+            [
+                ..._.pluck(roles, "role"),
+                ..._.pluck(roles, "abbreviation"),
+                ...(_.chain(roles)
+                    .pluck("committee_objectives")
+                    .flatten()
+                    .map("objective")
+                    .value() as string[]),
+            ].map((text) => text?.toLowerCase())
+        )
+            .unique()
+            .filter((o) => o)
+            .value();
 
     /**
      * Group by objectives & filtering relevant objectives per representative
@@ -604,6 +717,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
                     return {
                         ...rep,
+                        tags: generateTags(roles),
                         committee_roles: _.reject(
                             roles,
                             (_obj) => _obj?.committee_objectives?.length === 0
@@ -615,10 +729,21 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
             }
             return { ...acc, [obj]: [...it] };
         }, {} as Record<string, Representative[]>)
+        .extend({
+            __all__: _.map(data.representatives, (rep) => {
+                const roles = rep?.committee_roles as CommitteeFunction[];
+
+                return {
+                    ..._.omit(rep, "committee_objectives"),
+                    tags: generateTags(roles),
+                };
+            }),
+        })
         .value();
 
     return {
         props: {
+            objectives,
             representatives,
             ...(await fetchHydration()),
         },

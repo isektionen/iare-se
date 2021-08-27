@@ -18,6 +18,7 @@ import "@fontsource/source-sans-pro/600.css";
 import "@fontsource/oxygen/300.css";
 import "@fontsource/oxygen/400.css";
 import "@fontsource/oxygen/700.css";
+import { MailPortal } from "components/layout/MailPortal";
 
 interface Props extends AppProps {
     headerProps: DefHeader;
@@ -39,6 +40,7 @@ const App = ({ Component, pageProps }: Props) => {
                                 content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover"
                             />
                         </Head>
+                        {/*<MailPortal />*/}
 
                         <Layout>
                             <Component {...pageProps} />

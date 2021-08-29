@@ -1,10 +1,13 @@
 {
     "contact": "Contact",
     "recipient": "Find",
-    "search": "Search",
     "quickstart": "Elected members",
     "browse": "browse for more members",
     "selector": {
-        "all": "all"
+        "all": "all",
+        "for": "contact {{rep}} as..."
+    },
+    "search": {
+        "placeholder": "Search..."
     }
 }

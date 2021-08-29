@@ -37,6 +37,15 @@ import {
     Grid,
     GridItem,
     BoxProps,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverFooter,
+    PopoverHeader,
+    PopoverTrigger,
+    Portal,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
@@ -167,6 +176,7 @@ interface IContactSearch {
 }
 
 const ContactSearch = ({ onSearch }: IContactSearch) => {
+    const { t } = useTranslation("contact");
     return (
         <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -176,7 +186,7 @@ const ContactSearch = ({ onSearch }: IContactSearch) => {
             <Input
                 type="search"
                 variant="outline"
-                placeholder="Search..."
+                placeholder={t("search.placeholder")}
                 onChange={(e) => onSearch(e.target.value)}
             />
         </InputGroup>
@@ -280,8 +290,8 @@ const ContactSelector = ({ representatives, objectives }: ContactProps) => {
                         templateRows={`repeat(${specificRepresentatives.length},1fr)`}
                     >
                         {specificRepresentatives.length > 0 &&
-                            specificRepresentatives.map((rep) => (
-                                <StackItem key={rep.id} {...rep} />
+                            specificRepresentatives.map((rep, i) => (
+                                <StackItem key={"specific-rep-" + i} {...rep} />
                             ))}
                     </Grid>
                 </Box>
@@ -294,7 +304,7 @@ const capitalize = (text: string) =>
     text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 
 interface IGridTableItem extends BoxProps {
-    children: JSX.Element[] | JSX.Element;
+    children: any | any[];
 }
 const GridTableItem = ({ children, ...props }: IGridTableItem) => {
     return (
@@ -331,17 +341,32 @@ const StackItem = (representative: Representative) => {
             return text?.toUpperCase();
         });
 
+        const href = _.pluck(
+            representative.committee_roles as CommitteeFunction[],
+            "slug"
+        ).map((text) => "/contact/" + text);
+
         return {
-            role: role.join(", "),
-            abbreviation: abbreviation.join(", "),
+            role,
+            abbreviation,
+            href,
         };
     }, [representative.committee_roles]);
+
     const fullName = useMemo(
         () =>
             representative.user?.firstname +
             " " +
             representative.user?.lastname,
         [representative.user?.firstname, representative.user?.lastname]
+    );
+
+    const hasMultipleRoles = useMemo(
+        () =>
+            representative &&
+            representative.committee_roles &&
+            representative.committee_roles?.length > 1,
+        [representative]
     );
     return (
         <>
@@ -361,21 +386,113 @@ const StackItem = (representative: Representative) => {
                 justifyContent="center"
             >
                 <Text fontWeight="600">{fullName}</Text>
-                <Tooltip label={roles.role}>
+                <Tooltip label={roles.role.join(", ")}>
                     <Text color="gray.600">
-                        {roles?.abbreviation || (roles?.role as string)}
+                        {roles?.abbreviation.join(", ") ||
+                            (roles?.role.join(", ") as string)}
                     </Text>
                 </Tooltip>
             </GridTableItem>
 
             <GridTableItem pr={2}>
                 <Spacer />
+                {hasMultipleRoles ? (
+                    <ContactButton
+                        rep={fullName}
+                        role={roles.role}
+                        href={roles.href}
+                    />
+                ) : (
+                    <LinkComponent
+                        as={Button}
+                        variant="iareSolid"
+                        size="xs"
+                        pr={2}
+                        href={_.first(roles.href) as string}
+                    >
+                        {!isAboveMd && t("contact")}
+                        <Icon as={IoIosArrowForward} />
+                    </LinkComponent>
+                )}
+            </GridTableItem>
+        </>
+    );
+};
+
+interface Role {
+    rep: string;
+    role: string[];
+    href: string[];
+}
+
+const ContactButton = ({ rep, role, href }: Role) => {
+    const isAboveMd = useBreakpointValue({ base: true, md: false });
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const { t } = useTranslation("contact");
+    if (isMobile) {
+        return (
+            <>
+                <Button variant="iareSolid" size="xs" pr={2} onClick={onOpen}>
+                    {!isAboveMd && t("contact")}
+                    <Icon as={IoIosArrowForward} />
+                </Button>
+                <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerHeader>
+                            {t("selector.for", { rep })}
+                        </DrawerHeader>
+                        <DrawerBody>
+                            <WrapPadding>
+                                <VStack spacing={2} align="flex-start">
+                                    {_.zip(role, href).map(([role, href]) => (
+                                        <LinkComponent
+                                            as={Button}
+                                            variant="ghost"
+                                            key={href}
+                                            href={href}
+                                        >
+                                            {role}
+                                        </LinkComponent>
+                                    ))}
+                                </VStack>
+                            </WrapPadding>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </>
+        );
+    }
+    return (
+        <Popover trigger="hover" placement="right">
+            <PopoverTrigger>
                 <Button variant="iareSolid" size="xs" pr={2}>
                     {!isAboveMd && t("contact")}
                     <Icon as={IoIosArrowForward} />
                 </Button>
-            </GridTableItem>
-        </>
+            </PopoverTrigger>
+            <PopoverContent w="min-content">
+                <PopoverArrow />
+
+                <PopoverBody>
+                    <VStack spacing={2} justify="center">
+                        {_.zip(role, href).map(([role, href]) => (
+                            <LinkComponent
+                                as={Button}
+                                size="xs"
+                                variant="ghost"
+                                key={href}
+                                href={href}
+                            >
+                                {role}
+                            </LinkComponent>
+                        ))}
+                    </VStack>
+                </PopoverBody>
+            </PopoverContent>
+        </Popover>
     );
 };
 
@@ -393,12 +510,22 @@ const CustomGridItem = (representative: Representative) => {
             representative.user?.lastname,
         [representative.user?.firstname, representative.user?.lastname]
     );
+
+    const href = useMemo(() => {
+        const rep = _.first(
+            representative.committee_roles as CommitteeFunction[]
+        );
+        if (!rep) return;
+        return "/contact/" + rep.slug;
+    }, [representative.committee_roles]);
     return (
-        <Flex
+        <LinkComponent
+            as={Flex}
+            href={href || "/contact/"}
             transition="box-shadow 0.2s ease-in"
             shadow={isHover ? "xl" : "md"}
             rounded="md"
-            direction="column"
+            flexDirection="column"
             bg="white"
             maxH="200px"
             overflow="hidden"
@@ -446,9 +573,9 @@ const CustomGridItem = (representative: Representative) => {
                         </Tag>
                     ))}
                 </Flex>
-                <AccessibleLink href="/">{fullName}</AccessibleLink>
+                {fullName}
             </Box>
-        </Flex>
+        </LinkComponent>
     );
 };
 
@@ -483,10 +610,18 @@ const ContactGrid = ({ representatives }: ContactGridProps) => {
                 ))}
             </SimpleGrid>
             <Spacer />
-            <LinkComponent as={Button} href="/" size="sm" variant="ghost">
-                <Text>{t("browse")}</Text>
-                <Icon as={IoIosArrowRoundForward} boxSize={6} />
-            </LinkComponent>
+            {
+                <LinkComponent
+                    as={Button}
+                    isDisabled
+                    href="/"
+                    size="sm"
+                    variant="ghost"
+                >
+                    <Text>{t("browse")}</Text>
+                    <Icon as={IoIosArrowRoundForward} boxSize={6} />
+                </LinkComponent>
+            }
         </VStack>
     );
 };
@@ -571,6 +706,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         query: gql`
             query {
                 representatives(where: { hidden: false }) {
+                    id
                     user {
                         firstname
                         lastname
@@ -580,16 +716,19 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                         formats
                     }
                     committee_roles {
+                        id
                         contact
                         role
                         featured_role
-
+                        slug
                         abbreviation
                         committee_objectives {
+                            id
                             objective
                         }
                     }
                     committee_objectives {
+                        id
                         objective
                     }
                 }

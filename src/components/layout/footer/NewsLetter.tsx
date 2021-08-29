@@ -85,7 +85,6 @@ export const NewsLetter = () => {
                 <Box as="form" onSubmit={handleSubmit(submit)}>
                     <InputGroup>
                         <Input
-                            isFullWidth
                             id="email"
                             autoComplete="on"
                             variant="filled"

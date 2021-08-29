@@ -39,7 +39,7 @@ export const LanguageMenu = (props: Props) => {
         lg: currentLanguage?.label,
     });
     return (
-        <Menu>
+        <Menu closeOnSelect={true}>
             {({ isOpen, onClose }) => (
                 <>
                     {
@@ -48,7 +48,6 @@ export const LanguageMenu = (props: Props) => {
                             as={Button}
                             rightIcon={<IoIosArrowDown />}
                             variant="outline"
-                            closeOnSelect={true}
                             {...rest}
                         >
                             <HStack>

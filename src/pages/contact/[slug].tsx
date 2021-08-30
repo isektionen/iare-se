@@ -11,6 +11,7 @@ import {
     GridItem,
     Heading,
     HStack,
+    Icon,
     IconButton,
     Input,
     InputGroup,
@@ -30,12 +31,14 @@ import {
     useToast,
     VStack,
 } from "@chakra-ui/react";
+import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import useTranslation from "next-translate/useTranslation";
 import React, { useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { IoMdArrowDropleft } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { fetchHydration, useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
@@ -261,9 +264,19 @@ const RoleView = ({
             justify="center"
             overflow="hidden"
             align="stretch"
-            py={16}
+            direction="column"
+            pt={8}
+            pb={16}
             px={{ base: 3, md: 32 }}
         >
+            <AccessibleLink
+                href="/contact/"
+                textDecoration="none"
+                mb={6}
+                _hover={{ textDecoration: "none" }}
+            >
+                <Icon as={IoMdArrowDropleft} /> {t("back")}
+            </AccessibleLink>
             <Box
                 position="relative"
                 overflow="hidden"

@@ -28,7 +28,7 @@
         },
         "from": {
             "label": "Från",
-            "placeholder": "Example@kth.se"
+            "placeholder": "exempel@kth.se"
         },
         "subject": {
             "label": "Ämne",

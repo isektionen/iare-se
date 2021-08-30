@@ -22,7 +22,7 @@
         },
         "from": {
             "label": "From",
-            "placeholder": "Example@kth.se"
+            "placeholder": "example@kth.se"
         },
         "subject": {
             "label": "Subject",

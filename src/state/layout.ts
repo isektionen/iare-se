@@ -52,22 +52,11 @@ export const useHydrater = (data: {
                 .filter(_.isObject)
                 .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {})
                 .value();
+
             setLayout({ ..._layout, ...newData });
         }
     }, []);
 };
-
-/*
-export const layout = selectorFamily({
-    key: "SELECTORFAMILY/LAYOUT",
-    get:
-        <T extends keyof DefHeader>(section: T) =>
-        async ({ get }) => {
-            const state = get(headerState);
-            return state[section] as DefHeader[T];
-        },
-});
-*/
 
 export const layout = selectorFamily({
     key: "SELECTORFAMILY/LAYOUT",

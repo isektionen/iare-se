@@ -147,9 +147,7 @@ const EventView = ({
         withCheckout,
         initCheckout,
     } = useNets({
-        on3DSHandler: (paymentId) => {
-            console.log("3DS", paymentId);
-        },
+        on3DSHandler: (paymentId) => {},
         onCompleteHandler: ({ paymentId }) => {
             finalizeOrder();
         },

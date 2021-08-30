@@ -15,7 +15,7 @@ const Layout = (props: Props) => {
         <VStack align="stretch" overflowX="hidden" position="relative">
             <Header px={{ base: 4, md: 12 }} />
             <Meta />
-            <Box bg="white" w="100vw" pt={24}>
+            <Box bg="white" w="100vw" pt={20}>
                 {props.children}
             </Box>
             <Footer px={{ base: 4, md: 12 }} />

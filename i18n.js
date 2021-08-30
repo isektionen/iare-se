@@ -8,6 +8,6 @@ module.exports = {
         "/contact": ["contact"],
         "/contact/[slug]": ["contact"],
         "/event/[slug]": ["event", "ticket"],
-        "/ticket/[id]": ["ticket"],
+        "/brand": ["brand"],
     },
 };

@@ -25,11 +25,11 @@ import { MobileMenuItem } from "./header/MobileMenuItem";
 import { Logo } from "./header/Logo";
 import { Section } from "./header/Section";
 import { useRecoilValue } from "recoil";
-import { headerState } from "state/layout";
+import { headerState, layout } from "state/layout";
 import { Feedback } from "./header/Feedback";
 
 const Header = (props: BoxProps) => {
-    const { languages, contact, sections } = useRecoilValue(headerState);
+    const { languages, contact, sections } = useRecoilValue(layout("header"));
     const { onClose, onOpen, isOpen } = useDisclosure();
 
     const { scrollY } = useViewportScroll();

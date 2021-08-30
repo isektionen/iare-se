@@ -679,21 +679,33 @@ const ContactView = ({
     }, [representatives]);
 
     return (
-        <Stack
-            w="full"
-            justify="center"
-            align="stretch"
-            spacing={10}
-            direction={{ base: "column", lg: "row" }}
-            py={16}
+        <VStack
+            py={8}
             px={{ base: 3, md: 32 }}
+            w="full"
+            align="stretch"
+            spacing={8}
         >
-            <ContactSelector
-                objectives={objectives as Option[]}
-                representatives={representatives}
-            />
-            <ContactGrid representatives={featuredContacts} />
-        </Stack>
+            <Box>
+                <Heading mb={2}>{t("contact")}</Heading>
+                <Text fontWeight="medium" color="gray.600">
+                    {t("description")}
+                </Text>
+            </Box>
+            <Stack
+                w="full"
+                justify="center"
+                align="stretch"
+                spacing={10}
+                direction={{ base: "column", lg: "row" }}
+            >
+                <ContactSelector
+                    objectives={objectives as Option[]}
+                    representatives={representatives}
+                />
+                <ContactGrid representatives={featuredContacts} />
+            </Stack>
+        </VStack>
     );
 };
 

@@ -1,9 +1,10 @@
 {
     "back": "tillbaka",
     "contact": "Kontakta",
+    "description": "Kontakta en förtroendevald i sektionen, genom att hitta hen genom att söka på dens namn eller roll.",
     "recipient": "Hitta",
     "vacant": "vakant",
-    "quickstart": "Förtroendevalda",
+    "quickstart": "Specialfunktionärer",
     "browse": "bläddra bland förtroendevalda",
     "selector": {
         "all": "alla",

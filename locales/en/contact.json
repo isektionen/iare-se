@@ -1,9 +1,10 @@
 {
     "back": "back",
     "contact": "Contact",
+    "description": "Contact any representative apart of the chapter, by searching for either the role or the name of the representative",
     "vacant": "vacant",
     "recipient": "Find",
-    "quickstart": "Elected members",
+    "quickstart": "Vital Representatives",
     "browse": "browse for more members",
     "selector": {
         "all": "all",

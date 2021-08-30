@@ -2,7 +2,7 @@ import React from "react";
 import NextLink from "next/link";
 import { As, Box, BoxProps, ButtonOptions, chakra } from "@chakra-ui/react";
 
-interface Props extends BoxProps {
+interface Props extends BoxProps, ButtonOptions {
     href: string;
     size?: string;
     variant?: string;

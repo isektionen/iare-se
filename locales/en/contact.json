@@ -1,5 +1,6 @@
 {
     "contact": "Contact",
+    "vacant": "vacant",
     "recipient": "Find",
     "quickstart": "Elected members",
     "browse": "browse for more members",
@@ -9,5 +10,40 @@
     },
     "search": {
         "placeholder": "Search..."
+    },
+    "tabs": {
+        "nocontent": "Description missing",
+        "personal": "About {{person}}",
+        "role": "About the role"
+    },
+    "mail": {
+        "to": {
+            "label": "To"
+        },
+        "from": {
+            "label": "From",
+            "placeholder": "Example@kth.se"
+        },
+        "subject": {
+            "label": "Subject",
+            "placeholder": "I was wondering..."
+        },
+        "submit": "Send",
+        "continue": "Continue externally",
+        "email": {
+            "invalid": "From field is invalid",
+            "required": "An email is required"
+        }
+
+    },
+    "toast": {
+        "success": {
+            "title": "Email sent!",
+            "description": "We've sent your email to {{to}} aswell as yours."
+        },
+        "error": {
+            "title": "Something wrong happened",
+            "description": "We couldn't send the email, try to continue externally"
+        }
     }
 }

@@ -1,7 +1,7 @@
 {
     "contact": "Kontakta",
     "recipient": "Hitta",
-    
+    "vacant": "vakant",
     "quickstart": "Förtroendevalda",
     "browse": "bläddra bland förtroendevalda",
     "selector": {
@@ -12,5 +12,46 @@
     },
     "search": {
         "placeholder": "Sök..."
+    },
+    "tabs": {
+        "nocontent": "Beskrivning saknas",
+        "personal": {
+            "label": "Om {{person}}"
+        },
+        "role": {
+            "label": "Om rollen"
+        }
+    },
+    "mail": {
+        "to": {
+            "label": "Till"
+        },
+        "from": {
+            "label": "Från",
+            "placeholder": "Example@kth.se"
+        },
+        "subject": {
+            "label": "Ämne",
+            "placeholder": "Jag funderade på..."
+        },
+        "submit": "Skicka",
+        "continue": "Fortsätt externt",
+        "email": {
+            "invalid": "Från fältet är felaktigt",
+            "required": "En emailadress är nödvändig"
+
+        }
+
+
+    },
+    "toast": {
+        "success": {
+            "title": "Email skickat!",
+            "description": "Vi har skickat emailet till {{to}}, samt dig själv!"
+        },
+        "error": {
+            "title": "Emailet kunde inte skickas",
+            "description": "Vi kunde inte skicka mailet, pröva externt istället!"
+        }
     }
 }

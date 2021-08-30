@@ -12,5 +12,8 @@
             "label_one": "Verksamhetsår",
             "label_other": "Verksamhetsår"
         }
+    },
+    "searchbar": {
+        "label": "Sök"
     }
 }

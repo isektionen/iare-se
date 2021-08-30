@@ -12,5 +12,8 @@
             "label_one": "business year",
             "label_other": "business years"
         }
+    },
+    "searchbar": {
+        "label": "Search"
     }
 }

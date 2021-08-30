@@ -34,6 +34,7 @@ const customTheme = extendTheme({
             100: "#C5B19F",
             200: "#C5B19F",
             500: "#976E49",
+            600: "#976E49",
         },
         porter: {
             100: "#fff",

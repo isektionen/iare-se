@@ -152,7 +152,11 @@ export const SearchBar = () => {
     return (
         <VStack pb={16} align="flex-start">
             <InputGroup>
-                <Input placeholder="Search" variant="outline" {...register} />
+                <Input
+                    placeholder={t("searchbar.label")}
+                    variant="outline"
+                    {...register}
+                />
             </InputGroup>
             <Wrap spacing={2} shouldWrapChildren>
                 <Datepicker />

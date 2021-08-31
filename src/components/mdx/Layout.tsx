@@ -15,19 +15,14 @@ import {
     strong,
     ul,
 } from "./Components";
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
+import { Contact } from "./committee/Contact";
 
-interface Props {
+interface Props extends BoxProps {
     source: MDXRemoteSerializeResult;
 }
 
-const custom = (props: any) => (
-    <Box bg="gray.900" {...props}>
-        CUSTOM
-    </Box>
-);
-
-export const MDXLayout = ({ source }: Props) => {
+export const MDXLayout = ({ source, ...props }: Props) => {
     const components = {
         h1: heading({ as: "h1" }),
         h2: heading({ as: "h2" }),
@@ -47,9 +42,12 @@ export const MDXLayout = ({ source }: Props) => {
         li,
         code,
         img,
+        contact: function contact(props: any) {
+            return <Contact {...props} />;
+        },
     };
     return (
-        <Box py={12}>
+        <Box {...props}>
             <MDXRemote {...source} components={components} />
         </Box>
     );

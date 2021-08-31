@@ -342,11 +342,15 @@ export type Committee = {
   name: Scalars['String'];
   committee_objective?: Maybe<CommitteeObjective>;
   abbreviation?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  icon?: Maybe<UploadFile>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
   events?: Maybe<Array<Maybe<Event>>>;
   posts?: Maybe<Array<Maybe<Post>>>;
   representatives?: Maybe<Array<Maybe<Representative>>>;
+  contacts?: Maybe<Array<Maybe<Representative>>>;
   localizations?: Maybe<Array<Maybe<Committee>>>;
 };
 
@@ -368,6 +372,14 @@ export type CommitteePostsArgs = {
 
 
 export type CommitteeRepresentativesArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+
+export type CommitteeContactsArgs = {
   sort?: Maybe<Scalars['String']>;
   limit?: Maybe<Scalars['Int']>;
   start?: Maybe<Scalars['Int']>;
@@ -407,9 +419,21 @@ export type CommitteeConnectionCommittee_Objective = {
   connection?: Maybe<CommitteeConnection>;
 };
 
+export type CommitteeConnectionContent = {
+  __typename?: 'CommitteeConnectionContent';
+  key?: Maybe<Scalars['String']>;
+  connection?: Maybe<CommitteeConnection>;
+};
+
 export type CommitteeConnectionCreated_At = {
   __typename?: 'CommitteeConnectionCreated_at';
   key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<CommitteeConnection>;
+};
+
+export type CommitteeConnectionIcon = {
+  __typename?: 'CommitteeConnectionIcon';
+  key?: Maybe<Scalars['ID']>;
   connection?: Maybe<CommitteeConnection>;
 };
 
@@ -434,6 +458,12 @@ export type CommitteeConnectionName = {
 export type CommitteeConnectionPublished_At = {
   __typename?: 'CommitteeConnectionPublished_at';
   key?: Maybe<Scalars['DateTime']>;
+  connection?: Maybe<CommitteeConnection>;
+};
+
+export type CommitteeConnectionSlug = {
+  __typename?: 'CommitteeConnectionSlug';
+  key?: Maybe<Scalars['String']>;
   connection?: Maybe<CommitteeConnection>;
 };
 
@@ -603,6 +633,9 @@ export type CommitteeGroupBy = {
   name?: Maybe<Array<Maybe<CommitteeConnectionName>>>;
   committee_objective?: Maybe<Array<Maybe<CommitteeConnectionCommittee_Objective>>>;
   abbreviation?: Maybe<Array<Maybe<CommitteeConnectionAbbreviation>>>;
+  slug?: Maybe<Array<Maybe<CommitteeConnectionSlug>>>;
+  content?: Maybe<Array<Maybe<CommitteeConnectionContent>>>;
+  icon?: Maybe<Array<Maybe<CommitteeConnectionIcon>>>;
   locale?: Maybe<Array<Maybe<CommitteeConnectionLocale>>>;
   published_at?: Maybe<Array<Maybe<CommitteeConnectionPublished_At>>>;
 };
@@ -614,6 +647,40 @@ export type CommitteeInput = {
   committee_objective?: Maybe<Scalars['ID']>;
   representatives?: Maybe<Array<Maybe<Scalars['ID']>>>;
   abbreviation?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['ID']>;
+  contacts?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type CommitteeLandingpage = {
+  __typename?: 'CommitteeLandingpage';
+  id: Scalars['ID'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  localizations?: Maybe<Array<Maybe<CommitteeLandingpage>>>;
+};
+
+
+export type CommitteeLandingpageLocalizationsArgs = {
+  sort?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  where?: Maybe<Scalars['JSON']>;
+};
+
+export type CommitteeLandingpageInput = {
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -2424,7 +2491,7 @@ export type LocaleInput = {
 };
 
 
-export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionRepresentative | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | CommitteeFunction | CommitteeFunctionConnection | CommitteeFunctionAggregator | CommitteeFunctionGroupBy | CommitteeFunctionConnectionId | CommitteeFunctionConnectionCreated_At | CommitteeFunctionConnectionUpdated_At | CommitteeFunctionConnectionRole | CommitteeFunctionConnectionAbbreviation | CommitteeFunctionConnectionFeatured_Role | CommitteeFunctionConnectionContact | CommitteeFunctionConnectionSlug | CommitteeFunctionConnectionRole_Description | CommitteeFunctionConnectionLocale | CommitteeFunctionConnectionPublished_At | CreateCommitteeFunctionPayload | UpdateCommitteeFunctionPayload | DeleteCommitteeFunctionPayload | CommitteeObjective | CommitteeObjectiveConnection | CommitteeObjectiveAggregator | CommitteeObjectiveGroupBy | CommitteeObjectiveConnectionId | CommitteeObjectiveConnectionCreated_At | CommitteeObjectiveConnectionUpdated_At | CommitteeObjectiveConnectionObjective | CommitteeObjectiveConnectionLocale | CreateCommitteeObjectivePayload | UpdateCommitteeObjectivePayload | DeleteCommitteeObjectivePayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionCommittee_Objective | CommitteeConnectionAbbreviation | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | DocumentCategory | DocumentCategoryConnection | DocumentCategoryAggregator | DocumentCategoryGroupBy | DocumentCategoryConnectionId | DocumentCategoryConnectionCreated_At | DocumentCategoryConnectionUpdated_At | DocumentCategoryConnectionName | DocumentCategoryConnectionRelatedTo | DocumentCategoryConnectionLocale | CreateDocumentCategoryPayload | UpdateDocumentCategoryPayload | DeleteDocumentCategoryPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionFullfillmentUid | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Feedback | FeedbackConnection | FeedbackAggregator | FeedbackGroupBy | FeedbackConnectionId | FeedbackConnectionCreated_At | FeedbackConnectionUpdated_At | FeedbackConnectionEmotion | FeedbackConnectionContent | FeedbackConnectionPublishable | FeedbackConnectionPublished_At | CreateFeedbackPayload | UpdateFeedbackPayload | DeleteFeedbackPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | Representative | RepresentativeConnection | RepresentativeAggregator | RepresentativeGroupBy | RepresentativeConnectionId | RepresentativeConnectionCreated_At | RepresentativeConnectionUpdated_At | RepresentativeConnectionUser | RepresentativeConnectionCover | RepresentativeConnectionHidden | RepresentativeConnectionChapter_Year | RepresentativeConnectionPersonal_Description | RepresentativeConnectionLocale | RepresentativeConnectionPublished_At | CreateRepresentativePayload | UpdateRepresentativePayload | DeleteRepresentativePayload | EmailDesignerEmailTemplate | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentDocuments | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderFeedbackbox | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
+export type Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | OatComponentEventTicketReference | OatCommittee | OatPlace | OatEvent | OrderAsTicket | Allergy | AllergyConnection | AllergyAggregator | AllergyAggregatorSum | AllergyAggregatorAvg | AllergyAggregatorMin | AllergyAggregatorMax | AllergyGroupBy | AllergyConnectionId | AllergyConnectionCreated_At | AllergyConnectionUpdated_At | AllergyConnectionName | AllergyConnectionCount | AllergyConnectionLocale | AllergyConnectionPublished_At | CreateAllergyPayload | UpdateAllergyPayload | DeleteAllergyPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnectionCreated_At | CategoryConnectionUpdated_At | CategoryConnectionName | CategoryConnectionLocale | CategoryConnectionPublished_At | CreateCategoryPayload | UpdateCategoryPayload | DeleteCategoryPayload | ChapterYear | ChapterYearConnection | ChapterYearAggregator | ChapterYearGroupBy | ChapterYearConnectionId | ChapterYearConnectionCreated_At | ChapterYearConnectionUpdated_At | ChapterYearConnectionLabel | ChapterYearConnectionUser | ChapterYearConnectionRepresentative | ChapterYearConnectionPublished_At | CreateChapterYearPayload | UpdateChapterYearPayload | DeleteChapterYearPayload | CommitteeFunction | CommitteeFunctionConnection | CommitteeFunctionAggregator | CommitteeFunctionGroupBy | CommitteeFunctionConnectionId | CommitteeFunctionConnectionCreated_At | CommitteeFunctionConnectionUpdated_At | CommitteeFunctionConnectionRole | CommitteeFunctionConnectionAbbreviation | CommitteeFunctionConnectionFeatured_Role | CommitteeFunctionConnectionContact | CommitteeFunctionConnectionSlug | CommitteeFunctionConnectionRole_Description | CommitteeFunctionConnectionLocale | CommitteeFunctionConnectionPublished_At | CreateCommitteeFunctionPayload | UpdateCommitteeFunctionPayload | DeleteCommitteeFunctionPayload | CommitteeLandingpage | UpdateCommitteeLandingpagePayload | DeleteCommitteeLandingpagePayload | CommitteeObjective | CommitteeObjectiveConnection | CommitteeObjectiveAggregator | CommitteeObjectiveGroupBy | CommitteeObjectiveConnectionId | CommitteeObjectiveConnectionCreated_At | CommitteeObjectiveConnectionUpdated_At | CommitteeObjectiveConnectionObjective | CommitteeObjectiveConnectionLocale | CreateCommitteeObjectivePayload | UpdateCommitteeObjectivePayload | DeleteCommitteeObjectivePayload | Committee | CommitteeConnection | CommitteeAggregator | CommitteeGroupBy | CommitteeConnectionId | CommitteeConnectionCreated_At | CommitteeConnectionUpdated_At | CommitteeConnectionName | CommitteeConnectionCommittee_Objective | CommitteeConnectionAbbreviation | CommitteeConnectionSlug | CommitteeConnectionContent | CommitteeConnectionIcon | CommitteeConnectionLocale | CommitteeConnectionPublished_At | CreateCommitteePayload | UpdateCommitteePayload | DeleteCommitteePayload | Company | CompanyConnection | CompanyAggregator | CompanyGroupBy | CompanyConnectionId | CompanyConnectionCreated_At | CompanyConnectionUpdated_At | CompanyConnectionName | CompanyConnectionLogo | CompanyConnectionWebsite | CompanyConnectionBackgroundColor | CompanyConnectionSponsor | CompanyConnectionLocale | CompanyConnectionPublished_At | CreateCompanyPayload | UpdateCompanyPayload | DeleteCompanyPayload | Diet | DietConnection | DietAggregator | DietAggregatorSum | DietAggregatorAvg | DietAggregatorMin | DietAggregatorMax | DietGroupBy | DietConnectionId | DietConnectionCreated_At | DietConnectionUpdated_At | DietConnectionName | DietConnectionCount | DietConnectionLocale | DietConnectionPublished_At | CreateDietPayload | UpdateDietPayload | DeleteDietPayload | DocumentCategory | DocumentCategoryConnection | DocumentCategoryAggregator | DocumentCategoryGroupBy | DocumentCategoryConnectionId | DocumentCategoryConnectionCreated_At | DocumentCategoryConnectionUpdated_At | DocumentCategoryConnectionName | DocumentCategoryConnectionRelatedTo | DocumentCategoryConnectionLocale | CreateDocumentCategoryPayload | UpdateDocumentCategoryPayload | DeleteDocumentCategoryPayload | Document | UpdateDocumentPayload | DeleteDocumentPayload | EventCategory | EventCategoryConnection | EventCategoryAggregator | EventCategoryGroupBy | EventCategoryConnectionId | EventCategoryConnectionCreated_At | EventCategoryConnectionUpdated_At | EventCategoryConnectionName | EventCategoryConnectionLocale | EventCategoryConnectionPublished_At | CreateEventCategoryPayload | UpdateEventCategoryPayload | DeleteEventCategoryPayload | Event | EventConnection | EventAggregator | EventGroupBy | EventConnectionId | EventConnectionCreated_At | EventConnectionUpdated_At | EventConnectionTitle | EventConnectionSlug | EventConnectionCommittee | EventConnectionCategory | EventConnectionTickets | EventConnectionServingOptions | EventConnectionStudentOptions | EventConnectionStartTime | EventConnectionEndTime | EventConnectionDeadline | EventConnectionDescription | EventConnectionPlace | EventConnectionPasswordProtected | EventConnectionBanner | EventConnectionFullfillmentUid | EventConnectionLocale | EventConnectionPublished_At | CreateEventPayload | UpdateEventPayload | DeleteEventPayload | Feedback | FeedbackConnection | FeedbackAggregator | FeedbackGroupBy | FeedbackConnectionId | FeedbackConnectionCreated_At | FeedbackConnectionUpdated_At | FeedbackConnectionEmotion | FeedbackConnectionContent | FeedbackConnectionPublishable | FeedbackConnectionPublished_At | CreateFeedbackPayload | UpdateFeedbackPayload | DeleteFeedbackPayload | Footer | UpdateFooterPayload | DeleteFooterPayload | Header | UpdateHeaderPayload | DeleteHeaderPayload | JobCategory | JobCategoryConnection | JobCategoryAggregator | JobCategoryGroupBy | JobCategoryConnectionId | JobCategoryConnectionCreated_At | JobCategoryConnectionUpdated_At | JobCategoryConnectionName | JobCategoryConnectionLocale | JobCategoryConnectionPublished_At | CreateJobCategoryPayload | UpdateJobCategoryPayload | DeleteJobCategoryPayload | Jobs | JobsConnection | JobsAggregator | JobsGroupBy | JobsConnectionId | JobsConnectionCreated_At | JobsConnectionUpdated_At | JobsConnectionTitle | JobsConnectionSlug | JobsConnectionDeadlineDate | JobsConnectionStartDate | JobsConnectionJobCategory | JobsConnectionCompany | JobsConnectionBody | JobsConnectionPosition | JobsConnectionLocation | JobsConnectionLocale | JobsConnectionPublished_At | CreateJobPayload | UpdateJobPayload | DeleteJobPayload | Order | CreateOrderPayload | UpdateOrderPayload | DeleteOrderPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_At | PostConnectionUpdated_At | PostConnectionTitle | PostConnectionDescription | PostConnectionSlug | PostConnectionAdminUser | PostConnectionCommittee | PostConnectionBody | PostConnectionBanner | PostConnectionLocale | PostConnectionPublished_At | CreatePostPayload | UpdatePostPayload | DeletePostPayload | Representative | RepresentativeConnection | RepresentativeAggregator | RepresentativeGroupBy | RepresentativeConnectionId | RepresentativeConnectionCreated_At | RepresentativeConnectionUpdated_At | RepresentativeConnectionUser | RepresentativeConnectionCover | RepresentativeConnectionHidden | RepresentativeConnectionChapter_Year | RepresentativeConnectionPersonal_Description | RepresentativeConnectionLocale | RepresentativeConnectionPublished_At | CreateRepresentativePayload | UpdateRepresentativePayload | DeleteRepresentativePayload | EmailDesignerEmailTemplate | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_At | UploadFileConnectionUpdated_At | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_Metadata | DeleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | CreateRolePayload | UpdateRolePayload | DeleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_At | UsersPermissionsUserConnectionUpdated_At | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionNickname | UsersPermissionsUserConnectionFirstname | UsersPermissionsUserConnectionLastname | UsersPermissionsUserConnectionChapter_Year | CreateUserPayload | UpdateUserPayload | DeleteUserPayload | ComponentDocumentDocuments | ComponentEventInternalDietPreference | ComponentEventInternalStreet | ComponentEventInternalTicket | ComponentEventPasswordProtect | ComponentEventPlace | ComponentEventRecipient | ComponentEventServing | ComponentEventStudent | ComponentEventTicketReference | ComponentEventTickets | ComponentFooterSocial | ComponentFormInternalsCheckboxOption | ComponentFormInternalsOption | ComponentFormCheckbox | ComponentFormEmail | ComponentFormEventPassword | ComponentFormInput | ComponentFormSelect | ComponentHeaderContact | ComponentHeaderFeedbackbox | ComponentHeaderLanguages | ComponentHeaderLogo | ComponentHeaderMenuSection | ComponentHeaderSubSection | ComponentJobAbout | ComponentJobContact | ComponentJobDescription | ComponentJobImage | ComponentJobMail | ComponentJobRequirements | ComponentJobTaskItem | ComponentJobTasks | ComponentJobYear;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2440,6 +2507,8 @@ export type Mutation = {
   createCommitteeFunction?: Maybe<CreateCommitteeFunctionPayload>;
   updateCommitteeFunction?: Maybe<UpdateCommitteeFunctionPayload>;
   deleteCommitteeFunction?: Maybe<DeleteCommitteeFunctionPayload>;
+  updateCommitteeLandingpage?: Maybe<UpdateCommitteeLandingpagePayload>;
+  deleteCommitteeLandingpage?: Maybe<DeleteCommitteeLandingpagePayload>;
   createCommitteeObjective?: Maybe<CreateCommitteeObjectivePayload>;
   updateCommitteeObjective?: Maybe<UpdateCommitteeObjectivePayload>;
   deleteCommitteeObjective?: Maybe<DeleteCommitteeObjectivePayload>;
@@ -2502,6 +2571,7 @@ export type Mutation = {
   createAllergyLocalization: Allergy;
   createCategoryLocalization: Category;
   createCommitteeFunctionLocalization: CommitteeFunction;
+  createCommitteeLandingpageLocalization: CommitteeLandingpage;
   createCommitteeObjectiveLocalization: CommitteeObjective;
   createCommitteeLocalization: Committee;
   createCompanyLocalization: Company;
@@ -2584,6 +2654,17 @@ export type MutationUpdateCommitteeFunctionArgs = {
 
 export type MutationDeleteCommitteeFunctionArgs = {
   input?: Maybe<DeleteCommitteeFunctionInput>;
+};
+
+
+export type MutationUpdateCommitteeLandingpageArgs = {
+  input?: Maybe<UpdateCommitteeLandingpageInput>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDeleteCommitteeLandingpageArgs = {
+  locale?: Maybe<Scalars['String']>;
 };
 
 
@@ -2862,6 +2943,11 @@ export type MutationCreateCategoryLocalizationArgs = {
 
 export type MutationCreateCommitteeFunctionLocalizationArgs = {
   input: UpdateCommitteeFunctionInput;
+};
+
+
+export type MutationCreateCommitteeLandingpageLocalizationArgs = {
+  input: UpdateCommitteeLandingpageInput;
 };
 
 
@@ -3229,6 +3315,7 @@ export type Query = {
   committeeFunction?: Maybe<CommitteeFunction>;
   committeeFunctions?: Maybe<Array<Maybe<CommitteeFunction>>>;
   committeeFunctionsConnection?: Maybe<CommitteeFunctionConnection>;
+  committeeLandingpage?: Maybe<CommitteeLandingpage>;
   committeeObjective?: Maybe<CommitteeObjective>;
   committeeObjectives?: Maybe<Array<Maybe<CommitteeObjective>>>;
   committeeObjectivesConnection?: Maybe<CommitteeObjectiveConnection>;
@@ -3377,6 +3464,12 @@ export type QueryCommitteeFunctionsConnectionArgs = {
   limit?: Maybe<Scalars['Int']>;
   start?: Maybe<Scalars['Int']>;
   where?: Maybe<Scalars['JSON']>;
+  locale?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryCommitteeLandingpageArgs = {
+  publicationState?: Maybe<PublicationState>;
   locale?: Maybe<Scalars['String']>;
 };
 
@@ -4609,6 +4702,11 @@ export type DeleteCommitteeInput = {
   where?: Maybe<InputId>;
 };
 
+export type DeleteCommitteeLandingpagePayload = {
+  __typename?: 'deleteCommitteeLandingpagePayload';
+  committeeLandingpage?: Maybe<CommitteeLandingpage>;
+};
+
 export type DeleteCommitteeObjectiveInput = {
   where?: Maybe<InputId>;
 };
@@ -4816,6 +4914,20 @@ export type EditCommitteeInput = {
   committee_objective?: Maybe<Scalars['ID']>;
   representatives?: Maybe<Array<Maybe<Scalars['ID']>>>;
   abbreviation?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['ID']>;
+  contacts?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  locale?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['DateTime']>;
+  created_by?: Maybe<Scalars['ID']>;
+  updated_by?: Maybe<Scalars['ID']>;
+};
+
+export type EditCommitteeLandingpageInput = {
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
   localizations?: Maybe<Array<Maybe<Scalars['ID']>>>;
   locale?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['DateTime']>;
@@ -5348,6 +5460,15 @@ export type UpdateCommitteeFunctionPayload = {
 export type UpdateCommitteeInput = {
   where?: Maybe<InputId>;
   data?: Maybe<EditCommitteeInput>;
+};
+
+export type UpdateCommitteeLandingpageInput = {
+  data?: Maybe<EditCommitteeLandingpageInput>;
+};
+
+export type UpdateCommitteeLandingpagePayload = {
+  __typename?: 'updateCommitteeLandingpagePayload';
+  committeeLandingpage?: Maybe<CommitteeLandingpage>;
 };
 
 export type UpdateCommitteeObjectiveInput = {

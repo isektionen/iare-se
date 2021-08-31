@@ -16,6 +16,7 @@ import React from "react";
 import AccessibleLink from "components/AccessibleLink";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { isExternal } from "utils/path";
+import { Element } from "react-scroll";
 
 export const img = ({ alt, ...props }: any) => (
     <Center w="full">
@@ -30,27 +31,43 @@ export const heading = ({ as }: any) => {
     switch (as) {
         case "h1":
             return function h1(props: any) {
-                return <Heading as="h1" mb={4} size="2xl" {...props} />;
+                return (
+                    <Element name={props.children}>
+                        <Heading as="h1" mb={4} size="xl" {...props} />
+                    </Element>
+                );
             };
         case "h2":
             return function h2(props: any) {
-                return <Heading as="h2" mb={4} size="xl" {...props} />;
+                return (
+                    <Element name={props.children}>
+                        <Heading as="h2" mb={4} size="lg" {...props} />
+                    </Element>
+                );
             };
         case "h3":
             return function h3(props: any) {
-                return <Heading as="h3" mb={4} size="lg" {...props} />;
+                return <Heading as="h3" mb={4} size="md" {...props} />;
             };
         case "h4":
             return function h4(props: any) {
-                return <Heading as="h4" mb={4} size="md" {...props} />;
+                return <Heading as="h4" mb={4} size="sm" {...props} />;
             };
         case "h5":
             return function h5(props: any) {
-                return <Heading as="h5" mb={4} size="sm" {...props} />;
+                return <Heading as="h5" mb={4} size="xs" {...props} />;
             };
         case "h6":
             return function h6(props: any) {
-                return <Heading as="h6" mb={4} size="xs" {...props} />;
+                return (
+                    <Heading
+                        as="h6"
+                        mb={4}
+                        size="xs"
+                        textTransform="uppercase"
+                        {...props}
+                    />
+                );
             };
     }
 };

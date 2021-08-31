@@ -150,14 +150,16 @@ const Typography = ({
                 align="center"
             >
                 {types.map((type) => (
-                    <chakra.p
-                        fontSize={72}
-                        key={type.name + type.weight}
-                        fontWeight={type.weight}
-                        fontFamily={family}
-                    >
-                        {type.name}
-                    </chakra.p>
+                    <VStack key={type.name + type.weight} spacing={1}>
+                        <chakra.p
+                            fontSize={72}
+                            fontWeight={type.weight}
+                            fontFamily={family}
+                        >
+                            {type.name}
+                        </chakra.p>
+                        <chakra.p>({type.weight})</chakra.p>
+                    </VStack>
                 ))}
             </Flex>
         </Stack>

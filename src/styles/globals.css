@@ -6,6 +6,10 @@
     -msbox-sizing: border-box;
 }
 
+.active {
+    font-weight: 500;
+}
+
 html,
 body,
 #__next {

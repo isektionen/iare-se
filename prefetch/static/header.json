@@ -63,15 +63,56 @@
                     "description": null,
                     "icon": "atlas",
                     "color": "gray"
+                },
+                {
+                    "id": "11",
+                    "label": "Grafisk profil",
+                    "href": "/brand",
+                    "description": null,
+                    "icon": "colorlens",
+                    "color": "gray"
+                },
+                {
+                    "id": "12",
+                    "label": "Nämnder",
+                    "href": "/committee",
+                    "description": null,
+                    "icon": "group",
+                    "color": "gray"
                 }
             ]
         },
         {
             "id": "3",
             "label": "Plugga på i",
-            "displayDropDown": false,
+            "displayDropDown": true,
             "href": "/student",
-            "subSection": []
+            "subSection": [
+                {
+                    "id": "13",
+                    "label": "Vad är en sektion?",
+                    "href": "/what-is-a-chapter",
+                    "description": null,
+                    "icon": "question",
+                    "color": "gray"
+                },
+                {
+                    "id": "14",
+                    "label": "För sökande",
+                    "href": "/assumed-student",
+                    "description": null,
+                    "icon": "question",
+                    "color": "gray"
+                },
+                {
+                    "id": "15",
+                    "label": "För antagna",
+                    "href": "/accepted-student",
+                    "description": null,
+                    "icon": "question",
+                    "color": "gray"
+                }
+            ]
         },
         {
             "id": "4",

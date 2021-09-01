@@ -78,12 +78,12 @@ export const layout = selectorFamily({
             }
             /* @ts-ignore */
             const locale_section = _section.localizations.find(
-                (l: DefHeader) => l.locale === "en"
+                (l: Layout[T]) => l.locale === "en"
             );
             if (locale_section) {
-                return locale_section;
+                return locale_section as Layout[T];
             }
-            return _section;
+            return _section as Layout[T];
         },
 });
 type SectionFetch = "all" | keyof Layout;

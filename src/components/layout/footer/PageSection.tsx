@@ -124,7 +124,7 @@ export const AccordionContent = () => {
     const { sections } = useRecoilValue(layout({ section: "header", lang }));
     return (
         <Accordion flex={1} allowToggle>
-            {sections.map((item) => (
+            {sections.map((item: ComponentHeaderMenuSection) => (
                 <AccordionSection key={"footer-section-" + item.id} {...item} />
             ))}
         </Accordion>
@@ -138,7 +138,7 @@ export const ListContent = () => {
 
     return (
         <HStack spacing={14} align="stretch">
-            {sections.map((item) => (
+            {sections.map((item: ComponentHeaderMenuSection) => (
                 <ListSection key={"section-" + item.id} {...item} />
             ))}
         </HStack>

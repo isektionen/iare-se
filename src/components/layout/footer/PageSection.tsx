@@ -25,7 +25,11 @@ import React from "react";
 import { BsPlus } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
 import { layout } from "state/layout";
-import { ComponentHeaderMenuSection } from "types/strapi";
+import {
+    ComponentHeaderMenuSection,
+    ComponentHeaderSubSection,
+} from "types/strapi";
+import { mergeLink } from "utils/mergeHref";
 
 const ListContainer = ({
     subSection,
@@ -51,13 +55,24 @@ const ListContainer = ({
     );
 };
 
-const ListSection = ({ label, subSection }: ComponentHeaderMenuSection) => {
+const ListSection = ({
+    label,
+    subSection,
+    href,
+}: ComponentHeaderMenuSection) => {
+    const _subSection =
+        subSection?.map((item) => ({
+            ...item,
+            href: mergeLink(href, item?.href as string) as string,
+        })) ?? [];
     return (
         <Box>
             <Text fontWeight="700" size="lg" mb={4}>
                 {subSection && subSection?.length > 0 && label}
             </Text>
-            <ListContainer subSection={subSection} />
+            <ListContainer
+                subSection={_subSection as ComponentHeaderSubSection[]}
+            />
         </Box>
     );
 };
@@ -65,7 +80,14 @@ const ListSection = ({ label, subSection }: ComponentHeaderMenuSection) => {
 const AccordionSection = ({
     label,
     subSection,
+    href,
 }: ComponentHeaderMenuSection) => {
+    const _subSection =
+        subSection?.map((item) => ({
+            ...item,
+            href: mergeLink(href, item?.href as string) as string,
+        })) ?? [];
+
     const variants = {
         open: {
             rotate: 45,
@@ -111,7 +133,11 @@ const AccordionSection = ({
                     </AccordionButton>
 
                     <AccordionPanel>
-                        <ListContainer subSection={subSection} />
+                        <ListContainer
+                            subSection={
+                                _subSection as ComponentHeaderSubSection[]
+                            }
+                        />
                     </AccordionPanel>
                 </Flex>
             )}

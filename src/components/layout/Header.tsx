@@ -130,7 +130,7 @@ const Header = (props: BoxProps) => {
                 isOpen={isOpen}
                 onClose={onClose}
                 placement="right"
-                size="sm"
+                size="xs"
                 closeOnEsc
                 closeOnOverlayClick
                 blockScrollOnMount

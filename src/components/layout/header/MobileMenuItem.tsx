@@ -3,6 +3,7 @@ import AccessibleLink from "components/AccessibleLink";
 import React from "react";
 import { MenuListItem } from "types/global";
 import { ComponentHeaderMenuSection } from "types/strapi";
+import { mergeLink } from "utils/mergeHref";
 
 interface Props {
     section: ComponentHeaderMenuSection;
@@ -25,7 +26,12 @@ export const MobileMenuItem = (props: Props) => {
                     props.section.subSection.map((item) => (
                         <ListItem key={item?.id}>
                             <AccessibleLink
-                                href={item?.href ?? "#"}
+                                href={
+                                    mergeLink(
+                                        props.section.href,
+                                        item?.href as string
+                                    ) ?? "#"
+                                }
                                 afterClick={props.onClose}
                             >
                                 {item?.label}

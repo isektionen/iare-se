@@ -45,7 +45,7 @@ const View = ({
             <Box minW={{ base: "full", md: "70%" }}>
                 <Heading mb={8}>{title}</Heading>
                 <MDXLayout source={mdx} flex={1} />
-                <Wrap shouldWrapChildren>
+                <Wrap shouldWrapChildren justify="center" w="full">
                     {board.representatives?.map((rep) => {
                         const fullname =
                             rep?.user?.firstname + " " + rep?.user?.lastname;
@@ -61,7 +61,7 @@ const View = ({
                                 : role?.role;
                         if (!rep) return <></>;
                         return (
-                            <Box key={rep.id} p={2}>
+                            <Box key={rep.id} p={2} maxW="full">
                                 <Avatar
                                     src={rep?.cover?.url}
                                     name={fullname}

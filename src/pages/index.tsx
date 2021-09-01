@@ -74,12 +74,14 @@ const Hero = () => {
         },
     };
 
+    const headingVariant = useBreakpointValue({ base: "xl", md: "4xl" });
+
     return (
-        <Flex h="calc(100vh - 90px)" w="full" px={{ base: 4, md: 12 }} mb={16}>
+        <Flex h="calc(90vh - 90px)" w="full" px={{ base: 4, md: 12 }} mb={16}>
             <Flex w="full" flexDirection="column" align="center">
                 <Circle
                     bgGradient="linear(to-t, rgba(151, 110, 73, 1), rgba(222, 203, 186, 1))"
-                    size="40vh"
+                    size="35vh"
                 >
                     <svg
                         stroke="white"
@@ -160,10 +162,10 @@ const Hero = () => {
                         />
                     </svg>
                 </Circle>
-                <Heading size="4xl" py={5} textAlign="center">
+                <Heading size={headingVariant} py={5} textAlign="center">
                     Industriell Ekonomi
                 </Heading>
-                <Heading size="xl" pb={10} textAlign="center">
+                <Heading size="lg" pb={10} textAlign="center">
                     är för dig som vill lära dig mer om
                 </Heading>
                 <Heading size="lg" textAlign="center">

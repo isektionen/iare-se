@@ -22,7 +22,6 @@ import { PageSection } from "./footer/PageSection";
 import { Contact } from "./footer/Contact";
 
 const Footer = (props: BoxProps) => {
-    const { t } = useTranslation("common");
     return (
         <Flex as="footer" width="full" pb={12} direction="column" {...props}>
             <Flex py={12}>

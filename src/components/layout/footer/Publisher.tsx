@@ -5,10 +5,10 @@ import { useRecoilValue } from "recoil";
 import { layout } from "state/layout";
 
 export const Publisher = () => {
-    const { t } = useTranslation("common");
+    const { t, lang } = useTranslation("common");
     const {
         representative: { user },
-    } = useRecoilValue(layout("footer"));
+    } = useRecoilValue(layout({ section: "footer", lang }));
     return (
         <Text>
             {t("footer.publisher", {

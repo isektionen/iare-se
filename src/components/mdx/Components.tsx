@@ -17,11 +17,22 @@ import AccessibleLink from "components/AccessibleLink";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { isExternal } from "utils/path";
 import { Element } from "react-scroll";
+import { NextImage } from "components/NextImage";
 
 export const img = ({ alt, ...props }: any) => (
     <Center w="full">
-        <Image
-            alt={alt ? alt : "No image alternative text was provided"}
+        {/*
+            <Image
+                alt={alt ? alt : "No image alternative text was provided"}
+                {...props}
+            />
+        */}
+        <NextImage
+            src={props.src}
+            width={3000}
+            height={2000}
+            w="full"
+            layout="intrinsic"
             {...props}
         />
     </Center>

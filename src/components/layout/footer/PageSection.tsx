@@ -20,6 +20,7 @@ import {
 import AccessibleLink from "components/AccessibleLink";
 import MotionBox from "components/motion/Box";
 import { motion } from "framer-motion";
+import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { BsPlus } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
@@ -119,7 +120,8 @@ const AccordionSection = ({
 };
 
 export const AccordionContent = () => {
-    const { sections } = useRecoilValue(layout("header"));
+    const { lang } = useTranslation();
+    const { sections } = useRecoilValue(layout({ section: "header", lang }));
     return (
         <Accordion flex={1} allowToggle>
             {sections.map((item) => (
@@ -130,7 +132,10 @@ export const AccordionContent = () => {
 };
 
 export const ListContent = () => {
-    const { sections } = useRecoilValue(layout("header"));
+    const { lang } = useTranslation();
+
+    const { sections } = useRecoilValue(layout({ section: "header", lang }));
+
     return (
         <HStack spacing={14} align="stretch">
             {sections.map((item) => (

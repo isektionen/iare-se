@@ -1,5 +1,6 @@
 import { Box, Flex, Icon, IconButton } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
+import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import {
     FaFacebook,
@@ -27,7 +28,8 @@ const getSocial = ({ type }: ComponentFooterSocial) => {
 };
 
 export const Social = () => {
-    const { social } = useRecoilValue(layout("footer"));
+    const { lang } = useTranslation();
+    const { social } = useRecoilValue(layout({ section: "footer", lang }));
     return (
         <Box>
             {social &&

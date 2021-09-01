@@ -5,6 +5,7 @@ import { DefFooter, DefHeader } from "types/global";
 import defaultHeaderState from "../../prefetch/static/header.json";
 import defaultFooterState from "../../prefetch/static/footer.json";
 import _ from "underscore";
+import { Header } from "types/strapi";
 
 const getHeaderFromFile = () => {
     return defaultHeaderState as DefHeader;
@@ -61,10 +62,28 @@ export const useHydrater = (data: {
 export const layout = selectorFamily({
     key: "SELECTORFAMILY/LAYOUT",
     get:
-        <T extends keyof Layout>(section: T) =>
+        <T extends keyof Layout>({
+            section,
+            lang,
+        }: {
+            section: T;
+            lang: string;
+        }) =>
         ({ get }) => {
             const state = get(layoutState);
-            return state[section];
+
+            const _section = state[section];
+            if (_section.locale === lang) {
+                return _section;
+            }
+            /* @ts-ignore */
+            const locale_section = _section.localizations.find(
+                (l: DefHeader) => l.locale === "en"
+            );
+            if (locale_section) {
+                return locale_section;
+            }
+            return _section;
         },
 });
 type SectionFetch = "all" | keyof Layout;

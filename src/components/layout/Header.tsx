@@ -27,9 +27,13 @@ import { Section } from "./header/Section";
 import { useRecoilValue } from "recoil";
 import { headerState, layout } from "state/layout";
 import { Feedback } from "./header/Feedback";
+import useTranslation from "next-translate/useTranslation";
 
 const Header = (props: BoxProps) => {
-    const { languages, contact, sections } = useRecoilValue(layout("header"));
+    const { lang } = useTranslation();
+    const { languages, contact, sections } = useRecoilValue(
+        layout({ section: "header", lang })
+    );
     const { onClose, onOpen, isOpen } = useDisclosure();
 
     const { scrollY } = useViewportScroll();

@@ -81,8 +81,8 @@ const RadioEmojiCard = (props: any) => {
 };
 
 const FeedbackHeader = () => {
-    const { t } = useTranslation("common");
-    const { feedbackbox } = useRecoilValue(layout("header"));
+    const { t, lang } = useTranslation("common");
+    const { feedbackbox } = useRecoilValue(layout({ section: "header", lang }));
 
     const ref = useRef(null);
 
@@ -187,8 +187,8 @@ const FeedbackFooter = ({ onSubmit }: Submit) => {
 };
 
 const FeedbackBody = ({ onSubmit }: Submit) => {
-    const { feedbackbox } = useRecoilValue(layout("header"));
-    const { t } = useTranslation("common");
+    const { t, lang } = useTranslation("common");
+    const { feedbackbox } = useRecoilValue(layout({ section: "header", lang }));
     const { register } = useFormContext();
 
     return (

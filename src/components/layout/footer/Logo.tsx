@@ -2,13 +2,15 @@ import React from "react";
 import { NextImage } from "components/NextImage";
 import { useRecoilValue } from "recoil";
 import { layout } from "state/layout";
+import useTranslation from "next-translate/useTranslation";
 
 interface Props {
     priority?: boolean;
 }
 
 export const Logo = ({ priority }: Props) => {
-    const { logo } = useRecoilValue(layout("footer"));
+    const { lang } = useTranslation();
+    const { logo } = useRecoilValue(layout({ section: "footer", lang }));
     return (
         <NextImage
             src={logo.url}

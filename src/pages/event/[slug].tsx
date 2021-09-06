@@ -465,7 +465,11 @@ const EventView = ({
         return isValid;
     };
 
-    const [activeStep, setActiveStep] = useState(-1);
+    const [_activeStep, setActiveStep] = useState(-1);
+
+    const activeStep = useMemo(() => {
+        return event.passwordProtected ? _activeStep : _activeStep + 1;
+    }, [_activeStep, event.passwordProtected]);
 
     const steps = useMemo(() => {
         const tickets = event?.tickets?.Tickets?.length ?? 2;
@@ -473,7 +477,7 @@ const EventView = ({
         return [
             {
                 label: t("step.zero"), // Password
-                isVisible: event.passwordProtected !== undefined,
+                isVisible: event.passwordProtected !== null,
             },
             {
                 label: t("step.one"), // Tickets
@@ -481,7 +485,7 @@ const EventView = ({
             },
             {
                 label: t("step.two"), // Diets
-                isVisible: event.servingOptions?.servingFood !== undefined,
+                isVisible: event.servingOptions?.servingFood !== null,
             },
             {
                 label: t("step.three"), // Summary
@@ -731,7 +735,7 @@ const EventView = ({
                                     </Flex>
                                 )}
 
-                                {formStep(0) && (
+                                {formStep(0) && event.passwordProtected && (
                                     <EventPasswordProtection
                                         display={
                                             activeStep === 0 ? "flex" : "none"

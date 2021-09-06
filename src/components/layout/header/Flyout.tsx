@@ -11,7 +11,7 @@ export const Flyout = ({ subSection, href }: ComponentHeaderMenuSection) => (
         <SimpleGrid
             borderTopColor="gray.50"
             borderWidth="1px"
-            columns={{ base: 1, md: 3, lg: 5 }}
+            columns={{ base: 1, md: 3 }}
             pos="relative"
             bg="white"
             shadow="lg"

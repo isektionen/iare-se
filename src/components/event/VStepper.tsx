@@ -47,6 +47,13 @@ export const VStepper = ({
             {steps.map((s, i) => {
                 const isActive = i === activeStep;
                 const isLast = i === steps.length - 1;
+                if (!s.isVisible) {
+                    return (
+                        <React.Fragment
+                            key={"step-" + s.label}
+                        ></React.Fragment>
+                    );
+                }
                 return (
                     <Box
                         key={"step-" + s.label}

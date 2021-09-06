@@ -12,7 +12,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { useHydrateCommittee } from "state/committee";
-import { fetchHydration, useHydrater } from "state/layout";
+import { fetchHydration, useHydrater, usePageMenu } from "state/layout";
 import { LayoutProps } from "types/global";
 import { Committee } from "types/strapi";
 
@@ -31,6 +31,14 @@ const View = ({
 }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     useHydrateCommittee(committee);
+    usePageMenu({
+        label: "Nämnder",
+        viewports: ["drawer"],
+        items: committees.map((c) => ({
+            label: c.name as string,
+            href: "/committee/" + c?.slug ?? ("#" as string),
+        })),
+    });
     const { t } = useTranslation("committee");
 
     const isAboveLg = useBreakpointValue({ base: false, lg: true });

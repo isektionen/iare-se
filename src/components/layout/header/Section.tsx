@@ -27,6 +27,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
                     left={0}
                     w="full"
                     display="none"
+                    zIndex={2}
                     _groupHover={{
                         display: "block",
                     }}

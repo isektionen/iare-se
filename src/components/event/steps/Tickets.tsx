@@ -64,6 +64,7 @@ export const Tickets = ({
             return () => clearTimeout(id);
         }
     }, [currentTickets, firstTicket]);
+
     return (
         <Box key="step-one" h="full" {...rest}>
             <Heading size="lg" fontWeight="700">

@@ -1,6 +1,7 @@
-import { Box, BoxProps, Flex, HStack } from "@chakra-ui/layout";
+import { Box, BoxProps, Flex, HStack, List, ListItem } from "@chakra-ui/layout";
 import AccessibleLink from "components/AccessibleLink";
 import {
+    Text,
     Button,
     chakra,
     Icon,
@@ -12,6 +13,11 @@ import {
     DrawerContent,
     DrawerOverlay,
     useBreakpointValue,
+    VStack,
+    Accordion,
+    AccordionButton,
+    AccordionItem,
+    AccordionPanel,
 } from "@chakra-ui/react";
 import { useViewportScroll } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -28,8 +34,15 @@ import { useRecoilValue } from "recoil";
 import { headerState, layout } from "state/layout";
 import { Feedback } from "./header/Feedback";
 import useTranslation from "next-translate/useTranslation";
+import { PageMenu, PageMenuMobile } from "./header/PageMenu";
+import MotionBox from "components/motion/Box";
+import { BsPlus } from "react-icons/bs";
+import { mergeLink } from "utils/mergeHref";
+import _ from "underscore";
+import { useRouter } from "next/router";
 
 const Header = (props: BoxProps) => {
+    const router = useRouter();
     const { lang } = useTranslation();
     const { languages, contact, sections } = useRecoilValue(
         layout({ section: "header", lang })
@@ -56,16 +69,21 @@ const Header = (props: BoxProps) => {
         [languages]
     );
 
+    const defaultIndex = _.chain(sections)
+        .pluck("href")
+        .findIndex((path) => router.asPath.includes(path))
+        .value();
+
     return (
         <React.Fragment>
             <chakra.header
                 ref={ref}
-                py={4}
+                pt={4}
                 bg="white"
                 position="fixed"
                 transition="box-shadow 0.3s"
                 w="full"
-                maxH={16}
+                //maxH={16}
                 zIndex={11}
                 top={0}
                 left={0}
@@ -74,22 +92,30 @@ const Header = (props: BoxProps) => {
                 {...props}
             >
                 <Flex
-                    alignItems="center"
+                    alignItems="flex-start"
                     justifyContent="space-between"
                     mx="auto"
+                    pb={2}
                 >
                     <AccessibleLink href="/">
                         <Logo priority />
                     </AccessibleLink>
-                    <Box display={{ base: "none", md: "inline-flex" }} ml={10}>
-                        <HStack spacing={1}>
-                            {sections.map((section) => (
-                                <Section
-                                    key={"section" + section.id}
-                                    {...section}
-                                />
-                            ))}
-                        </HStack>
+                    <Box
+                        display={{ base: "none", md: "inline-flex" }}
+                        ml={10}
+                        maxW="67%"
+                    >
+                        <VStack spacing={0} w="full" align="stretch">
+                            <HStack spacing={1}>
+                                {sections.map((section) => (
+                                    <Section
+                                        key={"section" + section.id}
+                                        {...section}
+                                    />
+                                ))}
+                            </HStack>
+                            <PageMenu />
+                        </VStack>
                     </Box>
                     <Spacer />
                     <Flex alignItems="center">
@@ -154,13 +180,131 @@ const Header = (props: BoxProps) => {
                             justify="space-between"
                             h="full"
                         >
-                            {sections?.map((section) => (
-                                <MobileMenuItem
-                                    key={section.id}
-                                    section={section}
-                                    onClose={onClose}
-                                />
-                            ))}
+                            <PageMenuMobile />
+                            <Accordion
+                                flex={1}
+                                allowToggle
+                                defaultIndex={defaultIndex}
+                            >
+                                {sections.map(({ subSection, href, label }) => {
+                                    const _subSection =
+                                        subSection?.map((item) => ({
+                                            ...item,
+                                            href: mergeLink(
+                                                href,
+                                                item?.href as string
+                                            ) as string,
+                                        })) ?? [];
+
+                                    const variants = {
+                                        open: {
+                                            rotate: 45,
+                                        },
+                                        close: {
+                                            rotate: -45,
+                                        },
+                                    };
+                                    if (
+                                        _subSection &&
+                                        _subSection.length === 0
+                                    ) {
+                                        return <></>;
+                                    }
+                                    return (
+                                        <AccordionItem
+                                            key={"accordionitem-" + href}
+                                            borderTopWidth="0 !important"
+                                            borderBottomWidth="0 !important"
+                                        >
+                                            {({ isExpanded }) => (
+                                                <Flex
+                                                    borderBottomWidth="1px"
+                                                    direction="column"
+                                                    borderColor="gray.100"
+                                                >
+                                                    <AccordionButton>
+                                                        <Flex
+                                                            align="center"
+                                                            w="full"
+                                                            flex={1}
+                                                            justify="space-between"
+                                                        >
+                                                            <Text
+                                                                fontWeight="700"
+                                                                size="lg"
+                                                            >
+                                                                {label}
+                                                            </Text>
+                                                            <MotionBox
+                                                                display="flex"
+                                                                justifyContent="center"
+                                                                alignItems="center"
+                                                                animate={
+                                                                    isExpanded
+                                                                        ? "open"
+                                                                        : "closed"
+                                                                }
+                                                                variants={
+                                                                    variants
+                                                                }
+                                                            >
+                                                                <Icon
+                                                                    as={BsPlus}
+                                                                    boxSize={5}
+                                                                />
+                                                            </MotionBox>
+                                                        </Flex>
+                                                    </AccordionButton>
+
+                                                    <AccordionPanel>
+                                                        <List
+                                                            spacing={2}
+                                                            fontSize="md"
+                                                            color="gray.600"
+                                                        >
+                                                            {_subSection &&
+                                                                _subSection.map(
+                                                                    (item) => {
+                                                                        if (
+                                                                            item
+                                                                        ) {
+                                                                            return (
+                                                                                <ListItem
+                                                                                    onClick={
+                                                                                        onClose
+                                                                                    }
+                                                                                    key={
+                                                                                        "footer-section-listitem-" +
+                                                                                        item?.id
+                                                                                    }
+                                                                                >
+                                                                                    <AccessibleLink
+                                                                                        href={
+                                                                                            item?.href
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            item?.label
+                                                                                        }
+                                                                                    </AccessibleLink>
+                                                                                </ListItem>
+                                                                            );
+                                                                        }
+                                                                        return (
+                                                                            <>
+
+                                                                            </>
+                                                                        );
+                                                                    }
+                                                                )}
+                                                        </List>
+                                                    </AccordionPanel>
+                                                </Flex>
+                                            )}
+                                        </AccordionItem>
+                                    );
+                                })}
+                            </Accordion>
                             <Spacer />
                             <Flex direction="column">
                                 <LanguageMenu

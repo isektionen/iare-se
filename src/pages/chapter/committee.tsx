@@ -7,7 +7,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { fetchHydration, useHydrater } from "state/layout";
+import { fetchHydration, useHydrater, usePageMenu } from "state/layout";
 import { LayoutProps } from "types/global";
 import { Committee, CommitteeLandingpage } from "types/strapi";
 import _ from "underscore";
@@ -26,6 +26,14 @@ const CommitteeView = ({
     mdx,
 }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
+    usePageMenu({
+        label: "Nämnder",
+        viewports: ["drawer"],
+        items: committees.map((c) => ({
+            label: c.name as string,
+            href: "/committee/" + c?.slug ?? ("#" as string),
+        })),
+    });
     const { t } = useTranslation("committee");
     return (
         <Flex

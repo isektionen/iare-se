@@ -1,11 +1,17 @@
 import strapi, { gql } from "lib/strapi";
 import { useEffect, useMemo } from "react";
-import { atom, atomFamily, selectorFamily, useRecoilState } from "recoil";
+import {
+    atom,
+    atomFamily,
+    selectorFamily,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 import { DefFooter, DefHeader } from "types/global";
 import defaultHeaderState from "../../prefetch/static/header.json";
 import defaultFooterState from "../../prefetch/static/footer.json";
 import _ from "underscore";
-import { Header } from "types/strapi";
 
 const getHeaderFromFile = () => {
     return defaultHeaderState as DefHeader;
@@ -59,6 +65,42 @@ export const useHydrater = (data: {
     }, []);
 };
 
+interface IPageMenu {
+    label: string;
+    viewports: ("header" | "drawer")[] | null;
+    items: {
+        leftIcon?: JSX.Element;
+        label: string;
+        href: string;
+    }[];
+}
+
+const defaultMenuState = {
+    label: "",
+    viewports: null,
+    items: [],
+};
+
+const pageMenuState = atom<IPageMenu>({
+    key: "ATOM/PAGEMENU",
+    default: defaultMenuState,
+});
+
+export const usePageMenu = (menu: IPageMenu) => {
+    const setMenu = useSetRecoilState(pageMenuState);
+    useEffect(() => {
+        setMenu(menu);
+        return () => {
+            setMenu(defaultMenuState);
+        };
+    }, [menu, setMenu]);
+};
+
+export const usePageHydrate = () => {
+    const state = useRecoilValue(pageMenuState);
+    return state;
+};
+
 export const layout = selectorFamily({
     key: "SELECTORFAMILY/LAYOUT",
     get:
@@ -86,7 +128,9 @@ export const layout = selectorFamily({
             return _section as Layout[T];
         },
 });
+
 type SectionFetch = "all" | keyof Layout;
+
 export const fetchHydration = async (section: SectionFetch = "all") => {
     if (section === "all") {
         return { header: await getHeader(), footer: await getFooter() };

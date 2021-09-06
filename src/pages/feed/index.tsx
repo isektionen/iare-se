@@ -21,7 +21,12 @@ import { HiHome } from "react-icons/hi";
 import { IoShareSocial } from "react-icons/io5";
 import { MdEvent } from "react-icons/md";
 import { RiUserSearchFill } from "react-icons/ri";
-import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import {
+    fetchHydration,
+    getHeader,
+    useHydrater,
+    usePageMenu,
+} from "state/layout";
 import { DefHeader, LayoutProps } from "types/global";
 import { Post, Category } from "types/strapi";
 import { getTranslatedRoutes } from "utils/sidebar";
@@ -38,6 +43,24 @@ const FeedView = ({
     categories: baseCategories,
 }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
+    usePageMenu({
+        label: "",
+        viewports: ["drawer"],
+        items: [
+            {
+                label: "Händelser",
+                href: "/",
+            },
+            {
+                label: "Event",
+                href: "/event",
+            },
+            {
+                label: "Jobb",
+                href: "/jobb",
+            },
+        ],
+    });
     const isAboveSm = useBreakpointValue({ base: false, sm: true });
     const { t, lang } = useTranslation("feed");
     const { filter, setQuery, clearQuery } = useSearch(

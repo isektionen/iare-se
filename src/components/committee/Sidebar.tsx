@@ -70,19 +70,22 @@ export const Sidebar = ({ committees, ...props }: Props) => {
             {...props}
         >
             {isAboveMd && (
-                <Heading
-                    size="xs"
-                    textTransform="uppercase"
-                    fontWeight="700"
-                    pl={3}
-                    pb={4}
-                >
-                    {t("committees")}
-                </Heading>
+                <>
+                    <Heading
+                        size="xs"
+                        textTransform="uppercase"
+                        fontWeight="700"
+                        pl={3}
+                        pb={4}
+                    >
+                        {t("committees")}
+                    </Heading>
+
+                    {committees.map((committee) => (
+                        <CommitteeItem key={committee.id} {...committee} />
+                    ))}
+                </>
             )}
-            {committees.map((committee) => (
-                <CommitteeItem key={committee.id} {...committee} />
-            ))}
         </VStack>
     );
 };

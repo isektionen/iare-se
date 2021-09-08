@@ -85,35 +85,7 @@ const FeedView = ({
             query: () => setQuery({ category: category.name as string }),
         })),
     ];
-    return (
-        <Flex direction={{ base: "column", sm: "row" }}>
-            {!isAboveSm && (
-                <VStack spacing={4} pb={4} w="full">
-                    <Flex w="full" px={4} justify="space-evenly">
-                        {routes.map((route) => (
-                            <RouteItem key={route.label} {...route} />
-                        ))}
-                    </Flex>
-                    <HStack spacing={4} w="full" px={4} fontWeight="bold">
-                        {categories.map((cat) => (
-                            <Text key={cat.label}>{cat.label}</Text>
-                        ))}
-                    </HStack>
-                </VStack>
-            )}
-            {isAboveSm && <Sidebar routes={routes} categories={categories} />}
-            <Feed setFeed={() => posts} bg="gray.100">
-                {(item, key, priority) => {
-                    if (isAboveSm) {
-                        return <Card item={item} priority={priority} />;
-                    }
-                    return (
-                        <MobileCard key={key} item={item} priority={priority} />
-                    );
-                }}
-            </Feed>
-        </Flex>
-    );
+    return <Flex direction={{ base: "column", sm: "row" }}></Flex>;
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

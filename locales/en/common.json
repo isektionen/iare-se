@@ -1,4 +1,7 @@
 {   
+    "readingTime_0": "N/A",
+    "readingTime_one": "{{count}} minute",
+    "readingTime_other": "{{count}} minutes",
     "footer": {
         "publisher": "Responsible publisher {{name}}",
         "developer": "Developed by John Landeholt",

@@ -42,6 +42,10 @@ const customTheme = extendTheme({
             400: "#CBD5E0",
             500: "tomato",
         },
+        dark: {
+            100: "hsla(196, 14%, 12%, 1)",
+            800: "#F3F5F5",
+        },
     },
     breakpoints,
     components: { Button, Steps },

@@ -6,13 +6,20 @@ interface Props {
 
 export const estimateReadingMinutes = ({
     text,
-    wpm = 180,
+    wpm = 140,
     suffix = ["minute read", "minutes read"],
 }: Props) => {
     if (!text) return "";
     const minutes = Math.ceil(text.split(" ").length / wpm);
     if (minutes > 1) return `${minutes} ${suffix[1]}`;
     return `${minutes} ${suffix[0]}`;
+};
+
+export const getReadingTime = (text: string, wpm: number = 140) => {
+    if (text === undefined) {
+        return 0;
+    }
+    return Math.ceil(text.split(" ").length / wpm);
 };
 
 export const validateEmail = (email: string) =>

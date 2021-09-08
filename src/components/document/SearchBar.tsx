@@ -19,6 +19,7 @@ import {
     DrawerHeader,
     DrawerOverlay,
     useDisclosure,
+    ButtonProps,
 } from "@chakra-ui/react";
 import { StringOrNumber } from "@chakra-ui/utils";
 import { WrapPadding } from "components/browser/WrapPadding";
@@ -35,13 +36,18 @@ export interface SelectOption {
     isSelected: boolean;
 }
 
-interface ISelect {
+interface ISelect extends ButtonProps {
     label: string;
     options: SelectOption[];
     setOptions: (options: SelectOption[]) => void;
 }
 
-const SelectMenu = ({ label, options, setOptions }: ISelect) => {
+export const SelectMenu = ({
+    label,
+    options,
+    setOptions,
+    ...buttonProps
+}: ISelect) => {
     const { t } = useTranslation("searchbar");
 
     const selected = useMemo(() => {
@@ -81,6 +87,7 @@ const SelectMenu = ({ label, options, setOptions }: ISelect) => {
                     variant="outline"
                     rightIcon={<IoIosArrowDown />}
                     onClick={onOpen}
+                    {...buttonProps}
                 >
                     {selected}
                 </Button>
@@ -123,6 +130,7 @@ const SelectMenu = ({ label, options, setOptions }: ISelect) => {
                 rightIcon={<IoIosArrowDown />}
                 size="sm"
                 variant="outline"
+                {...buttonProps}
             >
                 {selected}
             </MenuButton>

@@ -30,11 +30,19 @@ import {
     DrawerOverlay,
     Input,
     useDisclosure,
+    ButtonGroup,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    Wrap,
+    PopoverTrigger,
 } from "@chakra-ui/react";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     fetchHydration,
     getHeader,
@@ -47,7 +55,7 @@ import { Post, Category, Jobs, Event } from "types/strapi";
 import _ from "underscore";
 import { NextImage } from "components/NextImage";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { estimateReadingMinutes, getReadingTime } from "utils/text";
+import { estimateReadingMinutes, getReadingTime, lorem } from "utils/text";
 import { useTransform } from "framer-motion";
 import { SelectMenu, SelectOption } from "components/document/SearchBar";
 import { isMobile } from "react-device-detect";
@@ -58,6 +66,7 @@ import { addHours, format } from "date-fns";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { LinkComponent } from "components/LinkComponent";
 import { WrapPadding } from "components/browser/WrapPadding";
+import { usePagination } from "hooks/use-pagination";
 
 type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     author: string;
@@ -75,6 +84,8 @@ interface Props {
 interface ItemProps {
     categories: string[];
     title: string;
+    href: string;
+    imgurl: string;
     readingTime: number | string;
     description: string;
     author: string;
@@ -83,6 +94,7 @@ interface ItemProps {
 const ItemDescription = ({
     categories,
     title,
+    href,
     readingTime,
     description,
     author,
@@ -100,32 +112,32 @@ const ItemDescription = ({
             </HStack>
             <Stack
                 pt={2}
-                h="calc(100% - 12px)"
-                direction="row"
+                direction={{ base: "column", md: "row" }}
                 spacing={12}
                 align="baseline"
             >
-                <Flex direction="column" h="full">
-                    <Heading size="lg">{title}</Heading>
-                    <Spacer />
-                    <HStack
-                        spacing={2}
-                        align="stretch"
-                        fontSize="sm"
-                        color="gray.600"
-                    >
-                        <Flex align="center">
-                            <Icon as={AiOutlineClockCircle} mr={1} />
-                            <Text size="sm">
-                                {t("readingTime", { count: readingTime })}
-                            </Text>
-                        </Flex>
-                        <Text size="sm">{author}</Text>
-                    </HStack>
+                <Flex direction="column" h="calc(100% - 25px)">
+                    <LinkComponent as={Heading} href={href} size="lg">
+                        {title}
+                    </LinkComponent>
+                    <Text fontSize="sm" color="gray.600">
+                        {description}
+                    </Text>
                 </Flex>
-                <Text fontSize="sm" color="gray.600">
-                    {description}
-                </Text>
+                <HStack
+                    spacing={2}
+                    align="stretch"
+                    fontSize="sm"
+                    color="gray.600"
+                >
+                    <Flex align="center">
+                        <Icon as={AiOutlineClockCircle} mr={1} />
+                        <Text size="sm">
+                            {t("readingTime", { count: readingTime })}
+                        </Text>
+                    </Flex>
+                    <Text size="sm">{author}</Text>
+                </HStack>
             </Stack>
         </React.Fragment>
     );
@@ -136,62 +148,94 @@ interface IItem extends GridItemProps {
 }
 
 const Item = ({
-    item: { categories, title, description, readingTime, author },
+    item: {
+        categories,
+        title,
+        href,
+        imgurl,
+        description: _description,
+        readingTime,
+        author: _author,
+    },
     mx,
     mb,
     bottom,
     ...props
 }: IItem) => {
     const { t } = useTranslation("common");
+
+    const author = _author.length > 12 ? _author.slice(0, 9) + "..." : _author;
+    //const _lorem = lorem({ paragraphs: 2 });
+    const length = useBreakpointValue({ base: 128, md: 64 }) as number;
+    const description =
+        _description.length > length
+            ? _description.slice(0, length - 3) + "..."
+            : _description;
     return (
-        <GridItem position="relative" w="full" {...props} mb={mb}>
-            <Box
-                mx={mx}
-                p={4}
-                position="absolute"
-                zIndex={2}
-                left="0"
-                bottom={bottom}
-                h="180px"
-                right="0"
-                bg="white"
-            >
-                <HStack spacing={1} mb={4} minH={4}>
-                    {categories.map((item) => (
-                        <Badge colorScheme="dark" key={item}>
-                            {item}
-                        </Badge>
-                    ))}
-                </HStack>
-                <VStack spacing={1} align="flex-start" fontSize="sm" h="80%">
-                    <Heading size="lg" textTransform="capitalize">
-                        {title}
-                    </Heading>
-                    <Text fontSize="sm" color="gray.600">
-                        {description}
-                    </Text>
-                    <Spacer />
-                    <HStack spacing={2} fontSize="sm" color="gray.600">
-                        <Flex align="center">
-                            <Icon as={AiOutlineClockCircle} mr={1} />
-                            <Text size="sm">
-                                {t("readingTime", { count: readingTime })}
-                            </Text>
-                        </Flex>
-                        <Text size="sm">{author}</Text>
+        <GridItem w="full" mb={mb} {...props}>
+            <Box position="relative">
+                <Box
+                    mx={mx}
+                    p={4}
+                    position="absolute"
+                    zIndex={2}
+                    left="0"
+                    bottom={bottom}
+                    maxH="180px"
+                    right="0"
+                    bg="white"
+                >
+                    <HStack spacing={1} mb={2} minH={4}>
+                        {categories.map((item) => (
+                            <Badge colorScheme="dark" key={item}>
+                                {item}
+                            </Badge>
+                        ))}
                     </HStack>
-                </VStack>
+                    <VStack
+                        spacing={1}
+                        align="flex-start"
+                        fontSize="sm"
+                        h="80%"
+                    >
+                        <LinkComponent
+                            as={Heading}
+                            size="lg"
+                            textTransform="capitalize"
+                            noOfLines={1}
+                            href={href}
+                        >
+                            {title}
+                        </LinkComponent>
+
+                        <Text fontSize="sm" color="gray.600">
+                            {description}
+                        </Text>
+                        <Spacer />
+                        <HStack spacing={2} fontSize="sm" color="gray.600">
+                            <Flex align="center">
+                                <Icon as={AiOutlineClockCircle} mr={1} />
+                                <Text size="sm">
+                                    {t("readingTime", { count: readingTime })}
+                                </Text>
+                            </Flex>
+                            <Text size="sm">{author}</Text>
+                        </HStack>
+                    </VStack>
+                </Box>
+                <LinkComponent as={Box} href={href}>
+                    <AspectRatio ratio={3 / 2}>
+                        <NextImage
+                            src={imgurl}
+                            width="2048px"
+                            height="1365px"
+                            h="full"
+                            layout="intrinsic"
+                            objectFit="cover"
+                        />
+                    </AspectRatio>
+                </LinkComponent>
             </Box>
-            <AspectRatio ratio={3 / 2}>
-                <NextImage
-                    src="https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/51391457927_481d02c696_o_b982158ac6.jpg"
-                    width="2048px"
-                    height="1365px"
-                    h="full"
-                    layout="intrinsic"
-                    objectFit="cover"
-                />
-            </AspectRatio>
         </GridItem>
     );
 };
@@ -209,8 +253,48 @@ interface IViewMenu {
 }
 
 const ViewMenu = ({ current, options, setOption }: IViewMenu) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     if (isMobile) {
-        return <React.Fragment></React.Fragment>;
+        return (
+            <React.Fragment>
+                <Button
+                    rightIcon={<IoIosArrowDown />}
+                    size="sm"
+                    variant="ghost"
+                    onClick={onOpen}
+                >
+                    {current.label}
+                </Button>
+                <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerBody>
+                            <WrapPadding>
+                                <VStack spacing={2} align="flex-start">
+                                    {options.map((item) => (
+                                        <Button
+                                            key={item.key}
+                                            variant="ghost"
+                                            fontWeight={
+                                                item.label === current.label
+                                                    ? "bold"
+                                                    : "normal"
+                                            }
+                                            onClick={() => {
+                                                setOption(item);
+                                                onClose();
+                                            }}
+                                        >
+                                            {item.label}
+                                        </Button>
+                                    ))}
+                                </VStack>
+                            </WrapPadding>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </React.Fragment>
+        );
     }
     return (
         <Menu>
@@ -238,6 +322,7 @@ interface IView {
 }
 
 const CalendarView = ({ feed }: IView) => {
+    const { t } = useTranslation("feed");
     const locale = useDynamicLocale();
     const { labels, days, month, goBackward, goToday, goForward } = useCalendar(
         {
@@ -272,7 +357,7 @@ const CalendarView = ({ feed }: IView) => {
         [days, selectedDay]
     );
     return (
-        <Box px={{ base: 4, md: 12 }} w="full">
+        <Box px={{ base: 6, md: 12 }} w="full">
             <Flex w="full">
                 <Text textTransform="capitalize" fontWeight="bold">
                     {month}
@@ -287,7 +372,7 @@ const CalendarView = ({ feed }: IView) => {
                         onClick={goBackward}
                     />
                     <Button size="sm" variant="ghost" onClick={goToday}>
-                        today
+                        {t("calendar.today")}
                     </Button>
                     <IconButton
                         size="sm"
@@ -389,9 +474,10 @@ const CalendarView = ({ feed }: IView) => {
                                                         "-" +
                                                         i
                                                     }
-                                                    size={5}
+                                                    size={4}
                                                     color="white"
                                                     bg="gray.900"
+                                                    fontSize="xs"
                                                     borderColor="white"
                                                     borderWidth="0.5px"
                                                     zIndex={i + 1}
@@ -408,7 +494,13 @@ const CalendarView = ({ feed }: IView) => {
                             <Box p={1}>
                                 <Circle
                                     size={{ base: 6, md: 5 }}
-                                    color={day.isToday ? "white" : "black"}
+                                    color={
+                                        day.isToday
+                                            ? "white"
+                                            : day.isSameMonth
+                                            ? "black"
+                                            : "gray.500"
+                                    }
                                     bg={day.isToday ? "brand.200" : undefined}
                                 >
                                     {day.label}
@@ -453,50 +545,179 @@ const CalendarView = ({ feed }: IView) => {
 };
 
 const GalleryView = ({ feed }: IView) => {
+    const isAboveMd = useBreakpointValue({ base: false, md: true });
+    const { t } = useTranslation("feed");
+    const {
+        slicer,
+        pages,
+        goBackward,
+        goForward,
+        onCountChange,
+        isDelimiterOpen,
+        isVisible,
+        delimiterPages,
+    } = usePagination({
+        count: feed.length - 3,
+        itemsPerPage: 6,
+        offset: 3,
+    });
+
+    const [start, end, pageIndex] = slicer;
+
+    useEffect(() => {
+        onCountChange(feed.length - 3);
+    }, [feed.length, onCountChange]);
     return (
-        <Grid
-            px={{ base: 4, md: 12 }}
-            templateColumns="repeat(12, 1fr)"
-            gap={6}
-            w="full"
-        >
-            {feed.slice(0, 3).map((item) => (
-                <Item
-                    key={item.id}
-                    colSpan={6}
-                    mx={4}
-                    mb="90px"
-                    bottom="-90px"
-                    item={{
-                        categories: item.categories,
-                        readingTime: getReadingTime(item.__body),
-                        title: item.title,
-                        description: item.description as string,
-                        author: item.author,
-                    }}
-                />
-            ))}
-            {feed.slice(4, 7).map((item) => (
-                <Item
-                    key={item.id}
-                    colSpan={4}
-                    mb="40px"
-                    bottom="-140px"
-                    item={{
-                        categories: item.categories,
-                        readingTime: getReadingTime(item.__body),
-                        title: item.title,
-                        description: item.description as string,
-                        author: item.author,
-                    }}
-                />
-            ))}
-        </Grid>
+        <React.Fragment>
+            <Grid
+                px={{ base: 6, md: 12 }}
+                templateColumns={{
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(12, 1fr)",
+                }}
+                templateRows={{ base: "repeat(8, 1fr)", md: "repeat(3, 1fr)" }}
+                gap={6}
+                w="full"
+            >
+                {feed.slice(0, 2).map((item) => (
+                    <Item
+                        key={item.id}
+                        colSpan={6}
+                        mx={4}
+                        mb="90px"
+                        bottom="-90px"
+                        item={{
+                            categories: item.categories,
+                            href: item?.__href ?? "#",
+                            imgurl: item?.banner?.url ?? "/news-image.png",
+                            readingTime: getReadingTime(item.__body),
+                            title: item.title,
+                            description: item.description as string,
+                            author: item.author,
+                        }}
+                    />
+                ))}
+                {feed.slice(start + 2, end + 2).map((item, idx) => (
+                    <Item
+                        key={item.id + "-" + pageIndex + "-" + idx}
+                        colSpan={{ base: 6, md: 4 }}
+                        mx={{ base: 4, md: 0 }}
+                        mb={{ base: "90px", md: "40px" }}
+                        bottom={{ base: "-90px", md: "-140px" }}
+                        item={{
+                            href: item?.__href ?? "#",
+                            imgurl: item?.banner?.url ?? "/news-image.png",
+                            categories: item.categories,
+                            readingTime: getReadingTime(item.__body),
+                            title: item.title,
+                            description: item.description as string,
+                            author: item.author,
+                        }}
+                    />
+                ))}
+            </Grid>
+            <Flex px={{ base: 6, md: 12 }}>
+                <Spacer />
+                {isVisible && (
+                    <HStack spacing={0} borderWidth="1px" borderRadius="md">
+                        <Button
+                            leftIcon={<IoChevronBack />}
+                            onClick={goBackward}
+                            size="sm"
+                            variant="ghost"
+                            rounded="none"
+                        >
+                            {isAboveMd && t("pagination.previous")}
+                        </Button>
+                        {pages.map((item, idx) => {
+                            if (item.type === "page") {
+                                return (
+                                    <Button
+                                        rounded="none"
+                                        key={idx + "page-" + item.index}
+                                        fontWeight={
+                                            item.isCurrent ? "bold" : "normal"
+                                        }
+                                        bg={
+                                            item.isCurrent ? "gray.50" : "white"
+                                        }
+                                        onClick={item.onClick}
+                                        size="sm"
+                                        variant="ghost"
+                                    >
+                                        {item.label}
+                                    </Button>
+                                );
+                            }
+                            return (
+                                <Popover
+                                    isOpen={isDelimiterOpen}
+                                    key={idx + "page-" + item.index}
+                                    closeOnBlur
+                                    closeOnEsc
+                                    returnFocusOnClose={false}
+                                    matchWidth={false}
+                                    placement="top"
+                                    gutter={12}
+                                >
+                                    <PopoverTrigger>
+                                        <Button
+                                            rounded="none"
+                                            size="sm"
+                                            variant="ghost"
+                                            key={"page-" + item.index}
+                                            onClick={item.onClick}
+                                        >
+                                            {item.label}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent w="120px">
+                                        <PopoverArrow />
+                                        <PopoverBody>
+                                            <Wrap shouldWrapChildren>
+                                                {delimiterPages?.map(
+                                                    (item, idx) => (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="xs"
+                                                            key={
+                                                                "delimiterPage" +
+                                                                idx
+                                                            }
+                                                            onClick={
+                                                                item.onClick
+                                                            }
+                                                        >
+                                                            {item.index}
+                                                        </Button>
+                                                    )
+                                                )}
+                                            </Wrap>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Popover>
+                            );
+                        })}
+                        <Button
+                            rightIcon={<IoChevronForward />}
+                            onClick={goForward}
+                            size="sm"
+                            variant="ghost"
+                            rounded="none"
+                        >
+                            {isAboveMd && t("pagination.next")}
+                        </Button>
+                    </HStack>
+                )}
+            </Flex>
+        </React.Fragment>
     );
 };
 
 const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
+    const { t, lang } = useTranslation("feed");
+
     usePageMenu({
         label: "",
         viewports: ["drawer"],
@@ -518,35 +739,44 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
 
     const views = useMemo(
         () => [
-            { label: "Gallery view", key: "GALLERY" },
-            { label: "Calendar view", key: "CALENDAR" },
+            { label: t("view.gallery"), key: "GALLERY" },
+            { label: t("view.calendar"), key: "CALENDAR" },
         ],
-        []
+        [lang]
     );
 
-    const [currentView, setCurrentView] = useState(views[1]);
+    const [options, setOptions] = useState([
+        { label: t("article.event"), value: "Event", isSelected: true },
+        { label: t("article.jobs"), value: "Jobs", isSelected: true },
+        { label: t("article.news"), value: "Post", isSelected: true },
+    ]);
 
-    const { t, lang } = useTranslation("feed");
+    const filters = useMemo(
+        () =>
+            options.filter((item) => item.isSelected).map((item) => item.value),
+        [options]
+    );
+
+    const [currentView, setCurrentView] = useState(views[0]);
 
     const firstItem = _.first(feed);
-    const rest = [
-        ...feed.slice(1),
-        ...feed.slice(1),
-        ...feed.slice(1),
-        ...feed.slice(1),
-        ...feed.slice(1),
-        ...feed.slice(1),
-    ];
+    const rest = useMemo(
+        () =>
+            [...feed.slice(1)].filter((item) =>
+                filters.includes(item.__typename as string)
+            ),
+        [feed, filters]
+    );
 
     return (
         <VStack spacing={4}>
             <Flex w="full" h="35vh" position="relative" mb="140px">
                 <Box
                     zIndex={1}
-                    w={{ base: "full", md: "50%" }}
+                    w={{ base: "full", md: "75%" }}
                     position="absolute"
                     bottom="-120px"
-                    px={4}
+                    px={{ base: 6, md: 12 }}
                 >
                     <Box bg="gray.50" h="200px" p={6}>
                         <ItemDescription
@@ -555,37 +785,53 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                             readingTime={getReadingTime(
                                 firstItem?.__body ?? ""
                             )}
+                            href={firstItem?.__href ?? "#"}
+                            imgurl={firstItem?.banner?.url ?? "/news-image.png"}
                             description={firstItem?.description ?? ""}
                             author={firstItem?.author ?? ""}
                         />
                     </Box>
                 </Box>
-                <NextImage
-                    src="https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/51391457927_481d02c696_o_b982158ac6.jpg"
-                    width="2048px"
-                    height="1365px"
-                    h="35vh"
-                    w="full"
-                    layout="intrinsic"
-                    objectFit="cover"
-                    priority
-                />
+                <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
+                    <NextImage
+                        src={firstItem?.banner?.url ?? "/news-image.png"}
+                        width="2048px"
+                        height="1365px"
+                        h="35vh"
+                        w="full"
+                        layout="intrinsic"
+                        objectFit="cover"
+                        priority
+                    />
+                </LinkComponent>
             </Flex>
-            <Box px={{ base: 4, md: 12 }} pt={4} w="full">
-                <HStack
+            <Box px={{ base: 6, md: 12 }} pt={4} w="full">
+                <Stack
                     borderBottomColor="gray.200"
                     borderBottomWidth="1px"
                     pb={0.5}
+                    justify={{ base: "space-between", md: "flex-start" }}
+                    direction={{ base: "row", md: "row" }}
                 >
                     <ViewMenu
                         current={currentView}
                         options={views}
                         setOption={setCurrentView}
                     />
-                </HStack>
+                    <SelectMenu
+                        label="article"
+                        options={options}
+                        variant="ghost"
+                        setOptions={setOptions}
+                    />
+                </Stack>
             </Box>
-            {currentView?.key === "GALLERY" && <GalleryView feed={rest} />}
-            {currentView?.key === "CALENDAR" && <CalendarView feed={rest} />}
+            <Box w="full" h="full">
+                {currentView?.key === "GALLERY" && <GalleryView feed={rest} />}
+                {currentView?.key === "CALENDAR" && (
+                    <CalendarView feed={rest} />
+                )}
+            </Box>
         </VStack>
     );
 };

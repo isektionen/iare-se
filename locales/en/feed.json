@@ -1,21 +1,18 @@
 {
-    "noEntriesHeader": "No entries",
-    "noEntriesBody": "It seems like there are no found entries",
-    "sidebarCategoriesHeader": "Categories",
-    "sidebarAllCategories": "All Categories",
-    "jobFilters": ["location", "position", "industry"],
-    "rsvpButtonLabel": "RSVP",
-    "rsvpDeadlineDescription": "The rsvp closes {{time}}",
-    "routes": [{
-        "label": "Happenings",
-        "href": "/feed"
+    "view": {
+        "gallery": "Gallery view",
+        "calendar": "Calendar view"
     },
-    {
-        "label": "Event",
-        "href": "/feed/event"
+    "article": {
+        "event": "Events",
+        "news": "News",
+        "jobs": "Jobs"
     },
-    {
-        "label": "Job",
-        "href": "/feed/job"
-    }]
+    "pagination": {
+        "previous": "prev",
+        "next": "next"
+    },
+    "calendar": {
+        "today": "today"
+    }
 }

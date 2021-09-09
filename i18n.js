@@ -11,5 +11,6 @@ module.exports = {
         "/contact/[slug]": ["contact"],
         "/event/[slug]": ["event", "ticket"],
         "/committee/[slug]": ["mdx"],
+        "/blog": ["searchbar", "feed"],
     },
 };

@@ -54,7 +54,7 @@ export const SelectMenu = ({
         const _options = options.filter((option) => option.isSelected);
         if (_options.length > 0) {
             const _label = _options.map((item) => item.label).join(", ");
-            if (_label.length > 25) {
+            if (_label.length > 18) {
                 return t("label", {
                     count: _options.length,
                     item: t(`menu.${label}.label`, { count: _options.length }),
@@ -98,7 +98,12 @@ export const SelectMenu = ({
 
                         <DrawerBody pb={12}>
                             <WrapPadding>
-                                <CheckboxGroup onChange={handleChange}>
+                                <CheckboxGroup
+                                    onChange={handleChange}
+                                    defaultValue={options
+                                        .filter((item) => item.isSelected)
+                                        .map((item) => item.value)}
+                                >
                                     <VStack spacing={2} align="stretch" p={2}>
                                         {options.map((option) => (
                                             <Checkbox
@@ -135,7 +140,12 @@ export const SelectMenu = ({
                 {selected}
             </MenuButton>
             <MenuList>
-                <CheckboxGroup onChange={handleChange}>
+                <CheckboxGroup
+                    onChange={handleChange}
+                    defaultValue={options
+                        .filter((item) => item.isSelected)
+                        .map((item) => item.value)}
+                >
                     <VStack spacing={2} align="stretch" p={2}>
                         {options.map((option) => (
                             <Checkbox value={option.value} key={option.label}>

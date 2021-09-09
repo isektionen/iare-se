@@ -1,21 +1,18 @@
 {
-    "noEntriesHeader": "Inga inlägg",
-    "noEntriesBody": "Det verkar som att det saknas inlägg för denna kategori",
-    "sidebarCategoriesHeader": "Kategorier",
-    "sidebarAllCategories": "Alla kategorier",
-    "jobFilters": ["plats", "roll", "bransch"],
-    "rsvpButtonLabel": "OSA",
-    "rsvpDeadlineDescription": "Osan stänger {{time}}",
-    "routes": [{
-        "label": "Händelser",
-        "href": "/feed"
+    "view": {
+        "gallery": "Galleri vy",
+        "calendar": "Kalender vy"
     },
-    {
-        "label": "Event",
-        "href": "/feed/event"
+    "article": {
+        "event": "Event",
+        "news": "Nyheter",
+        "jobs": "Jobb"
     },
-    {
-        "label": "Jobb",
-        "href": "/feed/job"
-    }]
+    "pagination": {
+        "previous": "bakåt",
+        "next": "nästa"
+    },
+    "calendar": {
+        "today": "idag"
+    }
 }

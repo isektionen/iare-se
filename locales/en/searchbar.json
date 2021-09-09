@@ -11,6 +11,11 @@
             "label": "Business year",
             "label_one": "business year",
             "label_other": "business years"
+        },
+        "article": {
+            "label": "Articles",
+            "label_one": "Articles",
+            "label_other": "Articles"
         }
     },
     "searchbar": {

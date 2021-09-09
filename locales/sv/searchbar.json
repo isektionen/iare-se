@@ -11,6 +11,11 @@
             "label": "Verksamhetsår",
             "label_one": "Verksamhetsår",
             "label_other": "Verksamhetsår"
+        },
+        "article": {
+            "label": "Artiklar",
+            "label_one": "Artiklar",
+            "label_other": "Artiklar"
         }
     },
     "searchbar": {

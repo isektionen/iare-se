@@ -1,0 +1,12 @@
+{
+    "name": "Industrial Economics",
+    "description": "is for you that wants to learn more about",
+    "sentences": {
+        "business": "businees",
+        "finance": "finance",
+        "math": "math",
+        "cs": "computer scient",
+        "energy": "environmental energy",
+        "production": "production"
+    }
+}

@@ -38,19 +38,38 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { Feed, GalleryView } from "./blog";
 import strapi, { gql } from "lib/strapi";
 import { Post, Jobs, Event } from "types/strapi";
+import useTranslation from "next-translate/useTranslation";
 interface Props {
     feed: Feed;
 }
 
 const Hero = () => {
+    const { t } = useTranslation("landingpage");
+
     const sentences = useMemo(
         () => [
-            { label: "företagande", color: "#7D5A3C", fontColor: "#fff" },
-            { label: "finans", color: "#3C5F7D", fontColor: "#fff" },
-            { label: "matematik", color: "#ffee99", fontColor: "#000" },
-            { label: "datalogi", color: "#EE2A7B", fontColor: "#fff" },
-            { label: "energi & miljö", color: "#143523", fontColor: "#fff" },
-            { label: "produktion", color: "#750B30", fontColor: "#fff" },
+            {
+                label: t("sentences.business"),
+                color: "#7D5A3C",
+                fontColor: "#fff",
+            },
+            {
+                label: t("sentences.finance"),
+                color: "#3C5F7D",
+                fontColor: "#fff",
+            },
+            { label: t("sentences.math"), color: "#ffee99", fontColor: "#000" },
+            { label: t("sentences.cs"), color: "#EE2A7B", fontColor: "#fff" },
+            {
+                label: t("sentences.energy"),
+                color: "#143523",
+                fontColor: "#fff",
+            },
+            {
+                label: t("sentences.production"),
+                color: "#750B30",
+                fontColor: "#fff",
+            },
         ],
         []
     );
@@ -168,10 +187,10 @@ const Hero = () => {
                     </svg>
                 </Circle>
                 <Heading size={headingVariant} py={5} textAlign="center">
-                    Industriell Ekonomi
+                    {t("name")}
                 </Heading>
                 <Heading size="lg" pb={10} textAlign="center">
-                    är för dig som vill lära dig mer om
+                    {t("description")}
                 </Heading>
                 <Heading size="lg" textAlign="center">
                     <chakra.code
@@ -252,7 +271,7 @@ const Home = ({ header, footer, feed }: LayoutProps<Props>) => {
         <VStack w="full" spacing={0} align="stretch" py={8}>
             <Hero />
             <Sponsors />
-            <GalleryView feed={feed} py={8} span={3} />
+            <GalleryView feed={feed} py={8} span={6} />
             <About mdx={null} />
         </VStack>
     );

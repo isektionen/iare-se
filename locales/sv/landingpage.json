@@ -1,0 +1,12 @@
+{
+    "name": "Industriell Ekonomi",
+    "description": "är för dig som vill lära dig mer om",
+    "sentences": {
+        "business": "företagande",
+        "finance": "finans",
+        "math": "matematik",
+        "cs": "datalogi",
+        "energy": "energi & miljö",
+        "production": "produktion"
+    }
+}

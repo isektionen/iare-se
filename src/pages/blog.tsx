@@ -591,7 +591,7 @@ export const GalleryView = ({
                           }
                 }
                 templateRows={
-                    tr ? tr : { base: "repeat(8, 1fr)", md: "repeat(3, 1fr)" }
+                    tr ? tr : { base: "repeat(6, 1fr)", md: "repeat(3, 1fr)" }
                 }
                 gap={6}
                 w="full"

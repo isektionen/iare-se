@@ -280,7 +280,7 @@ const RoleView = ({
             <Box
                 position="relative"
                 overflow="hidden"
-                w={{ base: "full", lg: "3xl" }}
+                w={{ base: "full", lg: "full" }}
                 h="lg"
                 minW={{ base: "full", lg: "60rem" }}
                 bg="white"

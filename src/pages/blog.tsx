@@ -67,6 +67,8 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { LinkComponent } from "components/LinkComponent";
 import { WrapPadding } from "components/browser/WrapPadding";
 import { usePagination } from "hooks/use-pagination";
+import { useRouter } from "next/router";
+import { useQuery } from "hooks/use-nets";
 
 type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     author: string;
@@ -165,7 +167,6 @@ const Item = ({
     const { t } = useTranslation("common");
 
     const author = _author.length > 12 ? _author.slice(0, 9) + "..." : _author;
-    //const _lorem = lorem({ paragraphs: 2 });
     const length = useBreakpointValue({ base: 128, md: 64 }) as number;
     const description =
         _description.length > length
@@ -714,28 +715,15 @@ const GalleryView = ({ feed }: IView) => {
     );
 };
 
+interface Option {
+    label: string;
+    value: string;
+    isSelected?: boolean;
+}
+
 const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t, lang } = useTranslation("feed");
-
-    usePageMenu({
-        label: "",
-        viewports: ["drawer"],
-        items: [
-            {
-                label: "Händelser",
-                href: "/",
-            },
-            {
-                label: "Event",
-                href: "/event",
-            },
-            {
-                label: "Jobb",
-                href: "/jobb",
-            },
-        ],
-    });
 
     const views = useMemo(
         () => [
@@ -745,11 +733,52 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
         [lang]
     );
 
-    const [options, setOptions] = useState([
-        { label: t("article.event"), value: "Event", isSelected: true },
-        { label: t("article.jobs"), value: "Jobs", isSelected: true },
-        { label: t("article.news"), value: "Post", isSelected: true },
-    ]);
+    const router = useRouter();
+    const query = useQuery(router);
+
+    const types = useMemo(() => {
+        const _type = query["type[]"] as string | undefined;
+        if (_type) {
+            return _type.includes(",")
+                ? _type.split(",").map((item: string) => item.toLowerCase())
+                : _type.toLowerCase();
+        }
+        return ["event", "job", "post"];
+    }, [query]);
+
+    const preselectedOptions = useCallback(
+        (option: Option) => {
+            if (types.includes(option.value.toLowerCase())) {
+                return { ...option, isSelected: true };
+            }
+            return { ...option, isSelected: false };
+        },
+        [types]
+    );
+
+    const [options, _setOptions] = useState<Option[]>(
+        [
+            { label: t("article.event"), value: "Event" },
+            { label: t("article.job"), value: "Job" },
+            { label: t("article.news"), value: "Post" },
+        ].map(preselectedOptions)
+    );
+
+    const setOptions = useCallback(
+        (options: Option[]) => {
+            const _options = options
+                .filter((item) => item.isSelected)
+                .map((item) => item.value.toLowerCase())
+                .join(",");
+            if (_options && options.length > 0) {
+                router.replace(`/blog?type[]=${_options}`);
+            } else {
+                router.replace("/blog");
+            }
+            _setOptions(options);
+        },
+        [router]
+    );
 
     const filters = useMemo(
         () =>

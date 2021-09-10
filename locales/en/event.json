@@ -1,5 +1,6 @@
 {
     "fetching": "Fetching event data",
+    
     "step": {
         "zero": "Authorize",
         "one": "Choose a ticket",
@@ -29,9 +30,8 @@
         "message": "A ticket was sent to {email}"
     },
     "back": "back",
-    "eventDeadlineDescription": {
-        "after": "It was {{TIMELEFT}} since the rsvp closed",
-        "before": "It's {{TIMELEFT}} that the rsvp closes"
+    "deadline": {
+        "closed": "The event has closed its' RSVP"
     },
     "diet": {
         "label": "Diet",

@@ -6,7 +6,7 @@
     "article": {
         "event": "Events",
         "news": "News",
-        "jobs": "Jobs"
+        "job": "Jobs"
     },
     "pagination": {
         "previous": "prev",

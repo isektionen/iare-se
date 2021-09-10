@@ -29,9 +29,8 @@
         "message": "En biljett har skickats till {{email}}"
     },
     "back": "tillbaka",
-    "eventDeadlineDescription": {
-        "after": "Det var {TIMELEFT} sedan osan stängde",
-        "before": "Det är {TIMELEFT} tills osan stänger"
+    "deadline": {
+        "closed": "Eventets OSA är stängd"
     },
     "diet": {
         "label": "Diet",

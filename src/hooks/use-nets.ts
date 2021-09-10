@@ -90,7 +90,7 @@ interface NetsOptions {
     checkoutSrc?: string;
 }
 
-const useQuery = (router: NextRouter) => {
+export const useQuery = (router: NextRouter) => {
     // this uses nextjs router
     const query = router.asPath.split("?")[1];
     if (!query) return {};

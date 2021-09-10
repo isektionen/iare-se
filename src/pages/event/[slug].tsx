@@ -18,7 +18,7 @@ import {
     Diet,
     Event,
 } from "types/strapi";
-import { isBefore } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 import { useRouter } from "next/router";
 
 import {
@@ -111,6 +111,11 @@ const EventView = ({
 
     const { t, lang } = useTranslation("event");
     const router = useRouter();
+
+    const isAvailable = useMemo(
+        () => isAfter(new Date(event.deadline), new Date()),
+        [event.deadline]
+    );
 
     const [ticketData, setTicketData] = useState<TicketData>();
     const {
@@ -351,7 +356,7 @@ const EventView = ({
         hydrateCheckout(async ({ get, validate, createIntention }) => {
             setStatus("pending");
             const id = get("id");
-            if (id) {
+            if (id && isAvailable) {
                 const { intentionId, paymentId, ticketId, consumer, status } =
                     await validate(id);
                 if (ticketId) setTicket(ticketId);
@@ -381,21 +386,26 @@ const EventView = ({
                     return { intentionId, paymentId };
                 }
             }
-            const { intentionId, paymentId, ticketId } =
-                await createIntention();
-            router.replace(
-                `/event/${event.slug}?id=${intentionId}`,
-                undefined,
-                {
-                    shallow: true,
-                }
-            );
-            if (ticketId) setTicket(ticketId);
-            if (intentionId) setIntentionId(intentionId);
-            setActiveStep(0);
-            setStatus("ready");
+            if (isAvailable) {
+                const { intentionId, paymentId, ticketId } =
+                    await createIntention();
+                router.replace(
+                    `/event/${event.slug}?id=${intentionId}`,
+                    undefined,
+                    {
+                        shallow: true,
+                    }
+                );
+                if (ticketId) setTicket(ticketId);
+                if (intentionId) setIntentionId(intentionId);
+                setActiveStep(0);
+                setStatus("ready");
 
-            return { intentionId, paymentId };
+                return { intentionId, paymentId };
+            }
+
+            setStatus("failed");
+            return { intentionId: undefined, paymentId: undefined };
         });
 
         setCheckoutConfig({
@@ -473,8 +483,6 @@ const EventView = ({
     }, [_activeStep, event.passwordProtected]);
 
     const steps = useMemo(() => {
-        const tickets = event?.tickets?.Tickets?.length ?? 2;
-
         return [
             {
                 label: t("step.zero"), // Password
@@ -497,26 +505,43 @@ const EventView = ({
                 isVisible: true,
             },
         ];
-    }, [
-        event.passwordProtected,
-        event.servingOptions?.servingFood,
-        event?.tickets?.Tickets?.length,
-        t,
-    ]);
+    }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
 
     const goForward = useCallback(() => {
         if (activeStep === steps.length - 2 && !orderIsFree) {
             initCheckout();
         }
-        setActiveStep(Math.max(0, Math.min(activeStep + 1, steps.length - 1)));
-    }, [activeStep, initCheckout, orderIsFree, steps.length]);
+        setActiveStep(
+            Math.max(
+                0,
+                Math.min(
+                    activeStep + 1 - (event.passwordProtected ? 0 : 1),
+                    steps.length - 1
+                )
+            )
+        );
+    }, [
+        activeStep,
+        event.passwordProtected,
+        initCheckout,
+        orderIsFree,
+        steps.length,
+    ]);
 
     const goBackward = useCallback(() => {
         if (activeStep === steps.length - 1) {
             reset();
         }
-        setActiveStep(Math.max(0, Math.min(activeStep - 1, steps.length - 1)));
-    }, [activeStep, reset, steps.length]);
+        setActiveStep(
+            Math.max(
+                0,
+                Math.min(
+                    activeStep - 1 - (event.passwordProtected ? 0 : 1),
+                    steps.length - 1
+                )
+            )
+        );
+    }, [activeStep, event.passwordProtected, reset, steps.length]);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
 
@@ -706,6 +731,7 @@ const EventView = ({
                             loadingDescription={t("fetching")}
                             isLoaded={status === "ready" || activeStep >= 0}
                             headingStyles={{ fontWeight: "light", size: "md" }}
+                            isAvailable={isAvailable}
                         >
                             {!isAboveMd && activeStep < steps.length && (
                                 <Progress

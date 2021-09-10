@@ -35,7 +35,12 @@ import { NextImage } from "components/NextImage";
 import { IoAdd } from "react-icons/io5";
 import { MDXLayout } from "components/mdx/Layout";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
-interface Props {}
+import { Feed, GalleryView } from "./blog";
+import strapi, { gql } from "lib/strapi";
+import { Post, Jobs, Event } from "types/strapi";
+interface Props {
+    feed: Feed;
+}
 
 const Hero = () => {
     const sentences = useMemo(
@@ -240,29 +245,183 @@ const About = ({ mdx }: { mdx: MDXRemoteSerializeResult | null }) => {
     );
 };
 
-const EventPosts = () => {
-    return <></>;
-};
-
-const Home = ({ header, footer }: LayoutProps<Props>) => {
+const Home = ({ header, footer, feed }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
 
     return (
         <VStack w="full" spacing={0} align="stretch" py={8}>
             <Hero />
             <Sponsors />
-            <EventPosts />
+            <GalleryView feed={feed} py={8} span={3} />
             <About mdx={null} />
         </VStack>
     );
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
+    const {
+        data: { posts, events, jobs },
+    } = await strapi.query<{
+        posts: Post[];
+        events: Event[];
+        jobs: Jobs[];
+    }>({
+        query: gql`
+            query {
+                posts {
+                    id
+                    slug
+                    banner {
+                        url
+                    }
+                    description
+                    committee {
+                        name
+                    }
+                    title
+                    published_at
+                    body
+                    categories {
+                        name
+                    }
+                    published_at
+                }
+                events {
+                    id
+                    title
+                    slug
+                    category {
+                        name
+                    }
+                    place {
+                        name
+                    }
+                    committee {
+                        name
+                    }
+                    startTime
+                    deadline
+                    description
+                    banner {
+                        url
+                    }
+                    published_at
+                }
+                jobs {
+                    body
+                    id
+                    deadlineDate
+                    slug
+                    title
+                    banner {
+                        url
+                    }
+                    jobCategory {
+                        name
+                    }
+                    company {
+                        name
+                    }
+                    description
+                    published_at
+                }
+            }
+        `,
+    });
+
+    const getAuthor = (item: Event | Post | Jobs) => {
+        switch (item.__typename) {
+            case "Event":
+                return item?.committee?.name;
+            case "Post":
+                return item?.committee?.name;
+            case "Jobs":
+                return item?.company?.name;
+        }
+    };
+
+    const getHref = (item: Event | Post | Jobs) => {
+        switch (item.__typename) {
+            case "Event":
+                return "/event/" + item.slug;
+            case "Post":
+                return "/blog/" + item.slug;
+            case "Jobs":
+                return "/job/" + item.slug;
+        }
+    };
+
+    const getDateTime = (item: Event | Post | Jobs) => {
+        switch (item.__typename) {
+            case "Event":
+                return item.startTime;
+            case "Post":
+                return item.published_at;
+            case "Jobs":
+                return item.deadlineDate;
+        }
+    };
+
+    const getCategories = (item: Event | Post | Jobs) => {
+        switch (item.__typename) {
+            case "Event":
+                return [item?.category?.name].filter((_item) => _item);
+            case "Post":
+                return item?.categories
+                    ?.map((i) => i?.name)
+                    .filter((_item) => _item);
+            case "Jobs":
+                return [item?.jobCategory?.name].filter((_item) => _item);
+        }
+    };
+
+    const getBody = (item: Event | Post | Jobs) => {
+        switch (item.__typename) {
+            case "Event":
+                return item?.description ?? "";
+            case "Post":
+                return item?.body ?? "";
+            case "Jobs":
+                return item?.body ?? "";
+            default:
+                return "";
+        }
+    };
+
+    const feed = _.chain([...posts, ...jobs, ...events])
+        .sortBy("published_at")
+        .map((item) => ({
+            ...item,
+            id: item.__typename + "-" + item?.id,
+            author: getAuthor(item),
+            categories: getCategories(item),
+            __body: getBody(item),
+            __calendarDate: getDateTime(item),
+            __href: getHref(item),
+        }))
+        .reverse()
+        .value();
+
+    const categories = _.chain(feed)
+        .map((item) => ({
+            type: item.__typename,
+            value: _.pluck(item?.categories ?? [], "name"),
+        }))
+        .groupBy("type")
+        .mapObject((item) =>
+            _.pluck(item, "value")
+                .flat()
+                .filter((item) => item)
+        )
+        .value();
+
     return {
         props: {
+            feed,
+            categories,
             ...(await fetchHydration()),
         },
-        revalidate: 10,
+        revalidate: 20,
     };
 };
 

@@ -14,5 +14,8 @@
     },
     "calendar": {
         "today": "today"
+    },
+    "gallery": {
+        "empty": "Looks empty right now!"
     }
 }

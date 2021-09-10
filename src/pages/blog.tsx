@@ -38,6 +38,8 @@ import {
     PopoverContent,
     Wrap,
     PopoverTrigger,
+    BoxProps,
+    GridProps,
 } from "@chakra-ui/react";
 import strapi, { gql } from "lib/strapi";
 import { GetStaticProps } from "next";
@@ -70,7 +72,7 @@ import { usePagination } from "hooks/use-pagination";
 import { useRouter } from "next/router";
 import { useQuery } from "hooks/use-nets";
 
-type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
+export type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     author: string;
     __body: string;
     __calendarDate: string;
@@ -318,8 +320,9 @@ const ViewMenu = ({ current, options, setOption }: IViewMenu) => {
     );
 };
 
-interface IView {
+interface IView extends GridProps {
     feed: Feed;
+    span?: number;
 }
 
 const CalendarView = ({ feed }: IView) => {
@@ -545,7 +548,14 @@ const CalendarView = ({ feed }: IView) => {
     );
 };
 
-const GalleryView = ({ feed }: IView) => {
+export const GalleryView = ({
+    feed,
+    py,
+    templateRows: tr,
+    templateColumns: tc,
+    span,
+    ...props
+}: IView) => {
     const isAboveMd = useBreakpointValue({ base: false, md: true });
     const { t } = useTranslation("feed");
     const {
@@ -572,50 +582,70 @@ const GalleryView = ({ feed }: IView) => {
         <React.Fragment>
             <Grid
                 px={{ base: 6, md: 12 }}
-                templateColumns={{
-                    base: "repeat(1, 1fr)",
-                    md: "repeat(12, 1fr)",
-                }}
-                templateRows={{ base: "repeat(8, 1fr)", md: "repeat(3, 1fr)" }}
+                templateColumns={
+                    tc
+                        ? tc
+                        : {
+                              base: "repeat(1, 1fr)",
+                              md: "repeat(12, 1fr)",
+                          }
+                }
+                templateRows={
+                    tr ? tr : { base: "repeat(8, 1fr)", md: "repeat(3, 1fr)" }
+                }
                 gap={6}
                 w="full"
+                py={py}
             >
-                {feed.slice(0, 2).map((item) => (
-                    <Item
-                        key={item.id}
-                        colSpan={6}
-                        mx={4}
-                        mb="90px"
-                        bottom="-90px"
-                        item={{
-                            categories: item.categories,
-                            href: item?.__href ?? "#",
-                            imgurl: item?.banner?.url ?? "/news-image.png",
-                            readingTime: getReadingTime(item.__body),
-                            title: item.title,
-                            description: item.description as string,
-                            author: item.author,
-                        }}
-                    />
-                ))}
-                {feed.slice(start + 2, end + 2).map((item, idx) => (
-                    <Item
-                        key={item.id + "-" + pageIndex + "-" + idx}
-                        colSpan={{ base: 6, md: 4 }}
-                        mx={{ base: 4, md: 0 }}
-                        mb={{ base: "90px", md: "40px" }}
-                        bottom={{ base: "-90px", md: "-140px" }}
-                        item={{
-                            href: item?.__href ?? "#",
-                            imgurl: item?.banner?.url ?? "/news-image.png",
-                            categories: item.categories,
-                            readingTime: getReadingTime(item.__body),
-                            title: item.title,
-                            description: item.description as string,
-                            author: item.author,
-                        }}
-                    />
-                ))}
+                {feed.length === 0 && (
+                    <GridItem colSpan={12}>
+                        <Center w="full" minH="33vh">
+                            <Heading size="lg">{t("gallery.empty")}</Heading>
+                        </Center>
+                    </GridItem>
+                )}
+                {feed.length > 0 &&
+                    !span &&
+                    feed.slice(0, 2).map((item) => (
+                        <Item
+                            key={item.id}
+                            colSpan={span ? span : 6}
+                            mx={4}
+                            mb="90px"
+                            bottom="-90px"
+                            item={{
+                                categories: item.categories,
+                                href: item?.__href ?? "#",
+                                imgurl: item?.banner?.url ?? "/news-image.png",
+                                readingTime: getReadingTime(item.__body),
+                                title: item.title,
+                                description: item.description as string,
+                                author: item.author,
+                            }}
+                        />
+                    ))}
+                {feed.length > 0 &&
+                    feed
+                        .slice(span ? 0 : start + 2, span ? undefined : end + 2)
+                        .map((item, idx) => (
+                            <Item
+                                key={item.id + "-" + pageIndex + "-" + idx}
+                                colSpan={span ? span : { base: 6, md: 4 }}
+                                mx={{ base: 4, md: 0 }}
+                                mb={{ base: "90px", md: "40px" }}
+                                bottom={{ base: "-90px", md: "-140px" }}
+                                item={{
+                                    href: item?.__href ?? "#",
+                                    imgurl:
+                                        item?.banner?.url ?? "/news-image.png",
+                                    categories: item.categories,
+                                    readingTime: getReadingTime(item.__body),
+                                    title: item.title,
+                                    description: item.description as string,
+                                    author: item.author,
+                                }}
+                            />
+                        ))}
             </Grid>
             <Flex px={{ base: 6, md: 12 }}>
                 <Spacer />

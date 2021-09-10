@@ -182,7 +182,7 @@ export const Contact = () => {
                     <Element name="popper-body">
                         <Link
                             to={isOpen ? "" : "popper-body"}
-                            offset={-vh}
+                            offset={vh ? -vh : -150}
                             smooth
                             duration={800}
                         >

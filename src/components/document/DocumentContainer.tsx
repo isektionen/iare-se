@@ -39,7 +39,13 @@ import React, {
 import { isMobile } from "react-device-detect";
 import { useDocumentContext } from "state/document";
 
-const Document = ({ file }: { file: string }) => {
+const Document = ({ file }: { file?: string }) => {
+    useEffect(() => {
+        const node = document.getElementById("pdfiframe") as HTMLIFrameElement;
+        if (node) {
+            node.contentWindow?.location.reload();
+        }
+    }, [file]);
     return (
         <AspectRatio h="full" ratio={1 / Math.SQRT2}>
             <iframe
@@ -47,7 +53,7 @@ const Document = ({ file }: { file: string }) => {
                 frameBorder="0"
                 allowFullScreen
                 scrolling="auto"
-                src={`https://docs.google.com/viewer?url=${file}&embedded=true&pagemode=thumbs`}
+                src={`https://docs.google.com/viewer?url=${file}&embedded=true`}
             />
         </AspectRatio>
     );
@@ -60,6 +66,7 @@ export const DocumentContainer = () => {
         base: "left",
         md: "right",
     }) as SlideDirection;
+
     return (
         <Drawer
             isOpen={isOpen}

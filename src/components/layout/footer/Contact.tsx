@@ -25,11 +25,13 @@ import {
     useToast,
     VStack,
 } from "@chakra-ui/react";
+import { useViewport } from "hooks/use-viewport";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { isMobile } from "react-device-detect";
 import { useForm } from "react-hook-form";
 import { BsBoxArrowUp } from "react-icons/bs";
+import { Link, Element, Button as LinkButton } from "react-scroll";
 
 const Form = ({ onComplete }: { onComplete: () => void }) => {
     const { t } = useTranslation("common");
@@ -140,6 +142,7 @@ export const Contact = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const btnRef = React.useRef<HTMLButtonElement>(null);
+    const { vh } = useViewport();
 
     if (isMobile) {
         return (
@@ -176,16 +179,30 @@ export const Contact = () => {
         <Popover placement="top-end">
             {({ isOpen, onClose }) => (
                 <>
-                    <PopoverTrigger>
-                        <Button
-                            bg="white"
-                            variant="outline"
-                            rightIcon={<BsBoxArrowUp />}
+                    <Element name="popper-body">
+                        <Link
+                            to={isOpen ? "" : "popper-body"}
+                            offset={-vh}
+                            smooth
+                            duration={800}
                         >
-                            {t("footer.contact.trigger")}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent shadow="xl" rounded="lg">
+                            <PopoverTrigger>
+                                <Button
+                                    bg="white"
+                                    variant="outline"
+                                    rightIcon={<BsBoxArrowUp />}
+                                >
+                                    {t("footer.contact.trigger")}
+                                </Button>
+                            </PopoverTrigger>
+                        </Link>
+                    </Element>
+                    <PopoverContent
+                        shadow="xl"
+                        rounded="lg"
+                        overflow="scroll"
+                        maxH="80vh"
+                    >
                         <PopoverArrow />
                         <PopoverBody>
                             <Form onComplete={onClose} />

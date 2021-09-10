@@ -113,7 +113,6 @@ const ItemThumbnail = ({
                     {({ isOpen, onClose }) => (
                         <>
                             <MenuButton
-                                isActive={isOpen}
                                 px={4}
                                 py={2}
                                 onClick={(e) => {

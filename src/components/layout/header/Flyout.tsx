@@ -21,13 +21,13 @@ export const Flyout = ({ subSection, href }: ComponentHeaderMenuSection) => (
             p={{ sm: 8 }}
         >
             {subSection &&
-                subSection.map((section) => {
+                subSection.map((section, i) => {
                     if (section) {
                         const CustomIcon = availableIcons(section.icon);
 
                         return (
                             <AccessibleLink
-                                key={"flyout-section" + section.id}
+                                key={"flyout-section-" + i}
                                 href={mergeLink(href, section.href)}
                                 m={-3}
                                 p={3}

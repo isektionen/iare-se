@@ -78,8 +78,8 @@ export const Month = () => {
                 rounded="md"
                 overflow="hidden"
             >
-                {month?.days.map((day) => (
-                    <Day key={"day-" + day} date={day.date} />
+                {month?.days.map((day, i) => (
+                    <Day key={i + "day-" + day.day} date={day.date} />
                 ))}
             </SimpleGrid>
         </>

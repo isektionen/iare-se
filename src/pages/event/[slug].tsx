@@ -75,6 +75,7 @@ import { DefHeader, LayoutProps } from "types/global";
 import { fetchHydration, getHeader, useHydrater } from "state/layout";
 import { WrapPadding } from "components/browser/WrapPadding";
 import { Link, Element } from "react-scroll";
+import { isMobileSafari } from "react-device-detect";
 interface Props {
     event: Event;
     diets: Diet[];
@@ -550,7 +551,7 @@ const EventView = ({
         >
             <Flex direction="column" w="full" h={{ base: "88vh", lg: "full" }}>
                 <AccessibleLink
-                    href="/feed/event"
+                    href="/blog"
                     textDecoration="none"
                     _hover={{ textDecoration: "none" }}
                 >
@@ -598,29 +599,27 @@ const EventView = ({
                 </Text>
                 <Spacer />
                 {!isAboveMd && (
-                    <Center py={12}>
-                        <WrapPadding>
-                            <Link
-                                to="eventform"
-                                smooth={true}
-                                duration={500}
-                                offset={-40}
-                            >
-                                <MotionIconButton
-                                    rounded="full"
-                                    variant="iareSolid"
-                                    aria-label="go to form"
-                                    icon={<BsChevronDoubleDown />}
-                                    initial={{ y: 0 }}
-                                    animate={{ y: 8 }}
-                                    transition={{
-                                        repeat: Infinity,
-                                        duration: 0.5,
-                                        repeatType: "mirror",
-                                    }}
-                                />
-                            </Link>
-                        </WrapPadding>
+                    <Center pb={isMobileSafari ? 36 : undefined}>
+                        <Link
+                            to="eventform"
+                            smooth={true}
+                            duration={500}
+                            offset={-70}
+                        >
+                            <MotionIconButton
+                                rounded="full"
+                                variant="iareSolid"
+                                aria-label="go to form"
+                                icon={<BsChevronDoubleDown />}
+                                initial={{ y: 0 }}
+                                animate={{ y: 8 }}
+                                transition={{
+                                    repeat: Infinity,
+                                    duration: 0.5,
+                                    repeatType: "mirror",
+                                }}
+                            />
+                        </Link>
                     </Center>
                 )}
             </Flex>
@@ -711,7 +710,12 @@ const EventView = ({
                             {!isAboveMd && activeStep < steps.length && (
                                 <Progress
                                     size="xs"
-                                    value={(activeStep / steps.length) * 100}
+                                    value={
+                                        ((activeStep -
+                                            (event.passwordProtected ? 0 : 1)) /
+                                            steps.length) *
+                                        100
+                                    }
                                     colorScheme="brand"
                                 />
                             )}
@@ -728,7 +732,12 @@ const EventView = ({
                                     <Flex align="center" mb={4}>
                                         <Heading size="xs" fontWeight="light">
                                             {t("stepsMobile", {
-                                                activeStep: activeStep + 1,
+                                                activeStep:
+                                                    activeStep +
+                                                    1 -
+                                                    (event.passwordProtected
+                                                        ? 0
+                                                        : 1),
                                                 totalSteps: steps.length,
                                             })}
                                         </Heading>

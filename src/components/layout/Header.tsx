@@ -107,9 +107,9 @@ const Header = (props: BoxProps) => {
                     >
                         <VStack spacing={0} w="full" align="stretch">
                             <HStack spacing={1}>
-                                {sections.map((section) => (
+                                {sections.map((section, i) => (
                                     <Section
-                                        key={"section" + section.id}
+                                        key={"section-" + i}
                                         {...section}
                                     />
                                 ))}
@@ -186,124 +186,142 @@ const Header = (props: BoxProps) => {
                                 allowToggle
                                 defaultIndex={defaultIndex}
                             >
-                                {sections.map(({ subSection, href, label }) => {
-                                    const _subSection =
-                                        subSection?.map((item) => ({
-                                            ...item,
-                                            href: mergeLink(
-                                                href,
-                                                item?.href as string
-                                            ) as string,
-                                        })) ?? [];
+                                {sections.map(
+                                    ({ subSection, href, label }, i) => {
+                                        const _subSection =
+                                            subSection?.map((item) => ({
+                                                ...item,
+                                                href: mergeLink(
+                                                    href,
+                                                    item?.href as string
+                                                ) as string,
+                                            })) ?? [];
 
-                                    const variants = {
-                                        open: {
-                                            rotate: 45,
-                                        },
-                                        close: {
-                                            rotate: -45,
-                                        },
-                                    };
-                                    if (
-                                        _subSection &&
-                                        _subSection.length === 0
-                                    ) {
-                                        return <></>;
-                                    }
-                                    return (
-                                        <AccordionItem
-                                            key={"accordionitem-" + href}
-                                            borderTopWidth="0 !important"
-                                            borderBottomWidth="0 !important"
-                                        >
-                                            {({ isExpanded }) => (
-                                                <Flex
-                                                    borderBottomWidth="1px"
-                                                    direction="column"
-                                                    borderColor="gray.100"
-                                                >
-                                                    <AccordionButton>
-                                                        <Flex
-                                                            align="center"
-                                                            w="full"
-                                                            flex={1}
-                                                            justify="space-between"
-                                                        >
-                                                            <Text
-                                                                fontWeight="700"
-                                                                size="lg"
+                                        const variants = {
+                                            open: {
+                                                rotate: 45,
+                                            },
+                                            close: {
+                                                rotate: -45,
+                                            },
+                                        };
+                                        if (
+                                            _subSection &&
+                                            _subSection.length === 0
+                                        ) {
+                                            return (
+                                                <React.Fragment
+                                                    key={
+                                                        i +
+                                                        "accordionitem-" +
+                                                        href
+                                                    }
+                                                ></React.Fragment>
+                                            );
+                                        }
+                                        return (
+                                            <AccordionItem
+                                                key={
+                                                    i + "accordionitem-" + href
+                                                }
+                                                borderTopWidth="0 !important"
+                                                borderBottomWidth="0 !important"
+                                            >
+                                                {({ isExpanded }) => (
+                                                    <Flex
+                                                        borderBottomWidth="1px"
+                                                        direction="column"
+                                                        borderColor="gray.100"
+                                                    >
+                                                        <AccordionButton>
+                                                            <Flex
+                                                                align="center"
+                                                                w="full"
+                                                                flex={1}
+                                                                justify="space-between"
                                                             >
-                                                                {label}
-                                                            </Text>
-                                                            <MotionBox
-                                                                display="flex"
-                                                                justifyContent="center"
-                                                                alignItems="center"
-                                                                animate={
-                                                                    isExpanded
-                                                                        ? "open"
-                                                                        : "closed"
-                                                                }
-                                                                variants={
-                                                                    variants
-                                                                }
-                                                            >
-                                                                <Icon
-                                                                    as={BsPlus}
-                                                                    boxSize={5}
-                                                                />
-                                                            </MotionBox>
-                                                        </Flex>
-                                                    </AccordionButton>
+                                                                <Text
+                                                                    fontWeight="700"
+                                                                    size="lg"
+                                                                >
+                                                                    {label}
+                                                                </Text>
+                                                                <MotionBox
+                                                                    display="flex"
+                                                                    justifyContent="center"
+                                                                    alignItems="center"
+                                                                    animate={
+                                                                        isExpanded
+                                                                            ? "open"
+                                                                            : "closed"
+                                                                    }
+                                                                    variants={
+                                                                        variants
+                                                                    }
+                                                                >
+                                                                    <Icon
+                                                                        as={
+                                                                            BsPlus
+                                                                        }
+                                                                        boxSize={
+                                                                            5
+                                                                        }
+                                                                    />
+                                                                </MotionBox>
+                                                            </Flex>
+                                                        </AccordionButton>
 
-                                                    <AccordionPanel>
-                                                        <List
-                                                            spacing={2}
-                                                            fontSize="md"
-                                                            color="gray.600"
-                                                        >
-                                                            {_subSection &&
-                                                                _subSection.map(
-                                                                    (item) => {
-                                                                        if (
+                                                        <AccordionPanel>
+                                                            <List
+                                                                spacing={2}
+                                                                fontSize="md"
+                                                                color="gray.600"
+                                                            >
+                                                                {_subSection &&
+                                                                    _subSection.map(
+                                                                        (
                                                                             item
-                                                                        ) {
-                                                                            return (
-                                                                                <ListItem
-                                                                                    onClick={
-                                                                                        onClose
-                                                                                    }
-                                                                                    key={
-                                                                                        "footer-section-listitem-" +
-                                                                                        item?.id
-                                                                                    }
-                                                                                >
-                                                                                    <AccessibleLink
-                                                                                        href={
-                                                                                            item?.href
+                                                                        ) => {
+                                                                            if (
+                                                                                item
+                                                                            ) {
+                                                                                return (
+                                                                                    <ListItem
+                                                                                        onClick={
+                                                                                            onClose
+                                                                                        }
+                                                                                        key={
+                                                                                            "footer-section-listitem-" +
+                                                                                            item?.id
                                                                                         }
                                                                                     >
-                                                                                        {
-                                                                                            item?.label
-                                                                                        }
-                                                                                    </AccessibleLink>
-                                                                                </ListItem>
+                                                                                        <AccessibleLink
+                                                                                            href={
+                                                                                                item?.href
+                                                                                            }
+                                                                                        >
+                                                                                            {
+                                                                                                item?.label
+                                                                                            }
+                                                                                        </AccessibleLink>
+                                                                                    </ListItem>
+                                                                                );
+                                                                            }
+                                                                            return (
+                                                                                <>
+
+                                                                                </>
                                                                             );
                                                                         }
-                                                                        return (
-                                                                            <>
-
-                                                                            </>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                        </List>
-                                                    </AccordionPanel>
-                                                </Flex>
-                                            )}
-                                        </AccordionItem>
-                                    );
-                                })}
+                                                                    )}
+                                                            </List>
+                                                        </AccordionPanel>
+                                                    </Flex>
+                                                )}
+                                            </AccordionItem>
+                                        );
+                                    }
+                                )}
                             </Accordion>
                             <Spacer />
                             <Flex direction="column">

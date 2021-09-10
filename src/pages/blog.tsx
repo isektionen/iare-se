@@ -768,6 +768,13 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
         [feed, filters]
     );
 
+    useEffect(() => {
+        const view = views.find((item) => item.key === currentView.key);
+        if (view) {
+            setCurrentView(view);
+        }
+    }, [lang]);
+
     return (
         <VStack spacing={4}>
             <Flex w="full" h="35vh" position="relative" mb="140px">

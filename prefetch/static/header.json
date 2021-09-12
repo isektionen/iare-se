@@ -151,7 +151,7 @@
                     "id": "5",
                     "label": "News",
                     "displayDropDown": false,
-                    "href": "/feed",
+                    "href": "/blog",
                     "subSection": [
                         {
                             "id": "6",
@@ -164,7 +164,7 @@
                         {
                             "id": "7",
                             "label": "Job",
-                            "href": "/job",
+                            "href": "/blog?type[]=job",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
@@ -172,7 +172,7 @@
                         {
                             "id": "8",
                             "label": "Event",
-                            "href": "/event",
+                            "href": "/blog?type[]=event",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
@@ -200,15 +200,56 @@
                             "description": null,
                             "icon": "atlas",
                             "color": "gray"
+                        },
+                        {
+                            "id": "19",
+                            "label": "Brand",
+                            "href": "/brand",
+                            "description": null,
+                            "icon": "question",
+                            "color": "gray"
+                        },
+                        {
+                            "id": "20",
+                            "label": "Committees",
+                            "href": "/committee",
+                            "description": null,
+                            "icon": "question",
+                            "color": "gray"
                         }
                     ]
                 },
                 {
                     "id": "7",
                     "label": "Studying at I",
-                    "displayDropDown": false,
+                    "displayDropDown": true,
                     "href": "/student",
-                    "subSection": []
+                    "subSection": [
+                        {
+                            "id": "16",
+                            "label": "What's a chapter?",
+                            "href": "/what-is-a-chapter",
+                            "description": null,
+                            "icon": "question",
+                            "color": "gray"
+                        },
+                        {
+                            "id": "17",
+                            "label": "Aspiring students",
+                            "href": "/assumed-student",
+                            "description": null,
+                            "icon": "question",
+                            "color": "gray"
+                        },
+                        {
+                            "id": "18",
+                            "label": "Accepted Students",
+                            "href": "/accepted-student",
+                            "description": null,
+                            "icon": "question",
+                            "color": "gray"
+                        }
+                    ]
                 },
                 {
                     "id": "8",

@@ -1,6 +1,6 @@
 {
     "fetching": "Fetching event data",
-    
+    "beforeLeave": "Any information stored for the RSVP will be lost refreshing, do you want to continue?",
     "step": {
         "zero": "Authorize",
         "one": "Choose a ticket",

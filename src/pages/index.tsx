@@ -277,7 +277,7 @@ const Home = ({ header, footer, feed }: LayoutProps<Props>) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const {
         data: { posts, events, jobs },
     } = await strapi.query<{
@@ -286,8 +286,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         jobs: Jobs[];
     }>({
         query: gql`
-            query {
-                posts {
+            query FindFeed($locale: String!) {
+                posts(locale: $locale) {
+                    locale
                     id
                     slug
                     banner {
@@ -305,7 +306,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     }
                     published_at
                 }
-                events {
+                events(locale: $locale) {
+                    locale
                     id
                     title
                     slug
@@ -326,7 +328,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     }
                     published_at
                 }
-                jobs {
+                jobs(locale: $locale) {
+                    locale
                     body
                     id
                     deadlineDate
@@ -346,16 +349,19 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 }
             }
         `,
+        variables: { locale },
     });
 
     const getAuthor = (item: Event | Post | Jobs) => {
         switch (item.__typename) {
             case "Event":
-                return item?.committee?.name;
+                return item?.committee?.name ?? "N/A";
             case "Post":
-                return item?.committee?.name;
+                return item?.committee?.name ?? "N/A";
             case "Jobs":
-                return item?.company?.name;
+                return item?.company?.name ?? "N/A";
+            default:
+                return null;
         }
     };
 
@@ -367,6 +373,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 return "/blog/" + item.slug;
             case "Jobs":
                 return "/job/" + item.slug;
+            default:
+                return null;
         }
     };
 
@@ -378,6 +386,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 return item.published_at;
             case "Jobs":
                 return item.deadlineDate;
+            default:
+                return null;
         }
     };
 
@@ -391,6 +401,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     .filter((_item) => _item);
             case "Jobs":
                 return [item?.jobCategory?.name].filter((_item) => _item);
+            default:
+                return null;
         }
     };
 
@@ -421,23 +433,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         .reverse()
         .value();
 
-    const categories = _.chain(feed)
-        .map((item) => ({
-            type: item.__typename,
-            value: _.pluck(item?.categories ?? [], "name"),
-        }))
-        .groupBy("type")
-        .mapObject((item) =>
-            _.pluck(item, "value")
-                .flat()
-                .filter((item) => item)
-        )
-        .value();
-
     return {
         props: {
             feed,
-            categories,
             ...(await fetchHydration()),
         },
         revalidate: 20,

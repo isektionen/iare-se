@@ -1,11 +1,25 @@
-import strapi, { gql } from "lib/strapi";
+import strapi, { extractLocales, gql, queryLocale } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { Jobs } from "types/strapi";
+import { Company, Jobs, UploadFile } from "types/strapi";
 import { serialize } from "next-mdx-remote/serialize";
 import React from "react";
 import { MDXLayout } from "components/mdx/Layout";
 import { LayoutWrapper } from "components/layout/LayoutWrapper";
-import { Box, Button, Center, Flex, Heading } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Center,
+    Flex,
+    Heading,
+    HStack,
+    Icon,
+    Spacer,
+    Stack,
+    StackDivider,
+    Text,
+    useBreakpointValue,
+    VStack,
+} from "@chakra-ui/react";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { NextImage } from "../../components/NextImage";
 import { getSchoolYear } from "utils/dates";
@@ -15,78 +29,216 @@ import { isBefore } from "date-fns";
 import AccessibleLink from "components/AccessibleLink";
 import { DefHeader, LayoutProps } from "types/global";
 import { fetchHydration, getHeader, useHydrater } from "state/layout";
+import { IoMdArrowDropleft } from "react-icons/io";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { MdDateRange } from "react-icons/md";
+import useTranslation from "next-translate/useTranslation";
+import { useSanity } from "hooks/use-check-error";
+import _ from "underscore";
+import { useSetLocaleSlug } from "state/locale";
+import { LinkComponent } from "components/LinkComponent";
+import defaultJob from "../../../prefetch/static/job.json";
 interface Props {
     job: Jobs;
     mdx: MDXRemoteSerializeResult;
 }
 
-const JobView = ({ header, footer, job, mdx }: LayoutProps<Props>) => {
+const JobView = ({
+    header,
+    footer,
+    /* @ts-ignore */
+    job = defaultJob,
+    mdx,
+    error,
+    localeSlugs,
+}: LayoutProps<Props>) => {
+    const { t } = useTranslation("job");
+    useSanity(error);
+    useSetLocaleSlug(localeSlugs);
     useHydrater({ header, footer });
-    const router = useRouter();
-    const cta = job.contact?.find((c) => c?.type === "cta");
 
-    const isActive = isBefore(new Date(), new Date(job.deadlineDate));
+    const isAboveLg = useBreakpointValue({ base: false, lg: true });
+
+    const company = job.company as Company;
+    const image = job.banner as UploadFile;
+    const cta = job?.contact?.find((item) => item?.type === "cta") || null;
+    const contacts =
+        job?.contact?.filter((item) => item?.type === "email") || [];
+    const position = job?.position;
+    const location = job?.location;
     return (
-        <Flex direction="column" px={24} py={12}>
-            <Center>
-                <Flex direction="column" align="center">
-                    <AccessibleLink
-                        href={job.company?.website ?? "#"}
-                        isExternal
-                    >
-                        <NextImage
-                            mb={8}
-                            src={job.company?.logo?.url ?? ""}
-                            alt={
-                                job.company?.logo?.alternativeText ?? "logotype"
-                            }
-                            width={job.company?.logo?.width ?? 160 * 3}
-                            height={job.company?.logo?.height ?? 90 * 3}
-                        />
-                    </AccessibleLink>
-                    <Heading as="h1" size="2xl" textAlign="center">
-                        {job.title}
-                    </Heading>
-                    <Flex
-                        fontSize="xl"
-                        w="25%"
-                        justify="space-around"
-                        py={4}
-                        textTransform="capitalize"
-                    >
-                        <span>{job.position}</span>
-                        <span>&bull;</span>
-                        <span>{job.location}</span>
-                    </Flex>
-                    <Flex>
-                        Riktat åt årskurs{" "}
-                        {job.year?.map(getSchoolYear).join(", ")}
-                    </Flex>
-                    {cta && isActive && (
-                        <Button
-                            mt={12}
-                            variant="iareSolid"
-                            disabled={!isActive}
-                            onClick={() => {
-                                if (isActive) {
-                                    window.open(cta.href, "__blank");
-                                }
-                            }}
-                            w={{ base: "full", md: "25%" }}
-                        >
-                            {cta.label}
-                        </Button>
-                    )}
+        <Flex overflow="hidden" direction="column" bg="white" pos="relative">
+            {image && (
+                <Flex
+                    maxH="55vh"
+                    w="full"
+                    pos="relative"
+                    overflow="hidden"
+                    _after={{
+                        content: "''",
+                        position: "absolute",
+                        bottom: 0,
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bg: "linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.65) 100%)",
+                    }}
+                >
+                    <NextImage
+                        w="full"
+                        width={image.width as number}
+                        height={image.height as number}
+                        src={image.url as string}
+                        layout="intrinsic"
+                        objectFit="contain"
+                        objectPosition="center"
+                        priority
+                    />
                 </Flex>
-            </Center>
-            <DeadlineCounter
-                deadline={job.deadlineDate}
-                description={{
-                    before: "Det är {TIMELEFT} tills ansökan stänger",
-                    after: "Det var {TIMELEFT} tills ansökan stängde",
-                }}
-            />
-            <MDXLayout source={mdx} />
+            )}
+            <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>
+                <AccessibleLink
+                    href="/blog"
+                    textDecoration="none"
+                    _hover={{ textDecoration: "none" }}
+                >
+                    <Icon as={IoMdArrowDropleft} /> {t("common:back")}
+                </AccessibleLink>
+            </Box>
+            <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>
+                {cta && (
+                    <LinkComponent
+                        href={cta.href || "#"}
+                        as={Button}
+                        variant="iareSolid"
+                        w="full"
+                        rounded="md"
+                        p={6}
+                        fontWeight="600"
+                    >
+                        {cta.label}
+                    </LinkComponent>
+                )}
+            </Box>
+            <Stack
+                direction={{ base: "column", lg: "row" }}
+                spacing={{ base: 6, lg: 16 }}
+                px={{ base: 4, lg: 12 }}
+                pt={{ base: 4, lg: 8 }}
+                pb={{ base: 4, md: 16 }}
+            >
+                {!isAboveLg && company && (
+                    <HStack
+                        bg="gray.100"
+                        w="full"
+                        rounded="md"
+                        p={6}
+                        fontWeight="600"
+                        spacing={4}
+                        justify="space-evenly"
+                    >
+                        <Text textTransform="capitalize">{company.name}</Text>
+                        {position && (
+                            <Flex
+                                justify="space-between"
+                                textTransform="capitalize"
+                            >
+                                <Text>{position}</Text>
+                            </Flex>
+                        )}
+                        {location && (
+                            <Flex
+                                justify="space-between"
+                                textTransform="capitalize"
+                            >
+                                <Text>{location}</Text>
+                            </Flex>
+                        )}
+                    </HStack>
+                )}
+                {isAboveLg && company && (
+                    <Box as="aside" w="250px" h="full">
+                        <Box
+                            bg="gray.100"
+                            rounded="md"
+                            fontWeight="600"
+                            maxH="250px"
+                            overflow="hidden"
+                        >
+                            <NextImage
+                                maxW="250px"
+                                src={company?.logo?.url || "/logo.svg"}
+                                width={company.logo?.width || 50}
+                                height={company.logo?.height || 50}
+                                layout="intrinsic"
+                                objectFit="contain"
+                            />
+                        </Box>
+                        <VStack
+                            mt={14}
+                            spacing={8}
+                            divider={<StackDivider borderColor="gray.200" />}
+                            align="stretch"
+                        >
+                            <Box>
+                                {position && (
+                                    <Flex
+                                        justify="space-between"
+                                        textTransform="capitalize"
+                                    >
+                                        <Text fontWeight="bold">
+                                            {t("position")}
+                                        </Text>
+                                        <Text>{position}</Text>
+                                    </Flex>
+                                )}
+                                {location && (
+                                    <Flex
+                                        justify="space-between"
+                                        textTransform="capitalize"
+                                    >
+                                        <Text fontWeight="bold">
+                                            {t("location")}
+                                        </Text>
+                                        <Text>{location}</Text>
+                                    </Flex>
+                                )}
+                            </Box>
+                            {contacts.length > 0 && (
+                                <Box>
+                                    {contacts.map((item, i) => (
+                                        <AccessibleLink
+                                            textTransform="capitalize"
+                                            key={(item?.href ?? "") + i}
+                                            href={`mailto:${item?.href}`}
+                                        >
+                                            {item?.label}
+                                        </AccessibleLink>
+                                    ))}
+                                </Box>
+                            )}
+                        </VStack>
+                    </Box>
+                )}
+
+                <Flex
+                    overflow="hidden"
+                    flexDirection="column"
+                    flex={1}
+                    p={4}
+                    shadow="2xl"
+                    rounded="md"
+                    borderWidth="1px"
+                    borderColor="gray.200"
+                    minH="550px"
+                    bg="white"
+                    w="full"
+                    pos="relative"
+                >
+                    <Heading pb={8}>{job.title}</Heading>
+                    {mdx && <MDXLayout source={mdx} />}
+                </Flex>
+            </Stack>
         </Flex>
     );
 };
@@ -108,53 +260,77 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: "blocking",
+        fallback: true,
     };
 };
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const { data } = await strapi.query<{ job: Jobs }>({
-        query: gql`
-            query FindJob($slug: ID!) {
-                job(id: $slug) {
-                    created_at
-                    title
-                    deadlineDate
-                    startDate
-                    jobCategory {
-                        name
-                    }
-                    company {
-                        name
-                        logo {
-                            width
-                            height
-                            url
-                        }
-                        website
-                    }
-                    year {
-                        year
-                    }
-                    body
-                    contact {
-                        label
-                        type
-                        href
-                    }
-                    position
-                    location
-                }
+export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+    const { data, error } = await queryLocale<{ jobs: Jobs[] }>`
+    query  {
+        jobs(locale: ${locale}, where: {slug: ${params?.slug as string}}) {
+            created_at
+            title
+            deadlineDate
+            startDate
+            jobCategory {
+                name
             }
-        `,
-        variables: { slug: params?.slug },
-    });
+            company {
+                name
+                logo {
+                    width
+                    height
+                    url
+                }
+                website
+            }
+            year {
+                year
+            }
+            body
+            contact {
+                label
+                type
+                href
+            }
+            position
+            location
+            banner {
+                url
+                width
+                height
+            }
+            localizations {
+                locale
+                slug
+            }
+        }
+    }`;
+
+    const job = _.first(data.jobs) || null;
+
+    const localeSlugs = extractLocales(
+        { job },
+        ["job"],
+        ["locale", "slug"]
+    ).map((item) => ({
+        ...item,
+        slug:
+            item.locale === "sv"
+                ? `/job/${item.slug}`
+                : `/${item.locale}/job/${item.slug}`,
+    }));
+
+    const mdxSource = job?.body ? await serialize(job.body) : null;
 
     return {
         props: {
+            error,
+            localeSlugs,
+            job,
+            mdx: mdxSource,
             ...(await fetchHydration()),
-            job: data.job,
-            mdx: await serialize(data.job.body),
         },
+        revalidate: 60,
     };
 };
 

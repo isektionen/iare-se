@@ -118,7 +118,6 @@ const validState = selector({
     key: "SELECTOR/VALIDSTATE",
     get: ({ get }) => {
         const atom = get(stateAtom);
-        //console.log(atom);
         const validKeys = ["intentionId", "paymentId", "fullfillmentId"];
         const status =
             atom.intentionId && atom.paymentId

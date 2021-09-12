@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Meta from "./Meta";
 import { Box, Container, Flex, VStack } from "@chakra-ui/react";
+import { AlertSection } from "./AlertSection";
 
 interface Props {
     children: ReactNode;

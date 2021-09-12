@@ -9,6 +9,7 @@ import {
     ComponentHeaderLanguages,
     ComponentHeaderLogo,
     ComponentHeaderMenuSection,
+    Footer,
     Header,
     UploadFile,
 } from "./strapi";
@@ -34,18 +35,25 @@ export interface GlobalProps {
 export interface DefHeader {
     logo: Pick<UploadFile, "height" | "width" | "url" | "alternativeText">;
     locale: string;
-    localizations: Omit<DefHeader, "localizations">[];
+    localizations: Header[];
     sections: ComponentHeaderMenuSection[];
     languages: ComponentHeaderLanguages[];
     contact: ComponentHeaderContact;
     feedbackbox: Pick<ComponentHeaderFeedbackbox, "description"> | null;
 }
 
-export type LayoutProps<T> = T & Layout;
+export type LayoutProps<T> = T &
+    Layout & {
+        error: boolean;
+        localeSlugs?: {
+            locale: string;
+            slug: string;
+        }[];
+    };
 
 export interface DefFooter {
     locale: string;
-    localizations: Omit<DefFooter, "localizations">[];
+    localizations: Footer[];
     social: ComponentFooterSocial[];
     representative: {
         user: {

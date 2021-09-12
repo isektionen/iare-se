@@ -11,6 +11,5 @@ export const changeLocaleData = (locale: string | undefined, data: any) => {
             return other;
         }
     }
-    console.log("NO LOCALE VERSION FOUND");
     return data;
 };

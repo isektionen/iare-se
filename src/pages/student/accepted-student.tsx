@@ -1,7 +1,8 @@
 import { Box, Heading, Stack, VStack } from "@chakra-ui/react";
 import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
-import strapi, { gql } from "lib/strapi";
+import { useSanity } from "hooks/use-check-error";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -16,7 +17,15 @@ interface Props {
     mdx: MDXRemoteSerializeResult;
 }
 
-const View = ({ title, images, mdx, header, footer }: LayoutProps<Props>) => {
+const View = ({
+    title,
+    images,
+    mdx,
+    header,
+    footer,
+    error,
+}: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
 
     const hasImages = images.length > 0;
@@ -28,12 +37,12 @@ const View = ({ title, images, mdx, header, footer }: LayoutProps<Props>) => {
             spacing={8}
             direction={{ base: "column-reverse", md: "row" }}
         >
-            <Box minW={{ base: "full", md: "70%" }}>
+            <Box minW={{ base: "full", md: "60%" }}>
                 <Heading mb={8}>{title}</Heading>
                 <MDXLayout source={mdx} flex={1} />
             </Box>
             {hasImages && (
-                <VStack spacing={4} w={{ base: "full", md: "30%" }}>
+                <VStack spacing={4} w={{ base: "full", md: "40%" }}>
                     {images.map((image, i) => (
                         <NextImage
                             key={image.id}
@@ -51,31 +60,30 @@ const View = ({ title, images, mdx, header, footer }: LayoutProps<Props>) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
-    const {
-        data: { acceptedStudent },
-    } = await strapi.query<{ acceptedStudent: AcceptedStudent }>({
-        query: gql`
-            query {
-                acceptedStudent {
-                    content
-                    title
-                    images {
-                        id
-                        url
-                    }
-                }
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    const { data, error } = await queryLocale<{
+        acceptedStudent: AcceptedStudent;
+    }>`
+    query {
+        acceptedStudent(locale: ${locale}) {
+            content
+            title
+            images {
+                id
+                url
             }
-        `,
-    });
-    const mdxSource = await serialize(
-        acceptedStudent?.content ?? ("" as string)
-    );
+        }
+    }
+`;
+    const mdxSource = data.acceptedStudent?.content
+        ? await serialize(data.acceptedStudent.content)
+        : null;
 
     return {
         props: {
-            images: acceptedStudent?.images,
-            title: acceptedStudent?.title,
+            error,
+            images: data.acceptedStudent?.images,
+            title: data.acceptedStudent?.title,
             mdx: mdxSource,
 
             ...(await fetchHydration()),

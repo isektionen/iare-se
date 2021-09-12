@@ -9,6 +9,7 @@ module.exports = {
         "/contact": ["contact"],
         "/contact/[slug]": ["contact"],
         "/event/[slug]": ["event", "ticket"],
+        "/job/[slug]": ["job"],
         "/committee/[slug]": ["mdx"],
         "/blog": ["searchbar", "feed"],
         "/": ["landingpage", "feed"],

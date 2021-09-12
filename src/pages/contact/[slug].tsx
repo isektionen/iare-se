@@ -33,7 +33,8 @@ import {
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
-import strapi, { gql } from "lib/strapi";
+import { useSanity } from "hooks/use-check-error";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import useTranslation from "next-translate/useTranslation";
 import React, { useMemo, useRef } from "react";
@@ -43,6 +44,7 @@ import { IoClose } from "react-icons/io5";
 import { fetchHydration, useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { CommitteeFunction, Representative } from "types/strapi";
+import defaultCommitteeFunction from "../../../prefetch/static/committeeFunction.json";
 import _ from "underscore";
 
 interface CustomRepresentative {
@@ -183,10 +185,13 @@ interface Props {
 }
 
 const RoleView = ({
+    error,
     header,
     footer,
-    committeeFunctions,
+    /* @ts-ignore */
+    committeeFunctions = [defaultCommitteeFunction],
 }: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
 
     const { t } = useTranslation("contact");
@@ -282,7 +287,6 @@ const RoleView = ({
                 overflow="hidden"
                 w={{ base: "full", lg: "full" }}
                 h="lg"
-                minW={{ base: "full", lg: "60rem" }}
                 bg="white"
                 shadow="2xl"
                 rounded="md"
@@ -406,7 +410,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     } = await strapi.query<{ committeeFunctions: CommitteeFunction[] }>({
         query: gql`
             query {
-                committeeFunctions {
+                committeeFunctions(where: { slug: "skyddsombud" }) {
                     slug
                 }
             }
@@ -415,38 +419,39 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
     return {
         paths: committeeFunctions.map(({ slug }) => ({ params: { slug } })),
-        fallback: false,
+        fallback: true,
     };
 };
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     const {
         data: { committeeFunctions },
-    } = await strapi.query<{ committeeFunctions: CommitteeFunction[] }>({
-        query: gql`
-            query FindContact($slug: String!) {
-                committeeFunctions(where: { slug: $slug }) {
-                    contact
-                    role
-                    abbreviation
-                    role_description
-                    representatives {
-                        user {
-                            firstname
-                            lastname
-                        }
-                        personal_description
-                        cover {
-                            url
-                            formats
-                        }
-                    }
+        error,
+    } = await queryLocale<{ committeeFunctions: CommitteeFunction[] }>`
+    query  {
+        committeeFunctions(locale: ${locale}, where: { slug: ${
+        params?.slug as string
+    } }) {
+            contact
+            role
+            abbreviation
+            role_description
+            representatives {
+                user {
+                    firstname
+                    lastname
+                }
+                personal_description
+                cover {
+                    url
+                    formats
                 }
             }
-        `,
-        variables: { slug: params?.slug },
-    });
+        }
+    }
+`;
     return {
         props: {
+            error,
             ...(await fetchHydration()),
             committeeFunctions,
         },

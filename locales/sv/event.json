@@ -1,5 +1,7 @@
 {
     "fetching": "Laddar event data",
+    "beforeLeave": "All information om osan kommer försvinna om du uppdaterar sidan, vill du fortsätta?",
+
     "step": {
         "zero": "Autentisera",
         "one": "Välj biljett",

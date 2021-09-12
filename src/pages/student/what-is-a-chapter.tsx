@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
-import strapi, { gql } from "lib/strapi";
+import { useSanity } from "hooks/use-check-error";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -33,7 +34,9 @@ const View = ({
     board,
     header,
     footer,
+    error,
 }: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
     return (
         <Stack
@@ -42,7 +45,7 @@ const View = ({
             spacing={8}
             direction={{ base: "column-reverse", md: "row" }}
         >
-            <Box minW={{ base: "full", md: "70%" }}>
+            <Box minW={{ base: "full", md: "60%" }}>
                 <Heading mb={8}>{title}</Heading>
                 <MDXLayout source={mdx} flex={1} />
                 <Wrap shouldWrapChildren justify="center" w="full">
@@ -83,7 +86,7 @@ const View = ({
                     })}
                 </Wrap>
             </Box>
-            <VStack spacing={4} w={{ base: "full", md: "30%" }}>
+            <VStack spacing={4} w={{ base: "full", md: "40%" }}>
                 {images.map((image, i) => (
                     <NextImage
                         key={image.id}
@@ -100,42 +103,41 @@ const View = ({
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const {
         data: { chapter },
-    } = await strapi.query<{ chapter: Chapter }>({
-        query: gql`
-            query {
-                chapter {
-                    content
-                    title
-                    board {
-                        representatives(where: { hidden: false }) {
-                            id
-                            user {
-                                firstname
-                                lastname
-                            }
-                            cover {
-                                url
-                            }
-                            committee_roles {
-                                role
-                                abbreviation
-                                committee_objectives {
-                                    objective
-                                }
-                            }
-                        }
+        error,
+    } = await queryLocale<{ chapter: Chapter }>`
+    query {
+        chapter(locale: ${locale}) {
+            content
+            title
+            board {
+                representatives(where: { hidden: false }) {
+                    id
+                    user {
+                        firstname
+                        lastname
                     }
-                    images {
-                        id
+                    cover {
                         url
+                    }
+                    committee_roles {
+                        role
+                        abbreviation
+                        committee_objectives {
+                            objective
+                        }
                     }
                 }
             }
-        `,
-    });
+            images {
+                id
+                url
+            }
+        }
+    }
+`;
 
     const objectives =
         chapter.board?.representatives
@@ -154,10 +156,13 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         .get("key")
         .value();
 
-    const mdxSource = await serialize(chapter.content as string);
+    const mdxSource = chapter?.content
+        ? await serialize(chapter.content as string)
+        : null;
 
     return {
         props: {
+            error,
             mdx: mdxSource,
             title: chapter.title,
             images: chapter.images,

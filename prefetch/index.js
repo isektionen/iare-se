@@ -1,10 +1,26 @@
 const fs = require("fs");
 const header = require("./resolvers/header");
-const footer = require("./resolvers/footer");
+const event = require("./resolvers/event");
 const auth = require("./resolvers/auth");
+const footer = require("./resolvers/footer");
+const blog = require("./resolvers/blog");
+const committee = require("./resolvers/committee");
+const representative = require("./resolvers/representative");
+const job = require("./resolvers/job");
+const committeeFunction = require("./resolvers/committeeFunction");
 
 const config = {
-    resolvers: [header, footer, auth],
+    resolvers: [
+        header,
+        footer,
+        auth,
+        event,
+        blog,
+        committee,
+        representative,
+        job,
+        committeeFunction,
+    ],
 };
 
 const prefetch = () => {

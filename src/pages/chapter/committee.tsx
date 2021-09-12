@@ -1,17 +1,25 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
 import { Sidebar } from "components/committee/Sidebar";
 import { MDXLayout } from "components/mdx/Layout";
-import strapi, { gql } from "lib/strapi";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import { GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import useTranslation from "next-translate/useTranslation";
-import React from "react";
-import { fetchHydration, useHydrater, usePageMenu } from "state/layout";
+import React, { useEffect } from "react";
+import {
+    fetchHydration,
+    useAlert,
+    useHydrater,
+    usePageMenu,
+} from "state/layout";
 import { LayoutProps } from "types/global";
 import { Committee, CommitteeLandingpage } from "types/strapi";
-import _ from "underscore";
-
+import _, { any } from "underscore";
+import { checkForError } from "utils/error";
+import Error from "next/error";
+import { ClientError } from "components/Error";
+import { useSanity } from "hooks/use-check-error";
 interface Props {
     committees: Committee[];
     mdx: MDXRemoteSerializeResult;
@@ -24,7 +32,9 @@ const CommitteeView = ({
     committees,
     title,
     mdx,
+    error,
 }: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
     usePageMenu({
         label: "Nämnder",
@@ -34,7 +44,7 @@ const CommitteeView = ({
             href: "/committee/" + c?.slug ?? ("#" as string),
         })),
     });
-    const { t } = useTranslation("committee");
+
     return (
         <Flex
             py={8}
@@ -52,51 +62,42 @@ const CommitteeView = ({
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const {
         data: { committees, committeeLandingpage },
-    } = await strapi.query<{
+        error,
+    } = await queryLocale<{
         committees: Committee[];
         committeeLandingpage: CommitteeLandingpage;
-    }>({
-        query: gql`
-            query {
-                committees {
-                    id
-                    slug
-                    name
-                    abbreviation
-                    icon {
-                        url
-                    }
-                    committee_objective {
-                        objective
-                    }
-                }
-                committeeLandingpage {
-                    title
-                    content
-                }
+    }>`query {
+        committees(locale:${locale}) {
+            locale
+            id
+            slug
+            name
+            abbreviation
+            icon {
+                url
             }
-        `,
-    });
-    const mdxSource = await serialize(committeeLandingpage.content as string);
+            committee_objective {
+                objective
+            }
+        }
+        committeeLandingpage(locale:${locale}) {
+            title
+            content
+        }
+    }`;
+    const mdxSource = committeeLandingpage?.content
+        ? await serialize(committeeLandingpage.content)
+        : null;
 
     return {
         props: {
+            error,
             mdx: mdxSource,
-            title: committeeLandingpage.title,
-            committees /*: _.chain(committees)
-                .map((committee) => {
-                    const { committee_objective, ...rest } = committee;
-                    if (committee_objective) {
-                        const { objective } = committee_objective;
-                        return { ...rest, objective };
-                    }
-                    return { ...rest, objective: null };
-                })
-                .groupBy("objective")
-                .value(),*/,
+            title: committeeLandingpage?.title ?? null,
+            committees,
             ...(await fetchHydration()),
         },
         revalidate: 60,

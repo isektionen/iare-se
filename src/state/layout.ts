@@ -96,6 +96,44 @@ export const usePageMenu = (menu: IPageMenu) => {
     }, [menu, setMenu]);
 };
 
+interface DefaultAlert {
+    status: "info" | "success" | "warning" | "error";
+    title: string | undefined;
+    description: string | undefined;
+    isClosable: boolean;
+    isOpen: boolean;
+}
+
+const defaultAlert: DefaultAlert = {
+    status: "info",
+    title: undefined,
+    description: undefined,
+    isClosable: false,
+    isOpen: false,
+};
+
+const alertState = atom<DefaultAlert>({
+    key: "ATOM/ALERT",
+    default: defaultAlert,
+});
+
+export const useAlert = () => {
+    const setState = useSetRecoilState(alertState);
+
+    return (_alert: Partial<DefaultAlert> | "reset") => {
+        if (_alert === "reset") {
+            setState(defaultAlert);
+        } else {
+            setState((oldState) => ({ ...oldState, ..._alert }));
+        }
+    };
+};
+
+export const useAlertSelector = () => {
+    const state = useRecoilValue(alertState);
+    return state;
+};
+
 export const usePageHydrate = () => {
     const state = useRecoilValue(pageMenuState);
     return state;
@@ -115,15 +153,17 @@ export const layout = selectorFamily({
             const state = get(layoutState);
 
             const _section = state[section];
-            if (_section.locale === lang) {
+            if (_section && _section?.locale === lang) {
                 return _section;
             }
-            /* @ts-ignore */
-            const locale_section = _section.localizations.find(
-                (l: Layout[T]) => l.locale === "en"
-            );
-            if (locale_section) {
-                return locale_section as Layout[T];
+
+            const localizations = _section?.localizations ?? [];
+
+            /*@ts-ignore*/
+            const localeSection = localizations.find((l) => l.locale === "en");
+
+            if (localeSection) {
+                return localeSection as Layout[T];
             }
             return _section as Layout[T];
         },

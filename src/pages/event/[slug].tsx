@@ -1,5 +1,11 @@
 import { useRecoilSSRState, useRecoilSSRValue } from "components/RecoilSSR";
-import strapi, { axios, gql, Strapi } from "lib/strapi";
+import strapi, {
+    axios,
+    extractLocales,
+    gql,
+    queryLocale,
+    Strapi,
+} from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, {
     RefObject,
@@ -76,8 +82,16 @@ import { fetchHydration, getHeader, useHydrater } from "state/layout";
 import { WrapPadding } from "components/browser/WrapPadding";
 import { Link, Element } from "react-scroll";
 import { isMobileSafari } from "react-device-detect";
+import { useSetLocaleSlug } from "state/locale";
+import { useSanity } from "hooks/use-check-error";
+import { serialize } from "next-mdx-remote/serialize";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXLayout } from "components/mdx/Layout";
+
+import defaultEvent from "../../../prefetch/static/event.json";
 interface Props {
     event: Event;
+    mdx: MDXRemoteSerializeResult;
     diets: Diet[];
     allergies: Allergy[];
 }
@@ -103,10 +117,16 @@ export type TicketData = Partial<DefaultFieldValues> & {
 const EventView = ({
     header,
     footer,
-    event,
+    /* @ts-ignore */
+    event = defaultEvent,
     diets,
     allergies,
+    localeSlugs,
+    error,
+    mdx,
 }: LayoutProps<Props>) => {
+    useSanity(error);
+    useSetLocaleSlug(localeSlugs);
     useHydrater({ header, footer });
 
     const { t, lang } = useTranslation("event");
@@ -554,6 +574,24 @@ const EventView = ({
         [activeStep, steps.length, ticketData]
     );
 
+    useEffect(() => {
+        const handleChangeRoute = () => {
+            if (activeStep <= 1) {
+                return;
+            }
+            if (window.confirm(t("beforeLeave"))) {
+                return;
+            } else {
+                router.events.emit("routeChangeError");
+                throw "routeChange aborted.";
+            }
+        };
+        router.events.on("routeChangeStart", handleChangeRoute);
+        return () => {
+            router.events.off("routeChangeStart", handleChangeRoute);
+        };
+    }, [activeStep]);
+
     return (
         <Flex
             overflow="hidden"
@@ -561,18 +599,8 @@ const EventView = ({
             bg="white"
             pos="relative"
             px={{ base: 3, md: 16 }}
-            py={{ base: 4, md: 10 }}
-            _before={{
-                content: '""',
-                bg: "gray.50",
-                position: "absolute",
-                borderTop: "1px solid",
-                borderTopColor: "gray.200",
-                width: "full",
-                left: 0,
-                height: "full",
-                top: { base: "100vh", lg: "320px" },
-            }}
+            pt={{ base: 4, md: 10 }}
+            pb={{ base: 8, md: 16 }}
         >
             <Flex direction="column" w="full" h={{ base: "88vh", lg: "full" }}>
                 <AccessibleLink
@@ -619,12 +647,11 @@ const EventView = ({
                         </Box>
                     )}
                 </Flex>
-                <Text color="gray.600" my={6} noOfLines={5}>
-                    {event.description}
-                </Text>
+
+                {mdx && <MDXLayout source={mdx} my={6} />}
                 <Spacer />
                 {!isAboveMd && (
-                    <Center pb={isMobileSafari ? 36 : undefined}>
+                    <Center pb={isMobileSafari ? 36 : 16}>
                         <Link
                             to="eventform"
                             smooth={true}
@@ -921,116 +948,100 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: "blocking",
+        fallback: true,
     };
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const { data } = await strapi.query<{
-        event: Event;
+    const { data, error } = await queryLocale<{
+        events: Event[];
         diets: Diet[];
         allergies: Allergy[];
-    }>({
-        query: gql`
-            query FindEvent($slug: ID!) {
-                event(id: $slug) {
-                    locale
-                    fullfillmentUID
-                    id
-                    slug
-                    title
-                    description
-                    committee {
-                        name
-                    }
-                    tickets {
-                        Tickets {
-                            id
-                            swedishName
-                            englishName
-                            ticketUID
-                            price
-                        }
-                        allowMultiple
-                    }
-                    servingOptions {
-                        servingFood
-                    }
-                    place {
-                        name
-                        detailedStreetInfo {
-                            streetName
-                            streetPostalCode
-                        }
-                        showMap
-                    }
-
-                    startTime
-                    endTime
-                    deadline
-                    published_at
-                    passwordProtected {
-                        __typename
-                    }
-                    localizations {
-                        id
-                        fullfillmentUID
-                        locale
-                        slug
-                        title
-                        description
-                        committee {
-                            name
-                        }
-                        tickets {
-                            Tickets {
-                                id
-                                swedishName
-                                englishName
-                                ticketUID
-                                price
-                            }
-                            allowMultiple
-                        }
-                        servingOptions {
-                            servingFood
-                        }
-                        place {
-                            name
-                            detailedStreetInfo {
-                                streetName
-                                streetPostalCode
-                            }
-                            showMap
-                        }
-
-                        startTime
-                        endTime
-                        deadline
-                        published_at
-                        passwordProtected {
-                            __typename
-                        }
-                    }
-                }
-                diets {
-                    id
-                    name
-                }
-                allergies {
-                    id
-                    name
-                }
+    }>`
+    query {
+        events(locale: ${locale}, where: { slug: ${params?.slug as string}}) {
+            locale
+            fullfillmentUID
+            id
+            slug
+            title
+            description
+            body
+            committee {
+                name
             }
-        `,
-        variables: { slug: params?.slug },
-    });
+            tickets {
+                Tickets {
+                    id
+                    swedishName
+                    englishName
+                    ticketUID
+                    price
+                }
+                allowMultiple
+            }
+            servingOptions {
+                servingFood
+            }
+            place {
+                name
+                detailedStreetInfo {
+                    streetName
+                    streetPostalCode
+                }
+                showMap
+            }
+
+            startTime
+            endTime
+            deadline
+            published_at
+            passwordProtected {
+                __typename
+            }
+            localizations {
+                locale
+                slug
+            }
+        }
+
+        diets {
+            id
+            name
+        }
+        allergies {
+            id
+            name
+        }
+    }
+`;
+
+    const event = _.first(data.events) || null;
+
+    const localeSlugs = extractLocales(
+        { event },
+        ["event"],
+        ["locale", "slug"]
+    ).map((item) => ({
+        ...item,
+        slug:
+            item.locale === "sv"
+                ? `/event/${item.slug}`
+                : `/${item.locale}/event/${item.slug}`,
+    }));
+
+    const mdxSource = event?.body
+        ? await serialize(event?.body as string)
+        : null;
     return {
         props: {
+            error,
+            localeSlugs,
+            mdx: mdxSource,
             ...(await fetchHydration()),
-            event: changeLocaleData(locale, data.event),
-            diets: changeLocaleData(locale, data.diets),
-            allergies: changeLocaleData(locale, data.allergies),
+            event: event,
+            diets: data.diets,
+            allergies: data.allergies,
         },
         revalidate: 60,
     };

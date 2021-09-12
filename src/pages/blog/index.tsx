@@ -170,10 +170,11 @@ const Item = ({
 
     const author = _author.length > 12 ? _author.slice(0, 9) + "..." : _author;
     const length = useBreakpointValue({ base: 128, md: 64 }) as number;
-    const description =
-        _description.length > length
+    const description = _description
+        ? _description.length > length
             ? _description.slice(0, length - 3) + "..."
-            : _description;
+            : _description
+        : "N/A";
     return (
         <GridItem w="full" mb={mb} {...props}>
             <Box position="relative">
@@ -786,7 +787,7 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
         [types]
     );
 
-    const [options, _setOptions] = useState<Option[]>(
+    const [options, _setOptions] = useState<SelectOption[]>(
         [
             { label: t("article.event"), value: "Event" },
             { label: t("article.job"), value: "Job" },
@@ -795,7 +796,7 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     );
 
     const setOptions = useCallback(
-        (options: Option[]) => {
+        (options: SelectOption[]) => {
             const _options = options
                 .filter((item) => item.isSelected)
                 .map((item) => item.value.toLowerCase())
@@ -902,7 +903,7 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const {
         data: { posts, events, jobs },
     } = await strapi.query<{
@@ -911,8 +912,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         jobs: Jobs[];
     }>({
         query: gql`
-            query {
-                posts {
+            query FindFeed($locale: String!) {
+                posts(locale: $locale) {
+                    locale
                     id
                     slug
                     banner {
@@ -930,7 +932,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     }
                     published_at
                 }
-                events {
+                events(locale: $locale) {
+                    locale
                     id
                     title
                     slug
@@ -951,7 +954,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     }
                     published_at
                 }
-                jobs {
+                jobs(locale: $locale) {
+                    locale
                     body
                     id
                     deadlineDate
@@ -971,16 +975,19 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 }
             }
         `,
+        variables: { locale },
     });
 
     const getAuthor = (item: Event | Post | Jobs) => {
         switch (item.__typename) {
             case "Event":
-                return item?.committee?.name;
+                return item?.committee?.name ?? "N/A";
             case "Post":
-                return item?.committee?.name;
+                return item?.committee?.name ?? "N/A";
             case "Jobs":
-                return item?.company?.name;
+                return item?.company?.name ?? "N/A";
+            default:
+                return null;
         }
     };
 
@@ -992,6 +999,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 return "/blog/" + item.slug;
             case "Jobs":
                 return "/job/" + item.slug;
+            default:
+                return null;
         }
     };
 
@@ -1003,6 +1012,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                 return item.published_at;
             case "Jobs":
                 return item.deadlineDate;
+            default:
+                return null;
         }
     };
 
@@ -1016,13 +1027,15 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
                     .filter((_item) => _item);
             case "Jobs":
                 return [item?.jobCategory?.name].filter((_item) => _item);
+            default:
+                return null;
         }
     };
 
     const getBody = (item: Event | Post | Jobs) => {
         switch (item.__typename) {
             case "Event":
-                return item?.description ?? "";
+                return item?.body ?? "";
             case "Post":
                 return item?.body ?? "";
             case "Jobs":

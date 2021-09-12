@@ -6,6 +6,15 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const getEnv = require("./env");
 
 module.exports = withPlugins([getEnv, [withBundleAnalyzer], nextTranslate], {
+    async redirects() {
+        return [
+            {
+                source: "/chapter/board",
+                destination: "/committee/styrelsen",
+                permanent: true,
+            },
+        ];
+    },
     images: {
         domains: ["iare-strapi-backend.s3.eu-north-1.amazonaws.com"],
     },

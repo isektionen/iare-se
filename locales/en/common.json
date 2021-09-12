@@ -1,4 +1,5 @@
 {   
+    "back": "Back",
     "readingTime_0": "N/A",
     "readingTime_one": "{{count}} minute",
     "readingTime_other": "{{count}} minutes",

@@ -63,7 +63,7 @@ import {
 } from "react-icons/io";
 import { isMobile } from "react-device-detect";
 import { WrapPadding } from "components/browser/WrapPadding";
-import strapi, { gql } from "lib/strapi";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import {
     CommitteeFunction,
     CommitteeObjective,
@@ -72,6 +72,7 @@ import {
 } from "types/strapi";
 import _ from "underscore";
 import Fuse from "fuse.js";
+import { useSanity } from "hooks/use-check-error";
 
 interface Representative extends BaseRepresentative {
     tags: string[];
@@ -408,7 +409,7 @@ const StackItem = (representative: Representative) => {
                         variant="iareSolid"
                         size="xs"
                         pr={2}
-                        href={_.first(roles.href) as string}
+                        href={(_.first(roles.href) as string) || "#"}
                     >
                         {!isAboveMd && t("contact")}
                         <Icon as={IoIosArrowForward} />
@@ -636,11 +637,13 @@ interface Props {
 }
 
 const ContactView = ({
+    error,
     header,
     footer,
     objectives: baseObjectives,
     representatives: baseRepresentatives,
 }: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
     const { t } = useTranslation("contact");
     const allLabel = t("selector.all");
@@ -709,42 +712,38 @@ const ContactView = ({
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { data } = await strapi.query<{
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    const { data, error } = await queryLocale<{
         representatives: Representative[];
-    }>({
-        query: gql`
-            query {
-                representatives(where: { hidden: false }) {
+    }>`query {
+        representatives(locale: ${locale}, where: { hidden: false }) {
+            id
+            user {
+                firstname
+                lastname
+            }
+            cover {
+                url
+                formats
+            }
+            committee_roles {
+                id
+                contact
+                role
+                featured_role
+                slug
+                abbreviation
+                committee_objectives {
                     id
-                    user {
-                        firstname
-                        lastname
-                    }
-                    cover {
-                        url
-                        formats
-                    }
-                    committee_roles {
-                        id
-                        contact
-                        role
-                        featured_role
-                        slug
-                        abbreviation
-                        committee_objectives {
-                            id
-                            objective
-                        }
-                    }
-                    committee_objectives {
-                        id
-                        objective
-                    }
+                    objective
                 }
             }
-        `,
-    });
+            committee_objectives {
+                id
+                objective
+            }
+        }
+    }`;
 
     const objectives = _.chain(data.representatives)
         .pluck("committee_objectives")
@@ -892,6 +891,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
     return {
         props: {
+            error,
             objectives,
             representatives,
             ...(await fetchHydration()),

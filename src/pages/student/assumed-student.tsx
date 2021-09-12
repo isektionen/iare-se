@@ -1,7 +1,8 @@
 import { Box, Heading, Stack, VStack } from "@chakra-ui/react";
 import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
-import strapi, { gql } from "lib/strapi";
+import { useSanity } from "hooks/use-check-error";
+import strapi, { gql, queryLocale } from "lib/strapi";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -16,7 +17,15 @@ interface Props {
     mdx: MDXRemoteSerializeResult;
 }
 
-const View = ({ title, images, mdx, header, footer }: LayoutProps<Props>) => {
+const View = ({
+    title,
+    images,
+    mdx,
+    header,
+    footer,
+    error,
+}: LayoutProps<Props>) => {
+    useSanity(error);
     useHydrater({ header, footer });
 
     const hasImages = images.length > 0;
@@ -51,27 +60,27 @@ const View = ({ title, images, mdx, header, footer }: LayoutProps<Props>) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const {
         data: { assumedStudent },
-    } = await strapi.query<{ assumedStudent: AssumedStudent }>({
-        query: gql`
-            query {
-                assumedStudent {
-                    content
-                    title
-                    images {
-                        id
-                        url
-                    }
-                }
+        error,
+    } = await queryLocale<{ assumedStudent: AssumedStudent }>`
+    query {
+        assumedStudent(locale: ${locale}) {
+            content
+            title
+            images {
+                id
+                url
             }
-        `,
-    });
+        }
+    }
+`;
     const mdxSource = await serialize(assumedStudent.content as string);
 
     return {
         props: {
+            error,
             images: assumedStudent.images,
             title: assumedStudent.title,
             mdx: mdxSource,

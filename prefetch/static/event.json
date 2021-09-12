@@ -1,0 +1,101 @@
+{
+    "id": 11,
+    "title": "inkognito",
+    "slug": "inkognito-hmm",
+    "committee": {
+        "id": 1,
+        "name": "Kommunikationsnämnden",
+        "locale": "sv",
+        "published_at": "2021-07-26T13:46:20.470Z",
+        "created_at": "2021-07-26T13:46:18.035Z",
+        "updated_at": "2021-08-31T13:15:27.577Z",
+        "committee_objective": null,
+        "abbreviation": null,
+        "slug": "kommunikationsnaemnden",
+        "content": "<contact />\n\n# Vad gör vi?\n\nEller är det? hmmmm",
+        "contact": null,
+        "icon": {
+            "id": 39,
+            "name": "Icon RePorter.svg",
+            "alternativeText": "",
+            "caption": "",
+            "width": 26,
+            "height": 20,
+            "formats": null,
+            "hash": "Icon_Re_Porter_d3c43059d5",
+            "ext": ".svg",
+            "mime": "image/svg+xml",
+            "size": 0.84,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Icon_Re_Porter_d3c43059d5.svg",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2021-08-30T20:14:17.226Z",
+            "updated_at": "2021-08-30T20:14:17.235Z"
+        }
+    },
+    "category": null,
+    "startTime": "2021-09-01T10:00:00.000Z",
+    "endTime": "2021-09-02T10:00:00.000Z",
+    "deadline": "2021-08-31T10:00:00.000Z",
+    "description": "sdsdw",
+    "locale": "sv",
+    "published_at": "2021-08-06T12:18:36.840Z",
+    "created_at": "2021-08-06T12:18:19.402Z",
+    "updated_at": "2021-09-12T14:56:27.773Z",
+    "fullfillmentUID": "jYE2q99-",
+    "body": "men ser man på!\nmen ser man på!\nmen ser man på!\nmen ser man på!\nmen ser man på!\n\nmen ser man på!\nmen ser man på!\nmen ser man på!\n\nmen ser man på!\nmen ser man på!\n\nmen ser man på!",
+    "tickets": {
+        "id": 117,
+        "allowMultiple": false,
+        "Tickets": [
+            {
+                "id": 227,
+                "name": null,
+                "price": 0,
+                "swedishName": "hemlis",
+                "ticketUID": "-SruIUUq",
+                "englishName": "secret"
+            },
+            {
+                "id": 229,
+                "name": null,
+                "price": 1,
+                "swedishName": "hemlis deluxe",
+                "ticketUID": "9YtnUDcn",
+                "englishName": "hemlis deluxe"
+            },
+            {
+                "id": 236,
+                "name": null,
+                "price": 2,
+                "swedishName": "sv",
+                "ticketUID": "9d5k8pku",
+                "englishName": "en"
+            }
+        ]
+    },
+    "servingOptions": {
+        "id": 21,
+        "servingFood": true,
+        "servingAlcohol": true
+    },
+    "studentOptions": null,
+    "place": {
+        "id": 11,
+        "name": "KTH",
+        "showMap": false,
+        "detailedStreetInfo": null
+    },
+    "passwordProtected": {
+        "id": 15
+    },
+    "banner": null,
+    "localizations": [
+        {
+            "id": 12,
+            "locale": "en",
+            "published_at": "2021-08-06T12:18:33.690Z"
+        }
+    ]
+}

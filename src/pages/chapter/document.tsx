@@ -25,6 +25,7 @@ import {
     useBreakpointValue,
     useOutsideClick,
     Wrap,
+    WrapItem,
 } from "@chakra-ui/react";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
@@ -38,6 +39,9 @@ import { useDocument, useFuseFilter } from "state/document";
 import { getDate } from "utils/dates";
 import { SearchBar } from "components/document/SearchBar";
 import { isMobile } from "react-device-detect";
+import { checkForError } from "utils/error";
+import { ClientError } from "components/Error";
+import { Empty } from "components/Empty";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -213,21 +217,19 @@ const ItemThumbnail = ({
     );
 };
 
-const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
+const DocumentView = ({ data, header, footer, error }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t, lang } = useTranslation("document");
-
-    /*const documents = useFilterContext(
-        data.document
-            ? (data.document as unknown as ComponentDocumentDocuments[])
-            : []
-    );*/
 
     const documents = useFuseFilter(
         (data.document as unknown as ComponentDocumentDocuments[]) || []
     );
 
     const sizeVariant = useBreakpointValue({ base: 200, md: 120 }) as number;
+
+    if (error) {
+        return <ClientError />;
+    }
     return (
         <>
             <DocumentContainer />
@@ -235,17 +237,22 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
                 <SearchBar />
                 <Wrap
                     w="full"
-                    shouldWrapChildren
                     spacing={4}
-                    justify={isMobile ? "center" : "flex-start"}
+                    justify={
+                        isMobile || documents.length === 0
+                            ? "center"
+                            : "flex-start"
+                    }
                 >
-                    {documents.map((d, i) => (
-                        <ItemThumbnail
-                            key={"thumbnail-" + i}
-                            {...d}
-                            size={sizeVariant}
-                        />
-                    ))}
+                    {documents.length === 0 && (
+                        <Empty title="No Documents found" />
+                    )}
+                    {documents.length > 0 &&
+                        documents.map((d, i) => (
+                            <WrapItem key={"thumbnail-" + i}>
+                                <ItemThumbnail {...d} size={sizeVariant} />
+                            </WrapItem>
+                        ))}
                 </Wrap>
             </Box>
         </>
@@ -255,8 +262,8 @@ const DocumentView = ({ data, header, footer }: LayoutProps<Props>) => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
     const { data } = await strapi.query<{ document: DocumentType }>({
         query: gql`
-            query {
-                document {
+            query FindDocument($locale: String!) {
+                document(locale: $locale) {
                     document {
                         name
                         date
@@ -274,12 +281,15 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
                 }
             }
         `,
+        variables: { locale },
     });
     return {
         props: {
             ...(await fetchHydration()),
-            locale,
-            data: data.document,
+            ...checkForError({
+                locale,
+                data: data.document,
+            }),
         },
         revalidate: 2 * 60,
     };

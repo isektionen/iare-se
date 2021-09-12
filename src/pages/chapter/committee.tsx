@@ -56,7 +56,7 @@ const CommitteeView = ({
             <Sidebar committees={committees} />
             <Flex pl={12} direction="column" w="full">
                 <Heading mb={4}>{title}</Heading>
-                <MDXLayout source={mdx} flex={1} />
+                {mdx && <MDXLayout source={mdx} flex={1} />}
             </Flex>
         </Flex>
     );

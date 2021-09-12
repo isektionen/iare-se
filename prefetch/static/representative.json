@@ -54,6 +54,38 @@
     ],
     "committees": [
         {
+            "id": 1,
+            "name": "Kommunikationsnämnden",
+            "locale": "sv",
+            "published_at": "2021-07-26T13:46:20.470Z",
+            "created_at": "2021-07-26T13:46:18.035Z",
+            "updated_at": "2021-09-12T19:19:18.967Z",
+            "committee_objective": null,
+            "abbreviation": null,
+            "slug": "kommunikationsnaemnden",
+            "content": "<contact />\n\n# Vad gör vi?\n\nEller är det? hmmmm",
+            "contact": null,
+            "icon": {
+                "id": 39,
+                "name": "Icon RePorter.svg",
+                "alternativeText": "",
+                "caption": "",
+                "width": 26,
+                "height": 20,
+                "formats": null,
+                "hash": "Icon_Re_Porter_d3c43059d5",
+                "ext": ".svg",
+                "mime": "image/svg+xml",
+                "size": 0.84,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Icon_Re_Porter_d3c43059d5.svg",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-08-30T20:14:17.226Z",
+                "updated_at": "2021-08-30T20:14:17.235Z"
+            }
+        },
+        {
             "id": 7,
             "name": "Styrelsen",
             "locale": "sv",

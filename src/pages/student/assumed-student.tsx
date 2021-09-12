@@ -39,7 +39,7 @@ const View = ({
         >
             <Box minW={{ base: "full", md: "70%" }}>
                 <Heading mb={8}>{title}</Heading>
-                <MDXLayout source={mdx} flex={1} />
+                {mdx && <MDXLayout source={mdx} flex={1} />}
             </Box>
             {hasImages && (
                 <VStack spacing={4} w={{ base: "full", md: "30%" }}>

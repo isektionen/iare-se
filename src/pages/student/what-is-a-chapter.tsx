@@ -47,7 +47,7 @@ const View = ({
         >
             <Box minW={{ base: "full", md: "60%" }}>
                 <Heading mb={8}>{title}</Heading>
-                <MDXLayout source={mdx} flex={1} />
+                {mdx && <MDXLayout source={mdx} flex={1} />}
                 <Wrap shouldWrapChildren justify="center" w="full">
                     {board.representatives?.map((rep) => {
                         const fullname =

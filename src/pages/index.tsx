@@ -259,7 +259,7 @@ const Sponsors = () => {
 const About = ({ mdx }: { mdx: MDXRemoteSerializeResult | null }) => {
     return (
         <Box py={8} px={{ base: 4, md: 12 }}>
-            {mdx !== null && <MDXLayout w="full" source={mdx} />}
+            {mdx && <MDXLayout w="full" source={mdx} />}
         </Box>
     );
 };

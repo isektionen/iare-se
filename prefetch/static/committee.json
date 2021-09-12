@@ -4,7 +4,7 @@
     "locale": "sv",
     "published_at": "2021-07-26T13:46:20.470Z",
     "created_at": "2021-07-26T13:46:18.035Z",
-    "updated_at": "2021-08-31T13:15:27.577Z",
+    "updated_at": "2021-09-12T19:19:18.967Z",
     "committee_objective": null,
     "abbreviation": null,
     "slug": "kommunikationsnaemnden",
@@ -43,7 +43,7 @@
             "locale": "sv",
             "published_at": "2021-08-04T11:07:19.141Z",
             "created_at": "2021-08-04T11:05:20.618Z",
-            "updated_at": "2021-09-12T14:56:14.612Z",
+            "updated_at": "2021-09-12T19:19:18.964Z",
             "fullfillmentUID": "8b69a53a",
             "body": "ok2",
             "tickets": {
@@ -150,7 +150,7 @@
             "locale": "sv",
             "published_at": "2021-08-06T12:18:36.840Z",
             "created_at": "2021-08-06T12:18:19.402Z",
-            "updated_at": "2021-09-12T14:56:27.773Z",
+            "updated_at": "2021-09-12T19:19:18.964Z",
             "fullfillmentUID": "jYE2q99-",
             "body": "men ser man på!\nmen ser man på!\nmen ser man på!\nmen ser man på!\nmen ser man på!\n\nmen ser man på!\nmen ser man på!\nmen ser man på!\n\nmen ser man på!\nmen ser man på!\n\nmen ser man på!",
             "tickets": {
@@ -203,6 +203,21 @@
     ],
     "posts": [],
     "representatives": [
+        {
+            "id": 1,
+            "user": 5,
+            "hidden": false,
+            "contact": "ka@iare.nu",
+            "chapter_year": null,
+            "locale": "sv",
+            "published_at": "2021-08-25T09:34:26.689Z",
+            "created_at": "2021-08-25T09:34:24.652Z",
+            "updated_at": "2021-08-25T14:29:19.615Z",
+            "description": "Ansvarig för innehållet på sektionshemsidan, facebook, instagram och övriga sociala medier. Samordnar publiceringsschema och ser till att rådande policy följs.",
+            "featured_contact": false,
+            "personal_description": null,
+            "cover": null
+        },
         {
             "id": 7,
             "user": 10,

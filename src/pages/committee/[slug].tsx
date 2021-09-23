@@ -1,5 +1,7 @@
 import { Box, Flex, Heading, Spacer } from "@chakra-ui/layout";
 import { useBreakpointValue } from "@chakra-ui/media-query";
+import { Icon } from "@chakra-ui/react";
+import AccessibleLink from "components/AccessibleLink";
 import { Sidebar } from "components/committee/Sidebar";
 import { TableOfContent } from "components/committee/TableOfContent";
 import { ClientError } from "components/Error";
@@ -14,6 +16,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import useTranslation from "next-translate/useTranslation";
 import React, { useEffect } from "react";
+import { IoMdArrowDropleft } from "react-icons/io";
 import { useHydrateCommittee } from "state/committee";
 import {
     fetchHydration,
@@ -43,6 +46,7 @@ const View = ({
     error,
     localeSlugs,
 }: LayoutProps<Props>) => {
+    const { t } = useTranslation("common");
     useSetLocaleSlug(localeSlugs);
     useSanity(error);
     useHydrater({ header, footer });
@@ -68,13 +72,15 @@ const View = ({
                 bottom="0"
                 h="calc(100vh - 60px)"
             />
-            <Flex
-                flex={1}
-                pl={12}
-                pt={6}
-                position="relative"
-                direction="column"
-            >
+            <Flex flex={1} pl={12} position="relative" direction="column">
+                <AccessibleLink
+                    pb={6}
+                    href="/chapter/committee"
+                    textDecoration="none"
+                    _hover={{ textDecoration: "none" }}
+                >
+                    <Icon as={IoMdArrowDropleft} /> {t("back")}
+                </AccessibleLink>
                 <Heading mb={4}>{committee.name}</Heading>
                 {mdx && <MDXLayout source={mdx} w="full" />}
             </Flex>
@@ -117,9 +123,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     const { data, error } = await queryLocale<{
         committees: Committee[];
     }>`query {
-        committees(locale: ${locale}, where: {slug: ${
-        params?.slug as string
-    }}) {
+        committees(locale: ${locale}) {
             id
             slug
             name
@@ -156,7 +160,10 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     }
 `;
 
-    const committee = _.first(data.committees) as Committee;
+    const committee = _.find(
+        data.committees,
+        ({ slug }) => slug === params?.slug
+    );
     const mdxSource = committee?.content
         ? await serialize(committee.content as string)
         : null;

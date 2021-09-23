@@ -151,8 +151,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    console.log("DEBUG", locale, params);
-
     const { data, error } = await queryLocale<{ posts: Post[] }>`
     query {
         posts(locale: ${locale}, where: {slug: ${params?.slug as string}}) {

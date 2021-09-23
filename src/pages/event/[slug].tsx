@@ -132,11 +132,6 @@ const EventView = ({
     const { t, lang } = useTranslation("event");
     const router = useRouter();
 
-    const isAvailable = useMemo(
-        () => isAfter(new Date(event.deadline), new Date()),
-        [event.deadline]
-    );
-
     const [ticketData, setTicketData] = useState<TicketData>();
     const {
         register,
@@ -161,6 +156,14 @@ const EventView = ({
     const onSubmit = (data: any) => finalizeOrder(data);
 
     const [status, setStatus] = useState("pending");
+
+    const isBeforeDeadline = useMemo(
+        () => isAfter(new Date(event.deadline), new Date()),
+        [event.deadline]
+    );
+
+    const isAvailable = useMemo(() => status !== "failed", [status]);
+
     const {
         isLoaded,
         reset,
@@ -373,60 +376,71 @@ const EventView = ({
     const allergenResults = useCreateGetter("allergens");
 
     useEffect(() => {
-        hydrateCheckout(async ({ get, validate, createIntention }) => {
-            setStatus("pending");
-            const id = get("id");
-            if (id && isAvailable) {
-                const { intentionId, paymentId, ticketId, consumer, status } =
-                    await validate(id);
-                if (ticketId) setTicket(ticketId);
-                if (intentionId) setIntentionId(intentionId);
-                if (consumer && status === "success" && intentionId) {
-                    produceTicket({
+        hydrateCheckout(
+            async ({ get, validate, createIntention, ticketsAvailable }) => {
+                setStatus("pending");
+                const id = get("id");
+                const _ticketsAvailable = await ticketsAvailable(
+                    parseInt(event.id),
+                    event.maxTickets || 9999
+                );
+                if (id && isBeforeDeadline && _ticketsAvailable) {
+                    const {
                         intentionId,
-                        diets: consumer.diets.map((d) => ({
-                            value: `${d.id}`,
-                            label: d.name,
-                        })),
-                        allergens: consumer.allergens.map((d) => ({
-                            value: `${d.id}`,
-                            label: d.name,
-                        })),
-                        email: consumer.email,
-                        firstName: consumer.firstName,
-                        lastName: consumer.lastName,
-                        orderIsFree: isFree(ticketId),
-                        skipMessage: true,
-                    });
-                } else {
-                    setActiveStep(0);
+                        paymentId,
+                        ticketId,
+                        consumer,
+                        status,
+                    } = await validate(id);
+                    if (ticketId) setTicket(ticketId);
+                    if (intentionId) setIntentionId(intentionId);
+                    if (consumer && status === "success" && intentionId) {
+                        produceTicket({
+                            intentionId,
+                            diets: consumer.diets.map((d) => ({
+                                value: `${d.id}`,
+                                label: d.name,
+                            })),
+                            allergens: consumer.allergens.map((d) => ({
+                                value: `${d.id}`,
+                                label: d.name,
+                            })),
+                            email: consumer.email,
+                            firstName: consumer.firstName,
+                            lastName: consumer.lastName,
+                            orderIsFree: isFree(ticketId),
+                            skipMessage: true,
+                        });
+                    } else {
+                        setActiveStep(0);
+                    }
+                    setStatus("ready");
+                    if (status) {
+                        return { intentionId, paymentId };
+                    }
                 }
-                setStatus("ready");
-                if (status) {
+                if (isBeforeDeadline && _ticketsAvailable) {
+                    const { intentionId, paymentId, ticketId } =
+                        await createIntention();
+                    router.replace(
+                        `/event/${event.slug}?id=${intentionId}`,
+                        undefined,
+                        {
+                            shallow: true,
+                        }
+                    );
+                    if (ticketId) setTicket(ticketId);
+                    if (intentionId) setIntentionId(intentionId);
+                    setActiveStep(0);
+                    setStatus("ready");
+
                     return { intentionId, paymentId };
                 }
-            }
-            if (isAvailable) {
-                const { intentionId, paymentId, ticketId } =
-                    await createIntention();
-                router.replace(
-                    `/event/${event.slug}?id=${intentionId}`,
-                    undefined,
-                    {
-                        shallow: true,
-                    }
-                );
-                if (ticketId) setTicket(ticketId);
-                if (intentionId) setIntentionId(intentionId);
-                setActiveStep(0);
-                setStatus("ready");
 
-                return { intentionId, paymentId };
+                setStatus("failed");
+                return { intentionId: undefined, paymentId: undefined };
             }
-
-            setStatus("failed");
-            return { intentionId: undefined, paymentId: undefined };
-        });
+        );
 
         setCheckoutConfig({
             checkoutKey: process.env.NEXT_PUBLIC_CHECKOUT_KEY as string,
@@ -756,8 +770,9 @@ const EventView = ({
                         <SkeletonSpinner
                             size="xl"
                             loadingDescription={t("fetching")}
-                            isLoaded={status === "ready" || activeStep >= 0}
+                            isLoaded={status === "ready" || activeStep > 0}
                             headingStyles={{ fontWeight: "light", size: "md" }}
+                            isBeforeDeadline={isBeforeDeadline}
                             isAvailable={isAvailable}
                         >
                             {!isAboveMd && activeStep < steps.length && (
@@ -955,6 +970,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     const { data, error } = await queryLocale<{
         events: Event[];
+        orderCount: number;
         diets: Diet[];
         allergies: Allergy[];
     }>`
@@ -985,13 +1001,8 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             }
             place {
                 name
-                detailedStreetInfo {
-                    streetName
-                    streetPostalCode
-                }
-                showMap
             }
-
+            maxTickets
             startTime
             endTime
             deadline
@@ -1004,7 +1015,6 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                 slug
             }
         }
-
         diets {
             id
             name

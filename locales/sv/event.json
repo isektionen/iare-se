@@ -34,6 +34,9 @@
     "deadline": {
         "closed": "Eventets OSA är stängd"
     },
+    "ticket": {
+        "max": "Det är slut på biljetter för eventet"
+    },
     "diet": {
         "label": "Diet",
         "description": "Ange den diet(er) som passar dig bäst",

@@ -69,6 +69,7 @@ interface HandlerOptions {
             status: "visited" | "pending" | "failed" | "success" | undefined;
         }
     >;
+    ticketsAvailable: (eventId: number, maxTickets: number) => Promise<boolean>;
     createIntention: () => Promise<
         Omit<IDSTATE, "fullfillmentId"> & { ticketId: string | undefined }
     >;
@@ -184,10 +185,24 @@ export const useNets = ({
                     };
                     const url = Strapi`/orders/${_intentionId}/valid`;
                     const res = await fetch(url, { method: "GET" });
+
                     if (!res.ok) return data;
                     data = await res.json();
 
                     return data;
+                };
+
+                const ticketsAvailable = async (
+                    eventId: number,
+                    maxTickets: number
+                ) => {
+                    const url = Strapi`/orders/count?event=${eventId}&status=success`;
+                    const res = await fetch(url, { method: "GET" });
+
+                    if (!res.ok) return false;
+                    const data = await res.text();
+                    const orders = parseInt(data);
+                    return orders < maxTickets;
                 };
 
                 const createIntention = async () => {
@@ -213,6 +228,7 @@ export const useNets = ({
                 const { intentionId, paymentId } = await handler({
                     get,
                     validate,
+                    ticketsAvailable,
                     createIntention,
                 });
                 set(stateAtom, {

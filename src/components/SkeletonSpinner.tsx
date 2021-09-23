@@ -19,6 +19,7 @@ interface Props extends SpinnerProps {
     loadingDescription?: string;
     isLoaded?: boolean;
     headingStyles?: HeadingProps;
+    isBeforeDeadline?: boolean;
     isAvailable?: boolean;
 }
 export const SkeletonSpinner = ({
@@ -26,12 +27,18 @@ export const SkeletonSpinner = ({
     loadingDescription,
     isLoaded,
     headingStyles,
+    isBeforeDeadline,
     isAvailable,
     ...rest
 }: Props) => {
     const { t } = useTranslation("event");
 
-    if (!isAvailable) {
+    if (!isBeforeDeadline || !isAvailable) {
+        const title = !isBeforeDeadline
+            ? t("deadline.closed")
+            : !isAvailable
+            ? t("ticket.max")
+            : "";
         return (
             <>
                 <ScaleFade in={!isLoaded} delay={0.5} unmountOnExit>
@@ -39,7 +46,7 @@ export const SkeletonSpinner = ({
                         <Flex direction="column" align="center" h="110px">
                             <Icon as={MdEventBusy} boxSize={32} />
                             <Spacer />
-                            <Heading>{t("deadline.closed")}</Heading>
+                            <Heading>{title}</Heading>
                         </Flex>
                     </Center>
                 </ScaleFade>

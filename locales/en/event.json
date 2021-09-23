@@ -33,6 +33,9 @@
     "deadline": {
         "closed": "The event has closed its' RSVP"
     },
+    "ticket": {
+        "max": "The event has exceeded its ticket cap"
+    },
     "diet": {
         "label": "Diet",
         "description": "Choose the diet(s) that suit you best",

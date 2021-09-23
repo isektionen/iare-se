@@ -455,6 +455,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             ...(await fetchHydration()),
             committeeFunctions,
         },
+        revalidate: 20,
     };
 };
 

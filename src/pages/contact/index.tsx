@@ -896,6 +896,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
             representatives,
             ...(await fetchHydration()),
         },
+        revalidate: 20,
     };
 };
 

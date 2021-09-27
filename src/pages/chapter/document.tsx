@@ -291,7 +291,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
                 data: data.document,
             }),
         },
-        revalidate: 60,
+        revalidate: 2 * 60,
     };
 };
 

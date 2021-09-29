@@ -31,6 +31,112 @@
     },
     "events": [
         {
+            "id": 8,
+            "title": "Post-rona",
+            "slug": "post-rona-1",
+            "committee": 1,
+            "category": null,
+            "startTime": "2021-08-13T10:00:00.000Z",
+            "endTime": "2021-08-14T10:00:00.000Z",
+            "deadline": "2021-08-12T10:00:00.000Z",
+            "description": "En description",
+            "locale": "sv",
+            "published_at": "2021-09-27T08:24:29.873Z",
+            "created_at": "2021-08-04T11:05:20.618Z",
+            "updated_at": "2021-09-27T08:24:29.949Z",
+            "fullfillmentUID": "8b69a53a",
+            "body": "ok2",
+            "maxTickets": null,
+            "tickets": {
+                "id": 142,
+                "allowMultiple": false,
+                "Tickets": [
+                    {
+                        "id": 279,
+                        "name": null,
+                        "price": 0,
+                        "swedishName": "Biljett",
+                        "ticketUID": "9b6b88eb-8b14-4645-b65e-c6f293ed5506",
+                        "englishName": "Ticket"
+                    },
+                    {
+                        "id": 280,
+                        "name": null,
+                        "price": 50,
+                        "swedishName": "Donation",
+                        "ticketUID": "7686d609-121d-4c79-abb4-07258936eb48",
+                        "englishName": "Donation"
+                    }
+                ]
+            },
+            "servingOptions": {
+                "id": 44,
+                "servingFood": true,
+                "servingAlcohol": false
+            },
+            "place": {
+                "id": 8,
+                "name": "bsb",
+                "showMap": false
+            },
+            "passwordProtected": {
+                "id": 32
+            },
+            "banner": {
+                "id": 14,
+                "name": "https _www.voiscooters.com_wp-content_uploads_2019_09_voi2-1.webp",
+                "alternativeText": "VOI CONVOI",
+                "caption": "VOI CONVOI",
+                "width": 741,
+                "height": 775,
+                "formats": {
+                    "small": {
+                        "ext": ".webp",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e.webp",
+                        "hash": "small_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e",
+                        "mime": "image/webp",
+                        "name": "small_https _www.voiscooters.com_wp-content_uploads_2019_09_voi2-1.webp",
+                        "path": null,
+                        "size": 531.88,
+                        "width": 478,
+                        "height": 500
+                    },
+                    "medium": {
+                        "ext": ".webp",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e.webp",
+                        "hash": "medium_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e",
+                        "mime": "image/webp",
+                        "name": "medium_https _www.voiscooters.com_wp-content_uploads_2019_09_voi2-1.webp",
+                        "path": null,
+                        "size": 1088.89,
+                        "width": 717,
+                        "height": 750
+                    },
+                    "thumbnail": {
+                        "ext": ".webp",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e.webp",
+                        "hash": "thumbnail_https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e",
+                        "mime": "image/webp",
+                        "name": "thumbnail_https _www.voiscooters.com_wp-content_uploads_2019_09_voi2-1.webp",
+                        "path": null,
+                        "size": 63.32,
+                        "width": 149,
+                        "height": 156
+                    }
+                },
+                "hash": "https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e",
+                "ext": ".webp",
+                "mime": "image/webp",
+                "size": 875,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/https_www_voiscooters_com_wp_content_uploads_2019_09_voi2_1_1ab8ec5d8e.webp",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-07-30T11:05:56.552Z",
+                "updated_at": "2021-07-30T11:05:56.564Z"
+            }
+        },
+        {
             "id": 11,
             "title": "inkognito",
             "slug": "inkognito-hmm",

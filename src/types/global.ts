@@ -27,6 +27,8 @@ export type MenuListItem = {
     listItems: ListItemProp[];
 };
 
+export type TLocale = string | undefined;
+
 export interface GlobalProps {
     header: HeaderProps;
     footer: FooterProps;

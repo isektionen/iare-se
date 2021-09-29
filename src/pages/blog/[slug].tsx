@@ -38,6 +38,7 @@ import _ from "underscore";
 import { useSetLocaleSlug } from "../../state/locale";
 import { LinkComponent } from "../../components/LinkComponent";
 import defaultPost from "../../../prefetch/static/blog.json";
+import blog from "models/blog";
 interface Props {
     post: Post;
     mdx: MDXRemoteSerializeResult;
@@ -133,7 +134,7 @@ const PostView = ({
 export const getStaticPaths: GetStaticPaths = async () => {
     const { data } = await strapi.query<{ posts: Post[] }>({
         query: gql`
-            query {
+            query FindPostSlugs {
                 posts {
                     slug
                 }
@@ -151,28 +152,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const { data, error } = await queryLocale<{ posts: Post[] }>`
-    query {
-        posts(locale: ${locale}, where: {slug: ${params?.slug as string}}) {
-          title
-          committee {
-            name
-          }
-          body
-          banner {
-            url
-            width
-            height
-          }
-          localizations {
-            locale
-            slug
-          }
-          
-        }
-      }`;
-
-    const post = _.first(data.posts) || null;
+    const { post, error } = await blog.getPost(locale, params?.slug as string);
 
     const localeSlugs = extractLocales(
         { post },

@@ -235,7 +235,7 @@ export const getFooter = async () => {
 export const getHeader = async () => {
     const { data } = await strapi.query<{ header: DefHeader }>({
         query: gql`
-            query {
+            query FindHeader {
                 header {
                     locale
                     logo {

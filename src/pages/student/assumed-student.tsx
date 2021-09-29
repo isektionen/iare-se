@@ -3,6 +3,7 @@ import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
 import { useSanity } from "hooks/use-check-error";
 import strapi, { gql, queryLocale } from "lib/strapi";
+import student from "models/student";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -61,28 +62,14 @@ const View = ({
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const {
-        data: { assumedStudent },
-        error,
-    } = await queryLocale<{ assumedStudent: AssumedStudent }>`
-    query {
-        assumedStudent(locale: ${locale}) {
-            content
-            title
-            images {
-                id
-                url
-            }
-        }
-    }
-`;
+    const { assumedStudent, error } = await student.assumed(locale);
     const mdxSource = await serialize(assumedStudent.content as string);
 
     return {
         props: {
             error,
-            images: assumedStudent.images,
-            title: assumedStudent.title,
+            images: assumedStudent?.images,
+            title: assumedStudent?.title,
             mdx: mdxSource,
 
             ...(await fetchHydration()),

@@ -46,6 +46,7 @@ import { LayoutProps } from "types/global";
 import { CommitteeFunction, Representative } from "types/strapi";
 import defaultCommitteeFunction from "../../../prefetch/static/committeeFunction.json";
 import _ from "underscore";
+import representativeModel from "models/representative";
 
 interface CustomRepresentative {
     name: string;
@@ -181,7 +182,7 @@ const Profile = (props: CustomRepresentative) => {
     );
 };
 interface Props {
-    committeeFunctions: CommitteeFunction[];
+    representative: CommitteeFunction[];
 }
 
 const RoleView = ({
@@ -189,15 +190,15 @@ const RoleView = ({
     header,
     footer,
     /* @ts-ignore */
-    committeeFunctions = [defaultCommitteeFunction],
+    representative = [defaultCommitteeFunction],
 }: LayoutProps<Props>) => {
     useSanity(error);
     useHydrater({ header, footer });
 
     const { t } = useTranslation("contact");
 
-    const representative = _.first(
-        committeeFunctions.map((rep) => {
+    const repr = _.first(
+        representative.map((rep) => {
             const _rep = _.first(
                 rep.representatives as Representative[]
             ) as Representative;
@@ -293,7 +294,7 @@ const RoleView = ({
                 borderWidth="1px"
                 borderColor="gray.200"
             >
-                <Profile {...representative} />
+                <Profile {...repr} />
                 <Flex
                     as="form"
                     w="full"
@@ -317,7 +318,7 @@ const RoleView = ({
                                     {t("mail.to.label")}
                                 </InputLeftAddon>
                                 <Input
-                                    value={representative.email}
+                                    value={repr.email}
                                     readOnly
                                     {...register("to", { required: true })}
                                 />
@@ -409,7 +410,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         data: { committeeFunctions },
     } = await strapi.query<{ committeeFunctions: CommitteeFunction[] }>({
         query: gql`
-            query {
+            query FindCommitteeRepSlugs {
                 committeeFunctions(where: { slug: "skyddsombud" }) {
                     slug
                 }
@@ -423,37 +424,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const {
-        data: { committeeFunctions },
-        error,
-    } = await queryLocale<{ committeeFunctions: CommitteeFunction[] }>`
-    query  {
-        committeeFunctions(locale: ${locale}, where: { slug: ${
-        params?.slug as string
-    } }) {
-            contact
-            role
-            abbreviation
-            role_description
-            representatives {
-                user {
-                    firstname
-                    lastname
-                }
-                personal_description
-                cover {
-                    url
-                    formats
-                }
-            }
-        }
-    }
-`;
+    const { representative, error } =
+        await representativeModel.getRepresentative(
+            locale,
+            params?.slug as string
+        );
     return {
         props: {
             error,
             ...(await fetchHydration()),
-            committeeFunctions,
+            repr: representative,
         },
         revalidate: 20,
     };

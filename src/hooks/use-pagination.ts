@@ -103,7 +103,7 @@ export const usePagination = ({
                     ? null
                     : formatDelimiter(pageDelta + offset, pageDelta + offset),
                 ...[maxPages - 1].map(formatPage),
-            ].filter((page) => page) as IPage[],
+            ].filter((page) => page && page.label > 0) as IPage[],
         [formatDelimiter, formatPage, maxPages, offset, pageDelta]
     );
 

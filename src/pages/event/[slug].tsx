@@ -89,6 +89,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { MDXLayout } from "components/mdx/Layout";
 
 import defaultEvent from "../../../prefetch/static/event.json";
+import eventModel from "models/event";
 interface Props {
     event: Event;
     mdx: MDXRemoteSerializeResult;
@@ -948,17 +949,9 @@ const EventView = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const { data } = await strapi.query<{ events: Event[] }>({
-        query: gql`
-            query {
-                events {
-                    slug
-                }
-            }
-        `,
-    });
+    const { events } = await eventModel.findAll();
     return {
-        paths: data.events.map((e) => ({
+        paths: events.map((e) => ({
             params: {
                 slug: e.slug as string,
             },
@@ -968,65 +961,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const { data, error } = await queryLocale<{
-        events: Event[];
-        orderCount: number;
-        diets: Diet[];
-        allergies: Allergy[];
-    }>`
-    query {
-        events(locale: ${locale}, where: { slug: ${params?.slug as string}}) {
-            locale
-            fullfillmentUID
-            id
-            slug
-            title
-            description
-            body
-            committee {
-                name
-            }
-            tickets {
-                Tickets {
-                    id
-                    swedishName
-                    englishName
-                    ticketUID
-                    price
-                }
-                allowMultiple
-            }
-            servingOptions {
-                servingFood
-            }
-            place {
-                name
-            }
-            maxTickets
-            startTime
-            endTime
-            deadline
-            published_at
-            passwordProtected {
-                __typename
-            }
-            localizations {
-                locale
-                slug
-            }
-        }
-        diets {
-            id
-            name
-        }
-        allergies {
-            id
-            name
-        }
-    }
-`;
-
-    const event = _.first(data.events) || null;
+    const { event, error, diets, allergies } = await eventModel.find(
+        locale,
+        params?.slug as string
+    );
 
     const localeSlugs = extractLocales(
         { event },
@@ -1048,10 +986,10 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             error,
             localeSlugs,
             mdx: mdxSource,
+            event,
+            diets,
+            allergies,
             ...(await fetchHydration()),
-            event: event,
-            diets: data.diets,
-            allergies: data.allergies,
         },
         revalidate: 60,
     };

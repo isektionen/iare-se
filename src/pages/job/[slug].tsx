@@ -37,6 +37,7 @@ import { useSanity } from "hooks/use-check-error";
 import _ from "underscore";
 import { useSetLocaleSlug } from "state/locale";
 import { LinkComponent } from "components/LinkComponent";
+import jobModel from "models/job";
 import defaultJob from "../../../prefetch/static/job.json";
 interface Props {
     job: Jobs;
@@ -244,18 +245,10 @@ const JobView = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const { data } = await strapi.query<{ jobs: Jobs[] }>({
-        query: gql`
-            query {
-                jobs {
-                    slug
-                }
-            }
-        `,
-    });
+    const { jobs } = await jobModel.findAll();
 
     return {
-        paths: data.jobs.map((e) => ({
+        paths: jobs.map((e) => ({
             params: {
                 slug: e.slug as string,
             },
@@ -264,49 +257,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const { data, error } = await queryLocale<{ jobs: Jobs[] }>`
-    query  {
-        jobs(locale: ${locale}, where: {slug: ${params?.slug as string}}) {
-            created_at
-            title
-            deadlineDate
-            startDate
-            jobCategory {
-                name
-            }
-            company {
-                name
-                logo {
-                    width
-                    height
-                    url
-                }
-                website
-            }
-            year {
-                year
-            }
-            body
-            contact {
-                label
-                type
-                href
-            }
-            position
-            location
-            banner {
-                url
-                width
-                height
-            }
-            localizations {
-                locale
-                slug
-            }
-        }
-    }`;
-
-    const job = _.first(data.jobs) || null;
+    const { job, error } = await jobModel.find(locale, params?.slug as string);
 
     const localeSlugs = extractLocales(
         { job },

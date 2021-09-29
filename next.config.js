@@ -20,7 +20,7 @@ module.exports = withPlugins([getEnv, [withBundleAnalyzer], nextTranslate], {
     },
     reactStrictMode: true,
     target: "serverless",
-    webpack5: false,
+    //webpack5: false,
     i18n: {
         locales: ["en", "sv"],
         defaultLocale: "sv",

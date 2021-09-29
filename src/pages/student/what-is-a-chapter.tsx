@@ -12,6 +12,7 @@ import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
 import { useSanity } from "hooks/use-check-error";
 import strapi, { gql, queryLocale } from "lib/strapi";
+import chapterModel from "models/chapter";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -104,58 +105,8 @@ const View = ({
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const {
-        data: { chapter },
-        error,
-    } = await queryLocale<{ chapter: Chapter }>`
-    query {
-        chapter(locale: ${locale}) {
-            content
-            title
-            board {
-                representatives(where: { hidden: false }) {
-                    id
-                    user {
-                        firstname
-                        lastname
-                    }
-                    cover {
-                        url
-                    }
-                    committee_roles {
-                        role
-                        abbreviation
-                        committee_objectives {
-                            objective
-                        }
-                    }
-                }
-            }
-            images {
-                id
-                url
-            }
-        }
-    }
-`;
-
-    const objectives =
-        chapter.board?.representatives
-            ?.map((rep) =>
-                rep?.committee_roles?.map((com) =>
-                    com?.committee_objectives?.map((obj) => obj?.objective)
-                )
-            )
-            .flat()
-            .flat() ?? [];
-    const commonObjective = _.chain(objectives)
-        .countBy()
-        .pairs()
-        .map(([k, v]) => ({ key: k, value: v }))
-        .max("value")
-        .get("key")
-        .value();
-
+    const { chapter, error } = await chapterModel.getChapter(locale);
+    const { board } = await chapterModel.getBoard(locale, chapter);
     const mdxSource = chapter?.content
         ? await serialize(chapter.content as string)
         : null;
@@ -166,24 +117,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
             mdx: mdxSource,
             title: chapter.title,
             images: chapter.images,
-            board: {
-                ...chapter.board,
-                representatives: _.chain(
-                    chapter?.board?.representatives as Representative[]
-                )
-                    .map((rep) => {
-                        return {
-                            ...rep,
-                            committee_roles: rep?.committee_roles?.filter(
-                                (role) =>
-                                    role?.committee_objectives
-                                        ?.map((obj) => obj?.objective)
-                                        .includes(commonObjective as string)
-                            ),
-                        };
-                    })
-                    .value(),
-            },
+            board,
             ...(await fetchHydration()),
         },
         revalidate: 60,

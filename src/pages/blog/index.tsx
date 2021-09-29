@@ -8,10 +8,8 @@ import {
     Badge,
     Spacer,
     Icon,
-    chakra,
     Stack,
     Grid,
-    SimpleGrid,
     GridItem,
     GridItemProps,
     AspectRatio,
@@ -28,17 +26,13 @@ import {
     DrawerBody,
     DrawerContent,
     DrawerOverlay,
-    Input,
     useDisclosure,
-    ButtonGroup,
     Popover,
     PopoverArrow,
     PopoverBody,
-    PopoverCloseButton,
     PopoverContent,
     Wrap,
     PopoverTrigger,
-    BoxProps,
     GridProps,
 } from "@chakra-ui/react";
 import strapi, { gql } from "lib/strapi";
@@ -71,6 +65,7 @@ import { WrapPadding } from "components/browser/WrapPadding";
 import { usePagination } from "hooks/use-pagination";
 import { useRouter } from "next/router";
 import { useQuery } from "hooks/use-nets";
+import blog from "models/blog";
 
 export type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     author: string;
@@ -893,7 +888,7 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                     />
                 </Stack>
             </Box>
-            <Box w="full" h="full">
+            <Box w="full">
                 {currentView?.key === "GALLERY" && <GalleryView feed={rest} />}
                 {currentView?.key === "CALENDAR" && (
                     <CalendarView feed={rest} />
@@ -904,178 +899,14 @@ const FeedView = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const {
-        data: { posts, events, jobs },
-    } = await strapi.query<{
-        posts: Post[];
-        events: Event[];
-        jobs: Jobs[];
-    }>({
-        query: gql`
-            query FindFeed($locale: String!) {
-                posts(locale: $locale) {
-                    locale
-                    id
-                    slug
-                    banner {
-                        url
-                    }
-                    description
-                    committee {
-                        name
-                    }
-                    title
-                    published_at
-                    body
-                    categories {
-                        name
-                    }
-                    published_at
-                }
-                events(locale: $locale) {
-                    locale
-                    id
-                    title
-                    slug
-                    category {
-                        name
-                    }
-                    place {
-                        name
-                    }
-                    committee {
-                        name
-                    }
-                    startTime
-                    deadline
-                    description
-                    banner {
-                        url
-                    }
-                    published_at
-                }
-                jobs(locale: $locale) {
-                    locale
-                    body
-                    id
-                    deadlineDate
-                    slug
-                    title
-                    banner {
-                        url
-                    }
-                    jobCategory {
-                        name
-                    }
-                    company {
-                        name
-                    }
-                    description
-                    published_at
-                }
-            }
-        `,
-        variables: { locale },
-    });
-
-    const getAuthor = (item: Event | Post | Jobs) => {
-        switch (item.__typename) {
-            case "Event":
-                return item?.committee?.name ?? "N/A";
-            case "Post":
-                return item?.committee?.name ?? "N/A";
-            case "Jobs":
-                return item?.company?.name ?? "N/A";
-            default:
-                return null;
-        }
-    };
-
-    const getHref = (item: Event | Post | Jobs) => {
-        switch (item.__typename) {
-            case "Event":
-                return "/event/" + item.slug;
-            case "Post":
-                return "/blog/" + item.slug;
-            case "Jobs":
-                return "/job/" + item.slug;
-            default:
-                return null;
-        }
-    };
-
-    const getDateTime = (item: Event | Post | Jobs) => {
-        switch (item.__typename) {
-            case "Event":
-                return item.startTime;
-            case "Post":
-                return item.published_at;
-            case "Jobs":
-                return item.deadlineDate;
-            default:
-                return null;
-        }
-    };
-
-    const getCategories = (item: Event | Post | Jobs) => {
-        switch (item.__typename) {
-            case "Event":
-                return [item?.category?.name].filter((_item) => _item);
-            case "Post":
-                return item?.categories
-                    ?.map((i) => i?.name)
-                    .filter((_item) => _item);
-            case "Jobs":
-                return [item?.jobCategory?.name].filter((_item) => _item);
-            default:
-                return null;
-        }
-    };
-
-    const getBody = (item: Event | Post | Jobs) => {
-        switch (item.__typename) {
-            case "Event":
-                return item?.body ?? "";
-            case "Post":
-                return item?.body ?? "";
-            case "Jobs":
-                return item?.body ?? "";
-            default:
-                return "";
-        }
-    };
-
-    const feed = _.chain([...posts, ...jobs, ...events])
-        .sortBy("published_at")
-        .map((item) => ({
-            ...item,
-            id: item.__typename + "-" + item?.id,
-            author: getAuthor(item),
-            categories: getCategories(item),
-            __body: getBody(item),
-            __calendarDate: getDateTime(item),
-            __href: getHref(item),
-        }))
-        .reverse()
-        .value();
-
-    const categories = _.chain(feed)
-        .map((item) => ({
-            type: item.__typename,
-            value: _.pluck(item?.categories ?? [], "name"),
-        }))
-        .groupBy("type")
-        .mapObject((item) =>
-            _.pluck(item, "value")
-                .flat()
-                .filter((item) => item)
-        )
-        .value();
+    const { feed, error } = await blog.getFeed(locale);
+    const { categories } = await blog.getCategories(locale, feed);
 
     return {
         props: {
             feed,
             categories,
+            error,
             ...(await fetchHydration()),
         },
         revalidate: 20,

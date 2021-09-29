@@ -42,6 +42,7 @@ import { isMobile } from "react-device-detect";
 import { checkForError } from "utils/error";
 import { ClientError } from "components/Error";
 import { Empty } from "components/Empty";
+import document from "models/document";
 interface Props {
     data: DocumentType;
     locale: string;
@@ -260,38 +261,14 @@ const DocumentView = ({ data, header, footer, error }: LayoutProps<Props>) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const { data } = await strapi.query<{ document: DocumentType }>({
-        query: gql`
-            query FindDocument($locale: String!) {
-                document(locale: $locale) {
-                    document {
-                        name
-                        date
-                        category {
-                            name
-                        }
-                        file {
-                            url
-                            formats
-                        }
-                        archived
-                        current
-                        businessYear
-                    }
-                }
-            }
-        `,
-        variables: { locale },
-    });
+    const { documents, error } = await document.getDocuments(locale);
     return {
         props: {
             ...(await fetchHydration()),
-            ...checkForError({
-                locale,
-                data: data.document,
-            }),
+            data: documents,
+            error,
         },
-        revalidate: 2 * 60,
+        revalidate: 60,
     };
 };
 

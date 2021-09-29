@@ -20,6 +20,7 @@ import { checkForError } from "utils/error";
 import Error from "next/error";
 import { ClientError } from "components/Error";
 import { useSanity } from "hooks/use-check-error";
+import committee from "models/committee";
 interface Props {
     committees: Committee[];
     mdx: MDXRemoteSerializeResult;
@@ -63,31 +64,8 @@ const CommitteeView = ({
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-    const {
-        data: { committees, committeeLandingpage },
-        error,
-    } = await queryLocale<{
-        committees: Committee[];
-        committeeLandingpage: CommitteeLandingpage;
-    }>`query {
-        committees(locale:${locale}) {
-            locale
-            id
-            slug
-            name
-            abbreviation
-            icon {
-                url
-            }
-            committee_objective {
-                objective
-            }
-        }
-        committeeLandingpage(locale:${locale}) {
-            title
-            content
-        }
-    }`;
+    const { committeeLandingpage } = await committee.getLandingPage(locale);
+    const { committees, error } = await committee.getCommittees(locale);
     const mdxSource = committeeLandingpage?.content
         ? await serialize(committeeLandingpage.content)
         : null;

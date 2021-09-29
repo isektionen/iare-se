@@ -145,16 +145,18 @@
                 "height": 70,
                 "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_dc256dcc5a.svg"
             },
-            "feedbackbox": null,
+            "feedbackbox": {
+                "description": "Have someone helped you in the past?\nHave some committee made anything fantastic?\nDo you want to spread some love?"
+            },
             "sections": [
                 {
-                    "id": "5",
+                    "id": "9",
                     "label": "News",
                     "displayDropDown": false,
                     "href": "/blog",
                     "subSection": [
                         {
-                            "id": "6",
+                            "id": "21",
                             "label": "Happenings",
                             "href": "/",
                             "description": null,
@@ -162,17 +164,17 @@
                             "color": "gray"
                         },
                         {
-                            "id": "7",
-                            "label": "Job",
-                            "href": "/blog?type[]=job",
+                            "id": "22",
+                            "label": "Event",
+                            "href": "?type[]=event",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
                         },
                         {
-                            "id": "8",
-                            "label": "Event",
-                            "href": "/blog?type[]=event",
+                            "id": "23",
+                            "label": "Job",
+                            "href": "/?type[]=job",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
@@ -180,13 +182,13 @@
                     ]
                 },
                 {
-                    "id": "6",
+                    "id": "10",
                     "label": "Chapter",
                     "displayDropDown": true,
                     "href": "/chapter",
                     "subSection": [
                         {
-                            "id": "9",
+                            "id": "24",
                             "label": "Board",
                             "href": "/board",
                             "description": "The chapters highest organ",
@@ -194,7 +196,7 @@
                             "color": "gray"
                         },
                         {
-                            "id": "10",
+                            "id": "25",
                             "label": "Document",
                             "href": "/document",
                             "description": null,
@@ -202,48 +204,48 @@
                             "color": "gray"
                         },
                         {
-                            "id": "19",
+                            "id": "26",
                             "label": "Brand",
                             "href": "/brand",
                             "description": null,
-                            "icon": "question",
+                            "icon": "colorlens",
                             "color": "gray"
                         },
                         {
-                            "id": "20",
+                            "id": "27",
                             "label": "Committees",
                             "href": "/committee",
                             "description": null,
-                            "icon": "question",
+                            "icon": "group",
                             "color": "gray"
                         }
                     ]
                 },
                 {
-                    "id": "7",
-                    "label": "Studying at I",
+                    "id": "11",
+                    "label": "Study at I",
                     "displayDropDown": true,
                     "href": "/student",
                     "subSection": [
                         {
-                            "id": "16",
-                            "label": "What's a chapter?",
+                            "id": "28",
+                            "label": "What is a chapter?",
                             "href": "/what-is-a-chapter",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
                         },
                         {
-                            "id": "17",
-                            "label": "Aspiring students",
+                            "id": "29",
+                            "label": "Assumed students",
                             "href": "/assumed-student",
                             "description": null,
                             "icon": "question",
                             "color": "gray"
                         },
                         {
-                            "id": "18",
-                            "label": "Accepted Students",
+                            "id": "30",
+                            "label": "Accepted students",
                             "href": "/accepted-student",
                             "description": null,
                             "icon": "question",
@@ -252,10 +254,10 @@
                     ]
                 },
                 {
-                    "id": "8",
-                    "label": "Companies",
+                    "id": "12",
+                    "label": "Company",
                     "displayDropDown": false,
-                    "href": "/companies",
+                    "href": "/company",
                     "subSection": []
                 }
             ],

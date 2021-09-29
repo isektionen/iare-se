@@ -1,7 +1,6 @@
 import { Deta } from "lib/deta";
 import { Strapi } from "lib/strapi";
 import { NextRouter, useRouter } from "next/router";
-import { DefaultFieldValues } from "pages/event/[slug]";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useScript from "react-script-hook";
 import {

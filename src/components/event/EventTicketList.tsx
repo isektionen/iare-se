@@ -1,5 +1,4 @@
 import { Box, useRadioGroup, VStack } from "@chakra-ui/react";
-import { DefaultFieldValues } from "pages/event/[slug]";
 import React, { ReactNode, useMemo } from "react";
 import {
     ControllerRenderProps,
@@ -11,6 +10,7 @@ import {
     ComponentEventTickets,
     Maybe,
 } from "types/strapi";
+import { DefaultFieldValues } from "views/Event";
 
 interface Props {
     name: string;

@@ -15,9 +15,9 @@ import {
 import { NextImage } from "components/NextImage";
 import { motion, useCycle } from "framer-motion";
 import useTranslation from "next-translate/useTranslation";
-import { TicketData } from "pages/event/[slug]";
 import React, { useCallback, useMemo, useState } from "react";
 import { BsArrowRightShort } from "react-icons/bs";
+import { TicketData } from "views/Event";
 
 interface Props {
     orderData: TicketData | undefined;

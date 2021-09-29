@@ -12,10 +12,10 @@ import {
     Spinner,
 } from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
-import { DefaultFieldValues } from "pages/event/[slug]";
 import React, { useCallback, useEffect, useState } from "react";
 import { Control, useController, UseFormSetValue } from "react-hook-form";
 import { ComponentEventTickets, Maybe } from "types/strapi";
+import { DefaultFieldValues } from "views/Event";
 import { EventTicketItem } from "../EventTicketItem";
 import { EventTicketList } from "../EventTicketList";
 

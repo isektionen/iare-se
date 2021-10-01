@@ -16,6 +16,8 @@ import { Calendar } from "components/blog/Calendar";
 import { Gallery } from "components/blog/Gallery";
 import { ItemDescription } from "components/blog/ItemDescription";
 import { ViewMenu } from "components/blog/ViewMenu";
+import { NextSeo } from "next-seo";
+import { makeTitle } from "utils/seo";
 
 interface Option {
     label: string;
@@ -120,68 +122,75 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     }, [lang]);
 
     return (
-        <VStack spacing={4}>
-            <Flex w="full" h="35vh" position="relative" mb="140px">
-                <Box
-                    zIndex={1}
-                    w={{ base: "full", md: "75%" }}
-                    position="absolute"
-                    bottom="-120px"
-                    px={{ base: 6, md: 12 }}
-                >
-                    <Box bg="gray.50" h="200px" p={6}>
-                        <ItemDescription
-                            categories={firstItem?.categories ?? []}
-                            title={firstItem?.title ?? ""}
-                            readingTime={getReadingTime(
-                                firstItem?.__body ?? ""
-                            )}
-                            href={firstItem?.__href ?? "#"}
-                            imgurl={firstItem?.banner?.url ?? "/news-image.png"}
-                            description={firstItem?.description ?? ""}
-                            author={firstItem?.author ?? ""}
-                        />
+        <React.Fragment>
+            <NextSeo title={makeTitle(t("seo:blog.title"))} />
+            <VStack spacing={4}>
+                <Flex w="full" h="35vh" position="relative" mb="140px">
+                    <Box
+                        zIndex={1}
+                        w={{ base: "full", md: "75%" }}
+                        position="absolute"
+                        bottom="-120px"
+                        px={{ base: 6, md: 12 }}
+                    >
+                        <Box bg="gray.50" h="200px" p={6}>
+                            <ItemDescription
+                                categories={firstItem?.categories ?? []}
+                                title={firstItem?.title ?? ""}
+                                readingTime={getReadingTime(
+                                    firstItem?.__body ?? ""
+                                )}
+                                href={firstItem?.__href ?? "#"}
+                                imgurl={
+                                    firstItem?.banner?.url ?? "/news-image.png"
+                                }
+                                description={firstItem?.description ?? ""}
+                                author={firstItem?.author ?? ""}
+                            />
+                        </Box>
                     </Box>
+                    <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
+                        <NextImage
+                            src={firstItem?.banner?.url ?? "/news-image.png"}
+                            width="2048px"
+                            height="1365px"
+                            h="35vh"
+                            w="full"
+                            layout="intrinsic"
+                            objectFit="cover"
+                            priority
+                        />
+                    </LinkComponent>
+                </Flex>
+                <Box px={{ base: 6, md: 12 }} pt={4} w="full">
+                    <Stack
+                        borderBottomColor="gray.200"
+                        borderBottomWidth="1px"
+                        pb={0.5}
+                        justify={{ base: "space-between", md: "flex-start" }}
+                        direction={{ base: "row", md: "row" }}
+                    >
+                        <ViewMenu
+                            current={currentView}
+                            options={views}
+                            setOption={setCurrentView}
+                        />
+                        <SelectMenu
+                            label="article"
+                            options={options}
+                            variant="ghost"
+                            setOptions={setOptions}
+                        />
+                    </Stack>
                 </Box>
-                <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
-                    <NextImage
-                        src={firstItem?.banner?.url ?? "/news-image.png"}
-                        width="2048px"
-                        height="1365px"
-                        h="35vh"
-                        w="full"
-                        layout="intrinsic"
-                        objectFit="cover"
-                        priority
-                    />
-                </LinkComponent>
-            </Flex>
-            <Box px={{ base: 6, md: 12 }} pt={4} w="full">
-                <Stack
-                    borderBottomColor="gray.200"
-                    borderBottomWidth="1px"
-                    pb={0.5}
-                    justify={{ base: "space-between", md: "flex-start" }}
-                    direction={{ base: "row", md: "row" }}
-                >
-                    <ViewMenu
-                        current={currentView}
-                        options={views}
-                        setOption={setCurrentView}
-                    />
-                    <SelectMenu
-                        label="article"
-                        options={options}
-                        variant="ghost"
-                        setOptions={setOptions}
-                    />
-                </Stack>
-            </Box>
-            <Box w="full">
-                {currentView?.key === "GALLERY" && <Gallery feed={rest} />}
-                {currentView?.key === "CALENDAR" && <Calendar feed={rest} />}
-            </Box>
-        </VStack>
+                <Box w="full">
+                    {currentView?.key === "GALLERY" && <Gallery feed={rest} />}
+                    {currentView?.key === "CALENDAR" && (
+                        <Calendar feed={rest} />
+                    )}
+                </Box>
+            </VStack>
+        </React.Fragment>
     );
 };
 

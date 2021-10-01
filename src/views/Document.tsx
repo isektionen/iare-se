@@ -5,12 +5,15 @@ import { ItemThumbnail } from "components/document/ItemThumbnail";
 import { SearchBar } from "components/document/SearchBar";
 import { Empty } from "components/Empty";
 import { ClientError } from "components/Error";
+import job from "models/job";
+import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { isMobile } from "react-device-detect";
 import { useFuseFilter } from "state/document";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
+import { makeTitle } from "utils/seo";
 import {
     ComponentDocumentDocuments,
     Document as DocumentType,
@@ -35,7 +38,8 @@ const View = ({ data, header, footer, error }: LayoutProps<Props>) => {
         return <ClientError />;
     }
     return (
-        <>
+        <React.Fragment>
+            <NextSeo title={makeTitle(t("seo:document.title"))} />
             <DocumentContainer />
             <Box py={16} px={{ base: 3, md: 16 }}>
                 <SearchBar />
@@ -59,7 +63,7 @@ const View = ({ data, header, footer, error }: LayoutProps<Props>) => {
                         ))}
                 </Wrap>
             </Box>
-        </>
+        </React.Fragment>
     );
 };
 

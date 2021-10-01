@@ -2,7 +2,7 @@ module.exports = {
     locales: ["en", "sv"],
     defaultLocale: "sv",
     pages: {
-        "*": ["common"],
+        "*": ["common", "seo"],
         "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/chapter/committee": ["mdx"],
         "/chapter/brand": ["brand"],

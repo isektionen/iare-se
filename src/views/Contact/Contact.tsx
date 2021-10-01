@@ -2,12 +2,14 @@ import { VStack, Box, Heading, Stack, Text } from "@chakra-ui/layout";
 import { ContactGrid } from "components/contact/ContactGrid";
 import { ContactSelector } from "components/contact/ContactSelector";
 import { useSanity } from "hooks/use-check-error";
+import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";
 import React, { useMemo } from "react";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { CommitteeFunction, Representative } from "types/strapi";
 import _ from "underscore";
+import { makeTitle } from "utils/seo";
 
 interface Option {
     label: string;
@@ -64,33 +66,36 @@ const View = ({
     }, [representatives]);
 
     return (
-        <VStack
-            py={8}
-            px={{ base: 3, md: 32 }}
-            w="full"
-            align="stretch"
-            spacing={8}
-        >
-            <Box>
-                <Heading mb={2}>{t("contact")}</Heading>
-                <Text fontWeight="medium" color="gray.600">
-                    {t("description")}
-                </Text>
-            </Box>
-            <Stack
+        <React.Fragment>
+            <NextSeo title={makeTitle(t("seo:contact.title"))} />
+            <VStack
+                py={8}
+                px={{ base: 3, md: 32 }}
                 w="full"
-                justify="center"
                 align="stretch"
-                spacing={10}
-                direction={{ base: "column", lg: "row" }}
+                spacing={8}
             >
-                <ContactSelector
-                    objectives={objectives as Option[]}
-                    representatives={representatives}
-                />
-                <ContactGrid representatives={featuredContacts} />
-            </Stack>
-        </VStack>
+                <Box>
+                    <Heading mb={2}>{t("contact")}</Heading>
+                    <Text fontWeight="medium" color="gray.600">
+                        {t("description")}
+                    </Text>
+                </Box>
+                <Stack
+                    w="full"
+                    justify="center"
+                    align="stretch"
+                    spacing={10}
+                    direction={{ base: "column", lg: "row" }}
+                >
+                    <ContactSelector
+                        objectives={objectives as Option[]}
+                        representatives={representatives}
+                    />
+                    <ContactGrid representatives={featuredContacts} />
+                </Stack>
+            </VStack>
+        </React.Fragment>
     );
 };
 

@@ -113,13 +113,6 @@
                     "color": "gray"
                 }
             ]
-        },
-        {
-            "id": "4",
-            "label": "Företag",
-            "displayDropDown": false,
-            "href": "/company",
-            "subSection": []
         }
     ],
     "languages": [

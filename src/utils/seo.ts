@@ -4,3 +4,7 @@ export const makeTitle = (title: string, onLeft: boolean = true) => {
     }
     return title + " - Iare";
 };
+
+export const getPage = (slug: string) => {
+    return "https://www.iare.se/" + slug;
+};

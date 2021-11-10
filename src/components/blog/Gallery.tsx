@@ -118,7 +118,7 @@ export const Gallery = ({
                     ))}
                 {feed.length > 0 &&
                     feed
-                        .slice(span ? 0 : start + 2, span ? end : end + 2)
+                        .slice(span ? start : start + 2, span ? end : end + 2)
                         .map((item, idx) => (
                             <Item
                                 h={span ? "400px" : undefined}
@@ -149,6 +149,9 @@ export const Gallery = ({
                 {isVisible && (
                     <HStack spacing={0} borderWidth="1px" borderRadius="md">
                         <Button
+                            _focus={{
+                                borderWidth: 0,
+                            }}
                             leftIcon={<IoChevronBack />}
                             onClick={goBackward}
                             size="sm"
@@ -157,76 +160,94 @@ export const Gallery = ({
                         >
                             {isAboveMd && t("pagination.previous")}
                         </Button>
-                        {pages.map((item, idx) => {
-                            if (item.type === "page") {
+                        {pages
+                            .filter((p) => !p.isHidden)
+                            .map((page, key) => {
+                                if (page.type === "delimiter") {
+                                    return (
+                                        <Popover
+                                            isOpen={isDelimiterOpen}
+                                            key={key + "page-" + page.index}
+                                            closeOnBlur
+                                            closeOnEsc
+                                            returnFocusOnClose={false}
+                                            matchWidth={false}
+                                            placement="top"
+                                            gutter={12}
+                                        >
+                                            <PopoverTrigger>
+                                                <Button
+                                                    _focus={{
+                                                        borderWidth: 0,
+                                                    }}
+                                                    rounded="none"
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    key={"page-" + page.index}
+                                                    onClick={page.onClick}
+                                                >
+                                                    ...
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent w="120px">
+                                                <PopoverArrow />
+                                                <PopoverBody>
+                                                    <Wrap shouldWrapChildren>
+                                                        {pages
+                                                            .filter(
+                                                                (p) =>
+                                                                    p.isHidden
+                                                            )
+                                                            ?.map(
+                                                                (page, idx) => (
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="xs"
+                                                                        key={
+                                                                            "delimiterPage" +
+                                                                            idx
+                                                                        }
+                                                                        onClick={
+                                                                            page.onClick
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            page.index
+                                                                        }
+                                                                    </Button>
+                                                                )
+                                                            )}
+                                                    </Wrap>
+                                                </PopoverBody>
+                                            </PopoverContent>
+                                        </Popover>
+                                    );
+                                }
                                 return (
                                     <Button
+                                        _focus={{
+                                            borderWidth: 0,
+                                        }}
                                         rounded="none"
-                                        key={idx + "page-" + item.index}
+                                        key={key + "page-" + page.index}
                                         fontWeight={
-                                            item.isCurrent ? "bold" : "normal"
+                                            page.isCurrent ? "bold" : "normal"
                                         }
                                         bg={
-                                            item.isCurrent ? "gray.50" : "white"
+                                            page.isCurrent ? "gray.50" : "white"
                                         }
-                                        onClick={item.onClick}
+                                        onClick={page.onClick}
                                         size="sm"
                                         variant="ghost"
                                     >
-                                        {item.label}
+                                        {page.label}
                                     </Button>
                                 );
-                            }
-                            return (
-                                <Popover
-                                    isOpen={isDelimiterOpen}
-                                    key={idx + "page-" + item.index}
-                                    closeOnBlur
-                                    closeOnEsc
-                                    returnFocusOnClose={false}
-                                    matchWidth={false}
-                                    placement="top"
-                                    gutter={12}
-                                >
-                                    <PopoverTrigger>
-                                        <Button
-                                            rounded="none"
-                                            size="sm"
-                                            variant="ghost"
-                                            key={"page-" + item.index}
-                                            onClick={item.onClick}
-                                        >
-                                            {item.label}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent w="120px">
-                                        <PopoverArrow />
-                                        <PopoverBody>
-                                            <Wrap shouldWrapChildren>
-                                                {delimiterPages?.map(
-                                                    (item, idx) => (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="xs"
-                                                            key={
-                                                                "delimiterPage" +
-                                                                idx
-                                                            }
-                                                            onClick={
-                                                                item.onClick
-                                                            }
-                                                        >
-                                                            {item.index}
-                                                        </Button>
-                                                    )
-                                                )}
-                                            </Wrap>
-                                        </PopoverBody>
-                                    </PopoverContent>
-                                </Popover>
-                            );
-                        })}
+                            })}
                         <Button
+                            _focus={{
+                                borderWidth: 0,
+                            }}
                             rightIcon={<IoChevronForward />}
                             onClick={goForward}
                             size="sm"

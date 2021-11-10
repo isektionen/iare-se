@@ -1,6 +1,7 @@
 import { useDisclosure, useOutsideClick } from "@chakra-ui/hooks";
 import _ from "lodash";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { clamp } from "utils/number";
 
 interface IPagination {
     count: number;
@@ -31,11 +32,13 @@ export const usePagination = ({
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const goForward = useCallback(() => {
-        setPageDelta(Math.min(pageDelta + 1, maxPages - 2));
+        //setPageDelta(Math.min(pageDelta + 1, maxPages - 2));
+        setPageDelta(clamp(pageDelta + 1, 0, maxPages - 1));
     }, [maxPages, pageDelta]);
     const goBackward = useCallback(() => {
-        setPageDelta(Math.max(pageDelta - 1, 0));
-    }, [pageDelta]);
+        //setPageDelta(Math.max(pageDelta - 1, 0));
+        setPageDelta(clamp(pageDelta - 1, 0, maxPages - 1));
+    }, [maxPages, pageDelta]);
 
     const goTo = useCallback(
         (index) => {
@@ -89,23 +92,33 @@ export const usePagination = ({
         handler: onClose,
     });
 
-    const pages = useMemo(
-        () =>
-            [
-                ...[1].map(formatPage),
-                ..._.range(
-                    Math.max(pageDelta - 1, 2),
-                    Math.min(pageDelta + offset, Math.max(maxPages - 1, 1))
-                )
-                    .map(formatPage)
-                    .slice(0, offset),
-                pageDelta + offset >= maxPages
-                    ? null
-                    : formatDelimiter(pageDelta + offset, pageDelta + offset),
-                ...[maxPages - 1].map(formatPage),
-            ].filter((page) => page && page.label > 0) as IPage[],
-        [formatDelimiter, formatPage, maxPages, offset, pageDelta]
+    const makePage = useCallback(
+        (i: number) => {
+            const isFirst = i === 0;
+            const isLast = i === maxPages - 1;
+            const isCurrent = i === pageDelta;
+            const isDelimiter = i === pageDelta + 1 && maxPages > 2;
+            const isHidden =
+                !(isFirst || isLast || isDelimiter) &&
+                (i < pageDelta || i > pageDelta);
+            return {
+                label: i + 1,
+                index: i,
+                onClick: isDelimiter ? () => handleDelimiter(i) : () => goTo(i),
+                isCurrent,
+                isFirst,
+                isLast,
+                isHidden,
+                type: isDelimiter ? "delimiter" : "page",
+            };
+        },
+        [goTo, handleDelimiter, maxPages, pageDelta]
     );
+
+    function memoPages() {
+        return _.times(maxPages, makePage);
+    }
+    const _pages = useMemo(memoPages, [makePage, maxPages]);
 
     const slicer = useMemo(
         () => [
@@ -130,7 +143,7 @@ export const usePagination = ({
         goBackward,
         goForward,
         onCountChange,
-        pages,
+        pages: _pages,
         slicer,
         isDelimiterOpen: isOpen,
         isVisible,

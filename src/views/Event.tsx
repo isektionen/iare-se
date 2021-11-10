@@ -61,7 +61,7 @@ import {
 import _ from "underscore";
 import { getDate } from "utils/dates";
 import { generateQRCode } from "utils/images";
-import defaultEvent from "../../prefetch/static/Event.json";
+import defaultEvent from "../../prefetch/static/event.json";
 import job from "models/job";
 import { NextSeo } from "next-seo";
 import { getPage, makeTitle } from "utils/seo";

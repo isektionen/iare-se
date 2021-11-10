@@ -64,7 +64,7 @@ import { generateQRCode } from "utils/images";
 import defaultEvent from "../../prefetch/static/Event.json";
 import job from "models/job";
 import { NextSeo } from "next-seo";
-import { makeTitle } from "utils/seo";
+import { getPage, makeTitle } from "utils/seo";
 
 interface Props {
     event: Event;
@@ -583,13 +583,28 @@ const View = ({
         };
     }, [activeStep]);
 
+    const seoTitle = makeTitle(
+        t("seo:event.title", { event: event.title }),
+        false
+    );
     return (
         <React.Fragment>
             <NextSeo
-                title={makeTitle(
-                    t("seo:event.title", { event: event.title }),
-                    false
-                )}
+                title={seoTitle}
+                openGraph={{
+                    type: "website",
+                    url: getPage(("event/" + event.slug) as string),
+                    title: seoTitle,
+                    description: event?.description ?? "",
+                    images: [
+                        {
+                            url: event.banner?.url ?? "",
+                            width: event?.banner?.width ?? 0,
+                            height: event?.banner?.height ?? 0,
+                            alt: `Hero image for ${event.title}`,
+                        },
+                    ],
+                }}
             />
             <Flex
                 overflow="hidden"

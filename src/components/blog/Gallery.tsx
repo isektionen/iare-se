@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Center,
     Flex,
@@ -14,6 +15,7 @@ import {
     PopoverTrigger,
     Spacer,
     useBreakpointValue,
+    VStack,
     Wrap,
 } from "@chakra-ui/react";
 import { usePagination } from "hooks/use-pagination";
@@ -67,8 +69,9 @@ export const Gallery = ({
     useEffect(() => {
         onCountChange(feed.length - 3);
     }, [feed.length, onCountChange]);
+
     return (
-        <React.Fragment>
+        <VStack>
             <Grid
                 px={{ base: 6, md: 12 }}
                 templateColumns={
@@ -115,14 +118,19 @@ export const Gallery = ({
                     ))}
                 {feed.length > 0 &&
                     feed
-                        .slice(span ? 0 : start + 2, span ? undefined : end + 2)
+                        .slice(span ? 0 : start + 2, span ? end : end + 2)
                         .map((item, idx) => (
                             <Item
+                                h={span ? "400px" : undefined}
                                 key={item.id + "-" + pageIndex + "-" + idx}
                                 colSpan={span ? span : { base: 6, md: 4 }}
                                 mx={{ base: 4, md: 0 }}
                                 mb={{ base: "90px", md: "40px" }}
-                                bottom={{ base: "-90px", md: "-140px" }}
+                                bottom={
+                                    span
+                                        ? undefined
+                                        : { base: "-90px", md: "-140px" }
+                                }
                                 item={{
                                     href: item?.__href ?? "#",
                                     imgurl:
@@ -136,7 +144,7 @@ export const Gallery = ({
                             />
                         ))}
             </Grid>
-            <Flex px={{ base: 6, md: 12 }}>
+            <Flex w="full" px={{ base: 6, md: 12 }}>
                 <Spacer />
                 {isVisible && (
                     <HStack spacing={0} borderWidth="1px" borderRadius="md">
@@ -230,6 +238,6 @@ export const Gallery = ({
                     </HStack>
                 )}
             </Flex>
-        </React.Fragment>
+        </VStack>
     );
 };

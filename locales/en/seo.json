@@ -1,0 +1,38 @@
+{
+    "landing-page": {
+        "title": "Chapter for Industrial Economics"
+    },
+    "job": {
+        "title": "{{job}}"
+    },
+    "event": {
+        "title": "{{event}}"
+    },
+    "document": {
+        "title": "Documents"
+    },
+    "brand": {
+        "title": "Branding"
+    },
+    "assumed-student": {
+        "title": "For assumed students"
+    },
+    "accepted-student": {
+        "title": "For accepted students"
+    },
+    "contact-single": {
+        "title": "Contact {{contact}}"
+    },
+    "contact": {
+        "title": "Contact form"
+    },
+    "committee-single": {
+        "title": "{{committee}}"
+    },
+    "blog-single": {
+        "title": "{{blog}}"
+    },
+    "blog": {
+        "title": "Newsfeed"
+    }
+}

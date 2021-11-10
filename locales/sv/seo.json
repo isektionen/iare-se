@@ -1,0 +1,38 @@
+{
+    "landing-page": {
+        "title": "Sektionen för Industriell Ekonomi"
+    },
+    "job": {
+        "title": "{{job}}"
+    },
+    "event": {
+        "title": "{{event}}"
+    },
+    "document": {
+        "title": "Dokument"
+    },
+    "brand": {
+        "title": "Grafisk profil"
+    },
+    "assumed-student": {
+        "title": "För sökande studenter"
+    },
+    "accepted-student": {
+        "title": "För antagna studenter"
+    },
+    "contact-single": {
+        "title": "Kontakta {{contact}}"
+    },
+    "contact": {
+        "title": "Kontaktformulär"
+    },
+    "committee-single": {
+        "title": "{{committee}}"
+    },
+    "blog-single": {
+        "title": "{{blog}}"
+    },
+    "blog": {
+        "title": "Nyhetsflödet"
+    }
+}

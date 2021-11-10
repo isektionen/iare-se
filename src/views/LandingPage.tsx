@@ -9,6 +9,7 @@ import React from "react";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { Post, Jobs, Event } from "types/strapi";
+import _ from "underscore";
 import { makeTitle } from "utils/seo";
 
 export type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {

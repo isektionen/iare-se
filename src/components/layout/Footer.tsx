@@ -23,7 +23,14 @@ import { Contact } from "./footer/Contact";
 
 const Footer = (props: BoxProps) => {
     return (
-        <Flex as="footer" width="full" pb={12} direction="column" {...props}>
+        <Flex
+            as="footer"
+            width="full"
+            bg="white"
+            pb={12}
+            direction="column"
+            {...props}
+        >
             <Flex py={12}>
                 <Logo />
                 <Flex

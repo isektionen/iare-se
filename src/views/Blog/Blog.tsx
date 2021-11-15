@@ -10,7 +10,6 @@ import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { Post, Jobs, Event } from "types/strapi";
 import _ from "underscore";
-import { getReadingTime } from "utils/text";
 
 import { Calendar } from "components/blog/Calendar";
 import { Gallery } from "components/blog/Gallery";

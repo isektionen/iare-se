@@ -23,7 +23,6 @@ import useTranslation from "next-translate/useTranslation";
 import React, { useEffect } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { Post, Jobs, Event } from "types/strapi";
-import { getReadingTime } from "utils/text";
 import { Item } from "./Item";
 
 type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {

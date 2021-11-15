@@ -10,7 +10,6 @@ import {
 import { LinkComponent } from "components/LinkComponent";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { AiOutlineClockCircle } from "react-icons/ai";
 import { MdDateRange } from "react-icons/md";
 import { getDate } from "utils/dates";
 

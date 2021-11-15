@@ -18,7 +18,7 @@ export const Logo = ({ priority }: Props) => {
         <NextImage
             src={logo.url}
             width={77}
-            height={28}
+            height={40}
             alt={logo.alternativeText ?? "Iare logotype"}
             priority={priority}
         />

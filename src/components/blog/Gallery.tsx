@@ -109,7 +109,7 @@ export const Gallery = ({
                                 categories: item.categories,
                                 href: item?.__href ?? "#",
                                 imgurl: item?.banner?.url ?? "/news-image.png",
-                                readingTime: getReadingTime(item.__body),
+                                calendarDate: item?.__calendarDate ?? "N/A",
                                 title: item.title,
                                 description: item.description as string,
                                 author: item.author,
@@ -136,7 +136,7 @@ export const Gallery = ({
                                     imgurl:
                                         item?.banner?.url ?? "/news-image.png",
                                     categories: item.categories,
-                                    readingTime: getReadingTime(item.__body),
+                                    calendarDate: item?.__calendarDate ?? "N/A",
                                     title: item.title,
                                     description: item.description as string,
                                     author: item.author,

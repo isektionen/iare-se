@@ -11,26 +11,28 @@ import { LinkComponent } from "components/LinkComponent";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { MdDateRange } from "react-icons/md";
+import { getDate } from "utils/dates";
 
 interface ItemProps {
     categories: string[];
     title: string;
     href: string;
     imgurl: string;
-    readingTime: number | string;
     description: string;
     author: string;
+    calendarDate: string;
 }
 
 export const ItemDescription = ({
     categories,
     title,
     href,
-    readingTime,
     description,
     author,
+    calendarDate,
 }: ItemProps) => {
-    const { t } = useTranslation("common");
+    const { t, lang } = useTranslation("common");
 
     return (
         <React.Fragment>
@@ -62,9 +64,9 @@ export const ItemDescription = ({
                     color="gray.600"
                 >
                     <Flex align="center">
-                        <Icon as={AiOutlineClockCircle} mr={1} />
+                        <Icon as={MdDateRange} mr={1} />
                         <Text size="sm">
-                            {t("readingTime", { count: readingTime })}
+                            {getDate(calendarDate, "EEEE d MMM", lang)}
                         </Text>
                     </Flex>
                     <Text size="sm">{author}</Text>

@@ -18,13 +18,16 @@ import { NextImage } from "components/NextImage";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { MdDateRange } from "react-icons/md";
+import { getDate } from "utils/dates";
+
 
 interface ItemProps {
     categories: string[];
     title: string;
     href: string;
     imgurl: string;
-    readingTime: number | string;
+    calendarDate: string;
     description: string;
     author: string;
 }
@@ -40,15 +43,15 @@ export const Item = ({
         href,
         imgurl,
         description: _description,
-        readingTime,
         author: _author,
+        calendarDate,
     },
     mx,
     mb,
     bottom,
     ...props
 }: IItem) => {
-    const { t } = useTranslation("common");
+    const { t, lang } = useTranslation("common");
 
     const author = _author.length > 12 ? _author.slice(0, 9) + "..." : _author;
     const length = useBreakpointValue({ base: 128, md: 64 }) as number;
@@ -100,9 +103,9 @@ export const Item = ({
                         <Spacer />
                         <HStack spacing={2} fontSize="sm" color="gray.600">
                             <Flex align="center">
-                                <Icon as={AiOutlineClockCircle} mr={1} />
+                                <Icon as={MdDateRange} mr={1} />
                                 <Text size="sm">
-                                    {t("readingTime", { count: readingTime })}
+                                    {getDate(calendarDate, "EEEE d MMM", lang)}
                                 </Text>
                             </Flex>
                             <Text size="sm">{author}</Text>

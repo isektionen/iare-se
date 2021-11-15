@@ -137,9 +137,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                             <ItemDescription
                                 categories={firstItem?.categories ?? []}
                                 title={firstItem?.title ?? ""}
-                                readingTime={getReadingTime(
-                                    firstItem?.__body ?? ""
-                                )}
+                                calendarDate={firstItem?.__calendarDate ?? "N/A"}
                                 href={firstItem?.__href ?? "#"}
                                 imgurl={
                                     firstItem?.banner?.url ?? "/news-image.png"

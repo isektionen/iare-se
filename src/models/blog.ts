@@ -176,12 +176,29 @@ const getJobs = async (locale: TLocale) => {
 };
 
 const getFeed = async (locale: TLocale) => {
-    const { posts, error: postError } = await getPosts(locale);
-    const { events, error: eventError } = await getEvents(locale);
-    const { jobs, error: jobError } = await getJobs(locale);
+    // Changed to vars here in order to have opportunity to create empty jobs etc lists
+    var { posts, error: postError } = await getPosts(locale);
+    var { events, error: eventError } = await getEvents(locale);
+    var { jobs, error: jobError } = await getJobs(locale);
 
-    if (jobError || postError || eventError) {
-        return { feed: [], error: true };
+    console.log("test");
+
+    // This old statement made it so that posterrors would hinder jobs from showing
+    //if (jobError || postError || eventError) {
+        //return { feed: [], error: true };
+    //}
+
+    // Changed 
+    if (jobError) {
+        jobs = [];
+    }
+
+    if (postError) {
+        posts = [];
+    }
+
+    if (eventError) {
+        events = [];
     }
 
     const feed = _.chain([...posts, ...jobs, ...events])

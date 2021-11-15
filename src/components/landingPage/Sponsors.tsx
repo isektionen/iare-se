@@ -25,7 +25,7 @@ export const Sponsors = () => {
                 <GridItem key={sponsor} colSpan={1} rowSpan={1}>
                     <NextImage
                         justifyContent="center"
-                        filter="brightness(0.55) grayscale(1) drop-shadow(0 0 0rem rgba(0,0,0,0))"
+                        filter="brightness(1) grayscale(0) drop-shadow(0 0 0.25rem rgba(0,0,0,0.3))"
                         _hover={{
                             filter: "brightness(1) grayscale(0) drop-shadow(0 0 0.25rem rgba(0,0,0,0.3))",
                         }}

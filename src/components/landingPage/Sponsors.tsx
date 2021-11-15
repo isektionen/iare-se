@@ -38,6 +38,7 @@ export const Sponsors = () => {
                         height="113px"
                         objectPosition="center"
                         objectFit="contain"
+                        title={sponsor.toUpperCase().replace("-", " ")}
                     />
                 </GridItem>
             ))}

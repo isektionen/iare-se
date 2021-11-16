@@ -161,7 +161,7 @@ export const Hero = () => {
                     {t("description")}
                 </Heading>
                 <Heading size="lg" textAlign="center">
-                    <chakra.code
+                    {/* <chakra.code
                         py={6}
                         px={2}
                         transition="all 0.5s"
@@ -171,7 +171,7 @@ export const Hero = () => {
                         rounded="md"
                     >
                         {currentSentence}
-                    </chakra.code>
+                    </chakra.code>*/}
                 </Heading>
             </Flex>
         </Flex>

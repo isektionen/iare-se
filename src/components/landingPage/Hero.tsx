@@ -69,7 +69,7 @@ export const Hero = () => {
     const headingVariant = useBreakpointValue({ base: "xl", md: "3xl" });
 
     return (
-        <Flex h="calc(90vh - 90px)" w="full" px={{ base: 0, md: 0 }} mb={16}>
+        <Flex h="calc(90vh - 90px)" w="full" px={{ base: 0, md: 0 }} my={0}>
             <Flex w="full" flexDirection="column" align="center" paddingTop="4em" bgSize="cover" bgImage="url(https://www.iare.one/wp-content/uploads/2016/11/kth-also-good-e1506587194610.jpg)">
                 <Circle
                     bg="#7D5A3C"

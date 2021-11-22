@@ -1,5 +1,6 @@
-{
-    "name": "Chapter for Industrial Engineering and Management",
+{   
+    "chapter": "Chapter for",
+    "name": "Industrial Engineering and Management",
     "description": "KTH Royal Institute of Technology",
     "sentences": {
         "business": "business",

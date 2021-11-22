@@ -17,7 +17,7 @@ const Layout = (props: Props) => {
             position="relative"
         >
             <Header px={{ base: 4, md: 12 }} />
-            <Box bg="white" w="100vw" pt={20}>
+            <Box bg="white" w="100vw" pt={16}>
                 {props.children}
             </Box>
             <Footer px={{ base: 4, md: 12 }} />

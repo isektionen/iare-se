@@ -22,10 +22,7 @@ export const StudentLifeDisplay = () => {
             {imageNames.map((image) => (
                 <GridItem key={image} colSpan={1} rowSpan={1}>
                     <Image
-                        px={0}
-                        py={0}
                         layout="responsive"
-                        w="100%"
                         src={`/student-life-images/${image}.jpg`}
                         width="100"
                         height="65"

@@ -32,7 +32,7 @@ const View = ({ header, footer, feed }: LayoutProps<Props>) => {
     return (
         <React.Fragment>
             <NextSeo title={makeTitle(t("seo:landing-page.title"))} />
-            <VStack w="full" spacing="false" align="stretch" py={0}>
+            <VStack w="full" spacing={0} align="stretch" py={0}>
                 <Hero />
                 <Sponsors />
                 <StudentLifeDisplay />

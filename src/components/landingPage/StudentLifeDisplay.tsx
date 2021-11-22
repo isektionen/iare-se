@@ -36,9 +36,6 @@ export const StudentLifeDisplay = () => {
                     />
                 </GridItem>
             ))}
-            {/*<Button variant="iareSolid" w="lg">
-                Vill du synas här?
-                </Button>*/}
         </Grid>
     );
 };

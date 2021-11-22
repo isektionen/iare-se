@@ -22,7 +22,6 @@ export const StudentLifeDisplay = () => {
             {imageNames.map((image) => (
                 <GridItem key={image} colSpan={1} rowSpan={1}>
                     <Image
-                        justifyContent="center"
                         px={0}
                         py={0}
                         layout="responsive"

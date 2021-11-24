@@ -19,9 +19,10 @@ Visit either:
 1. Clone down this repository
 2. Install dependencies using `npm install` OR `yarn`
 3. Update the Graphql types with `npm run generate` OR `yarn generate`
-4. Run dev server using `npm run dev` OR `yarn dev`
-5. if your OS didn't open a browser tab for you, then open a browser and navigate to `localhost:3000`
-6. Make sure you are not developing on the production branch `main` - but instead specify a new branch by either doing it in your IDE of choice, or via the terminal `git switch -c <new_feature>`
+4. Run `npm run prefetch` to generate static content
+5. Run dev server using `npm run dev` OR `yarn dev`
+6. if your OS didn't open a browser tab for you, then open a browser and navigate to `localhost:3000`
+7. Make sure you are not developing on the production branch `main` - but instead specify a new branch by either doing it in your IDE of choice, or via the terminal `git switch -c <new_feature>`
 
 Before merging to `main`, make sure your branch gets built by `npm run build` OR `yarn build`.
 

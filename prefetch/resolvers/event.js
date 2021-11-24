@@ -1,6 +1,6 @@
 const axios = require("axios");
 const resolver = async () => {
-    const { data } = await axios.get("https://cms.iare.se/events/11");
+    const { data } = await axios.get("https://cms.iare.se/events/");
 
     return {
         basename: "event",

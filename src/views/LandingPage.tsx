@@ -2,6 +2,7 @@ import { VStack } from "@chakra-ui/layout";
 import { Gallery } from "components/blog/Gallery";
 import { About } from "components/landingPage/About";
 import { Hero } from "components/landingPage/Hero";
+import { StudentLifeDisplay } from "components/landingPage/StudentLifeDisplay";
 import { Sponsors } from "components/landingPage/Sponsors";
 import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";
@@ -31,9 +32,10 @@ const View = ({ header, footer, feed }: LayoutProps<Props>) => {
     return (
         <React.Fragment>
             <NextSeo title={makeTitle(t("seo:landing-page.title"))} />
-            <VStack w="full" spacing={0} align="stretch" py={0}>
+            <VStack w="full" spacing="false" align="stretch" py={0}>
                 <Hero />
                 <Sponsors />
+                <StudentLifeDisplay />
                 <Gallery feed={feed} py={8} span={6} />
                 <About mdx={null} />
             </VStack>

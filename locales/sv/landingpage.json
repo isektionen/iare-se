@@ -1,5 +1,6 @@
 {
-    "name": "Sektionen för Industriell Ekonomi",
+    "chapter": "Sektionen för",
+    "name": "Industriell Ekonomi",
     "description": "Kungliga Tekniska Högskolan",
     "sentences": {
         "business": "företagande",

@@ -110,7 +110,7 @@ const Header = (props: BoxProps) => {
                     </Alert>
                 )}
                 <Box
-                    pt={5}
+                    pt={4}
                     bg="white"
                     position="fixed"
                     transition="box-shadow 0.3s"
@@ -129,7 +129,7 @@ const Header = (props: BoxProps) => {
                         alignItems="flex-start"
                         justifyContent="space-between"
                         mx="auto"
-                        pb={4}
+                        pb={2}
                     >
                         <AccessibleLink href="/">
                             <Logo priority />

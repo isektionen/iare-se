@@ -22,7 +22,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
                     {section.label}
                 </Button>
                 <Box
-                    pt={4}
+                    pt={2}
                     pos="absolute"
                     left={0}
                     w="full"

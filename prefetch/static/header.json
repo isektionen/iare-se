@@ -2,9 +2,9 @@
     "locale": "sv",
     "logo": {
         "alternativeText": "",
-        "width": 53,
-        "height": 84,
-        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Svart_Indek_Logga_eb93ec9200.svg"
+        "width": 203,
+        "height": 70,
+        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_dc256dcc5a.svg"
     },
     "feedbackbox": {
         "description": "Har någon fin själ hjälpt till extra mycket? \nHar någon nämnd gjort något helt fantastiskt? \nVill du sprida kärlek?"
@@ -134,9 +134,9 @@
             "locale": "en",
             "logo": {
                 "alternativeText": "",
-                "width": 53,
-                "height": 84,
-                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Svart_Indek_Logga_eb93ec9200.svg"
+                "width": 203,
+                "height": 70,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_dc256dcc5a.svg"
             },
             "feedbackbox": {
                 "description": "Have someone helped you in the past?\nHave some committee made anything fantastic?\nDo you want to spread some love?"

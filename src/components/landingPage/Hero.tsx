@@ -66,19 +66,19 @@ export const Hero = () => {
         },
     };
 
-    const headingVariant = useBreakpointValue({ base: "xl", md: "4xl" });
+    const headingVariant = useBreakpointValue({ base: "xl", md: "3xl" });
 
     return (
-        <Flex h="calc(90vh - 90px)" w="full" px={{ base: 0, md: 0 }} my={0}>
-            <Flex w="full" flexDirection="column" align="center" pt={{ base: 32 , md: 64 }} bgSize="cover" bgImage="url(https://www.iare.one/wp-content/uploads/2016/11/kth-also-good-e1506587194610.jpg)">
+        <Flex h="calc(90vh - 90px)" w="full" px={{ base: 0, md: 0 }} mb={16}>
+            <Flex w="full" flexDirection="column" align="center" paddingTop="4em" bgSize="cover" bgImage="url(https://www.iare.one/wp-content/uploads/2016/11/kth-also-good-e1506587194610.jpg)">
                 <Circle
                     bg="#7D5A3C"
-                    size="18vh"
+                    size="35vh"
                 >
                     <svg
                         stroke="white"
-                        width="85%"
-                        height="85%"
+                        width="90%"
+                        height="90%"
                         viewBox="0 0 228 362"
                         fill="none"
                     >
@@ -154,17 +154,14 @@ export const Hero = () => {
                         />
                     </svg>
                 </Circle>
-                <Heading size="lg" textColor="white" pt={8} textAlign="center">
-                    {t("chapter")}
-                </Heading>
-                <Heading size={headingVariant} textColor="white" py={5} pt={2} textAlign="center">
+                <Heading size={headingVariant} textColor="white" py={5} textAlign="center">
                     {t("name")}
                 </Heading>
                 <Heading size="lg" pb={10} textColor="white" textAlign="center">
                     {t("description")}
                 </Heading>
                 <Heading size="lg" textAlign="center">
-                    <chakra.code
+                    {/* <chakra.code
                         py={6}
                         px={2}
                         transition="all 0.5s"
@@ -174,7 +171,7 @@ export const Hero = () => {
                         rounded="md"
                     >
                         {currentSentence}
-                    </chakra.code>
+                    </chakra.code>*/}
                 </Heading>
             </Flex>
         </Flex>

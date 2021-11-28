@@ -8,5 +8,12 @@
   "dir": "ltr",
   "display": "standalone",
   "orientation": "portrait",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16 192x192 512x51",
+      "type": "image/svg+xml"
+    }
+  ]
 }

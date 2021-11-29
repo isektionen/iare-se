@@ -2,6 +2,8 @@
     "chapter": "Chapter for",
     "name": "Industrial Engineering and Management",
     "description": "KTH Royal Institute of Technology",
+    "mainpartner": "Main Partner",
+    "ourpartners": "Our Partners",
     "sentences": {
         "business": "business",
         "finance": "finance",

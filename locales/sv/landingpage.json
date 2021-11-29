@@ -2,6 +2,8 @@
     "chapter": "Sektionen för",
     "name": "Industriell Ekonomi",
     "description": "Kungliga Tekniska Högskolan",
+    "mainpartner": "Huvudsamarbetspartner",
+    "ourpartners": "Våra Samarbetspartners",
     "sentences": {
         "business": "företagande",
         "finance": "finans",

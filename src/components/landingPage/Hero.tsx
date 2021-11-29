@@ -70,7 +70,7 @@ export const Hero = () => {
 
     return (
         <Flex h="calc(120vh)" w="full" px={{ base: 0, md: 0 }} my={0}>
-            <Flex w="full" flexDirection="column" align="center" pt={{ base: 40 , md: 44 }} bgSize="cover" bgPos="center" bgImage="url(https://www.iare.one/wp-content/uploads/2016/11/kth-also-good-e1506587194610.jpg)">
+            <Flex w="full" flexDirection="column" align="center" pt={{ base: 40 , md: 44 }} bgSize="cover" bgPos="center" bgImage="/kth_background.jpeg">
                 <Circle
                     bg="#7D5A3C"
                     size="18vh"

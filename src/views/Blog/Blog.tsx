@@ -139,7 +139,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                                 calendarDate={firstItem?.__calendarDate ?? "N/A"}
                                 href={firstItem?.__href ?? "#"}
                                 imgurl={
-                                    firstItem?.banner?.url ?? "/news-image.png"
+                                    firstItem?.banner?.url ?? "/indek_template_fill.png"
                                 }
                                 description={firstItem?.description ?? ""}
                                 author={firstItem?.author ?? ""}
@@ -148,7 +148,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                     </Box>
                     <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
                         <NextImage
-                            src={firstItem?.banner?.url ?? "/news-image.png"}
+                            src={firstItem?.banner?.url ?? "/indek_template_fill.png"}
                             width="2048px"
                             height="1365px"
                             h="35vh"

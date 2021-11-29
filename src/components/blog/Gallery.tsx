@@ -82,7 +82,7 @@ export const Gallery = ({
                           }
                 }
                 templateRows={
-                    tr ? tr : { base: "repeat(6, 1fr)", md: "repeat(1, 1fr)" }
+                    tr ? tr : { base: "repeat(1, 1fr)", md: "repeat(1, 1fr)" }
                 }
                 gap={6}
                 w="full"
@@ -107,7 +107,7 @@ export const Gallery = ({
                             item={{
                                 categories: item.categories,
                                 href: item?.__href ?? "#",
-                                imgurl: item?.banner?.url ?? "/news-image.png",
+                                imgurl: item?.banner?.url ?? "/indek_template_fill.png",
                                 calendarDate: item?.__calendarDate ?? "N/A",
                                 title: item.title,
                                 description: item.description as string,
@@ -133,7 +133,7 @@ export const Gallery = ({
                                 item={{
                                     href: item?.__href ?? "#",
                                     imgurl:
-                                        item?.banner?.url ?? "/news-image.png",
+                                        item?.banner?.url ?? "/indek_template_fill.png",
                                     categories: item.categories,
                                     calendarDate: item?.__calendarDate ?? "N/A",
                                     title: item.title,

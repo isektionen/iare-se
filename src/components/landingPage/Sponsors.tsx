@@ -40,10 +40,15 @@ export const Sponsors = () => {
                 {t("ourpartners")}
             </Heading>
             <Grid
-                templateColumns="repeat(4, 1fr)"
+                templateColumns={
+                    {
+                        base: "repeat(2, 1fr)",
+                        md: "repeat(4, 1fr)",
+                    }
+                }
                 bg="white"
                 pt={10}
-                pb={20}
+                pb={{ base: 16, md: 20 }}
                 px={{ base: 4, md: 12 }}
             >
                 {sponsors.map((sponsor) => (
@@ -54,8 +59,8 @@ export const Sponsors = () => {
                             _hover={{
                                 filter: "brightness(1) grayscale(0) drop-shadow(0 0 0.25rem rgba(0,0,0,0.3))",
                             }}
-                            px={2}
-                            py={2}
+                            px={4}
+                            py={4}
                             w="100%"
                             transition="filter 0.25s linear"
                             src={`/sponsors/${sponsor}.svg`}

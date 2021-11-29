@@ -14,7 +14,12 @@ export const StudentLifeDisplay = () => {
     ];
     return (
         <Grid
-            templateColumns="repeat(3, 1fr)"
+            templateColumns={
+                {
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(3, 1fr)",
+                }
+            }
             bg="white"
             py={0}
             px={0}

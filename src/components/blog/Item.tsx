@@ -71,7 +71,7 @@ export const Item = ({
                     bottom={bottom}
                     maxH="180px"
                     right="0"
-                    bg="white"
+                    bg="#f7f7f7"
                 >
                     <HStack spacing={1} mb={2} minH={4}>
                         {categories.map((item) => (

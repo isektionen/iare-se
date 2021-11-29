@@ -82,11 +82,11 @@ export const Gallery = ({
                           }
                 }
                 templateRows={
-                    tr ? tr : { base: "repeat(6, 1fr)", md: "repeat(3, 1fr)" }
+                    tr ? tr : { base: "repeat(6, 1fr)", md: "repeat(1, 1fr)" }
                 }
                 gap={6}
                 w="full"
-                py={py}
+                py={py}                
             >
                 {feed.length === 0 && (
                     <GridItem colSpan={12}>
@@ -120,11 +120,11 @@ export const Gallery = ({
                         .slice(span ? start : start + 2, span ? end : end + 2)
                         .map((item, idx) => (
                             <Item
-                                h={span ? "400px" : undefined}
+                                h={span ? undefined : undefined}
                                 key={item.id + "-" + pageIndex + "-" + idx}
                                 colSpan={span ? span : { base: 6, md: 4 }}
                                 mx={{ base: 4, md: 0 }}
-                                mb={{ base: "90px", md: "40px" }}
+                                mb={{ base: "90px", md: "20px" }}
                                 bottom={
                                     span
                                         ? undefined

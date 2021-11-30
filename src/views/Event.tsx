@@ -506,7 +506,7 @@ const View = ({
             },
             {
                 label: t("step.two"), // Diets
-                isVisible: event.servingOptions?.servingFood,
+                isVisible: event.servingOptions?.servingFood === true,
             },
             {
                 label: t("step.three"), // Options (comment-field)

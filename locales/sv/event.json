@@ -6,8 +6,9 @@
         "zero": "Autentisera",
         "one": "Välj biljett",
         "two": "Välj specialkost",
-        "three": "Sammanfattning",
-        "four": "Osa"
+        "three": "Övrig kommentar",
+        "four": "Sammanfattning",
+        "five": "Osa"
     },
     "required": "Välj minst en biljett",
     "summary": {

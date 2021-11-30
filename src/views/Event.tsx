@@ -21,6 +21,7 @@ import { Options } from "components/event/steps/Options";
 import { OrderComplete } from "components/event/steps/OrderComplete";
 import { OrderFinalize } from "components/event/steps/OrderFinalize";
 import { OrderSummary } from "components/event/steps/OrderSummary";
+import { OtherComment } from "components/event/steps/OtherComment";
 import { Tickets } from "components/event/steps/Tickets";
 import { VStepper } from "components/event/VStepper";
 import { MDXLayout } from "components/mdx/Layout";
@@ -505,32 +506,45 @@ const View = ({
             },
             {
                 label: t("step.two"), // Diets
-                isVisible: event.servingOptions?.servingFood !== null,
+                isVisible: event.servingOptions?.servingFood,
             },
             {
-                label: t("step.three"), // Summary
+                label: t("step.three"), // Options (comment-field)
                 isVisible: true,
             },
             {
-                label: t("step.four"), // Checkout
+                label: t("step.four"), // Summary
+                isVisible: true,
+            },
+            {
+                label: t("step.five"), // Checkout
                 isVisible: true,
             },
         ];
     }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
 
+    const nActiveSteps = useMemo(() => {
+        var activeSteps = 0;
+        steps.forEach(function(step, index) {
+            if(step.isVisible) {
+                activeSteps += 1;
+            }
+        });
+        return activeSteps;
+    }, [steps]);
+
     const goForward = useCallback(() => {
         if (activeStep === steps.length - 2 && !orderIsFree) {
             initCheckout();
         }
-        setActiveStep(
-            Math.max(
-                0,
-                Math.min(
-                    activeStep + 1 - (event.passwordProtected ? 0 : 1),
-                    steps.length - 1
-                )
-            )
-        );
+        var nextStep = Math.max(Math.min(_activeStep + 1, steps.length - 1), 0);
+        
+        while (!steps[nextStep + (event.passwordProtected ? 0 : 1)].isVisible && nextStep < (steps.length - 1)) {
+            nextStep += 1;
+        }
+
+        setActiveStep(nextStep);
+        
     }, [
         activeStep,
         event.passwordProtected,
@@ -543,15 +557,15 @@ const View = ({
         if (activeStep === steps.length - 1) {
             reset();
         }
-        setActiveStep(
-            Math.max(
-                0,
-                Math.min(
-                    activeStep - 1 - (event.passwordProtected ? 0 : 1),
-                    steps.length - 1
-                )
-            )
-        );
+
+        var nextStep = Math.min(Math.max(_activeStep - 1, 0), steps.length - 1);
+        
+        while (!steps[nextStep + (event.passwordProtected ? 0 : 1)].isVisible) {
+            nextStep -= 1;
+        }
+
+        setActiveStep(Math.max(nextStep, 0));
+
     }, [activeStep, event.passwordProtected, reset, steps.length]);
 
     const isAboveMd = useBreakpointValue({ base: false, lg: true });
@@ -896,13 +910,29 @@ const View = ({
                                         />
                                     )}
                                     {formStep(3) && (
-                                        <OrderSummary
+                                        <OtherComment
                                             display={
                                                 activeStep === 3
                                                     ? "block"
                                                     : "none"
                                             }
                                             label={t("step.three")}
+                                            diets={diets}
+                                            allergies={allergies}
+                                            dietResult={dietResults}
+                                            setDietResult={setDiets}
+                                            specialDietResult={allergenResults}
+                                            setSpecialDietResult={setAllergens}
+                                        />
+                                    )}
+                                    {formStep(4) && (
+                                        <OrderSummary
+                                            display={
+                                                activeStep === 4
+                                                    ? "block"
+                                                    : "none"
+                                            }
+                                            label={t("step.four")}
                                             orderLabel={t(
                                                 "summary.order.label"
                                             )}
@@ -917,14 +947,14 @@ const View = ({
                                             allergens={getValues("allergens")}
                                         />
                                     )}
-                                    {formStep(4) && (
+                                    {formStep(5) && (
                                         <OrderFinalize
                                             display={
-                                                activeStep === 4
+                                                activeStep === 5
                                                     ? "block"
                                                     : "none"
                                             }
-                                            label={t("step.four")}
+                                            label={t("step.five")}
                                             status={
                                                 orderIsFree ? "unpaid" : "paid"
                                             }
@@ -976,7 +1006,7 @@ const View = ({
                                         </>
                                     )}
                                 </Flex>
-                                {formStep(5) && (
+                                {formStep(6) && (
                                     <OrderComplete orderData={ticketData} />
                                 )}
                             </SkeletonSpinner>

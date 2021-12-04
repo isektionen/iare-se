@@ -510,7 +510,7 @@ const View = ({
             },
             {
                 label: t("step.three"), // Options (comment-field)
-                isVisible: true,
+                isVisible: false,
             },
             {
                 label: t("step.four"), // Summary

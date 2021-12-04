@@ -25,7 +25,7 @@ export const Sponsors = () => {
             <Heading size="lg" textColor="black" pt={20} pb={0} textAlign="center">
                 {t("mainpartner")}
             </Heading>
-            <AccessibleLink href={main_sponsor_link}>
+            <AccessibleLink href={main_sponsor_link} isExternal={true}>
                 <NextImage
                     justifyContent="center"
                     filter="brightness(1) grayscale(0) drop-shadow(0 0 0.25rem rgba(0,0,0,0.3))"
@@ -57,7 +57,7 @@ export const Sponsors = () => {
             >
                 {Object.keys(sponsors).map((sponsor) => (
                     <GridItem key={sponsor} colSpan={1} rowSpan={1}>
-                        <AccessibleLink href={sponsors[sponsor]}>
+                        <AccessibleLink href={sponsors[sponsor]} isExternal={true}>
                             <NextImage
                                 justifyContent="center"
                                 filter="brightness(1) grayscale(0) drop-shadow(0 0 0.25rem rgba(0,0,0,0.3))"

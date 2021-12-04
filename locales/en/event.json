@@ -5,8 +5,9 @@
         "zero": "Authorize",
         "one": "Choose a ticket",
         "two": "Choose diets",
-        "three": "Order summary",
-        "four": "RSVP"
+        "three": "Other comment",
+        "four": "Order summary",
+        "five": "RSVP"
     },
     "required": "Choose atleast one type of ticket",
 

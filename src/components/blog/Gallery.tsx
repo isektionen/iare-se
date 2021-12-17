@@ -77,16 +77,16 @@ export const Gallery = ({
                     tc
                         ? tc
                         : {
-                              base: "repeat(1, 1fr)",
-                              md: "repeat(12, 1fr)",
-                          }
+                            base: "repeat(1, 1fr)",
+                            md: "repeat(12, 1fr)",
+                        }
                 }
                 templateRows={
                     tr ? tr : { base: "repeat(1, 1fr)", md: "repeat(1, 1fr)" }
                 }
                 gap={6}
                 w="full"
-                py={py}                
+                py={py}
             >
                 {feed.length === 0 && (
                     <GridItem colSpan={12}>
@@ -143,7 +143,7 @@ export const Gallery = ({
                             />
                         ))}
             </Grid>
-            <Flex w="full" px={{ base: 6, md: 12 }}>
+            <Flex py={[0, 50]} w="full" px={{ base: 6, md: 12 }}>
                 <Spacer />
                 {isVisible && (
                     <HStack spacing={0} borderWidth="1px" borderRadius="md">

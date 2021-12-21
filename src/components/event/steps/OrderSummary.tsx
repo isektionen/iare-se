@@ -25,7 +25,7 @@ import useTranslation from "next-translate/useTranslation";
 import React, { useCallback, useMemo } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { HiOutlineTicket } from "react-icons/hi";
-import { ComponentEventInternalTicket } from "types/strapi";
+import { ComponentEventInternalTicket, ComponentEventOtherComment } from "types/strapi";
 
 interface Props extends BoxProps {
     label: string;
@@ -37,6 +37,9 @@ interface Props extends BoxProps {
     allergens: Option[];
     setTicket: any;
     servingFood: boolean;
+    showOtherComment: boolean;
+    otherCommentResponse: string;
+    otherCommentLabel: ComponentEventOtherComment;
 }
 
 export const OrderSummary = ({
@@ -49,6 +52,9 @@ export const OrderSummary = ({
     diets,
     allergens,
     servingFood,
+    showOtherComment,
+    otherCommentResponse,
+    otherCommentLabel,
     ...rest
 }: Props) => {
     const { t, lang } = useTranslation("event");
@@ -69,6 +75,17 @@ export const OrderSummary = ({
     const handleChange = (ticket: ComponentEventInternalTicket) => {
         setTicket(ticket.ticketUID);
     };
+
+    // Get translated otherCommentLabel
+    var otherCommentLabelTranslated = lang === "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+    if (!otherCommentLabelTranslated) {
+        // If the correct language does not have a label, choose the incorrect language
+        otherCommentLabelTranslated = lang !== "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+    }
+    if (!otherCommentLabelTranslated) {
+        // If no label is available use the standard "other comment" label
+        otherCommentLabelTranslated = label;
+    }
 
     return (
         <Box key="step-four" h="full" {...rest}>
@@ -172,81 +189,101 @@ export const OrderSummary = ({
                 </Box>
                 <Spacer />
                 
-                {servingFood &&
-                    <Box pr={8} flex={1}>
-                        <Heading size="md" fontWeight="700" mb={6}>
-                            {dietLabel}
-                        </Heading>
-                        <Flex
-                            direction="column"
-                            justifyContent="center"
-                            alignItems="flex-start"
-                            mx="auto"
-                        >
-                            <Flex w="full" align="center">
-                                <Heading size="xs" mr={4}>
-                                    {t("summary.diet.diets")}
-                                </Heading>
-                                <Spacer />
-                                <Wrap direction="row" spacing={2} align="flex-end">
-                                    {diets.length > 0 &&
-                                        diets.map((option) => (
+                <VStack>
+                    {servingFood &&
+                    <Flex align="left" pt={5} justify="flex-end" w="100%">
+                        <Box pr={8} flex={1}>
+                            <Heading size="md" fontWeight="700" mb={6}>
+                                {dietLabel}
+                            </Heading>
+                            <Flex
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="flex-start"
+                                mx="auto"
+                            >
+                                <Flex w="full" align="center">
+                                    <Heading size="xs" mr={4}>
+                                        {t("summary.diet.diets")}
+                                    </Heading>
+                                    <Spacer />
+                                    <Wrap direction="row" spacing={2} align="flex-end">
+                                        {diets.length > 0 &&
+                                            diets.map((option) => (
+                                                <Tag
+                                                    key={option.value}
+                                                    rounded="full"
+                                                    variant="solid"
+                                                    colorScheme="blackAlpha"
+                                                >
+                                                    <TagLabel>{option.label}</TagLabel>
+                                                </Tag>
+                                            ))}
+                                        {diets.length === 0 && (
                                             <Tag
-                                                key={option.value}
                                                 rounded="full"
                                                 variant="solid"
                                                 colorScheme="blackAlpha"
                                             >
-                                                <TagLabel>{option.label}</TagLabel>
+                                                <TagLabel>
+                                                    {t("summary.diet.empty")}
+                                                </TagLabel>
                                             </Tag>
-                                        ))}
-                                    {diets.length === 0 && (
-                                        <Tag
-                                            rounded="full"
-                                            variant="solid"
-                                            colorScheme="blackAlpha"
-                                        >
-                                            <TagLabel>
-                                                {t("summary.diet.empty")}
-                                            </TagLabel>
-                                        </Tag>
-                                    )}
-                                </Wrap>
-                            </Flex>
-                            <Divider my={8} />
-                            <Flex w="full" align="center">
-                                <Heading size="xs" mr={4}>
-                                    {t("summary.diet.allergens")}
-                                </Heading>
-                                <Spacer />
-                                <Wrap direction="row" spacing={2} align="flex-end">
-                                    {allergens.length > 0 &&
-                                        allergens.map((option) => (
+                                        )}
+                                    </Wrap>
+                                </Flex>
+                                <Divider my={8} />
+                                <Flex w="full" align="center">
+                                    <Heading size="xs" mr={4}>
+                                        {t("summary.diet.allergens")}
+                                    </Heading>
+                                    <Spacer />
+                                    <Wrap direction="row" spacing={2} justify="flex-end">
+                                        {allergens.length > 0 &&
+                                            allergens.map((option) => (
+                                                <Tag
+                                                    key={option.value}
+                                                    rounded="full"
+                                                    variant="solid"
+                                                    colorScheme="blackAlpha"
+                                                >
+                                                    <TagLabel>{option.label}</TagLabel>
+                                                </Tag>
+                                            ))}
+                                        {allergens.length === 0 && (
                                             <Tag
-                                                key={option.value}
                                                 rounded="full"
                                                 variant="solid"
                                                 colorScheme="blackAlpha"
                                             >
-                                                <TagLabel>{option.label}</TagLabel>
+                                                <TagLabel>
+                                                    {t("summary.diet.empty")}
+                                                </TagLabel>
                                             </Tag>
-                                        ))}
-                                    {allergens.length === 0 && (
-                                        <Tag
-                                            rounded="full"
-                                            variant="solid"
-                                            colorScheme="blackAlpha"
-                                        >
-                                            <TagLabel>
-                                                {t("summary.diet.empty")}
-                                            </TagLabel>
-                                        </Tag>
-                                    )}
-                                </Wrap>
+                                        )}
+                                    </Wrap>
+                                </Flex>
                             </Flex>
+                        </Box>
+                    </Flex>
+                    }
+
+                    <Spacer /> 
+
+                    {showOtherComment &&
+                        <Flex align="left" pt={5} justify="flex-end" w="100%">
+                            <Box pr={8} alignSelf="left" flex={1}>
+                                <Heading size="md" fontWeight="700" mb={{ base: 3, md: 6 }}>
+                                    {otherCommentLabelTranslated}:
+                                </Heading>
+                                <Heading size="xs" mr={4}>
+                                    {otherCommentResponse.length > 0? otherCommentResponse : t("summary.no_other_comment")}
+                                </Heading>
+                            </Box>
                         </Flex>
-                    </Box>
-                }
+                    }
+                </VStack>
+                
             </Stack>
         </Box>
     );

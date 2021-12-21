@@ -23,7 +23,8 @@
             "diets": "Dieter",
             "allergens": "Allergier",
             "empty": "Ingen"
-        }
+        },
+        "no_other_comment": "Inget värde angivet."
     },
     "stepsMobile": "Steg {{activeStep}} av {{totalSteps}}",
 

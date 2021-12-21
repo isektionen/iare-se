@@ -29,26 +29,25 @@ export const OtherComment = ({
 }: Props) => {
     const { t, lang } = useTranslation("event");
 
-    var visibleLabel = lang === "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
-
-    if (!visibleLabel) {
+    // Get translated otherCommentLabel
+    var otherCommentLabelTranslated = lang === "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+    if (!otherCommentLabelTranslated) {
         // If the correct language does not have a label, choose the incorrect language
-        visibleLabel = lang !== "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+        otherCommentLabelTranslated = lang !== "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
     }
-
-    if (!visibleLabel) {
+    if (!otherCommentLabelTranslated) {
         // If no label is available use the standard "other comment" label
-        visibleLabel = label;
+        otherCommentLabelTranslated = label;
     }
     
     return (
         <Box key="step-two" {...rest}>
             <Heading size="lg" fontWeight="700">
-                {visibleLabel}
+                {otherCommentLabelTranslated}
             </Heading>
             <Divider mt={4} mb={8} />
 
-            <Input placeholder={visibleLabel} value={otherCommentResponseResults} onChange={e => setOtherCommentResponse(e.target.value)} />
+            <Input placeholder={otherCommentLabelTranslated} value={otherCommentResponseResults} onChange={e => setOtherCommentResponse(e.target.value)} />
 
         </Box>
     );

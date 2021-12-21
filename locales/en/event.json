@@ -23,7 +23,8 @@
             "diets": "Diets",
             "allergens": "Allergens",
             "empty": "None"
-        }
+        },
+        "no_other_comment": "No value entered."
     },
     "stepsMobile": "Step {{activeStep}} of {{totalSteps}}",
     "delivery": {

@@ -954,6 +954,11 @@ const View = ({
                                                     ?.Tickets as ComponentEventInternalTicket[]
                                             }
                                             servingFood={event.servingOptions?.servingFood === true}
+                                            showOtherComment={event.otherCommentLabel !== null}
+                                            otherCommentResponse={getValues("otherCommentResponse")}
+                                            otherCommentLabel={
+                                                event.otherCommentLabel as ComponentEventOtherComment
+                                            }
                                             setTicket={handleOrder}
                                             diets={getValues("diets")}
                                             allergens={getValues("allergens")}

@@ -130,7 +130,7 @@ const View = ({
             allergens: [],
             ticket: "",
             orderIsFree: false,
-            otherCommentResponse: "",
+            otherCommentResponse: "[Empty(deleteMyCode)]",
         },
     });
 

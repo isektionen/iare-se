@@ -1157,7 +1157,7 @@ export type ComponentEventRecipient = {
   lastName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
-  otherComment?: Maybe<Scalars['String']>;
+  otherCommentResponse?: Maybe<Scalars['String']>;
   allergens?: Maybe<Array<Maybe<Allergy>>>;
   diets?: Maybe<Array<Maybe<Diet>>>;
 };
@@ -1185,7 +1185,7 @@ export type ComponentEventRecipientInput = {
   phoneNumber?: Maybe<Scalars['String']>;
   allergens?: Maybe<Array<Maybe<Scalars['ID']>>>;
   diets?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  otherComment?: Maybe<Scalars['String']>;
+  otherCommentResponse?: Maybe<Scalars['String']>;
 };
 
 export type ComponentEventServing = {
@@ -5339,7 +5339,7 @@ export type EditComponentEventRecipientInput = {
   phoneNumber?: Maybe<Scalars['String']>;
   allergens?: Maybe<Array<Maybe<Scalars['ID']>>>;
   diets?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  otherComment?: Maybe<Scalars['String']>;
+  otherCommentResponse?: Maybe<Scalars['String']>;
 };
 
 export type EditComponentEventServingInput = {

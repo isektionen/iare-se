@@ -36,6 +36,7 @@ interface Props extends BoxProps {
     diets: Option[];
     allergens: Option[];
     setTicket: any;
+    servingFood: boolean;
 }
 
 export const OrderSummary = ({
@@ -47,6 +48,7 @@ export const OrderSummary = ({
     setTicket,
     diets,
     allergens,
+    servingFood,
     ...rest
 }: Props) => {
     const { t, lang } = useTranslation("event");
@@ -169,80 +171,82 @@ export const OrderSummary = ({
                     </Flex>
                 </Box>
                 <Spacer />
-
-                <Box pr={8} flex={1}>
-                    <Heading size="md" fontWeight="700" mb={6}>
-                        {dietLabel}
-                    </Heading>
-                    <Flex
-                        direction="column"
-                        justifyContent="center"
-                        alignItems="flex-start"
-                        mx="auto"
-                    >
-                        <Flex w="full" align="center">
-                            <Heading size="xs" mr={4}>
-                                {t("summary.diet.diets")}
-                            </Heading>
-                            <Spacer />
-                            <Wrap direction="row" spacing={2} align="flex-end">
-                                {diets.length > 0 &&
-                                    diets.map((option) => (
+                
+                {servingFood &&
+                    <Box pr={8} flex={1}>
+                        <Heading size="md" fontWeight="700" mb={6}>
+                            {dietLabel}
+                        </Heading>
+                        <Flex
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="flex-start"
+                            mx="auto"
+                        >
+                            <Flex w="full" align="center">
+                                <Heading size="xs" mr={4}>
+                                    {t("summary.diet.diets")}
+                                </Heading>
+                                <Spacer />
+                                <Wrap direction="row" spacing={2} align="flex-end">
+                                    {diets.length > 0 &&
+                                        diets.map((option) => (
+                                            <Tag
+                                                key={option.value}
+                                                rounded="full"
+                                                variant="solid"
+                                                colorScheme="blackAlpha"
+                                            >
+                                                <TagLabel>{option.label}</TagLabel>
+                                            </Tag>
+                                        ))}
+                                    {diets.length === 0 && (
                                         <Tag
-                                            key={option.value}
                                             rounded="full"
                                             variant="solid"
                                             colorScheme="blackAlpha"
                                         >
-                                            <TagLabel>{option.label}</TagLabel>
+                                            <TagLabel>
+                                                {t("summary.diet.empty")}
+                                            </TagLabel>
                                         </Tag>
-                                    ))}
-                                {diets.length === 0 && (
-                                    <Tag
-                                        rounded="full"
-                                        variant="solid"
-                                        colorScheme="blackAlpha"
-                                    >
-                                        <TagLabel>
-                                            {t("summary.diet.empty")}
-                                        </TagLabel>
-                                    </Tag>
-                                )}
-                            </Wrap>
-                        </Flex>
-                        <Divider my={8} />
-                        <Flex w="full" align="center">
-                            <Heading size="xs" mr={4}>
-                                {t("summary.diet.allergens")}
-                            </Heading>
-                            <Spacer />
-                            <Wrap direction="row" spacing={2} align="flex-end">
-                                {allergens.length > 0 &&
-                                    allergens.map((option) => (
+                                    )}
+                                </Wrap>
+                            </Flex>
+                            <Divider my={8} />
+                            <Flex w="full" align="center">
+                                <Heading size="xs" mr={4}>
+                                    {t("summary.diet.allergens")}
+                                </Heading>
+                                <Spacer />
+                                <Wrap direction="row" spacing={2} align="flex-end">
+                                    {allergens.length > 0 &&
+                                        allergens.map((option) => (
+                                            <Tag
+                                                key={option.value}
+                                                rounded="full"
+                                                variant="solid"
+                                                colorScheme="blackAlpha"
+                                            >
+                                                <TagLabel>{option.label}</TagLabel>
+                                            </Tag>
+                                        ))}
+                                    {allergens.length === 0 && (
                                         <Tag
-                                            key={option.value}
                                             rounded="full"
                                             variant="solid"
                                             colorScheme="blackAlpha"
                                         >
-                                            <TagLabel>{option.label}</TagLabel>
+                                            <TagLabel>
+                                                {t("summary.diet.empty")}
+                                            </TagLabel>
                                         </Tag>
-                                    ))}
-                                {allergens.length === 0 && (
-                                    <Tag
-                                        rounded="full"
-                                        variant="solid"
-                                        colorScheme="blackAlpha"
-                                    >
-                                        <TagLabel>
-                                            {t("summary.diet.empty")}
-                                        </TagLabel>
-                                    </Tag>
-                                )}
-                            </Wrap>
+                                    )}
+                                </Wrap>
+                            </Flex>
                         </Flex>
-                    </Flex>
-                </Box>
+                    </Box>
+                }
             </Stack>
         </Box>
     );

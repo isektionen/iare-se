@@ -268,9 +268,11 @@ export const OrderSummary = ({
                     </Flex>
                     }
 
-                    <Spacer /> 
+                    {showOtherComment && servingFood &&
+                        <Spacer />
+                    }
 
-                    {showOtherComment &&
+                    {showOtherComment && 
                         <Flex align="left" pt={5} justify="flex-end" w="100%">
                             <Box pr={8} alignSelf="left" flex={1}>
                                 <Heading size="md" fontWeight="700" mb={{ base: 3, md: 6 }}>

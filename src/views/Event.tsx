@@ -55,6 +55,7 @@ import { Option } from "components/Autocomplete";
 import {
     ComponentEventTickets,
     ComponentEventInternalTicket,
+    ComponentEventOtherComment,
     Allergy,
     Diet,
     Event,
@@ -510,7 +511,7 @@ const View = ({
             },
             {
                 label: t("step.three"), // Options (comment-field)
-                isVisible: false,
+                isVisible: event.otherCommentLabel !== null,
             },
             {
                 label: t("step.four"), // Summary
@@ -521,7 +522,7 @@ const View = ({
                 isVisible: true,
             },
         ];
-    }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
+    }, [event.passwordProtected, event.otherCommentLabel, event.servingOptions?.servingFood, t]);
 
     const nActiveSteps = useMemo(() => {
         var activeSteps = 0;
@@ -917,6 +918,9 @@ const View = ({
                                                     : "none"
                                             }
                                             label={t("step.three")}
+                                            otherCommentLabel={
+                                                event.otherCommentLabel as ComponentEventOtherComment
+                                            }
                                             diets={diets}
                                             allergies={allergies}
                                             dietResult={dietResults}

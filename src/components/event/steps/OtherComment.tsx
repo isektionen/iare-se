@@ -6,13 +6,15 @@ import {
     StackDivider,
     VStack,
 } from "@chakra-ui/react";
+import { None } from "framer-motion";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { Allergy, Diet } from "types/strapi";
+import { Allergy, Diet, Maybe, ComponentEventOtherComment } from "types/strapi";
 import { OptionsInput } from "../OptionsInput";
 
 interface Props extends BoxProps {
     label: string;
+    otherCommentLabel: ComponentEventOtherComment;
     diets: Diet[];
     allergies: Allergy[];
     dietResult: any;
@@ -23,6 +25,7 @@ interface Props extends BoxProps {
 
 export const OtherComment = ({
     label,
+    otherCommentLabel,
     diets,
     allergies,
     dietResult,
@@ -31,12 +34,25 @@ export const OtherComment = ({
     setSpecialDietResult,
     ...rest
 }: Props) => {
-    const { t } = useTranslation("event");
+    const { t, lang } = useTranslation("event");
+
+    var visibleLabel = lang === "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+
+    if (!visibleLabel) {
+        // If the correct language does not have a label, choose the incorrect language
+        visibleLabel = lang !== "en" ? otherCommentLabel?.commentLabelEnglish : otherCommentLabel?.commentLabelSwedish;
+    }
+
+    if (!visibleLabel) {
+        // If no label is available use the standard "other comment" label
+        visibleLabel = label;
+    }
+    
 
     return (
         <Box key="step-two" {...rest}>
             <Heading size="lg" fontWeight="700">
-                {label}
+                {visibleLabel}
             </Heading>
             <Divider mt={4} mb={8} />
 

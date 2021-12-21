@@ -63,6 +63,7 @@ const find = async (locale: TLocale, slug: string) => {
                     locale
                     slug
                 }
+                otherCommentLabel {id commentLabelSwedish commentLabelEnglish __typename}
             }
             diets {
                 id

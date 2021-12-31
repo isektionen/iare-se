@@ -12,7 +12,7 @@ module.exports = (nextConfig = {}) => {
                     ? process.env.TEST_CHECKOUT_KEY
                     : process.env.LIVE_CHECKOUT_KEY,
                 NEXT_PUBLIC_STRAPI: "https://cms.iare.se",
-                NEXT_PUBLIC_DETA: "https://366q30.deta.dev",
+                NEXT_PUBLIC_DETA: "https://s3n422.deta.dev",
             };
             console.log(env);
             config.plugins.push(new webpack.EnvironmentPlugin(env));

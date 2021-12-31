@@ -210,7 +210,7 @@ const View = ({
                 });
             } else {
                 const url = Strapi`/orders/${intentionId}/diets`;
-                const body = _.reduce(
+                var body: any = _.reduce(
                     [
                         {
                             label: "diets",
@@ -235,6 +235,9 @@ const View = ({
                     },
                     {}
                 );
+                
+                // Add data to body
+                body.otherCommentReponse = otherCommentResponseResults;
 
                 res = await fetch(url, {
                     method: "PUT",

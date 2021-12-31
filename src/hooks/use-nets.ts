@@ -64,6 +64,7 @@ interface HandlerOptions {
                     id: number;
                     name: string;
                 }[];
+                otherCommentResponse: string;
             } | null;
             status: "visited" | "pending" | "failed" | "success" | undefined;
         }

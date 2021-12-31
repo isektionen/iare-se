@@ -55,6 +55,7 @@ import { Option } from "components/Autocomplete";
 import {
     ComponentEventTickets,
     ComponentEventInternalTicket,
+    ComponentEventOtherComment,
     Allergy,
     Diet,
     Event,
@@ -85,6 +86,7 @@ export interface DefaultFieldValues {
     email: string;
     phoneNumber: string;
     intentionId: string;
+    otherCommentResponse: string;
 }
 
 export type TicketData = Partial<DefaultFieldValues> & {
@@ -128,6 +130,7 @@ const View = ({
             allergens: [],
             ticket: "",
             orderIsFree: false,
+            otherCommentResponse: "",
         },
     });
 
@@ -174,6 +177,7 @@ const View = ({
                 orderIsFree,
                 diets: _diets = [],
                 allergens: _allergens = [],
+                otherCommentResponse,
             } = order;
             const diets = _diets.map((e) => ({
                 id: parseInt(e.value),
@@ -187,7 +191,7 @@ const View = ({
             let res;
             if (orderIsFree) {
                 // send customer details to strapi
-                const { firstName, lastName, email, phoneNumber } = order;
+                const { firstName, lastName, email, phoneNumber, otherCommentResponse } = order;
                 const url = Deta`/intent/${intentionId}/complete`;
                 res = await fetch(url, {
                     method: "POST",
@@ -201,11 +205,12 @@ const View = ({
                         phoneNumber,
                         diets,
                         allergens,
+                        otherCommentResponse,
                     }),
                 });
             } else {
                 const url = Strapi`/orders/${intentionId}/diets`;
-                const body = _.reduce(
+                var body: any = _.reduce(
                     [
                         {
                             label: "diets",
@@ -230,6 +235,9 @@ const View = ({
                     },
                     {}
                 );
+                
+                // Add data to body
+                body.otherCommentReponse = otherCommentResponseResults;
 
                 res = await fetch(url, {
                     method: "PUT",
@@ -263,6 +271,7 @@ const View = ({
                 allergens,
                 intentionId,
                 skipMessage,
+                otherCommentResponse,
             } = order;
             const qrcode = await generateQRCode(intentionId);
             const { paymentId } = getPaymentId();
@@ -276,6 +285,7 @@ const View = ({
                     qrcode,
                     intentionId,
                     skipMessage,
+                    otherCommentResponse,
                 };
             } else if (paymentId) {
                 const url = Deta`/intent/${paymentId}`;
@@ -293,6 +303,7 @@ const View = ({
                         intentionId,
                         qrcode,
                         skipMessage,
+                        otherCommentResponse,
                     };
                 }
             } else {
@@ -353,6 +364,9 @@ const View = ({
     const dietResults = useCreateGetter("diets");
     const allergenResults = useCreateGetter("allergens");
 
+    const setOtherCommentResponse = useCreateSetter("otherCommentResponse");
+    const otherCommentResponseResults = useCreateGetter("otherCommentResponse");
+
     useEffect(() => {
         hydrateCheckout(
             async ({ get, validate, createIntention, ticketsAvailable }) => {
@@ -388,6 +402,7 @@ const View = ({
                             lastName: consumer.lastName,
                             orderIsFree: isFree(ticketId),
                             skipMessage: true,
+                            otherCommentResponse: consumer.otherCommentResponse,
                         });
                     } else {
                         setActiveStep(0);
@@ -510,7 +525,7 @@ const View = ({
             },
             {
                 label: t("step.three"), // Options (comment-field)
-                isVisible: false,
+                isVisible: event.otherCommentLabel !== null,
             },
             {
                 label: t("step.four"), // Summary
@@ -521,7 +536,7 @@ const View = ({
                 isVisible: true,
             },
         ];
-    }, [event.passwordProtected, event.servingOptions?.servingFood, t]);
+    }, [event.passwordProtected, event.otherCommentLabel, event.servingOptions?.servingFood, t]);
 
     const nActiveSteps = useMemo(() => {
         var activeSteps = 0;
@@ -917,12 +932,11 @@ const View = ({
                                                     : "none"
                                             }
                                             label={t("step.three")}
-                                            diets={diets}
-                                            allergies={allergies}
-                                            dietResult={dietResults}
-                                            setDietResult={setDiets}
-                                            specialDietResult={allergenResults}
-                                            setSpecialDietResult={setAllergens}
+                                            otherCommentLabel={
+                                                event.otherCommentLabel as ComponentEventOtherComment
+                                            }
+                                            otherCommentResponseResults={otherCommentResponseResults}
+                                            setOtherCommentResponse={setOtherCommentResponse}
                                         />
                                     )}
                                     {formStep(4) && (
@@ -941,6 +955,12 @@ const View = ({
                                             allTickets={
                                                 event.tickets
                                                     ?.Tickets as ComponentEventInternalTicket[]
+                                            }
+                                            servingFood={event.servingOptions?.servingFood === true}
+                                            showOtherComment={event.otherCommentLabel !== null}
+                                            otherCommentResponse={getValues("otherCommentResponse")}
+                                            otherCommentLabel={
+                                                event.otherCommentLabel as ComponentEventOtherComment
                                             }
                                             setTicket={handleOrder}
                                             diets={getValues("diets")}

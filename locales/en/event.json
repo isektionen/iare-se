@@ -5,7 +5,7 @@
         "zero": "Authorize",
         "one": "Choose a ticket",
         "two": "Choose diets",
-        "three": "Other comment",
+        "three": "Other information",
         "four": "Order summary",
         "five": "RSVP"
     },
@@ -23,7 +23,8 @@
             "diets": "Diets",
             "allergens": "Allergens",
             "empty": "None"
-        }
+        },
+        "no_other_comment": "No value entered."
     },
     "stepsMobile": "Step {{activeStep}} of {{totalSteps}}",
     "delivery": {

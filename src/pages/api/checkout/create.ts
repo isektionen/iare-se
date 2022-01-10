@@ -41,6 +41,10 @@ const createClamp = (min: number, max: number) => (num: number) =>
     Math.min(Math.max(num, min), max);
 
 const create = async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method !== "POST") {
+        return res.status(400);
+    }
+
     const {
         items,
         reference: eventRef,
@@ -88,6 +92,13 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         .map((i) => {
             const taxRate = 0;
             const ref = referenceIndex[i.reference];
+            /* 
+            quantity gets clamped between 0 and the maximum available number,
+            meaning that if a product has 20 items left, and a customer requests 19.
+            the clamped value will be 19.
+
+            However, if the customer requested 21, it would be clamped to 20.
+            */
             const clamp = createClamp(0, ref.stock - ref.count);
             const quantity = clamp(i.quantity);
             const netTotalAmount = quantity * ref.price;
@@ -148,6 +159,13 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         order: body.order,
         errors: [],
         status: isFree(body) ? "completed" : "created",
+    });
+
+    // reserve products
+    body.order.items.forEach(async (i) => {
+        await strapi.get(
+            `/product/${i.reference}/reserve?quantity=${i.quantity}`
+        );
     });
 
     // requesting paymentId from nets

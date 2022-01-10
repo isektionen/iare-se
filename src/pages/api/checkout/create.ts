@@ -164,7 +164,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     // reserve products
     body.order.items.forEach(async (i) => {
         await strapi.get(
-            `/product/${i.reference}/reserve?quantity=${i.quantity}`
+            `/products/${i.reference}/reserve?quantity=${i.quantity}`
         );
     });
 

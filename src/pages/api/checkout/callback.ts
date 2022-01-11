@@ -1,3 +1,15 @@
+/**
+ * callback endpoint is for webhooks recieved from nets.
+ * For the time being it only supports these events:
+ *  * payment.created
+ *  * payment.charge.created.v2
+ *  * payment.charge.failed
+ *  * payment.checkout.completed
+ *
+ * More on these events can be read here:
+ * https://developers.nets.eu/nets-easy/en-EU/api/webhooks/#payment-events
+ */
+
 import { axios as strapi } from "lib/strapi";
 import { NextApiRequest, NextApiResponse } from "next";
 import _ from "underscore";
@@ -31,6 +43,14 @@ interface IOrderBody {
         paymentId?: string;
         chargeId?: string;
         refundId?: string;
+        payment?: {
+            method?: string;
+            type?: string;
+        };
+        amount?: {
+            amount?: number;
+            currency?: string;
+        };
         invoiceDetails?: {
             distributionType: string;
             invoiceDueDate: string;
@@ -59,6 +79,19 @@ interface IOrderBody {
 
 interface NetsCreated extends BaseNetsWebhook {
     event: "payment.created";
+}
+
+interface NetsChargeCreated extends BaseNetsWebhook {
+    event: "payment.charge.created.v2";
+    data: BaseNetsWebhook["data"] & {
+        chargeId: string;
+        paymentMethod: string;
+        paymentType: string;
+        amount: {
+            amount: number;
+            currency: string;
+        };
+    };
 }
 
 interface NetsChargeFailed extends BaseNetsWebhook {
@@ -100,9 +133,11 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { event, data, timestamp } = req.body as
         | NetsChargeFailed
+        | NetsChargeCreated
         | NetsCheckoutCompleted
         | NetsCreated;
 
+    // orderRefence is event.slug + 6 random characters
     const orderReference = data.order.reference;
 
     let body = { timestamp } as IOrderBody;
@@ -121,6 +156,16 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.paymentData.chargeId = data.chargeId;
             body.error = data.error;
             break;
+        case "payment.charge.created.v2":
+            body.status = "charged";
+            body.paymentData.paymentId = data.paymentId;
+            body.paymentData.chargeId = data.chargeId;
+            body.paymentData.amount = data.amount;
+            body.paymentData.payment = {
+                method: data.paymentMethod,
+                type: data.paymentType,
+            };
+            break;
         case "payment.checkout.completed":
             body.status = "completed";
             body.paymentData.paymentId = data.paymentId;
@@ -132,6 +177,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             break;
     }
 
+    console.log("NETS WEBHOOK FOR REF: ", orderReference);
     await strapi.put(`/orders/${orderReference}`, body);
 
     return res.status(200);

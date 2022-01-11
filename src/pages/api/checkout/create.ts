@@ -92,6 +92,14 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         .map((i) => {
             const taxRate = 0;
             const ref = referenceIndex[i.reference];
+
+            /**
+             * Amounts are specified in the lowest monetary unit for the given currency,
+             * without punctuation marks. For example: 100,00 SEK
+             * is specified as 10000 and 9.99 SEK is specified as 999.
+             */
+            const price = ref.price * 100;
+
             /* 
             quantity gets clamped between 0 and the maximum available number,
             meaning that if a product has 20 items left, and a customer requests 19.
@@ -101,10 +109,11 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
             */
             const clamp = createClamp(0, ref.stock - ref.count);
             const quantity = clamp(i.quantity);
-            const netTotalAmount = quantity * ref.price;
+            const netTotalAmount = quantity * price;
+
             return {
                 ...i,
-                unitPrice: ref.price,
+                unitPrice: price,
                 quantity,
                 unit: "pcs",
                 taxRate,
@@ -113,7 +122,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
                 netTotalAmount,
             };
         })
-        .filter((i) => i.quantity !== 0);
+        .filter((i) => i.quantity > 0);
 
     // sum up totalAmount
     const amount = adaptedItems.reduce(
@@ -121,7 +130,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         0
     );
     const currency = "SEK";
-    const reference = `${eventRef}-${nanoid(6)}`;
+    const reference = `${eventRef}::${nanoid(6)}`;
 
     const order = {
         items: adaptedItems,
@@ -140,14 +149,17 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
                 lastName: customer.lastName,
             },
         },
+        // webhooks will fill order with paymentData and possible errors
         webhooks: [
             createWebhook("created"),
+            createWebhook("charged.created.v2"),
             createWebhook("charged.failed"),
             createWebhook("checkout.completed"),
         ],
     });
 
-    // creating order in backend
+    // creating order in backend independently of it being free or paid.
+    // each order will be uniquely by order.reference
     await strapi.post("/orders", {
         customerData: {
             firstName: body.checkout.consumer?.privatePerson?.firstName,
@@ -156,7 +168,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
             email: body.checkout.consumer?.email,
         },
         options,
-        order: body.order,
+        order: body.order, //contains unique reference
         errors: [],
         status: isFree(body) ? "completed" : "created",
     });

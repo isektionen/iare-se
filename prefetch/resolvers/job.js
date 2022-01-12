@@ -1,8 +1,12 @@
 const axios = require("axios");
-const backup_data = require('../backup_data/job.json');
+const backup_data = require("../backup_data/job.json");
 
 const resolver = async () => {
-    const { data } = await axios.get("https://cms.iare.se/jobs/");
+    const url =
+        process.env.NODE_ENV === "production"
+            ? "https://cms.iare.se/jobs"
+            : "http://localhost:1337/jobs";
+    const { data } = await axios.get(url);
     const prefetch_data = data.length != 0 ? data[0] : backup_data;
 
     return {

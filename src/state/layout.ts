@@ -12,6 +12,7 @@ import { DefFooter, DefHeader } from "types/global";
 import defaultHeaderState from "../../prefetch/static/header.json";
 import defaultFooterState from "../../prefetch/static/footer.json";
 import _ from "underscore";
+import { conformLocale } from "utils/lang";
 
 const getHeaderFromFile = () => {
     return defaultHeaderState as DefHeader;
@@ -53,15 +54,13 @@ export const useHydrater = (data: {
     const [_layout, setLayout] = useRecoilState(layoutState);
 
     useEffect(() => {
-        if (data !== _layout) {
-            const newData = _.chain(data)
-                .pairs()
-                .filter(_.isObject)
-                .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {})
-                .value();
+        const newData = _.chain(data)
+            .pairs()
+            .filter(_.isObject)
+            .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {})
+            .value();
 
-            setLayout({ ..._layout, ...newData });
-        }
+        setLayout({ ..._layout, ...newData });
     }, []);
 };
 
@@ -151,7 +150,8 @@ export const layout = selectorFamily({
         }) =>
         ({ get }) => {
             const state = get(layoutState);
-
+            // quick and dirty way to conform faulty backend localization
+            lang = conformLocale(lang);
             const _section = state[section];
             if (_section && _section?.locale === lang) {
                 return _section;
@@ -161,7 +161,6 @@ export const layout = selectorFamily({
 
             /*@ts-ignore*/
             const localeSection = localizations.find((l) => l.locale === "en");
-
             if (localeSection) {
                 return localeSection as Layout[T];
             }
@@ -228,7 +227,6 @@ export const getFooter = async () => {
             }
         `,
     });
-
     return data.footer;
 };
 

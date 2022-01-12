@@ -1,20 +1,20 @@
 {
-    "locale": "sv",
+    "locale": "sv-SE",
     "logo": {
-        "alternativeText": "",
-        "width": 53,
-        "height": 84,
-        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Svart_Indek_Logga_eb93ec9200.svg"
+        "alternativeText": "logotyp",
+        "width": 203,
+        "height": 70,
+        "url": "/uploads/logo_51c078fa80.svg"
     },
     "feedbackbox": {
-        "description": "Har någon fin själ hjälpt till extra mycket? \nHar någon nämnd gjort något helt fantastiskt? \nVill du sprida kärlek?"
+        "description": "Är det någon fin själ som hjälpt till extra mycket? Har någon nämnd gjort något helt fantastiskt? Vill du sprida kärlek?"
     },
     "sections": [
         {
             "id": "1",
             "label": "Aktuellt",
             "displayDropDown": false,
-            "href": "/blog",
+            "href": "/feed",
             "subSection": [
                 {
                     "id": "1",
@@ -25,17 +25,17 @@
                     "color": "gray"
                 },
                 {
-                    "id": "2",
-                    "label": "Event",
-                    "href": "?type[]=event",
+                    "id": "8",
+                    "label": "Jobb",
+                    "href": "/jobb",
                     "description": null,
                     "icon": "question",
                     "color": "gray"
                 },
                 {
-                    "id": "3",
-                    "label": "Jobb",
-                    "href": "/?type[]=job",
+                    "id": "9",
+                    "label": "Event",
+                    "href": "/event",
                     "description": null,
                     "icon": "question",
                     "color": "gray"
@@ -46,70 +46,118 @@
             "id": "2",
             "label": "Sektionen",
             "displayDropDown": true,
-            "href": "/chapter",
+            "href": "/sektionen",
             "subSection": [
                 {
-                    "id": "4",
+                    "id": "7",
                     "label": "Styrelsen",
-                    "href": "/board",
+                    "href": "/styrelsen",
                     "description": "Sektionens högsta organ",
                     "icon": "gavel",
                     "color": "gray"
                 },
                 {
-                    "id": "5",
+                    "id": "2",
+                    "label": "Nämnder",
+                    "href": "/namnder",
+                    "description": null,
+                    "icon": "group",
+                    "color": "gray"
+                },
+                {
+                    "id": "3",
+                    "label": "Projekt",
+                    "href": "/projekt",
+                    "description": null,
+                    "icon": "group",
+                    "color": "gray"
+                },
+                {
+                    "id": "4",
                     "label": "Dokument",
-                    "href": "/document",
+                    "href": "/dokument",
                     "description": null,
                     "icon": "atlas",
                     "color": "gray"
                 },
                 {
-                    "id": "11",
-                    "label": "Grafisk profil",
-                    "href": "/brand",
+                    "id": "5",
+                    "label": "Grafisk Profil",
+                    "href": "/profil",
                     "description": null,
                     "icon": "colorlens",
                     "color": "gray"
                 },
                 {
-                    "id": "12",
-                    "label": "Nämnder",
-                    "href": "/committee",
+                    "id": "6",
+                    "label": "Bokning",
+                    "href": "/bokning",
                     "description": null,
-                    "icon": "group",
+                    "icon": "car",
                     "color": "gray"
                 }
             ]
         },
         {
             "id": "3",
-            "label": "Plugga på i",
+            "label": "Plugga på I",
             "displayDropDown": true,
             "href": "/student",
             "subSection": [
                 {
-                    "id": "13",
-                    "label": "Vad är en sektion?",
-                    "href": "/what-is-a-chapter",
+                    "id": "10",
+                    "label": "Vad är Indek?",
+                    "href": "/indek",
                     "description": null,
                     "icon": "question",
                     "color": "gray"
                 },
                 {
-                    "id": "14",
-                    "label": "För sökande",
-                    "href": "/assumed-student",
+                    "id": "11",
+                    "label": "Utbildningen",
+                    "href": "/utbildning",
                     "description": null,
-                    "icon": "question",
+                    "icon": "university",
+                    "color": "gray"
+                },
+                {
+                    "id": "13",
+                    "label": "Intervjuer",
+                    "href": "/intervjuer",
+                    "description": null,
+                    "icon": "microphone",
+                    "color": "gray"
+                },
+                {
+                    "id": "12",
+                    "label": "Studentliv",
+                    "href": "/studentliv",
+                    "description": null,
+                    "icon": "beer",
+                    "color": "gray"
+                }
+            ]
+        },
+        {
+            "id": "4",
+            "label": "Företag",
+            "displayDropDown": true,
+            "href": "/foretag",
+            "subSection": [
+                {
+                    "id": "14",
+                    "label": "Samarbeten",
+                    "href": "/samarbeten",
+                    "description": null,
+                    "icon": "work",
                     "color": "gray"
                 },
                 {
                     "id": "15",
-                    "label": "För antagna",
-                    "href": "/accepted-student",
+                    "label": "Annonsering",
+                    "href": "/annonsering",
                     "description": null,
-                    "icon": "question",
+                    "icon": "workshop",
                     "color": "gray"
                 }
             ]
@@ -118,7 +166,7 @@
     "languages": [
         {
             "label": "Svenska",
-            "code": "sv"
+            "code": "se"
         },
         {
             "label": "Engelska",
@@ -127,140 +175,26 @@
     ],
     "contact": {
         "label": "Kontakt",
-        "href": "/contact"
+        "href": "/kontakt"
     },
     "localizations": [
         {
             "locale": "en",
             "logo": {
-                "alternativeText": "",
-                "width": 53,
-                "height": 84,
-                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Svart_Indek_Logga_eb93ec9200.svg"
+                "alternativeText": "logotyp",
+                "width": 203,
+                "height": 70,
+                "url": "/uploads/logo_51c078fa80.svg"
             },
-            "feedbackbox": {
-                "description": "Have someone helped you in the past?\nHave some committee made anything fantastic?\nDo you want to spread some love?"
-            },
-            "sections": [
-                {
-                    "id": "9",
-                    "label": "News",
-                    "displayDropDown": false,
-                    "href": "/blog",
-                    "subSection": [
-                        {
-                            "id": "21",
-                            "label": "Happenings",
-                            "href": "/",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "22",
-                            "label": "Event",
-                            "href": "?type[]=event",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "23",
-                            "label": "Job",
-                            "href": "/?type[]=job",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        }
-                    ]
-                },
-                {
-                    "id": "10",
-                    "label": "Chapter",
-                    "displayDropDown": true,
-                    "href": "/chapter",
-                    "subSection": [
-                        {
-                            "id": "24",
-                            "label": "Board",
-                            "href": "/board",
-                            "description": "The chapters highest organ",
-                            "icon": "gavel",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "25",
-                            "label": "Document",
-                            "href": "/document",
-                            "description": null,
-                            "icon": "atlas",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "26",
-                            "label": "Brand",
-                            "href": "/brand",
-                            "description": null,
-                            "icon": "colorlens",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "27",
-                            "label": "Committees",
-                            "href": "/committee",
-                            "description": null,
-                            "icon": "group",
-                            "color": "gray"
-                        }
-                    ]
-                },
-                {
-                    "id": "11",
-                    "label": "Study at I",
-                    "displayDropDown": true,
-                    "href": "/student",
-                    "subSection": [
-                        {
-                            "id": "28",
-                            "label": "What is a chapter?",
-                            "href": "/what-is-a-chapter",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "29",
-                            "label": "Assumed students",
-                            "href": "/assumed-student",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        },
-                        {
-                            "id": "30",
-                            "label": "Accepted students",
-                            "href": "/accepted-student",
-                            "description": null,
-                            "icon": "question",
-                            "color": "gray"
-                        }
-                    ]
-                },
-                {
-                    "id": "12",
-                    "label": "Company",
-                    "displayDropDown": false,
-                    "href": "/company",
-                    "subSection": []
-                }
-            ],
+            "feedbackbox": null,
+            "sections": [],
             "languages": [
                 {
                     "label": "Swedish",
-                    "code": "sv"
+                    "code": "sv-SE"
                 },
                 {
-                    "label": "English",
+                    "label": "english",
                     "code": "en"
                 }
             ],

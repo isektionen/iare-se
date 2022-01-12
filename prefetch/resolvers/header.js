@@ -1,8 +1,12 @@
 const { request } = require("graphql-request");
 
 const resolver = async () => {
+    const url =
+        process.env.NODE_ENV === "production"
+            ? "https://cms.iare.se/graphql"
+            : "http://localhost:1337/graphql";
     const data = await request(
-        "https://cms.iare.se/graphql",
+        url,
         `
     query {
         header {

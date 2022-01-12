@@ -32,7 +32,7 @@ const getHref = (item: Event | Post | Jobs) => {
 const getDateTime = (item: Event | Post | Jobs) => {
     switch (item.__typename) {
         case "Event":
-            return item.startTime;
+            return item.schedule.start;
         case "Post":
             return item.published_at;
         case "Jobs":
@@ -122,30 +122,29 @@ const getPosts = async (locale: TLocale) => {
 
 const getEvents = async (locale: TLocale) => {
     const { data, error } = await queryLocale<{ events: Event[] }>`
-        query FindManyEvents {
-            events(locale: ${locale}) {
-                locale
-                id
-                title
-                slug
-                category {
-                    name
-                }
-                place {
-                    name
-                }
-                committee {
-                    name
-                }
-                startTime
-                deadline
-                description
-                banner {
-                    url
-                }
-                published_at
+    query FindManyEvents {
+        events(locale: ${locale}, where: {public: true}) {
+            locale
+            id
+            title
+            slug
+            category {
+              name
             }
-        }`;
+            media {
+              name
+              formats
+            }
+            schedule {
+              start
+              deadline
+            }
+            location
+            published_at
+                        
+                        
+        }
+    }`;
     return { events: data.events, error };
 };
 
@@ -181,14 +180,12 @@ const getFeed = async (locale: TLocale) => {
     var { events, error: eventError } = await getEvents(locale);
     var { jobs, error: jobError } = await getJobs(locale);
 
-    console.log("test");
-
     // This old statement made it so that posterrors would hinder jobs from showing
     //if (jobError || postError || eventError) {
-        //return { feed: [], error: true };
+    //return { feed: [], error: true };
     //}
 
-    // Changed 
+    // Changed
     if (jobError) {
         jobs = [];
     }

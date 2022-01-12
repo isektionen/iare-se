@@ -4,7 +4,10 @@ const opath = path.resolve(process.cwd(), ".env.local");
 require("dotenv").config({ path: opath });
 
 const resolver = async () => {
-    const url = "https://cms.iare.se/remote-services/init";
+    const url =
+        process.env.NODE_ENV === "production"
+            ? "https://cms.iare.se/remote-services/init"
+            : "http://localhost:1337/remote-services/init";
     const body = {
         email: process.env.AUTH_EMAIL,
         password: process.env.AUTH_PASSWORD,

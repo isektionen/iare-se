@@ -49,7 +49,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         items,
         reference: eventRef,
         customer,
-        options,
+        options = [],
     } = req.body as ICreateBody;
     if ([items, eventRef, customer, options].some((p) => p === undefined)) {
         return res.status(400).json({ error: "All fields are required" });

@@ -72,7 +72,7 @@ interface IOrderBody {
             netTotalAmount: number;
         }[];
     };
-    error?: Record<string, string>;
+    errors?: Record<string, string>[];
     timestamp: string;
     status: "created" | "charged" | "completed" | "failed" | "refunded";
 }
@@ -140,7 +140,10 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
     // orderRefence is event.slug + 6 random characters
     const orderReference = data.order.reference;
 
-    let body = { timestamp } as IOrderBody;
+    let body = {
+        timestamp,
+        errors: [] as Record<string, string>[],
+    } as IOrderBody;
 
     switch (event) {
         case "payment.created":
@@ -154,7 +157,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.status = "failed";
             body.paymentData.paymentId = data.paymentId;
             body.paymentData.chargeId = data.chargeId;
-            body.error = data.error;
+            body.errors = [data.error];
             break;
         case "payment.charge.created.v2":
             body.status = "charged";

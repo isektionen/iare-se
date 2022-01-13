@@ -5,6 +5,7 @@ import { fetchHydration } from "state/layout";
 import { serialize } from "next-mdx-remote/serialize";
 import eventModel from "models/event";
 import View from "views/Event";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
@@ -21,7 +22,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-    const { event, error, diets, allergies } = await eventModel.find(
+    locale = conformLocale(locale);
+    const { event, error } = await eventModel.find(
         locale,
         params?.slug as string
     );
@@ -33,7 +35,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     ).map((item) => ({
         ...item,
         slug:
-            item.locale === "sv"
+            item.locale === conformLocale("sv")
                 ? `/event/${item.slug}`
                 : `/${item.locale}/event/${item.slug}`,
     }));
@@ -47,8 +49,6 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             localeSlugs,
             mdx: mdxSource,
             event,
-            diets,
-            allergies,
             ...(await fetchHydration()),
         },
         revalidate: 60,

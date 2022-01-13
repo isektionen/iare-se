@@ -1,87 +1,12 @@
 {
-    "fetching": "Laddar event data",
-    "beforeLeave": "All information om osan kommer försvinna om du uppdaterar sidan, vill du fortsätta?",
-
-    "step": {
-        "zero": "Autentisera",
-        "one": "Välj biljett",
-        "two": "Välj specialkost",
-        "three": "Övrig information",
-        "four": "Sammanfattning",
-        "five": "Osa"
-    },
-    "required": "Välj minst en biljett",
-    "summary": {
-        "changeMenu": {
-            "label": "Byt biljett"
-        },
-        "order": {
-            "label": "Biljettdetaljer"
-        },
-        "diet": {
-            "label": "Specialkostsdetaljer",
-            "diets": "Dieter",
-            "allergens": "Allergier",
-            "empty": "Ingen"
-        },
-        "no_other_comment": "Inget värde angivet."
-    },
-    "stepsMobile": "Steg {{activeStep}} av {{totalSteps}}",
-
-    "delivery": {
-        "status": "Order mottagen",
-        "message": "En biljett har skickats till {{email}}"
-    },
-    "back": "tillbaka",
     "deadline": {
-        "closed": "Eventets OSA är stängd"
+        "from": "från",
+        "to": "till"
     },
-    "ticket": {
-        "max": "Det är slut på biljetter för eventet"
-    },
-    "diet": {
-        "label": "Diet",
-        "description": "Ange den diet(er) som passar dig bäst",
-        "search": {
-            "placeholder": "Sök efter dieter",
-            "createText": "Lägg till som ny"
-        }
-    },
-    "allergen": {
-        "label": "Allergier/Preferenser",
-        "description": "Ange den allergi(er) som passar dig bäst",
-        "search": {
-            "placeholder": "Sök efter allergier",
-            "createText": "Lägg till som ny"
-        }
-    },
-    "orderConfirmation": {
-        "title": "Konfirmation",
-        "firstName": "Förnamn",
-        "lastName": "Eftername",
-        "email": "Email",
-        "phone": "Telefon",
-        "button": {
-            "label": "Osa"
-        }
-    },
+    "rsvp": "Påbörja osa",
     "error":  {
         "deadline": {
             "message": "Osan för detta event är redan passerad"
-        },
-        "invalidIntention": {
-            "message": "Det IID:et som webbläsaren gav är felaktigt"
         }
-    },
-    "badge": {
-        "new": "nyhet"
-    },
-    "passwordProtected": {
-        "validateLabel": "validera",
-        "showLabel": "visa",
-        "hideLabel": "dölj",
-        "placeholder": "ange lösenord"
-    },
-    "errorLabel": "Fel lösenord",
-    "successLabel": "Accepterat lösenord"
+    }
 }

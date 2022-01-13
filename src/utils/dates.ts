@@ -2,6 +2,7 @@ import {
     format,
     formatDistanceToNow,
     formatDistanceToNowStrict,
+    isBefore,
 } from "date-fns";
 import { enGB, sv } from "date-fns/locale";
 import { ComponentJobYear, Maybe } from "../types/strapi";
@@ -55,3 +56,6 @@ export const getSchoolYear = (jobYear: Maybe<ComponentJobYear>) => {
             return 0;
     }
 };
+
+export const isBeforeDeadline = (deadline: string) =>
+    isBefore(new Date(), new Date(deadline));

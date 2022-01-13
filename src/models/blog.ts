@@ -139,6 +139,7 @@ const getEvents = async (locale: TLocale) => {
               start
               deadline
             }
+            description
             location
             published_at
                         

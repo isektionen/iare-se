@@ -1,34 +1,91 @@
 import React from "react";
-import { formatDistanceToNow, isAfter } from "date-fns";
+import { format, formatDistanceToNow, isAfter } from "date-fns";
 import { enGB, sv } from "date-fns/locale";
-import { Flex } from "@chakra-ui/react";
+import {
+    Flex,
+    HStack,
+    VStack,
+    Text,
+    Heading,
+    Spacer,
+    Icon,
+    Box,
+} from "@chakra-ui/react";
 import { getTimeLeft } from "utils/dates";
 import useTranslation from "next-translate/useTranslation";
+import { ComponentEventSchedule } from "types/strapi";
+import { BiChevronRight } from "react-icons/bi";
 interface Props {
-    deadline: string;
-    description: {
-        before: string;
-        after: string;
-    };
+    schedule: Omit<ComponentEventSchedule, "id" | "__typename">;
 }
-export const DeadlineCounter = (props: Props) => {
-    const { lang } = useTranslation();
-    const timeLeft = getTimeLeft(props.deadline, false, lang);
-    const isDue = isAfter(new Date(), new Date(props.deadline));
+export const DeadlineCounter = ({ schedule, ...props }: Props) => {
+    const { t, lang } = useTranslation("event");
+    const deadlineDate = new Date(schedule.deadline);
+    const startDate = new Date(schedule.start);
+    const endDate = new Date(schedule.end);
+    const day = format(deadlineDate, "dd");
+    const month = format(deadlineDate, "MMMM");
 
-    const description = isDue
-        ? props.description.after
-        : props.description.before;
+    const start = {
+        hour: format(startDate, "HH:mm"),
+        date: format(startDate, "dd MMMM"),
+    };
+    const end = {
+        hour: format(endDate, "HH:mm"),
+        date: format(endDate, "dd MMMM"),
+    };
     return (
-        <Flex
-            mt={4}
-            borderRadius="md"
-            bg="gray.900"
-            color="white"
-            p={2}
-            justify="center"
-        >
-            {description.replace("{TIMELEFT}", timeLeft)}
-        </Flex>
+        <HStack spacing={16}>
+            <VStack
+                bg="#C5B19F"
+                borderRadius={7}
+                p={4}
+                h={36}
+                w={36}
+                justify="space-evenly"
+            >
+                <Text>Deadline</Text>
+                <Heading fontFamily="source sans pro" fontSize="2rem">
+                    {day}
+                </Heading>
+                <Heading
+                    fontFamily="source sans pro"
+                    fontSize="2rem"
+                    fontWeight={500}
+                >
+                    {month}
+                </Heading>
+            </VStack>
+            <HStack
+                borderRadius={7}
+                spacing={8}
+                p={4}
+                h={36}
+                bg="#13242A"
+                color="white"
+                align="space-evenly"
+            >
+                <VStack align="start">
+                    <Text>{t("deadline.from")}</Text>
+                    <Spacer />
+                    <Box>
+                        <Text>{start.hour}</Text>
+                        <Text>{start.date}</Text>
+                    </Box>
+                </VStack>
+                <VStack>
+                    <Spacer />
+                    <BiChevronRight size={32} />
+                </VStack>
+                <VStack align="start">
+                    <Text>{t("deadline.to")}</Text>
+                    <Spacer />
+                    <Box>
+                        <Text>{end.hour}</Text>
+                        <Text>{end.date}</Text>
+                    </Box>
+                </VStack>
+            </HStack>
+        </HStack>
     );
 };

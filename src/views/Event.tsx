@@ -142,7 +142,7 @@ const View = ({
     );
 
     const path = [
-        { label: "Blogg", href: "/blog" },
+        { label: "Aktuellt", href: "/blog" },
         { label: event.title, href: `/event/${event.slug}` },
     ];
 

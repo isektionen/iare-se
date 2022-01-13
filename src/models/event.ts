@@ -18,8 +18,13 @@ const findAll = async () => {
 };
 
 const checkIfGuarded = async (locale: TLocale, slug: string) => {
-    const res = await strapiInstance.get(`events/${slug}/password`);
-    return res.status === 200;
+    try {
+        const res = await strapiInstance.get(`events/${slug}/password`);
+
+        return res.status === 200;
+    } catch {
+        return false;
+    }
 };
 
 const findGuarded = async (
@@ -37,35 +42,26 @@ const findGuarded = async (
     const { data, error } = await queryLocale<{
         events: Event[];
     }>`
-        query FindManyDetailedEvents {
+        query FindGuardedEvent {
             events(locale: ${locale}, where: {slug: ${slug}, password: ${password}}) {
-                locale
-                title
                 slug
-                body
-                password
-                schedule {
-                    start
-                    deadline
-                    end
-                }
-                location
-                media {
-                    formats
-                    url
-                    name
-                    width
-                    height
-                }
-                description
+                
             }
         }
     `;
 
     return {
-        event: _.first(data.events),
+        validated: _.first(data.events)?.slug === slug,
         error: error,
     };
+};
+
+const findProducts = async (locale: TLocale, slug: string) => {
+    const res = await strapiInstance.get(`/events/${slug}/products`);
+    if (res.status !== 200) {
+        return [];
+    }
+    return res.data;
 };
 
 const find = async (locale: TLocale, slug: string) => {
@@ -108,6 +104,7 @@ const event = {
     findAll,
     checkIfGuarded,
     findGuarded,
+    findProducts,
 };
 
 export default event;

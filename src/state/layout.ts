@@ -123,7 +123,7 @@ export const useAlert = () => {
         if (_alert === "reset") {
             setState(defaultAlert);
         } else {
-            setState((oldState) => ({ ...oldState, ..._alert }));
+            setState((oldState) => ({ ...oldState, ..._alert, isOpen: true }));
         }
     };
 };

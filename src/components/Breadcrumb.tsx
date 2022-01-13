@@ -26,7 +26,7 @@ export const Breadcrumb = ({ path, ...props }: Props) => {
                     fontWeight={isLastChild(i) ? "bold" : "normal"}
                     key={item.label}
                 >
-                    <BreadcrumbLink href={item.href}>
+                    <BreadcrumbLink href={item.href} textTransform="capitalize">
                         {item.label}
                     </BreadcrumbLink>
                 </BreadcrumbItem>

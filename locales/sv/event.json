@@ -8,5 +8,16 @@
         "deadline": {
             "message": "Osan för detta event är redan passerad"
         }
+    },
+    "modal": {
+        "title": "Eventet är lösenordskyddat",
+        "primary": "Validera",
+        "secondary": "Avbryt",
+        "show": "visa",
+        "placeholder": "Ange lösenord...",
+        "callback": {
+            "invalid-password": "Fel lösenord",
+            "due-date": "Det går inte att Osa"
+        }
     }
 }

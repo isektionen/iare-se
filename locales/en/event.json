@@ -8,5 +8,16 @@
         "deadline": {
             "message": "The RSVP for this event has closed!"
         }
+    },
+    "modal": {
+        "title": "Event is password protected",
+        "primary": "Validate",
+        "secondary": "Close",
+        "show": "show",
+        "placeholder": "Enter password...",
+        "callback": {
+            "invalid-password": "Invalid password",
+            "due-date": "Can't RSVP to Event"
+        }
     }
 }

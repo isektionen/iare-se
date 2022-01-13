@@ -28,6 +28,11 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         params?.slug as string
     );
 
+    const requiresPassword = await eventModel.checkIfGuarded(
+        locale,
+        params?.slug as string
+    );
+
     const localeSlugs = extractLocales(
         { event },
         ["event"],
@@ -49,6 +54,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             localeSlugs,
             mdx: mdxSource,
             event,
+            requiresPassword,
             ...(await fetchHydration()),
         },
         revalidate: 60,

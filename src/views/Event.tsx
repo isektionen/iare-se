@@ -14,6 +14,18 @@ import {
     VStack,
     Text,
     AspectRatio,
+    useDisclosure,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Input,
+    InputGroup,
+    InputRightElement,
+    useToast,
 } from "@chakra-ui/react";
 import { Link, Element } from "react-scroll";
 import AccessibleLink from "components/AccessibleLink";
@@ -36,7 +48,13 @@ import { Strapi } from "lib/strapi";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, {
+    useState,
+    useMemo,
+    useCallback,
+    KeyboardEvent,
+    useEffect,
+} from "react";
 import { isMobileSafari } from "react-device-detect";
 import {
     useForm,
@@ -49,7 +67,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { MdDateRange } from "react-icons/md";
 import { validatePassword } from "state/checkout";
-import { useHydrater } from "state/layout";
+import { useAlert, useHydrater } from "state/layout";
 import { useSetLocaleSlug } from "state/locale";
 import { LayoutProps } from "types/global";
 import { Option } from "components/Autocomplete";
@@ -67,11 +85,12 @@ import { defcast } from "utils/types";
 import { Description } from "components/blog/Description";
 import { Breadcrumb } from "components/Breadcrumb";
 import { DeadlineCounter } from "components/DeadlineCounter";
-import { BiChevronRight } from "react-icons/bi";
+import { BiChevronRight, BiHide, BiShow } from "react-icons/bi";
 
 interface Props {
     event: Event;
     mdx: MDXRemoteSerializeResult;
+    requiresPassword: boolean;
 }
 
 export interface DefaultFieldValues {
@@ -101,10 +120,16 @@ const View = ({
     localeSlugs,
     error,
     mdx,
+    requiresPassword,
 }: LayoutProps<Props>) => {
     useSanity(error);
     useSetLocaleSlug(localeSlugs);
     useHydrater({ header, footer });
+
+    const [password, setPassword] = useState<string>();
+    const [show, setShow] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const router = useRouter();
     event = defcast(event);
@@ -118,15 +143,110 @@ const View = ({
 
     const path = [
         { label: "Blogg", href: "/blog" },
-        { label: event.title, href: `/events/${event.slug}` },
+        { label: event.title, href: `/event/${event.slug}` },
     ];
 
-    const RSVPable = isBeforeDeadline(defcast(event.schedule?.deadline));
-    const goToRSVP = useCallback(() => {
+    const Rsvpable = isBeforeDeadline(defcast(event.schedule?.deadline));
+
+    const rsvp = useCallback(() => {
+        setLoading(true);
+        if (requiresPassword) {
+            return router.push(`/checkout/${event.slug}?password=${password}`);
+        }
         router.push(`/checkout/${event.slug}`);
-    }, [event.slug, router]);
+    }, [event.slug, password, requiresPassword, router]);
+
+    const goToRsvp = useCallback(() => {
+        if (requiresPassword) {
+            onOpen();
+        } else {
+            rsvp();
+        }
+    }, [onOpen, requiresPassword, rsvp]);
+
+    const handleOnEnter = useCallback(
+        (e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") {
+                rsvp();
+            }
+        },
+        [rsvp]
+    );
+
+    const toaster = useToast();
+
+    useEffect(() => {
+        const { callback } = router.query as { callback: string };
+        if (callback) {
+            setLoading(false);
+            switch (callback) {
+                case "invalid.password":
+                    toaster({
+                        title: t("modal.callback.invalid-password"),
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    break;
+                case "due.date":
+                    toaster({
+                        title: t("modal.callback.due-date"),
+                        status: "warning",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    break;
+            }
+
+            router.replace(`/event/${event.slug}`);
+        }
+    }, [router.query]);
+
     return (
         <React.Fragment>
+            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>{t("modal.title")}</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <InputGroup size="md">
+                            <Input
+                                onKeyDown={handleOnEnter}
+                                autoFocus
+                                onChange={(e) => setPassword(e.target.value)}
+                                pr="4.5rem"
+                                type={show ? "text" : "password"}
+                                placeholder={t("modal.placeholder")}
+                            />
+                            <InputRightElement width="4.5rem">
+                                <IconButton
+                                    variant="ghost"
+                                    aria-label={show ? "hide" : "show"}
+                                    icon={!show ? <BiShow /> : <BiHide />}
+                                    h="1.75rem"
+                                    size="sm"
+                                    onClick={() => setShow((s) => !s)}
+                                />
+                            </InputRightElement>
+                        </InputGroup>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button
+                            variant="iareSolid"
+                            mr={3}
+                            onClick={rsvp}
+                            isLoading={loading}
+                        >
+                            {t("modal.primary")}
+                        </Button>
+                        <Button variant="ghost" onClick={onClose}>
+                            {t("modal.secondary")}
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <NextSeo
                 title={seoTitle}
                 openGraph={{
@@ -187,8 +307,12 @@ const View = ({
                 <Description text={event.description} />
                 <DeadlineCounter schedule={defcast(event.schedule)} />
                 <MDXLayout source={mdx} />
-                {RSVPable ? (
-                    <Button variant="iareSolid" rightIcon={<BiChevronRight />}>
+                {Rsvpable ? (
+                    <Button
+                        variant="iareSolid"
+                        rightIcon={<BiChevronRight />}
+                        onClick={goToRsvp}
+                    >
                         {t("rsvp")}
                     </Button>
                 ) : (

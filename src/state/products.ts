@@ -260,6 +260,7 @@ export const useCheckout = (products: Product[]) => {
             }))
             .value();
         setState(_products);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

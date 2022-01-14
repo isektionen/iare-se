@@ -355,8 +355,10 @@ const View = ({ event, products }: Props) => {
         appendData,
         getFormData,
     } = useCheckout(products);
+
     useEffect(() => {
         router.replace(`/checkout/${event.slug}`, undefined, { shallow: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -68,7 +68,7 @@ export const AutoComplete = (props: Props) => {
     }, []);
 
     const selectOption = (option: Option) => {
-        if (!props.allowMany && props.result.length > 0) {
+        if (!props.allowMany && props.result && props.result.length > 0) {
             if (props.result.includes(option)) {
                 props.setResult(
                     props.result.filter(
@@ -79,7 +79,7 @@ export const AutoComplete = (props: Props) => {
             } else {
                 props.setResult([option]);
             }
-        } else if (props.result.includes(option)) {
+        } else if (props.result && props.result.includes(option)) {
             props.setResult(
                 props.result.filter(
                     (existingOption) => existingOption.value !== option.value
@@ -161,18 +161,19 @@ export const AutoComplete = (props: Props) => {
     });
     return (
         <Box ref={boxRef} position="relative">
-            {props.result.length > 0 && (
+            {props.result && props.result.length > 0 && (
                 <Flex my={2} w="full" wrap="wrap">
-                    {props.result.map((option, key) => (
-                        <Box
-                            mr={1}
-                            mb={0.5}
-                            key={key}
-                            onClick={() => selectOption(option)}
-                        >
-                            {props.renderSelect(option)}
-                        </Box>
-                    ))}
+                    {props.result &&
+                        props.result.map((option, key) => (
+                            <Box
+                                mr={1}
+                                mb={0.5}
+                                key={key}
+                                onClick={() => selectOption(option)}
+                            >
+                                {props.renderSelect(option)}
+                            </Box>
+                        ))}
                 </Flex>
             )}
             <InputGroup>
@@ -201,7 +202,7 @@ export const AutoComplete = (props: Props) => {
                 )}
             </InputGroup>
 
-            {displayOptions && (
+            {props.result && displayOptions && (
                 <List {...props.listOptions} maxH="30vh" overflowY="scroll">
                     {partialResult?.map((option, key) => {
                         return (

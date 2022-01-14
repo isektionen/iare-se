@@ -1,6 +1,9 @@
 {
   "products": "Produkter",
   "attachments": "Tillägg",
-  "consumable": "Detta val är bundet till {{name}}, då det serveras mat."
+  "consumable-disclaimer": {
+    "left": "Valen ovan är förbundna med ",
+    "right": ", då den förknippas med mat"
+  }
 
 }

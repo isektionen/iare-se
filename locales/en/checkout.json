@@ -1,5 +1,8 @@
 {
   "products": "Products",
   "attachments": "Attachments",
-  "consumable": "This option is attached to {{name}}, due to being consumable."
+  "consumable-disclaimer": {
+    "left": "This option is attached to",
+    "right": ", due to being consumable"
+  }
 }

@@ -14,6 +14,8 @@ import {
     TagCloseButton,
     TagLabel,
     Switch,
+    FormLabel,
+    Flex,
 } from "@chakra-ui/react";
 import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
@@ -24,8 +26,9 @@ import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { AllOption, useCheckout } from "state/products";
+import { AllOption, FormState, useCheckout } from "state/products";
 import { Event, Product, UploadFile } from "types/strapi";
+import _ from "underscore";
 import { isBeforeDeadline } from "utils/dates";
 import { conformLocale } from "utils/lang";
 import { defcast } from "utils/types";
@@ -122,23 +125,34 @@ const ProductItem = ({
 };
 
 interface AttachmentProps {
+    id: string;
     name: string;
     consumable: boolean;
     options: AllOption[];
+    appendData: (id: string, ref: string, data: any) => void;
+    getData: (
+        id: string,
+        ref: string
+    ) => FormState["optionResults"][0] | undefined;
 }
 
 const Attachment = (props: AttachmentProps) => {
     const { t } = useTranslation("checkout");
 
-    const ParseOption = (option: AllOption, i: number) => {
-        const [result, setResult] = useState<Option[]>([]);
+    const ParseOption = (option: AllOption, i: number, id: string) => {
         switch (option?.type) {
             case "switch":
                 return (
                     <HStack key={i} align="end" spacing={16} w="full">
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
-                                <Heading size="md">{option.label}</Heading>
+                                <FormLabel
+                                    fontWeight="semibold"
+                                    fontSize="xl"
+                                    htmlFor={option.reference}
+                                >
+                                    {option.label}
+                                </FormLabel>
                                 {option.required && (
                                     <Heading size="sm" color="red">
                                         *
@@ -149,7 +163,19 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-                        <Switch size="lg" />
+
+                        <Switch
+                            id={option.reference}
+                            size="lg"
+                            isRequired={option.required}
+                            onChange={(e) =>
+                                props.appendData(
+                                    id,
+                                    option.reference,
+                                    e.target.checked
+                                )
+                            }
+                        />
                     </HStack>
                 );
 
@@ -177,8 +203,13 @@ const Attachment = (props: AttachmentProps) => {
                         </VStack>
                         <AutoComplete
                             options={option.options}
-                            result={result}
-                            setResult={setResult}
+                            result={
+                                (props.getData(id, option.reference)?.data ??
+                                    []) as Option[]
+                            }
+                            setResult={(e) =>
+                                props.appendData(id, option.reference, e)
+                            }
                             allowMany={option.allowMany}
                             renderSelect={(option: Option) => (
                                 <Tag
@@ -258,6 +289,13 @@ const Attachment = (props: AttachmentProps) => {
                                 bg: "gray.100",
                                 borderColor: "blue.300",
                             }}
+                            onChange={(e) =>
+                                props.appendData(
+                                    id,
+                                    option.reference,
+                                    e.target.value
+                                )
+                            }
                         />
                     </HStack>
                 );
@@ -275,11 +313,25 @@ const Attachment = (props: AttachmentProps) => {
             align="start"
             spacing={4}
         >
-            {props.options.map(ParseOption)}
+            {props.options.map((v, i) => ParseOption(v, i, props.id))}
             {props.consumable && (
-                <Text color="gray.600" fontSize="sm">
-                    {t("consumable", { name: props.name })}
-                </Text>
+                <Flex>
+                    <Text color="gray.600" fontSize="sm">
+                        {t("consumable-disclaimer.left")}
+                    </Text>
+                    <Text
+                        ml={1}
+                        fontWeight="bold"
+                        color="gray.600"
+                        fontSize="sm"
+                    >
+                        {props.name}
+                    </Text>
+
+                    <Text color="gray.600" fontSize="sm">
+                        {t("consumable-disclaimer.right")}
+                    </Text>
+                </Flex>
             )}
         </VStack>
     );
@@ -295,7 +347,14 @@ const View = ({ event, products }: Props) => {
         { label: "Osa", href: `#` },
     ];
 
-    const { attachments, updateProduct, resetProduct } = useCheckout(products);
+    const {
+        attachments,
+        updateProduct,
+        resetProduct,
+        formState,
+        appendData,
+        getFormData,
+    } = useCheckout(products);
     useEffect(() => {
         router.replace(`/checkout/${event.slug}`, undefined, { shallow: true });
     }, []);
@@ -317,7 +376,7 @@ const View = ({ event, products }: Props) => {
                 <Heading textTransform="capitalize">{event.title}</Heading>
                 <Text>{event.description}</Text>
                 <Heading>{t("products")}</Heading>
-                <Wrap shouldWrapChildren>
+                <Wrap shouldWrapChildren spacing={8}>
                     {products.map((p) => (
                         <ProductItem
                             key={p.id}
@@ -328,9 +387,16 @@ const View = ({ event, products }: Props) => {
                     ))}
                 </Wrap>
                 <Heading>{t("attachments")}</Heading>
+                <pre>{JSON.stringify(formState, null, 2)}</pre>
+
                 <VStack w="full" align="start" position="relative" spacing={8}>
                     {attachments.map((att, i) => (
-                        <Attachment key={i} {...att} />
+                        <Attachment
+                            key={i}
+                            {...att}
+                            appendData={appendData}
+                            getData={getFormData}
+                        />
                     ))}
                 </VStack>
             </VStack>

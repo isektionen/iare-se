@@ -10,15 +10,20 @@ import {
     Button,
     Input,
     useNumberInput,
+    Tag,
+    TagCloseButton,
+    TagLabel,
+    Switch,
 } from "@chakra-ui/react";
+import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
 import { NextImage } from "components/NextImage";
 import eventModel from "models/event";
 import { GetServerSideProps, GetStaticPaths } from "next";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
-import { useEffect, useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
 import { AllOption, useCheckout } from "state/products";
 import { Event, Product, UploadFile } from "types/strapi";
 import { isBeforeDeadline } from "utils/dates";
@@ -96,7 +101,11 @@ const ProductItem = ({
                 <Text>{price} SEK</Text>
                 <Spacer />
                 <HStack maxW="120px">
-                    <Button size="xs" onClick={handleDec}>
+                    <Button
+                        size="xs"
+                        disabled={value === 0}
+                        onClick={handleDec}
+                    >
                         -
                     </Button>
                     <Text>{value}</Text>
@@ -114,12 +123,110 @@ const ProductItem = ({
 
 interface AttachmentProps {
     name: string;
+    consumable: boolean;
     options: AllOption[];
 }
 
 const Attachment = (props: AttachmentProps) => {
-    const parseOption = (option: AllOption, i: number) => {
-        switch (option.type) {
+    const { t } = useTranslation("checkout");
+
+    const ParseOption = (option: AllOption, i: number) => {
+        const [result, setResult] = useState<Option[]>([]);
+        switch (option?.type) {
+            case "switch":
+                return (
+                    <HStack key={i} align="end" spacing={16} w="full">
+                        <VStack align="start" spacing={6}>
+                            <HStack spacing={0.5}>
+                                <Heading size="md">{option.label}</Heading>
+                                {option.required && (
+                                    <Heading size="sm" color="red">
+                                        *
+                                    </Heading>
+                                )}
+                            </HStack>
+                            <Text w="180px" noOfLines={2}>
+                                {option.description}
+                            </Text>
+                        </VStack>
+                        <Switch size="lg" />
+                    </HStack>
+                );
+
+            case "select":
+                return (
+                    <HStack
+                        key={i}
+                        align="end"
+                        spacing={16}
+                        w="full"
+                        position="relative"
+                    >
+                        <VStack align="start" spacing={6}>
+                            <HStack spacing={0.5}>
+                                <Heading size="md">{option.label}</Heading>
+                                {option.required && (
+                                    <Heading size="sm" color="red">
+                                        *
+                                    </Heading>
+                                )}
+                            </HStack>
+                            <Text w="180px" noOfLines={2}>
+                                {option.description}
+                            </Text>
+                        </VStack>
+                        <AutoComplete
+                            options={option.options}
+                            result={result}
+                            setResult={setResult}
+                            allowMany={option.allowMany}
+                            renderSelect={(option: Option) => (
+                                <Tag
+                                    borderRadius="full"
+                                    variant="solid"
+                                    colorScheme="blackAlpha"
+                                >
+                                    <TagLabel>{option.label}</TagLabel>
+                                    <TagCloseButton />
+                                </Tag>
+                            )}
+                            inputLeftIcon={<FaSearch />}
+                            inputOptions={{
+                                w: "300px",
+                                variant: "filled",
+                                bg: "gray.50",
+                                _hover: {
+                                    bg: "gray.200",
+                                },
+                                _active: {
+                                    bg: "gray.300",
+                                },
+                                _focus: {
+                                    bg: "gray.100",
+                                    borderColor: "blue.300",
+                                },
+                            }}
+                            listOptions={{
+                                position: "absolute",
+                                w: "300px",
+                                zIndex: 9999,
+                                mt: 1,
+                                spacing: 1,
+                                bg: "white",
+                                borderRadius: "md",
+                                borderColor: "gray.300",
+                                borderWidth: "1px",
+                                overflow: "hidden",
+                            }}
+                            listItemOptions={{
+                                p: 2,
+                                _hover: {
+                                    bg: "gray.200",
+                                },
+                            }}
+                        />
+                    </HStack>
+                );
             case "input":
                 return (
                     <HStack key={i} align="end" spacing={16} w="full">
@@ -132,19 +239,50 @@ const Attachment = (props: AttachmentProps) => {
                                     </Heading>
                                 )}
                             </HStack>
-                            <Text maxW="180px" noOfLines={2}>
+                            <Text w="180px" noOfLines={2}>
                                 {option.description}
                             </Text>
                         </VStack>
-                        <Input size="sm" maxW="300px" />
+                        <Input
+                            size="md"
+                            maxW="300px"
+                            variant="filled"
+                            bg="gray.50"
+                            _hover={{
+                                bg: "gray.200",
+                            }}
+                            _active={{
+                                bg: "gray.300",
+                            }}
+                            _focus={{
+                                bg: "gray.100",
+                                borderColor: "blue.300",
+                            }}
+                        />
                     </HStack>
                 );
+
             default:
-                return <HStack></HStack>;
+                return <HStack key={i}></HStack>;
         }
     };
 
-    return <VStack w="full">{props.options.map(parseOption)}</VStack>;
+    return (
+        <VStack
+            w="full"
+            position="relative"
+            overflowY="visible"
+            align="start"
+            spacing={4}
+        >
+            {props.options.map(ParseOption)}
+            {props.consumable && (
+                <Text color="gray.600" fontSize="sm">
+                    {t("consumable", { name: props.name })}
+                </Text>
+            )}
+        </VStack>
+    );
 };
 
 const View = ({ event, products }: Props) => {
@@ -158,7 +296,6 @@ const View = ({ event, products }: Props) => {
     ];
 
     const { attachments, updateProduct, resetProduct } = useCheckout(products);
-
     useEffect(() => {
         router.replace(`/checkout/${event.slug}`, undefined, { shallow: true });
     }, []);
@@ -166,7 +303,6 @@ const View = ({ event, products }: Props) => {
     return (
         <React.Fragment>
             <VStack
-                overflow="hidden"
                 bg="white"
                 pos="relative"
                 align="start"
@@ -192,7 +328,7 @@ const View = ({ event, products }: Props) => {
                     ))}
                 </Wrap>
                 <Heading>{t("attachments")}</Heading>
-                <VStack w="full" align="start">
+                <VStack w="full" align="start" position="relative" spacing={8}>
                     {attachments.map((att, i) => (
                         <Attachment key={i} {...att} />
                     ))}

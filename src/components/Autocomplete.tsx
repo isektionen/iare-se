@@ -8,12 +8,14 @@ import {
     InputProps,
     InputRightElement,
     List,
+    ListIcon,
     ListItem,
     ListItemProps,
     ListProps,
     useOutsideClick,
 } from "@chakra-ui/react";
 import { matchSorter } from "match-sorter";
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 export interface Option {
     value: string;
@@ -23,6 +25,8 @@ export interface Option {
 interface Props {
     options: Option[];
     result: Option[];
+    allowMany?: boolean;
+    canCreate?: boolean;
     setResult: React.Dispatch<React.SetStateAction<Option[]>>;
     placeholder?: string;
     createText?: string;
@@ -64,7 +68,18 @@ export const AutoComplete = (props: Props) => {
     }, []);
 
     const selectOption = (option: Option) => {
-        if (props.result.includes(option)) {
+        if (!props.allowMany && props.result.length > 0) {
+            if (props.result.includes(option)) {
+                props.setResult(
+                    props.result.filter(
+                        (existingOption) =>
+                            existingOption.value !== option.value
+                    )
+                );
+            } else {
+                props.setResult([option]);
+            }
+        } else if (props.result.includes(option)) {
             props.setResult(
                 props.result.filter(
                     (existingOption) => existingOption.value !== option.value
@@ -145,7 +160,7 @@ export const AutoComplete = (props: Props) => {
         },
     });
     return (
-        <Box ref={boxRef}>
+        <Box ref={boxRef} position="relative">
             {props.result.length > 0 && (
                 <Flex my={2} w="full" wrap="wrap">
                     {props.result.map((option, key) => (
@@ -170,15 +185,13 @@ export const AutoComplete = (props: Props) => {
                     {...props.inputOptions}
                     ref={inputRef}
                     onKeyDown={onKeyDown}
-                    placeholder={
-                        props.placeholder ? props.placeholder : "placeholder"
-                    }
+                    placeholder={props.placeholder ? props.placeholder : ""}
                     onChange={(e) => filterOptions(e.currentTarget.value)}
                     onClick={() => {
                         if (inputRef?.current?.value === "") {
                             setPartialResult(optionsCopy);
                         }
-                        setDisplayOptions(true);
+                        setDisplayOptions((s) => !s);
                     }}
                 />
                 {props.inputRightIcon && (
@@ -190,18 +203,30 @@ export const AutoComplete = (props: Props) => {
 
             {displayOptions && (
                 <List {...props.listOptions} maxH="30vh" overflowY="scroll">
-                    {partialResult?.map((option, key) => (
-                        <ListItem
-                            {...props.listItemOptions}
-                            key={key}
-                            bg={cursor === key ? "gray.100" : undefined}
-                            onClick={() => selectOptionFromList(option)}
-                            cursor="pointer"
-                        >
-                            <Flex align="center">{option.label}</Flex>
-                        </ListItem>
-                    ))}
-                    {!partialResult?.length && (
+                    {partialResult?.map((option, key) => {
+                        return (
+                            <ListItem
+                                {...props.listItemOptions}
+                                key={key}
+                                bg={cursor === key ? "gray.100" : undefined}
+                                onClick={() => selectOptionFromList(option)}
+                                cursor="pointer"
+                            >
+                                <Flex align="center">
+                                    <ListIcon
+                                        as={
+                                            props.result.includes(option)
+                                                ? MdCheckBox
+                                                : MdCheckBoxOutlineBlank
+                                        }
+                                        size={20}
+                                    />
+                                    {option.label}
+                                </Flex>
+                            </ListItem>
+                        );
+                    })}
+                    {props.canCreate && !partialResult?.length && (
                         <ListItem
                             {...props.listItemOptions}
                             onClick={() => createOption()}

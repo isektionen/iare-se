@@ -1,0 +1,5 @@
+{
+  "products": "Products",
+  "attachments": "Attachments",
+  "consumable": "This option is attached to {{name}}, due to being consumable."
+}

@@ -3,6 +3,7 @@ module.exports = {
     defaultLocale: "sv",
     pages: {
         "*": ["common", "seo"],
+        "/checkout/[slug]": ["checkout"],
         "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/chapter/committee": ["mdx"],
         "/chapter/brand": ["brand"],

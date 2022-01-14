@@ -172,6 +172,45 @@ const _formState = selector<FormState[]>({
     },
 });
 
+const formError = selector({
+    key: "SELECTOR/REQUIREDFIELDS",
+    get: ({ get }) => {
+        const attachmentState = get(attachments);
+        const formState = get(_formState);
+
+        const _requiredFields = attachmentState
+            .filter((attachment) =>
+                attachment.options.some((field) => field.required)
+            )
+            .reduce((acc, { options }) => {
+                return [
+                    ...acc,
+                    ...options
+                        .filter((option) => option.required)
+                        .map((n) => n.reference),
+                ];
+            }, [] as string[]);
+
+        const missingFields = formState.reduce((acc, it) => {
+            const missing = it.optionResults.reduce(
+                (_acc, { data, reference }) => {
+                    if (
+                        _requiredFields.includes(reference) &&
+                        data.length === 0
+                    ) {
+                        return [..._acc, reference];
+                    }
+                    return [..._acc];
+                },
+                [] as string[]
+            );
+            return [...acc, ...missing];
+        }, [] as string[]);
+
+        return missingFields;
+    },
+});
+
 const component2type: Record<string, "input" | "select" | "switch"> = {
     "event-form.input": "input",
     "event-form.select": "select",
@@ -201,6 +240,7 @@ export const useCheckout = (products: Product[]) => {
 
     const [formState, setFormState] = useRecoilState(_formState);
     const _attachments = useRecoilValue(attachments);
+    const error = useRecoilValue(formError);
 
     useEffect(() => {
         const _products = _.chain(products)
@@ -215,7 +255,6 @@ export const useCheckout = (products: Product[]) => {
                         p?.data as any
                     ) as AllFormOptions;
 
-                    //const type = component2type[optionData.__component]
                     optionData.__component =
                         component2type[optionData.__component];
                     switch (optionData.__component) {
@@ -377,5 +416,6 @@ export const useCheckout = (products: Product[]) => {
         formState,
         appendData,
         getFormData,
+        error,
     };
 };

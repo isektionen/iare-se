@@ -4,6 +4,9 @@
   "consumable-disclaimer": {
     "left": "Valen ovan är förbundna med ",
     "right": ", då den förknippas med mat"
-  }
+  },
+  "non-consumable-disclaimer": "Ovan val behandlas för alla produkter av sorten {{product}}"
+
+
 
 }

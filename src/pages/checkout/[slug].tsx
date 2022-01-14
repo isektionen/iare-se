@@ -16,6 +16,7 @@ import {
     Switch,
     FormLabel,
     Flex,
+    Divider,
 } from "@chakra-ui/react";
 import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
@@ -333,6 +334,11 @@ const Attachment = (props: AttachmentProps) => {
                     </Text>
                 </Flex>
             )}
+            {!props.consumable && (
+                <Text color="gray.600" fontSize="sm">
+                    {t("non-consumable-disclaimer", { product: props.name })}
+                </Text>
+            )}
         </VStack>
     );
 };
@@ -354,6 +360,7 @@ const View = ({ event, products }: Props) => {
         formState,
         appendData,
         getFormData,
+        error,
     } = useCheckout(products);
 
     useEffect(() => {
@@ -389,17 +396,22 @@ const View = ({ event, products }: Props) => {
                     ))}
                 </Wrap>
                 <Heading>{t("attachments")}</Heading>
-                <pre>{JSON.stringify(formState, null, 2)}</pre>
+                <pre>{JSON.stringify(error, null, 2)}</pre>
 
                 <VStack w="full" align="start" position="relative" spacing={8}>
-                    {attachments.map((att, i) => (
-                        <Attachment
-                            key={i}
-                            {...att}
-                            appendData={appendData}
-                            getData={getFormData}
-                        />
-                    ))}
+                    {_.sortBy(attachments, "consumable")
+                        .reverse()
+                        .map((att, i) => (
+                            <React.Fragment key={i}>
+                                <Heading size="lg">{att.name}</Heading>
+                                <Divider />
+                                <Attachment
+                                    {...att}
+                                    appendData={appendData}
+                                    getData={getFormData}
+                                />
+                            </React.Fragment>
+                        ))}
                 </VStack>
             </VStack>
         </React.Fragment>

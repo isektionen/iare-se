@@ -4,5 +4,6 @@
   "consumable-disclaimer": {
     "left": "This option is attached to",
     "right": ", due to being consumable"
-  }
+  },
+  "non-consumable-disclaimer": "This option counts on for all products of sort {{product}}"
 }

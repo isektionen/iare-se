@@ -364,7 +364,9 @@ const View = ({ event, products }: Props) => {
     } = useCheckout(products);
 
     useEffect(() => {
-        router.replace(`/checkout/${event.slug}`, undefined, { shallow: true });
+        router.replace(`/event/${event.slug}/checkout`, undefined, {
+            shallow: true,
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -395,24 +397,39 @@ const View = ({ event, products }: Props) => {
                         />
                     ))}
                 </Wrap>
-                <Heading>{t("attachments")}</Heading>
-                <pre>{JSON.stringify(error, null, 2)}</pre>
+                {attachments.length > 0 && (
+                    <React.Fragment>
+                        <Heading>{t("attachments")}</Heading>
+                        <pre>{JSON.stringify(error, null, 2)}</pre>
 
-                <VStack w="full" align="start" position="relative" spacing={8}>
-                    {_.sortBy(attachments, "consumable")
-                        .reverse()
-                        .map((att, i) => (
-                            <React.Fragment key={i}>
-                                <Heading size="lg">{att.name}</Heading>
-                                <Divider />
-                                <Attachment
-                                    {...att}
-                                    appendData={appendData}
-                                    getData={getFormData}
-                                />
-                            </React.Fragment>
-                        ))}
-                </VStack>
+                        <VStack
+                            w="full"
+                            align="start"
+                            position="relative"
+                            spacing={8}
+                        >
+                            {_.sortBy(attachments, "consumable")
+                                .reverse()
+                                .map((att, i) => (
+                                    <React.Fragment key={i}>
+                                        <Heading size="lg">{att.name}</Heading>
+                                        <Divider />
+                                        <Attachment
+                                            {...att}
+                                            appendData={appendData}
+                                            getData={getFormData}
+                                        />
+                                    </React.Fragment>
+                                ))}
+                        </VStack>
+                    </React.Fragment>
+                )}
+                <Button
+                    variant="iareSolid"
+                    disabled={attachments.length > 0 && error.length > 0}
+                >
+                    Avsluta osan
+                </Button>
             </VStack>
         </React.Fragment>
     );

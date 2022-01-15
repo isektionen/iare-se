@@ -151,9 +151,11 @@ const View = ({
     const rsvp = useCallback(() => {
         setLoading(true);
         if (requiresPassword) {
-            return router.push(`/checkout/${event.slug}?password=${password}`);
+            return router.push(
+                `/event/${event.slug}/checkout?password=${password}`
+            );
         }
-        router.push(`/checkout/${event.slug}`);
+        router.push(`/event/${event.slug}/checkout`);
     }, [event.slug, password, requiresPassword, router]);
 
     const goToRsvp = useCallback(() => {

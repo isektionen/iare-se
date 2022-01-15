@@ -37,9 +37,11 @@ import { isBeforeDeadline } from "utils/dates";
 import { DEV } from "utils/error";
 import { conformLocale } from "utils/lang";
 import { defcast } from "utils/types";
+
+type ExtendedProduct = Product & { available: boolean };
 interface Props {
     event: Event;
-    products: Product[];
+    products: ExtendedProduct[];
 }
 
 interface IFormErrorHelper {
@@ -72,7 +74,7 @@ const FormErrorHelper = (props: IFormErrorHelper) => {
         </React.Fragment>
     );
 };
-interface ProductProps extends Product {
+interface ProductProps extends ExtendedProduct {
     updateProduct: (id: string, v: number) => void;
     resetProduct: (id: string) => void;
 }
@@ -84,6 +86,7 @@ const ProductItem = ({
     price,
     updateProduct,
     resetProduct,
+    ...props
 }: ProductProps) => {
     media = defcast(media);
 
@@ -147,12 +150,21 @@ const ProductItem = ({
                         -
                     </Button>
                     <Text>{value}</Text>
-                    <Button size="xs" onClick={handleInc}>
+                    <Button
+                        size="xs"
+                        onClick={handleInc}
+                        disabled={!props.available}
+                    >
                         +
                     </Button>
                 </HStack>
             </HStack>
-            <Button variant="iareSolid" isFullWidth onClick={handleToggle}>
+            <Button
+                variant="iareSolid"
+                isFullWidth
+                onClick={handleToggle}
+                disabled={!props.available}
+            >
                 {added ? "Ta bort" : "Lägg till"}
             </Button>
         </VStack>

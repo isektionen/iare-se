@@ -15,3 +15,7 @@ export const checkForError = (objects: Record<string, any>) => {
     };
     return result;
 };
+
+export const DEV = () => {
+    return process.env.NODE_ENV === "development";
+};

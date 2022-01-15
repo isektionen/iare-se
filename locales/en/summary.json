@@ -1,0 +1,8 @@
+{
+  "summary": "Summary",
+  "loading": "Loading summary",
+  "switch": {
+    "true": "Yes",
+    "false": "No"
+  }
+}

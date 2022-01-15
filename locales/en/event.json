@@ -17,7 +17,8 @@
         "placeholder": "Enter password...",
         "callback": {
             "invalid-password": "Invalid password",
-            "due-date": "Can't RSVP to Event"
+            "due-date": "Can't RSVP to Event",
+            "no-products": "Can't create a empty RSVP"
         }
     }
 }

@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
+import {
+    atom,
+    selector,
+    useRecoilCallback,
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 import {
     ComponentEventFormInput,
-    ComponentEventFormOption,
     ComponentEventFormSelect,
     ComponentEventFormSwitch,
     Product,
-    ProductOption,
-    ProductOptionDataDynamicZone,
 } from "types/strapi";
 import _ from "underscore";
 import { defcast } from "utils/types";
@@ -66,11 +69,13 @@ type ProductState = Record<string, ProductStateData>;
 const defaultState: ProductState = {};
 
 export type FormState = {
+    name: string;
     reference: string;
     amount: number;
     price: number;
     optionResults: {
-        data: (string | MetaOption | boolean)[];
+        label: string;
+        data: (string | MetaOption | boolean | null)[];
         reference: string;
     }[];
 };
@@ -81,13 +86,6 @@ const _state = atom<ProductState>({
     key: "ATOM/PRODUCTSTATE",
     default: defaultState,
 });
-
-/*
-const _formState = atom<FormState[]>({
-    key: "ATOM/FORMSTATE",
-    default: defaultFormState,
-});
-*/
 
 const mapOptions = (
     it: ProductStateData,
@@ -136,11 +134,13 @@ const innerFormState = atom<FormState[]>({
 const getDefault = (t: AllOption["type"]) => {
     switch (t) {
         case "input":
-            return [];
+            return [null];
         case "switch":
             return [false];
         case "select":
             return [];
+        default:
+            return [null];
     }
 };
 
@@ -151,27 +151,48 @@ const _formState = selector<FormState[]>({
         const state = get(_state);
         const innerState = get(innerFormState);
 
-        return attachmentState.map((s) => {
-            const stateId = getInnerId(s.id);
+        return attachmentState.reduce((acc, it) => {
+            const stateId = getInnerId(it.id);
             const alreadyExistingOption = innerState.find(
-                (p) => p.reference === s.id
+                (p) => p.reference === it.id
             );
-            return {
-                reference: s.id,
-                amount: state[stateId].amount,
-                price: state[stateId].price,
-                optionResults: alreadyExistingOption
-                    ? alreadyExistingOption.optionResults
-                    : s.options.map((opt) => ({
-                          reference: opt.reference,
-                          data: getDefault(opt.type),
-                      })),
-            };
-        });
+            const isConsumable = state[stateId].consumable;
+            const amount = state[stateId].amount;
+
+            // poor mans filter
+            if (
+                alreadyExistingOption &&
+                _.has(alreadyExistingOption, "__remove_next")
+            ) {
+                return [...acc];
+            }
+
+            return [
+                ...acc,
+                {
+                    name: it.name,
+                    reference: it.id,
+                    amount: isConsumable ? clamp(amount, 0, 1) : amount,
+                    price: state[stateId].price,
+                    optionResults: alreadyExistingOption
+                        ? alreadyExistingOption.optionResults
+                        : it.options.map((opt) => ({
+                              label: opt.label,
+                              reference: opt?.reference,
+                              data: getDefault(opt?.type),
+                          })),
+                },
+            ];
+        }, [] as FormState[]);
     },
     set: ({ set }, newState) => {
         set(innerFormState, newState);
     },
+});
+
+const typeMapAtom = atom<Record<string, AllOption["type"]>>({
+    key: "ATOM/TYPEMAP",
+    default: {},
 });
 
 const formError = selector({
@@ -182,25 +203,28 @@ const formError = selector({
 
         const _requiredFields = attachmentState
             .filter((attachment) =>
-                attachment.options.some((field) => field.required)
+                attachment.options.some((field) => field?.required)
             )
-            .reduce((acc, { options }) => {
+            .reduce((acc, { id, options }) => {
+                const ref = _.last(id.split("::"));
                 return [
                     ...acc,
                     ...options
                         .filter((option) => option.required)
-                        .map((n) => n.reference),
+                        .map((n) => `${n.reference}::${ref}`),
                 ];
             }, [] as string[]);
+
+        console.log(_requiredFields);
+        const formIsEmpty = formState.length === 0 ? ["form-is-empty"] : [];
 
         const missingFields = formState.reduce((acc, it) => {
             const missing = it.optionResults.reduce(
                 (_acc, { data, reference }) => {
-                    if (
-                        _requiredFields.includes(reference) &&
-                        data.length === 0
-                    ) {
-                        return [..._acc, reference];
+                    const id = _.last(it.reference.split("::"));
+                    const ref = `${reference}::${id}`;
+                    if (_requiredFields.includes(ref) && data.length === 0) {
+                        return [..._acc, ref];
                     }
                     return [..._acc];
                 },
@@ -209,7 +233,7 @@ const formError = selector({
             return [...acc, ...missing];
         }, [] as string[]);
 
-        return missingFields;
+        return [...formIsEmpty, ...missingFields];
     },
 });
 
@@ -229,12 +253,44 @@ const toList = <T>(items: T[] | T) => {
     return [items];
 };
 
-const getInnerId = (idString: string) => {
+export const getInnerId = (idString: string) => {
     const partialResult = idString.match(/.+::(\d+)::\d+/);
     if (partialResult && partialResult.length === 2) {
         return partialResult[1];
     }
     return idString;
+};
+
+export const useSummary = () => {
+    const [formState, setFormState] = useRecoilState(_formState);
+    const error = useRecoilValue(formError);
+    const typeMap = useRecoilValue(typeMapAtom);
+
+    const getType = useCallback(
+        (ref: string) => {
+            if (_.has(typeMap, ref)) {
+                return typeMap[ref];
+            }
+        },
+        [typeMap]
+    );
+
+    //const resetProduct = useRecoilCallback(({ set }) => (ref: string) => {});
+
+    const resetProduct = useCallback((ref: string) => {
+        setFormState((s) =>
+            s.map((p) => {
+                if (p.reference === ref) {
+                    return {
+                        ...p,
+                        __remove_next: true,
+                    };
+                }
+                return p;
+            })
+        );
+    }, []);
+    return { formState, error, getType, resetProduct };
 };
 
 export const useCheckout = (products: Product[]) => {
@@ -245,65 +301,87 @@ export const useCheckout = (products: Product[]) => {
     const _attachments = useRecoilValue(attachments);
     const error = useRecoilValue(formError);
 
+    const hydrate = useRecoilCallback(
+        ({ set }) =>
+            (initialProducts: Product[]) => {
+                const _products = _.chain(initialProducts)
+                    .indexBy("id")
+                    .mapObject((product) => ({
+                        name: product.name,
+                        amount: 0,
+                        price: product.price,
+                        consumable: product.consumable || false,
+                        options: defcast(product.product_options).map((p) => {
+                            const optionData = _.first(
+                                p?.data as any
+                            ) as AllFormOptions;
+
+                            optionData.__component =
+                                component2type[optionData.__component];
+                            switch (optionData.__component) {
+                                case "input":
+                                    return {
+                                        type: optionData.__component,
+                                        reference: `${product.name}::${p?.reference}`,
+                                        label: optionData.label,
+                                        description: optionData.description,
+                                        required: optionData.required,
+                                        allowMany: p?.allowMany ? true : false,
+                                    } as InputOption;
+                                case "select":
+                                    return {
+                                        type: optionData.__component,
+                                        reference: `${product.name}::${p?.reference}`,
+                                        label: optionData.label,
+                                        description: optionData.description,
+                                        required: optionData.required,
+                                        allowMany: p?.allowMany ? true : false,
+                                        options: defcast(
+                                            defcast(optionData.meta_option)
+                                                .option
+                                        ).map((opt) => ({
+                                            label: defcast(opt).label,
+                                            value: defcast(opt).value,
+                                        })),
+                                    } as SelectOption;
+
+                                case "switch":
+                                    return {
+                                        type: optionData.__component,
+                                        reference: `${product.name}::${p?.reference}`,
+                                        label: optionData.label,
+                                        description: optionData.description,
+                                        required: optionData.required,
+                                        allowMany: p?.allowMany ? true : false,
+                                    } as SwitchOption;
+                            }
+                        }),
+                        /* @ts-ignore */
+                        available: product.available as boolean,
+                    }))
+                    .value();
+
+                const availableTypes = _.reduce(
+                    _products,
+                    (acc, it) => {
+                        return _.extend(
+                            acc,
+                            it.options.reduce((_acc, { reference, type }) => {
+                                return { ..._acc, [reference]: type };
+                            }, {})
+                        );
+                    },
+                    {} as Record<string, AllOption["type"]>
+                );
+                set(typeMapAtom, availableTypes);
+                set(_state, _products);
+            }
+    );
+
     useEffect(() => {
-        const _products = _.chain(products)
-            .indexBy("id")
-            .mapObject((product) => ({
-                name: product.name,
-                amount: 0,
-                price: product.price,
-                consumable: product.consumable || false,
-                options: defcast(product.product_options).map((p) => {
-                    const optionData = _.first(
-                        p?.data as any
-                    ) as AllFormOptions;
-
-                    optionData.__component =
-                        component2type[optionData.__component];
-                    switch (optionData.__component) {
-                        case "input":
-                            return {
-                                type: optionData.__component,
-                                reference: `${product.name}::${p?.reference}`,
-                                label: optionData.label,
-                                description: optionData.description,
-                                required: optionData.required,
-                                allowMany: p?.allowMany ? true : false,
-                            } as InputOption;
-                        case "select":
-                            return {
-                                type: optionData.__component,
-                                reference: `${product.name}::${p?.reference}`,
-                                label: optionData.label,
-                                description: optionData.description,
-                                required: optionData.required,
-                                allowMany: p?.allowMany ? true : false,
-                                options: defcast(
-                                    defcast(optionData.meta_option).option
-                                ).map((opt) => ({
-                                    label: defcast(opt).label,
-                                    value: defcast(opt).value,
-                                })),
-                            } as SelectOption;
-
-                        case "switch":
-                            return {
-                                type: optionData.__component,
-                                reference: `${product.name}::${p?.reference}`,
-                                label: optionData.label,
-                                description: optionData.description,
-                                required: optionData.required,
-                                allowMany: p?.allowMany ? true : false,
-                            } as SwitchOption;
-                    }
-                }),
-                /* @ts-ignore */
-                available: product.available as boolean,
-            }))
-            .value();
-        setState(_products);
+        if (state === defaultState) hydrate(products);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [products]);
 
     useEffect(() => {
         setFormState((s) => s.filter((p) => p.amount !== 0));
@@ -311,6 +389,7 @@ export const useCheckout = (products: Product[]) => {
 
     const updateProduct = useCallback(
         (id: string, v: number) => {
+            setIsSubmitting(false);
             if (_.has(state, id)) {
                 setState((s) => ({
                     ...s,
@@ -326,6 +405,7 @@ export const useCheckout = (products: Product[]) => {
 
     const resetProduct = useCallback(
         (id: string) => {
+            setIsSubmitting(false);
             if (_.has(state, id)) {
                 setState((s) => ({
                     ...s,
@@ -341,6 +421,7 @@ export const useCheckout = (products: Product[]) => {
 
     const appendData = useCallback(
         (id: string, ref: string, data: any = []) => {
+            data = data === "" ? null : data;
             setIsSubmitting(false);
             const stateId = getInnerId(id);
             if (_.has(state, stateId)) {
@@ -349,9 +430,17 @@ export const useCheckout = (products: Product[]) => {
                         s.map((p) => {
                             if (p.reference === id) {
                                 if (p.optionResults.length === 0) {
+                                    const _option = state[stateId].options.find(
+                                        (pref) => pref.reference === ref
+                                    );
                                     return {
                                         ...p,
+                                        amount: state[stateId].consumable
+                                            ? 1
+                                            : p.amount,
                                         optionResults: toList({
+                                            label:
+                                                _option?.label ?? "undefined",
                                             data: toList(data),
                                             reference: ref,
                                         }),
@@ -360,12 +449,16 @@ export const useCheckout = (products: Product[]) => {
 
                                 return {
                                     ...p,
+                                    amount: state[stateId].consumable
+                                        ? 1
+                                        : p.amount,
                                     optionResults: p.optionResults.reduce(
                                         (acc, it) => {
                                             if (it.reference === ref) {
                                                 return [
                                                     ...acc,
                                                     {
+                                                        label: it.label,
                                                         data: toList(data),
                                                         reference: it.reference,
                                                     },
@@ -374,6 +467,7 @@ export const useCheckout = (products: Product[]) => {
                                             return [...acc, it];
                                         },
                                         [] as {
+                                            label: string;
                                             data: (string | MetaOption)[];
                                             reference: string;
                                         }[]
@@ -384,20 +478,6 @@ export const useCheckout = (products: Product[]) => {
                         })
                     );
                 }
-                setFormState((s) => [
-                    ...s,
-                    {
-                        reference: id,
-                        amount: state[stateId].amount,
-                        price: state[stateId].price,
-                        optionResults: [
-                            {
-                                data: toList(data),
-                                reference: ref,
-                            },
-                        ],
-                    },
-                ]);
             }
         },
         [formState, setFormState, state]
@@ -426,14 +506,18 @@ export const useCheckout = (products: Product[]) => {
     const withSubmit = useCallback(
         (cb: GenericCallback) => (args: any | any[]) => {
             setIsSubmitting(true);
-            if (error.length === 0 && formState.length > 0) {
+            if (
+                error.filter((p) => p !== "form-is-empty").length === 0 &&
+                formState.length > 0
+            ) {
                 cb(formState);
             }
         },
-        [error.length, formState]
+        [error, formState]
     );
 
     return {
+        internalState: state,
         updateProduct,
         attachments: _attachments,
         resetProduct,

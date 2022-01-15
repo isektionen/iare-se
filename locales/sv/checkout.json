@@ -10,6 +10,9 @@
   },
   "non-consumable-disclaimer": "Ovan val behandlas för alla produkter av sorten {{product}}",
   "error": {
-    "is-required": "{{field}} är obligatorisk"
+    "is-required": "{{field}} är obligatorisk",
+    "is-empty": "Var snäll välj minst en (1) produkt"
+
+
   }
 }

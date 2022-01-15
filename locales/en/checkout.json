@@ -10,6 +10,7 @@
   },
   "non-consumable-disclaimer": "This option counts on for all products of sort {{product}}",
   "error": {
-    "is-required": "{{field}} is required"
+    "is-required": "{{field}} is required",
+    "is-empty": "Please choose at least one (1) product"
   }
 }

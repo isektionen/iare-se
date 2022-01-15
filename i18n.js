@@ -4,6 +4,7 @@ module.exports = {
     pages: {
         "*": ["common", "seo"],
         "/event/[slug]/checkout": ["checkout"],
+        "/event/[slug]/summary": ["summary"],
         "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/chapter/committee": ["mdx"],
         "/chapter/brand": ["brand"],

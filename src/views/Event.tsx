@@ -198,6 +198,14 @@ const View = ({
                         isClosable: true,
                     });
                     break;
+                case "no.products":
+                    toaster({
+                        title: t("modal.callback.no-products"),
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    break;
             }
 
             router.replace(`/event/${event.slug}`);

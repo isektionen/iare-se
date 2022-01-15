@@ -1,15 +1,12 @@
 import {
-    Box,
     Heading,
     VStack,
     Text,
     Wrap,
-    SimpleGrid,
     Spacer,
     HStack,
     Button,
     Input,
-    useNumberInput,
     Tag,
     TagCloseButton,
     TagLabel,
@@ -18,10 +15,7 @@ import {
     Flex,
     Divider,
     Alert,
-    AlertDescription,
     AlertIcon,
-    AlertTitle,
-    CloseButton,
     useDisclosure,
     IconButton,
 } from "@chakra-ui/react";
@@ -29,16 +23,18 @@ import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
 import { NextImage } from "components/NextImage";
 import eventModel from "models/event";
-import { GetServerSideProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { BiChevronRight } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import { AllOption, FormState, useCheckout } from "state/products";
-import { Event, Product, UploadFile } from "types/strapi";
+import { Event, Product } from "types/strapi";
 import _ from "underscore";
 import { isBeforeDeadline } from "utils/dates";
+import { DEV } from "utils/error";
 import { conformLocale } from "utils/lang";
 import { defcast } from "utils/types";
 interface Props {
@@ -180,6 +176,8 @@ const Attachment = (props: AttachmentProps) => {
     const { t } = useTranslation("checkout");
 
     const ParseOption = (option: AllOption, i: number, id: string) => {
+        const ref = `${option.reference}::${_.last(id.split("::"))}`;
+
         switch (option?.type) {
             case "switch":
                 return (
@@ -211,7 +209,7 @@ const Attachment = (props: AttachmentProps) => {
                         </VStack>
                         <VStack h="full" justify="end">
                             <Switch
-                                isInvalid={props.hasError(option.reference)}
+                                isInvalid={props.hasError(ref)}
                                 id={option.reference}
                                 size="lg"
                                 isRequired={option.required}
@@ -224,7 +222,7 @@ const Attachment = (props: AttachmentProps) => {
                                 }
                             />
                             <FormErrorHelper
-                                hasError={props.hasError(option.reference)}
+                                hasError={props.hasError(ref)}
                                 text={t("error.is-required", {
                                     field: option.label,
                                 })}
@@ -260,9 +258,9 @@ const Attachment = (props: AttachmentProps) => {
                             <AutoComplete
                                 canCreate
                                 createText={(option) =>
-                                    t("select.create", { option })
+                                    t("select.create", { option: option ?? "" })
                                 }
-                                isInvalid={props.hasError(option.reference)}
+                                isInvalid={props.hasError(ref)}
                                 options={option.options}
                                 result={
                                     (props.getData(id, option.reference)
@@ -318,7 +316,7 @@ const Attachment = (props: AttachmentProps) => {
                                 }}
                             />
                             <FormErrorHelper
-                                hasError={props.hasError(option.reference)}
+                                hasError={props.hasError(ref)}
                                 text={t("error.is-required", {
                                     field: option.label,
                                 })}
@@ -328,13 +326,7 @@ const Attachment = (props: AttachmentProps) => {
                 );
             case "input":
                 return (
-                    <HStack
-                        key={i}
-                        align="start"
-                        spacing={16}
-                        w="full"
-                        h="40px"
-                    >
+                    <HStack key={i} align="end" spacing={16} w="full">
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
                                 <Heading size="md">{option.label}</Heading>
@@ -435,6 +427,8 @@ const View = ({ event, products }: Props) => {
         { label: "Osa", href: `#` },
     ];
 
+    const isDev = useMemo(() => DEV(), []);
+
     const {
         attachments,
         updateProduct,
@@ -442,9 +436,10 @@ const View = ({ event, products }: Props) => {
         formState,
         appendData,
         getFormData,
-        error,
         hasError,
         withSubmit,
+        internalState,
+        error,
     } = useCheckout(products);
 
     useEffect(() => {
@@ -455,9 +450,7 @@ const View = ({ event, products }: Props) => {
     }, []);
 
     const handleSummary = useCallback(() => {
-        router.push(`/event/${event.slug}/summary`, undefined, {
-            shallow: true,
-        });
+        router.push(`/event/${event.slug}/summary`);
     }, [event.slug, router]);
 
     return (
@@ -486,7 +479,7 @@ const View = ({ event, products }: Props) => {
                     />
                 ))}
             </Wrap>
-            <pre>{JSON.stringify(formState, null, 2)}</pre>
+            {isDev && <pre>{JSON.stringify(error, null, 2)}</pre>}
 
             {attachments.length > 0 && (
                 <React.Fragment>
@@ -515,9 +508,19 @@ const View = ({ event, products }: Props) => {
                     </VStack>
                 </React.Fragment>
             )}
-            <Button variant="iareSolid" onClick={withSubmit(handleSummary)}>
-                Avsluta osan
-            </Button>
+            <VStack w="full" align="start">
+                <FormErrorHelper
+                    hasError={hasError("form-is-empty")}
+                    text={t("error.is-empty")}
+                />
+                <Button
+                    variant="iareSolid"
+                    onClick={withSubmit(handleSummary)}
+                    rightIcon={<BiChevronRight />}
+                >
+                    Avsluta osan
+                </Button>
+            </VStack>
         </VStack>
     );
 };

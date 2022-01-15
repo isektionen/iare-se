@@ -4,6 +4,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import _ from "underscore";
 import { createBody, createWebhook, isFree, nets } from "./utils";
 
+export interface NetsCustomer {
+    firstName: string;
+    lastName: string;
+    phone: {
+        prefix?: string;
+        number?: string;
+    };
+    email: string;
+}
+
 interface IOrderItem {
     reference: string;
     name: string;
@@ -13,15 +23,7 @@ interface IOrderItem {
 interface ICreateBody {
     items: IOrderItem[];
     reference: string | number; // event-slug
-    customer: {
-        firstName: string;
-        lastName: string;
-        phone: {
-            prefix: string;
-            number: string;
-        };
-        email: string;
-    };
+    customer: NetsCustomer;
     options: Record<string, (string | boolean)[]>;
 }
 

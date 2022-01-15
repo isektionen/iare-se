@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { NetsCustomer } from "pages/api/checkout/create";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     atom,
     selector,
@@ -195,6 +196,21 @@ const typeMapAtom = atom<Record<string, AllOption["type"]>>({
     default: {},
 });
 
+const defaultCustomer = {
+    firstName: "N/A",
+    lastName: "N/A",
+    phone: {
+        prefix: "N/A",
+        number: "N/A",
+    },
+    email: "N/A",
+};
+
+const customerAtom = atom<NetsCustomer>({
+    key: "ATOM/NETSCUSTOMER",
+    default: defaultCustomer,
+});
+
 const formError = selector({
     key: "SELECTOR/REQUIREDFIELDS",
     get: ({ get }) => {
@@ -215,7 +231,6 @@ const formError = selector({
                 ];
             }, [] as string[]);
 
-        console.log(_requiredFields);
         const formIsEmpty = formState.length === 0 ? ["form-is-empty"] : [];
 
         const missingFields = formState.reduce((acc, it) => {
@@ -261,10 +276,31 @@ export const getInnerId = (idString: string) => {
     return idString;
 };
 
+const isFalsy = (s?: string) => !s || s.length === 0 || s === "N/A";
+
+const customerError = selector({
+    key: "SELECTOR/CUSTOMERERROR",
+    get: ({ get }) => {
+        const state = get(customerAtom);
+        let errors = [];
+        if (isFalsy(state.firstName)) errors.push("firstname");
+        if (isFalsy(state.lastName)) errors.push("lastname");
+        if (isFalsy(state.email)) errors.push("email");
+        if (isFalsy(state.phone.number)) errors.push("phone.number");
+        if (isFalsy(state.phone.prefix)) errors.push("phone.prefix");
+
+        return errors;
+    },
+});
+
 export const useSummary = () => {
     const [formState, setFormState] = useRecoilState(_formState);
+    const [customer, setCustomer] = useRecoilState(customerAtom);
     const error = useRecoilValue(formError);
     const typeMap = useRecoilValue(typeMapAtom);
+    const _customerError = useRecoilValue(customerError);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const getType = useCallback(
         (ref: string) => {
@@ -275,22 +311,68 @@ export const useSummary = () => {
         [typeMap]
     );
 
-    //const resetProduct = useRecoilCallback(({ set }) => (ref: string) => {});
+    const resetProduct = useCallback(
+        (ref: string) => {
+            setFormState((s) =>
+                s.map((p) => {
+                    if (p.reference === ref) {
+                        return {
+                            ...p,
+                            __remove_next: true,
+                        };
+                    }
+                    return p;
+                })
+            );
+        },
+        [setFormState]
+    );
 
-    const resetProduct = useCallback((ref: string) => {
-        setFormState((s) =>
-            s.map((p) => {
-                if (p.reference === ref) {
-                    return {
-                        ...p,
-                        __remove_next: true,
-                    };
-                }
-                return p;
-            })
-        );
-    }, []);
-    return { formState, error, getType, resetProduct };
+    const updateCustomerData = useCallback(
+        (data: Partial<NetsCustomer>) => {
+            setIsSubmitting(false);
+
+            //setCustomer((s) => ({ ...s, ...data }));
+            setCustomer((s) => ({
+                firstName: data.firstName ?? s.firstName,
+                lastName: data.lastName ?? s.lastName,
+                email: data.email ?? s.email,
+                phone: {
+                    number: data?.phone?.number ?? s.phone.number,
+                    prefix: data?.phone?.prefix ?? s.phone.prefix,
+                },
+            }));
+        },
+        [setCustomer]
+    );
+
+    const withSubmit = useCallback(
+        (cb: any) => () => {
+            setIsSubmitting(true);
+            if (formState.length > 0 && _customerError.length === 0) {
+                cb();
+            }
+        },
+        [_customerError.length, formState.length]
+    );
+
+    const hasError = useCallback(
+        (name: string) => {
+            return _customerError.includes(name) && isSubmitting;
+        },
+        [_customerError, isSubmitting]
+    );
+
+    return {
+        formState,
+        error,
+        getType,
+        resetProduct,
+        customer,
+        updateCustomerData,
+        withSubmit,
+        hasError,
+    };
 };
 
 export const useCheckout = (products: Product[]) => {

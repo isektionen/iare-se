@@ -1,8 +1,24 @@
 {
+  "customer": "Kunduppgifter",
   "summary": "Sammanfattning",
   "loading": "Laddar Sammanfattningen",
   "switch": {
     "true": "Ja",
     "false": "Nej"
+  },
+  "rsvp": {
+    "free": "Osa",
+    "paid": "Betala {{cost}} {{currency}}"
+  },
+  "required": "{{field}} är obligatorisk",
+  "details": {
+    "firstname": "Förnamn",
+    "lastname": "Efternamn",
+    "email": "Email",
+    "phone": {
+      "number": "Telefonnummer",
+      "prefix": "Prefix"
+    }
   }
+
 }

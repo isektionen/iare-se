@@ -10,6 +10,15 @@ import {
     TagCloseButton,
     TagLabel,
     Wrap,
+    FormControl,
+    FormHelperText,
+    FormLabel,
+    Input,
+    FormErrorMessage,
+    InputGroup,
+    Select,
+    InputLeftElement,
+    Button,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
@@ -32,6 +41,8 @@ import { NextImage } from "components/NextImage";
 import { HiTrash } from "react-icons/hi";
 import { defcast } from "utils/types";
 import _ from "underscore";
+import { countries, Country } from "country-data";
+import { BiChevronRight } from "react-icons/bi";
 
 interface IProductItem extends DetailedFormSummary {}
 const ProductItem = (props: IProductItem) => {
@@ -141,12 +152,31 @@ export const Summary = ({ event, products }: Props) => {
     const [loading, setLoading] = useState(true);
     const isDev = useMemo(() => DEV(), []);
 
-    const { formState, error, getType, resetProduct } = useSummary();
+    const {
+        formState,
+        error,
+        getType,
+        resetProduct,
+        updateCustomerData,
+        customer,
+        hasError,
+        withSubmit,
+    } = useSummary();
 
     const getReference = useCallback((s: string) => {
         const [parent, reference] = s.split("::");
         return [parent, reference];
     }, []);
+
+    const findCountry = useCallback(
+        (name: string) => defcast(countries.all.find((p) => p.name === name)),
+        []
+    );
+
+    const handleSubmit = useCallback(() => {}, []);
+    const sweden = findCountry("Sweden");
+
+    const [selectedCountry, setSelectedCountry] = useState(sweden.name);
 
     const productSummary = useMemo(() => {
         return formState.reduce((acc, it) => {
@@ -191,6 +221,17 @@ export const Summary = ({ event, products }: Props) => {
         }, [] as DetailedFormSummary[]);
     }, [formState, getReference, getType, products, resetProduct]);
 
+    const totalCost = useMemo(
+        () => productSummary.reduce((acc, it) => acc + it.total, 0),
+        [productSummary]
+    );
+    const rsvpButtonText = useMemo(
+        () =>
+            totalCost === 0
+                ? t("rsvp.free")
+                : t("rsvp.paid", { cost: totalCost, currency: "SEK" }),
+        []
+    );
     useEffect(() => {
         if (error.length > 0 && formState.length === 0) {
             router.push(
@@ -203,6 +244,15 @@ export const Summary = ({ event, products }: Props) => {
             return () => {};
         }
         setLoading(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        updateCustomerData({
+            phone: {
+                prefix: _.first(sweden.countryCallingCodes),
+            },
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -222,15 +272,146 @@ export const Summary = ({ event, products }: Props) => {
                 <React.Fragment>
                     <Heading textTransform="capitalize">{event.title}</Heading>
                     <Text>{event.description}</Text>
+                    <Heading textTransform="capitalize">
+                        {t("customer")}
+                    </Heading>
+
+                    <FormControl isRequired isInvalid={hasError("firstname")}>
+                        <FormLabel htmlFor="firstname">
+                            {t("details.firstname")}
+                        </FormLabel>
+                        <Input
+                            variant="filled"
+                            id="firstname"
+                            type="firstname"
+                            onChange={(e) => {
+                                updateCustomerData({
+                                    firstName: e.target.value,
+                                });
+                            }}
+                        />
+                        <FormErrorMessage>
+                            {t("required", { field: t("details.firstname") })}
+                        </FormErrorMessage>
+                    </FormControl>
+
+                    <FormControl isRequired isInvalid={hasError("lastname")}>
+                        <FormLabel htmlFor="lastname">
+                            {t("details.lastname")}
+                        </FormLabel>
+                        <Input
+                            variant="filled"
+                            id="lastname"
+                            type="lastname"
+                            onChange={(e) => {
+                                updateCustomerData({
+                                    lastName: e.target.value,
+                                });
+                            }}
+                        />
+                        <FormErrorMessage>
+                            {t("required", { field: t("details.lastname") })}
+                        </FormErrorMessage>
+                    </FormControl>
+
+                    <FormControl
+                        isRequired
+                        isInvalid={
+                            hasError("phone.number") || hasError("phone.prefix")
+                        }
+                    >
+                        <FormLabel htmlFor="phone">
+                            {t("details.phone.number")}
+                        </FormLabel>
+                        <InputGroup variant="filled">
+                            <InputLeftElement w="20%">
+                                <Select
+                                    borderRightRadius={0}
+                                    value={selectedCountry}
+                                    onChange={(e) => {
+                                        const country = findCountry(
+                                            e.target.value
+                                        );
+                                        setSelectedCountry(country.name);
+                                        updateCustomerData({
+                                            phone: {
+                                                prefix: defcast(
+                                                    _.first(
+                                                        country.countryCallingCodes
+                                                    )
+                                                ),
+                                            },
+                                        });
+                                    }}
+                                >
+                                    {countries.all.map((c, i) => (
+                                        <option key={i} value={c.name}>
+                                            {c.name}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </InputLeftElement>
+                            <Input
+                                id="phone"
+                                type="tel"
+                                pl="20%"
+                                onChange={(e) => {
+                                    updateCustomerData({
+                                        phone: {
+                                            number: e.target.value,
+                                        },
+                                    });
+                                }}
+                            />
+                        </InputGroup>
+
+                        <FormErrorMessage>
+                            {hasError("phone.number") &&
+                                t("required", {
+                                    field: t("details.phone.number"),
+                                })}
+                            {hasError("phone.prefix") &&
+                                t("required", {
+                                    field: t("details.phone.prefix"),
+                                })}
+                        </FormErrorMessage>
+                    </FormControl>
+
+                    <FormControl isRequired isInvalid={hasError("email")}>
+                        <FormLabel htmlFor="email">
+                            {t("details.email")}
+                        </FormLabel>
+                        <Input
+                            variant="filled"
+                            id="email"
+                            type="email"
+                            onChange={(e) => {
+                                updateCustomerData({
+                                    email: e.target.value,
+                                });
+                            }}
+                        />
+                        <FormErrorMessage>
+                            {t("required", { field: t("details.email") })}
+                        </FormErrorMessage>
+                    </FormControl>
+
                     <Heading textTransform="capitalize">{t("summary")}</Heading>
                     <VStack spacing={8}>
                         {productSummary.map((product, i) => (
                             <ProductItem key={i} {...product} />
                         ))}
                     </VStack>
+                    <Button
+                        variant="iareSolid"
+                        rightIcon={<BiChevronRight />}
+                        onClick={withSubmit(handleSubmit)}
+                    >
+                        {rsvpButtonText}
+                    </Button>
                 </React.Fragment>
             )}
-            {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
+            {isDev && <pre>{JSON.stringify(customer, null, 2)}</pre>}
             {loading && (
                 <Center w="full" h="80vh" flexDirection="column">
                     <Spinner size="xl" mb={8} />

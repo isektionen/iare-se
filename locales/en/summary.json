@@ -1,8 +1,24 @@
 {
+  "customer": "Customer details",
   "summary": "Summary",
   "loading": "Loading summary",
   "switch": {
     "true": "Yes",
     "false": "No"
+  },
+  "rsvp": {
+    "free": "Rsvp",
+    "paid": "Pay {{cost}} {{currency}}"
+  },
+  "required": "{{field}} is required",
+  "details": {
+    "firstname": "Firstname",
+    "lastname": "Lastname",
+    "email": "Email",
+    "phone": {
+      "number": "Number",
+      "prefix": "Prefix"
+    }
   }
+
 }

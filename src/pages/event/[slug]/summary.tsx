@@ -19,6 +19,7 @@ import {
     Select,
     InputLeftElement,
     Button,
+    useToast,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
@@ -43,6 +44,7 @@ import { defcast } from "utils/types";
 import _ from "underscore";
 import { countries, Country } from "country-data";
 import { BiChevronRight } from "react-icons/bi";
+import { checkout } from "lib/checkout";
 
 interface IProductItem extends DetailedFormSummary {}
 const ProductItem = (props: IProductItem) => {
@@ -133,6 +135,7 @@ type DetailedFormSummary = Omit<FormState, "optionResults"> & {
     name: string;
     total: number;
     media: UploadFile;
+    productReference: string;
     optionResults: (FormState["optionResults"][0] & {
         type: AllOption["type"];
     })[];
@@ -173,7 +176,6 @@ export const Summary = ({ event, products }: Props) => {
         []
     );
 
-    const handleSubmit = useCallback(() => {}, []);
     const sweden = findCountry("Sweden");
 
     const [selectedCountry, setSelectedCountry] = useState(sweden.name);
@@ -188,6 +190,7 @@ export const Summary = ({ event, products }: Props) => {
                     {
                         name: it.name || productData.name,
                         reference: it.reference,
+                        productReference: productData.reference,
                         media: defcast(productData.media),
                         amount: it.amount,
                         price: it.price,
@@ -232,6 +235,39 @@ export const Summary = ({ event, products }: Props) => {
                 : t("rsvp.paid", { cost: totalCost, currency: "SEK" }),
         []
     );
+
+    const toaster = useToast();
+
+    const handleSubmit = useCallback(async () => {
+        const { reference, reserved, paymentId } = await checkout.create({
+            // TODO: PRODUCT REF MIGHT BREAK RELATION IN BACKEND
+            items: productSummary.map((product) => ({
+                reference: product.productReference,
+                name: product.name,
+                quantity: product.amount,
+            })),
+            reference: defcast(event.slug),
+            customer,
+            options: productSummary.reduce((acc, { optionResults }) => {
+                return {
+                    ...acc,
+                    ...optionResults.reduce((_acc, it) => {
+                        return { ..._acc, [it.reference]: it.data };
+                    }, {}),
+                };
+            }, {}),
+        });
+        if (reserved && !paymentId && reference) {
+            toaster({
+                title: `[${reference}] Din osa har reserverats`,
+                description: `Ett bekräftelsemail har skickats till ${customer.email}`,
+                status: "success",
+                duration: 8000,
+            });
+        } else {
+        }
+    }, [customer, event.slug, productSummary, toaster]);
+
     useEffect(() => {
         if (error.length > 0 && formState.length === 0) {
             router.push(
@@ -411,7 +447,7 @@ export const Summary = ({ event, products }: Props) => {
                     </Button>
                 </React.Fragment>
             )}
-            {isDev && <pre>{JSON.stringify(customer, null, 2)}</pre>}
+            {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
             {loading && (
                 <Center w="full" h="80vh" flexDirection="column">
                     <Spinner size="xl" mb={8} />

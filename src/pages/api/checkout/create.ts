@@ -1,6 +1,7 @@
 import { axios as strapi } from "lib/strapi";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
+import { MetaOption } from "state/products";
 import _ from "underscore";
 import { createBody, createWebhook, isFree, nets } from "./utils";
 
@@ -20,11 +21,11 @@ interface IOrderItem {
     quantity: number;
 }
 
-interface ICreateBody {
+export interface ICreateBody {
     items: IOrderItem[];
     reference: string | number; // event-slug
     customer: NetsCustomer;
-    options: Record<string, (string | boolean)[]>;
+    options: Record<string, (string | boolean | MetaOption | null)[]>;
 }
 
 interface Product {
@@ -35,9 +36,7 @@ interface Product {
     price: number;
 }
 
-interface IProductBody {
-    products: Product[];
-}
+type IProductBody = Product[];
 
 const createClamp = (min: number, max: number) => (num: number) =>
     Math.min(Math.max(num, min), max);
@@ -57,7 +56,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ error: "All fields are required" });
     }
 
-    const itemReferences = items.map((r) => r.reference);
+    const incomingItemReferences = items.map((r) => r.reference);
 
     // get products from event-reference
     const productData = await strapi.get(`/events/${eventRef}/products`);
@@ -77,13 +76,13 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         });
     }
 
-    const { products } = productData.data as IProductBody;
+    const products = productData.data as IProductBody;
 
     const productReferences = products.map((p) => p.reference);
 
     const referenceIndex = _.indexBy(products, "reference");
-    // filter out falsy item.references from client
-    const refdiff = _.difference(productReferences, itemReferences);
+    // filter out invalid incoming item.references from client
+    const refdiff = _.difference(incomingItemReferences, productReferences);
     if (refdiff.length > 0) {
         return res
             .status(400)
@@ -160,6 +159,8 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         ],
     });
 
+    // console.log(JSON.stringify(body, null, 4));
+
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference
     await strapi.post("/orders", {
@@ -176,12 +177,21 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     // reserve products
+    /*
     body.order.items.forEach(async (i) => {
         await strapi.get(
             `/products/${i.reference}/reserve?quantity=${i.quantity}`
         );
     });
+    */
+    if (amount === 0) {
+        return res.status(200).json({
+            reserved: true,
+            reference: body.order.reference,
+        });
+    }
 
+    /*
     // requesting paymentId from nets
     const netsData = await nets.post("/payments", body);
     if (netsData.status === 400) {
@@ -203,8 +213,8 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     {
       "paymentId": "0260000060003b7b47f0833960dc60d6"
     }
-    */
     return netsData.data;
+    */
 };
 
 export default create;

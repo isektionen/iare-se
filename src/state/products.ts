@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import {
     ComponentEventFormInput,
@@ -11,6 +11,8 @@ import {
 } from "types/strapi";
 import _ from "underscore";
 import { defcast } from "utils/types";
+
+type GenericCallback = (...args: any[]) => any;
 
 type Conform<T, P> = Omit<T, "__typename"> & { __component: P };
 
@@ -237,6 +239,7 @@ const getInnerId = (idString: string) => {
 
 export const useCheckout = (products: Product[]) => {
     const [state, setState] = useRecoilState(_state);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formState, setFormState] = useRecoilState(_formState);
     const _attachments = useRecoilValue(attachments);
@@ -338,6 +341,7 @@ export const useCheckout = (products: Product[]) => {
 
     const appendData = useCallback(
         (id: string, ref: string, data: any = []) => {
+            setIsSubmitting(false);
             const stateId = getInnerId(id);
             if (_.has(state, stateId)) {
                 if (formState.some((s) => s.reference === id)) {
@@ -409,6 +413,26 @@ export const useCheckout = (products: Product[]) => {
         [formState]
     );
 
+    const hasError = useCallback(
+        (ref: string) => {
+            if (error.length > 0 && error.includes(ref) && isSubmitting) {
+                return true;
+            }
+            return false;
+        },
+        [error, isSubmitting]
+    );
+
+    const withSubmit = useCallback(
+        (cb: GenericCallback) => (args: any | any[]) => {
+            setIsSubmitting(true);
+            if (error.length === 0 && formState.length > 0) {
+                cb(formState);
+            }
+        },
+        [error.length, formState]
+    );
+
     return {
         updateProduct,
         attachments: _attachments,
@@ -417,5 +441,7 @@ export const useCheckout = (products: Product[]) => {
         appendData,
         getFormData,
         error,
+        withSubmit,
+        hasError,
     };
 };

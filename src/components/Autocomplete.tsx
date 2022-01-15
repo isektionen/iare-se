@@ -29,7 +29,8 @@ interface Props {
     canCreate?: boolean;
     setResult: React.Dispatch<React.SetStateAction<Option[]>>;
     placeholder?: string;
-    createText?: string;
+    createText?: (option: string | undefined) => string;
+    isInvalid?: boolean;
     renderSelect: (option: Option) => React.ReactNode;
     inputOptions?: InputProps;
     inputLeftIcon?: React.ReactNode;
@@ -185,6 +186,7 @@ export const AutoComplete = (props: Props) => {
                 <Input
                     {...props.inputOptions}
                     ref={inputRef}
+                    isInvalid={props.isInvalid}
                     onKeyDown={onKeyDown}
                     placeholder={props.placeholder ? props.placeholder : ""}
                     onChange={(e) => filterOptions(e.currentTarget.value)}
@@ -235,7 +237,7 @@ export const AutoComplete = (props: Props) => {
                         >
                             <Flex align="center">
                                 {props.createText
-                                    ? props.createText
+                                    ? props.createText(inputValue)
                                     : "Create new option"}
                             </Flex>
                         </ListItem>

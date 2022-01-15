@@ -17,6 +17,13 @@ import {
     FormLabel,
     Flex,
     Divider,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    CloseButton,
+    useDisclosure,
+    IconButton,
 } from "@chakra-ui/react";
 import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
@@ -27,6 +34,7 @@ import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 import { AllOption, FormState, useCheckout } from "state/products";
 import { Event, Product, UploadFile } from "types/strapi";
 import _ from "underscore";
@@ -38,6 +46,36 @@ interface Props {
     products: Product[];
 }
 
+interface IFormErrorHelper {
+    hasError: boolean;
+    text: string;
+}
+
+const FormErrorHelper = (props: IFormErrorHelper) => {
+    const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+    return (
+        <React.Fragment>
+            {isOpen && props.hasError && (
+                <Alert status="error">
+                    <AlertIcon />
+                    {props.text}
+
+                    {/*<IconButton
+                        colorScheme="blackAlpha"
+                        aria-label="close"
+                        variant="ghost"
+                        size="sm"
+                        position="absolute"
+                        right="8px"
+                        top="8px"
+                        onClick={onClose}
+                        icon={<MdClose />}
+                    />*/}
+                </Alert>
+            )}
+        </React.Fragment>
+    );
+};
 interface ProductProps extends Product {
     updateProduct: (id: string, v: number) => void;
     resetProduct: (id: string) => void;
@@ -135,6 +173,7 @@ interface AttachmentProps {
         id: string,
         ref: string
     ) => FormState["optionResults"][0] | undefined;
+    hasError: (ref: string) => boolean;
 }
 
 const Attachment = (props: AttachmentProps) => {
@@ -144,7 +183,13 @@ const Attachment = (props: AttachmentProps) => {
         switch (option?.type) {
             case "switch":
                 return (
-                    <HStack key={i} align="end" spacing={16} w="full">
+                    <HStack
+                        key={i}
+                        align="start"
+                        spacing={16}
+                        w="full"
+                        h="40px"
+                    >
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
                                 <FormLabel
@@ -164,19 +209,27 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-
-                        <Switch
-                            id={option.reference}
-                            size="lg"
-                            isRequired={option.required}
-                            onChange={(e) =>
-                                props.appendData(
-                                    id,
-                                    option.reference,
-                                    e.target.checked
-                                )
-                            }
-                        />
+                        <VStack h="full" justify="end">
+                            <Switch
+                                isInvalid={props.hasError(option.reference)}
+                                id={option.reference}
+                                size="lg"
+                                isRequired={option.required}
+                                onChange={(e) =>
+                                    props.appendData(
+                                        id,
+                                        option.reference,
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                            <FormErrorHelper
+                                hasError={props.hasError(option.reference)}
+                                text={t("error.is-required", {
+                                    field: option.label,
+                                })}
+                            />
+                        </VStack>
                     </HStack>
                 );
 
@@ -184,10 +237,11 @@ const Attachment = (props: AttachmentProps) => {
                 return (
                     <HStack
                         key={i}
-                        align="end"
+                        align="start"
                         spacing={16}
                         w="full"
                         position="relative"
+                        h="90px"
                     >
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
@@ -202,66 +256,85 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-                        <AutoComplete
-                            options={option.options}
-                            result={
-                                (props.getData(id, option.reference)?.data ??
-                                    []) as Option[]
-                            }
-                            setResult={(e) =>
-                                props.appendData(id, option.reference, e)
-                            }
-                            allowMany={option.allowMany}
-                            renderSelect={(option: Option) => (
-                                <Tag
-                                    borderRadius="full"
-                                    variant="solid"
-                                    colorScheme="blackAlpha"
-                                >
-                                    <TagLabel>{option.label}</TagLabel>
-                                    <TagCloseButton />
-                                </Tag>
-                            )}
-                            inputLeftIcon={<FaSearch />}
-                            inputOptions={{
-                                w: "300px",
-                                variant: "filled",
-                                bg: "gray.50",
-                                _hover: {
-                                    bg: "gray.200",
-                                },
-                                _active: {
-                                    bg: "gray.300",
-                                },
-                                _focus: {
-                                    bg: "gray.100",
-                                    borderColor: "blue.300",
-                                },
-                            }}
-                            listOptions={{
-                                position: "absolute",
-                                w: "300px",
-                                zIndex: 9999,
-                                mt: 1,
-                                spacing: 1,
-                                bg: "white",
-                                borderRadius: "md",
-                                borderColor: "gray.300",
-                                borderWidth: "1px",
-                                overflow: "hidden",
-                            }}
-                            listItemOptions={{
-                                p: 2,
-                                _hover: {
-                                    bg: "gray.200",
-                                },
-                            }}
-                        />
+                        <VStack h="full" justify="end">
+                            <AutoComplete
+                                canCreate
+                                createText={(option) =>
+                                    t("select.create", { option })
+                                }
+                                isInvalid={props.hasError(option.reference)}
+                                options={option.options}
+                                result={
+                                    (props.getData(id, option.reference)
+                                        ?.data ?? []) as Option[]
+                                }
+                                setResult={(e) =>
+                                    props.appendData(id, option.reference, e)
+                                }
+                                allowMany={option.allowMany}
+                                renderSelect={(option: Option) => (
+                                    <Tag
+                                        borderRadius="full"
+                                        variant="solid"
+                                        colorScheme="blackAlpha"
+                                    >
+                                        <TagLabel>{option.label}</TagLabel>
+                                        <TagCloseButton />
+                                    </Tag>
+                                )}
+                                inputLeftIcon={<FaSearch />}
+                                inputOptions={{
+                                    w: "300px",
+                                    variant: "filled",
+                                    bg: "gray.50",
+                                    _hover: {
+                                        bg: "gray.200",
+                                    },
+                                    _active: {
+                                        bg: "gray.300",
+                                    },
+                                    _focus: {
+                                        bg: "gray.100",
+                                        borderColor: "blue.300",
+                                    },
+                                }}
+                                listOptions={{
+                                    position: "absolute",
+                                    w: "300px",
+                                    zIndex: 9999,
+                                    mt: 1,
+                                    spacing: 1,
+                                    bg: "white",
+                                    borderRadius: "md",
+                                    borderColor: "gray.300",
+                                    borderWidth: "1px",
+                                    overflow: "hidden",
+                                }}
+                                listItemOptions={{
+                                    p: 2,
+                                    _hover: {
+                                        bg: "gray.200",
+                                    },
+                                }}
+                            />
+                            <FormErrorHelper
+                                hasError={props.hasError(option.reference)}
+                                text={t("error.is-required", {
+                                    field: option.label,
+                                })}
+                            />
+                        </VStack>
                     </HStack>
                 );
             case "input":
                 return (
-                    <HStack key={i} align="end" spacing={16} w="full">
+                    <HStack
+                        key={i}
+                        align="start"
+                        spacing={16}
+                        w="full"
+                        h="40px"
+                    >
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
                                 <Heading size="md">{option.label}</Heading>
@@ -275,29 +348,38 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-                        <Input
-                            size="md"
-                            maxW="300px"
-                            variant="filled"
-                            bg="gray.50"
-                            _hover={{
-                                bg: "gray.200",
-                            }}
-                            _active={{
-                                bg: "gray.300",
-                            }}
-                            _focus={{
-                                bg: "gray.100",
-                                borderColor: "blue.300",
-                            }}
-                            onChange={(e) =>
-                                props.appendData(
-                                    id,
-                                    option.reference,
-                                    e.target.value
-                                )
-                            }
-                        />
+                        <VStack h="full" justify="end">
+                            <Input
+                                isInvalid={props.hasError(option.reference)}
+                                size="md"
+                                maxW="300px"
+                                variant="filled"
+                                bg="gray.50"
+                                _hover={{
+                                    bg: "gray.200",
+                                }}
+                                _active={{
+                                    bg: "gray.300",
+                                }}
+                                _focus={{
+                                    bg: "gray.100",
+                                    borderColor: "blue.300",
+                                }}
+                                onChange={(e) =>
+                                    props.appendData(
+                                        id,
+                                        option.reference,
+                                        e.target.value
+                                    )
+                                }
+                            />
+                            <FormErrorHelper
+                                hasError={props.hasError(option.reference)}
+                                text={t("error.is-required", {
+                                    field: option.label,
+                                })}
+                            />
+                        </VStack>
                     </HStack>
                 );
 
@@ -361,6 +443,8 @@ const View = ({ event, products }: Props) => {
         appendData,
         getFormData,
         error,
+        hasError,
+        withSubmit,
     } = useCheckout(products);
 
     useEffect(() => {
@@ -370,68 +454,71 @@ const View = ({ event, products }: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleSummary = useCallback(() => {
+        router.push(`/event/${event.slug}/summary`, undefined, {
+            shallow: true,
+        });
+    }, [event.slug, router]);
+
     return (
-        <React.Fragment>
-            <VStack
-                bg="white"
-                pos="relative"
-                align="start"
-                spacing={8}
-                w="full"
-                px={{ base: 3, md: 16 }}
-                pt={{ base: 4, md: 10 }}
-                pb={{ base: 8, md: 16 }}
-            >
-                <Breadcrumb path={path} />
+        <VStack
+            bg="white"
+            pos="relative"
+            align="start"
+            spacing={8}
+            w="full"
+            px={{ base: 3, md: 16 }}
+            pt={{ base: 4, md: 10 }}
+            pb={{ base: 8, md: 16 }}
+        >
+            <Breadcrumb path={path} />
 
-                <Heading textTransform="capitalize">{event.title}</Heading>
-                <Text>{event.description}</Text>
-                <Heading>{t("products")}</Heading>
-                <Wrap shouldWrapChildren spacing={8}>
-                    {products.map((p) => (
-                        <ProductItem
-                            key={p.id}
-                            {...p}
-                            updateProduct={updateProduct}
-                            resetProduct={resetProduct}
-                        />
-                    ))}
-                </Wrap>
-                {attachments.length > 0 && (
-                    <React.Fragment>
-                        <Heading>{t("attachments")}</Heading>
-                        <pre>{JSON.stringify(error, null, 2)}</pre>
+            <Heading textTransform="capitalize">{event.title}</Heading>
+            <Text>{event.description}</Text>
+            <Heading>{t("products")}</Heading>
+            <Wrap shouldWrapChildren spacing={8}>
+                {products.map((p) => (
+                    <ProductItem
+                        key={p.id}
+                        {...p}
+                        updateProduct={updateProduct}
+                        resetProduct={resetProduct}
+                    />
+                ))}
+            </Wrap>
+            <pre>{JSON.stringify(formState, null, 2)}</pre>
 
-                        <VStack
-                            w="full"
-                            align="start"
-                            position="relative"
-                            spacing={8}
-                        >
-                            {_.sortBy(attachments, "consumable")
-                                .reverse()
-                                .map((att, i) => (
-                                    <React.Fragment key={i}>
-                                        <Heading size="lg">{att.name}</Heading>
-                                        <Divider />
-                                        <Attachment
-                                            {...att}
-                                            appendData={appendData}
-                                            getData={getFormData}
-                                        />
-                                    </React.Fragment>
-                                ))}
-                        </VStack>
-                    </React.Fragment>
-                )}
-                <Button
-                    variant="iareSolid"
-                    disabled={attachments.length > 0 && error.length > 0}
-                >
-                    Avsluta osan
-                </Button>
-            </VStack>
-        </React.Fragment>
+            {attachments.length > 0 && (
+                <React.Fragment>
+                    <Heading>{t("attachments")}</Heading>
+
+                    <VStack
+                        w="full"
+                        align="start"
+                        position="relative"
+                        spacing={8}
+                    >
+                        {_.sortBy(attachments, "consumable")
+                            .reverse()
+                            .map((att, i) => (
+                                <React.Fragment key={i}>
+                                    <Heading size="lg">{att.name}</Heading>
+                                    <Divider />
+                                    <Attachment
+                                        {...att}
+                                        appendData={appendData}
+                                        getData={getFormData}
+                                        hasError={hasError}
+                                    />
+                                </React.Fragment>
+                            ))}
+                    </VStack>
+                </React.Fragment>
+            )}
+            <Button variant="iareSolid" onClick={withSubmit(handleSummary)}>
+                Avsluta osan
+            </Button>
+        </VStack>
     );
 };
 

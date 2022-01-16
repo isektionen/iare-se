@@ -15,6 +15,9 @@ module.exports = (nextConfig = {}) => {
                     ? "http://localhost:1337"
                     : "https://cms.iare.se",
                 NEXT_PUBLIC_DETA: "https://366q30.deta.dev",
+                NETS_BEARER: isDev
+                    ? process.env.TEST_NETS_BEARER
+                    : process.env.LIVE_NETS_BEARER,
             };
             console.log(env);
             config.plugins.push(new webpack.EnvironmentPlugin(env));

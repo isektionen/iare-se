@@ -125,7 +125,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const [bearer, token] = auth.split(" ", 1);
     if (
-        token !== process.env.NETS_AUTH &&
+        token !== process.env.NETS_WEBHOOK_AUTH &&
         process.env.NODE_ENV === "production"
     ) {
         return res.status(401);

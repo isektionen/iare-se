@@ -153,16 +153,15 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         // webhooks will fill order with paymentData and possible errors
         webhooks: [
             createWebhook("created"),
-            createWebhook("charged.created.v2"),
-            createWebhook("charged.failed"),
+            createWebhook("charge.created.v2"),
+            createWebhook("charge.failed"),
             createWebhook("checkout.completed"),
         ],
     });
 
-    // console.log(JSON.stringify(body, null, 4));
-
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference
+
     await strapi.post("/orders", {
         customerData: {
             firstName: body.checkout.consumer?.privatePerson?.firstName,
@@ -177,13 +176,15 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     // reserve products
-    /*
+
     body.order.items.forEach(async (i) => {
         await strapi.get(
             `/products/${i.reference}/reserve?quantity=${i.quantity}`
         );
     });
-    */
+
+    //console.log(JSON.stringify(body, null, 2));
+
     if (amount === 0) {
         return res.status(200).json({
             reserved: true,
@@ -191,7 +192,6 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         });
     }
 
-    /*
     // requesting paymentId from nets
     const netsData = await nets.post("/payments", body);
     if (netsData.status === 400) {
@@ -213,8 +213,12 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     {
       "paymentId": "0260000060003b7b47f0833960dc60d6"
     }
-    return netsData.data;
     */
+    return res.status(200).json({
+        reserved: true,
+        paymentId: netsData.data.paymentId as string,
+        reference: body.order.reference,
+    });
 };
 
 export default create;

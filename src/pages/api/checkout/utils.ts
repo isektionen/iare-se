@@ -3,8 +3,8 @@ import axios from "axios";
 type NetsWebhook =
     | "checkout.completed"
     | "created"
-    | "charged.created.v2"
-    | "charged.failed"
+    | "charge.created.v2"
+    | "charge.failed"
     | "cancel.created"
     | "cancel.failed"
     | "refund.initiated.v2"
@@ -76,11 +76,14 @@ export function createBody({
     return {
         order,
         checkout: {
-            termsUrl: process.env.NETS_TERMS || "https://iare.se",
+            termsUrl:
+                process.env.NODE_ENV === "production"
+                    ? "https://iare.se"
+                    : "http://localhost:3000",
             publicDevice: false,
             charge: true,
             integrationType: "EmbeddedCheckout",
-            merchantHandlesConsumerData: false,
+            merchantHandlesConsumerData: true,
             url:
                 process.env.NODE_ENV === "production"
                     ? "https://iare.se"
@@ -99,8 +102,9 @@ export function createWebhook(eventName: NetsWebhook) {
         url:
             process.env.NODE_ENV === "production"
                 ? "https://iare.se/api/checkout/callback"
-                : "http://localhost:3000/api/checkout/callback",
-        authorization: process.env.NETS_AUTH || "invalid-environment",
+                : /*: "http://localhost:3000/api/checkout/callback"*/
+                  "https://e344-2001-6b0-1-1041-5894-5c67-9849-b2e4.ngrok.io/api/checkout/callback",
+        authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
     };
 }
 
@@ -110,7 +114,7 @@ export const nets = axios.create({
             ? "https://api.dibspayment.eu/v1"
             : "https://test.api.dibspayment.eu/v1",
     headers: {
-        Authorization: `Bearer ${process.env.NETS_BEARER}`,
+        Authorization: process.env.NETS_BEARER,
     },
 });
 

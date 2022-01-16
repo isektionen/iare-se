@@ -263,6 +263,7 @@ export const Summary = ({ event, products }: Props) => {
             totalCost === 0
                 ? t("rsvp.free")
                 : t("rsvp.paid", { cost: totalCost, currency: "SEK" }),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
@@ -291,8 +292,10 @@ export const Summary = ({ event, products }: Props) => {
         setOrderReference(reference);
         if (reserved && !paymentId && reference) {
             toaster({
-                title: `[${reference}] Din osa har reserverats`,
-                description: `Ett bekräftelsemail har skickats till ${customer.email}`,
+                title: t("checkout.complete.title", { code: reference }),
+                description: t("checkout.complete.description", {
+                    email: customer.email,
+                }),
                 status: "success",
                 duration: 8000,
             });
@@ -306,26 +309,30 @@ export const Summary = ({ event, products }: Props) => {
         hydrateCheckout,
         onOpen,
         productSummary,
+        t,
         toaster,
     ]);
 
     useEffect(() => {
-        if (checkout) {
-            console.log("HELLO");
+        if (checkout && isOpen) {
             checkout.on("pay-initialized", () => {
                 checkout.send("payment-order-finalized", true);
             });
             checkout.on("payment-completed", ({ paymentId }) => {
                 onClose();
                 toaster({
-                    title: `[${orderReference}] Din betalning har reserverats`,
-                    description: `Ett bekräftelsemail har skickats till ${customer.email}`,
+                    title: t("checkout.complete.title", {
+                        code: defcast(orderReference),
+                    }),
+                    description: t("checkout.complete.description", {
+                        email: customer.email,
+                    }),
                     status: "success",
                     duration: 8000,
                 });
             });
         }
-    }, [checkout, customer.email, onClose, orderReference, toaster]);
+    }, [checkout, customer.email, isOpen, onClose, orderReference, t, toaster]);
 
     useEffect(() => {
         if (error.length > 0 && formState.length === 0) {

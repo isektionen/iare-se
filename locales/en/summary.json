@@ -19,6 +19,12 @@
       "number": "Number",
       "prefix": "Prefix"
     }
+  },
+  "checkout": {
+    "complete": {
+      "title": "[{{code}}] Your order is completed",
+      "description": "A confirmation email is sent to {{email}}"
+    }
   }
 
 }

@@ -19,6 +19,12 @@
       "number": "Telefonnummer",
       "prefix": "Prefix"
     }
+  },
+  "checkout": {
+    "complete": {
+      "title": "[{{code}}] Din order har reserverats",
+      "description": "Ett bekräftelsemail har skickats till {{email}}"
+    }
   }
 
 }

@@ -71,7 +71,9 @@ const ProductItem = (props: IProductItem) => {
                     <React.Fragment key={i}>
                         <Heading size="md">{option.label}</Heading>
                         <Text noOfLines={2}>
-                            {option.data.filter((p) => p !== null).join(", ")}
+                            {option.data
+                                .map((p) => (p === null ? "-" : p))
+                                .join(", ")}
                         </Text>
                     </React.Fragment>
                 );
@@ -125,7 +127,9 @@ const ProductItem = (props: IProductItem) => {
                     <Heading textTransform="capitalize">{props.name}</Heading>
                 </HStack>
                 <Text>{props.total} SEK</Text>
-                {props.optionResults.map(RenderOptions)}
+                {props.optionResults
+                    .filter((p) => p.data.length !== 0)
+                    .map(RenderOptions)}
             </VStack>
             <IconButton
                 size="sm"
@@ -185,6 +189,7 @@ export const Summary = ({ event, products }: Props) => {
         customer,
         hasError,
         withSubmit,
+        isLoading,
     } = useSummary();
 
     const { hydrateCheckout, checkout } = usePayment({
@@ -289,8 +294,9 @@ export const Summary = ({ event, products }: Props) => {
                 };
             }, {}),
         });
-        setOrderReference(reference);
         if (reserved && !paymentId && reference) {
+            setOrderReference(reference);
+
             toaster({
                 title: t("checkout.complete.title", { code: reference }),
                 description: t("checkout.complete.description", {
@@ -300,6 +306,8 @@ export const Summary = ({ event, products }: Props) => {
                 duration: 8000,
             });
         } else if (paymentId && reserved && reference) {
+            setOrderReference(reference);
+
             onOpen();
             hydrateCheckout(paymentId);
         }
@@ -543,6 +551,8 @@ export const Summary = ({ event, products }: Props) => {
                             ))}
                         </VStack>
                         <Button
+                            isLoading={isLoading && !isOpen && !orderReference}
+                            disabled={orderReference ? true : false}
                             variant="iareSolid"
                             rightIcon={<BiChevronRight />}
                             onClick={withSubmit(handleSubmit)}

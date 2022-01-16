@@ -372,6 +372,7 @@ export const useSummary = () => {
         updateCustomerData,
         withSubmit,
         hasError,
+        isLoading: isSubmitting,
     };
 };
 

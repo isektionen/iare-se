@@ -176,6 +176,7 @@ const View = ({
     );
 
     const toaster = useToast();
+    const isMd = useBreakpointValue({ base: false, md: true });
 
     useEffect(() => {
         const { callback } = router.query as { callback: string };
@@ -210,8 +211,13 @@ const View = ({
 
             router.replace(`/event/${event.slug}`);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.query]);
 
+    const ImageLayout: "intrinsic" | "fill" | undefined = useBreakpointValue({
+        base: "intrinsic",
+        md: "fill",
+    });
     return (
         <React.Fragment>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -307,7 +313,7 @@ const View = ({
                                 src={image.url}
                                 width={image.width || 0}
                                 height={image.height || 0}
-                                layout="fill"
+                                layout={ImageLayout}
                                 objectFit="cover"
                                 priority
                             />
@@ -319,6 +325,7 @@ const View = ({
                 <MDXLayout source={mdx} />
                 {Rsvpable ? (
                     <Button
+                        isFullWidth={!isMd}
                         variant="iareSolid"
                         rightIcon={<BiChevronRight />}
                         onClick={goToRsvp}

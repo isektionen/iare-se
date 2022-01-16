@@ -67,6 +67,7 @@ export const Carousel = ({ children, title, description, ...props }: Props) => {
             shadow="dark-lg"
             w="full"
             position="relative"
+            h={{ base: "full", md: "auto" }}
             {...props}
         >
             <Box
@@ -129,7 +130,7 @@ export const Carousel = ({ children, title, description, ...props }: Props) => {
                             key={i}
                             position="relative"
                             w="full"
-                            h="xl"
+                            h={{ base: "full", md: "xl" }}
                             flex="0 0 auto"
                         >
                             {child}

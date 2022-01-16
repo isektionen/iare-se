@@ -10,6 +10,7 @@ import {
     Spacer,
     Icon,
     Box,
+    Stack,
 } from "@chakra-ui/react";
 import { getTimeLeft } from "utils/dates";
 import useTranslation from "next-translate/useTranslation";
@@ -35,13 +36,18 @@ export const DeadlineCounter = ({ schedule, ...props }: Props) => {
         date: format(endDate, "dd MMMM"),
     };
     return (
-        <HStack spacing={16}>
+        <Stack
+            spacing={{ base: 8, md: 16 }}
+            w="full"
+            direction={{ base: "column", md: "row" }}
+        >
             <VStack
                 bg="#C5B19F"
                 borderRadius={7}
+                align={{ base: "start", md: "center" }}
                 p={4}
                 h={36}
-                w={36}
+                w={{ base: "full", md: 36 }}
                 justify="space-evenly"
             >
                 <Text>Deadline</Text>
@@ -86,6 +92,6 @@ export const DeadlineCounter = ({ schedule, ...props }: Props) => {
                     </Box>
                 </VStack>
             </HStack>
-        </HStack>
+        </Stack>
     );
 };

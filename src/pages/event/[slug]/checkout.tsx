@@ -18,6 +18,8 @@ import {
     AlertIcon,
     useDisclosure,
     IconButton,
+    Stack,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { AutoComplete, Option } from "components/Autocomplete";
 import { Breadcrumb } from "components/Breadcrumb";
@@ -187,20 +189,23 @@ interface AttachmentProps {
 const Attachment = (props: AttachmentProps) => {
     const { t } = useTranslation("checkout");
 
+    const isMd = useBreakpointValue({ base: false, md: true });
+
     const ParseOption = (option: AllOption, i: number, id: string) => {
         const ref = `${option.reference}::${_.last(id.split("::"))}`;
 
         switch (option?.type) {
             case "switch":
                 return (
-                    <HStack
+                    <Stack
                         key={i}
                         align="start"
-                        spacing={16}
+                        spacing={{ base: 8, md: 16 }}
                         w="full"
-                        h="40px"
+                        h={{ base: "auto", md: "40px" }}
+                        direction={{ base: "column", md: "row" }}
                     >
-                        <VStack align="start" spacing={6}>
+                        <VStack align="start" spacing={{ base: 2, md: 6 }}>
                             <HStack spacing={0.5}>
                                 <FormLabel
                                     fontWeight="semibold"
@@ -240,18 +245,19 @@ const Attachment = (props: AttachmentProps) => {
                                 })}
                             />
                         </VStack>
-                    </HStack>
+                    </Stack>
                 );
 
             case "select":
                 return (
-                    <HStack
+                    <Stack
                         key={i}
                         align="start"
-                        spacing={16}
+                        spacing={{ base: 8, md: 16 }}
                         w="full"
                         position="relative"
-                        h="90px"
+                        h={{ base: "auto", md: "90px" }}
+                        direction={{ base: "column", md: "row" }}
                     >
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
@@ -266,7 +272,7 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-                        <VStack h="full" justify="end">
+                        <VStack h="full" justify={{ base: "start", md: "end" }}>
                             <AutoComplete
                                 canCreate
                                 createText={(option) =>
@@ -334,11 +340,17 @@ const Attachment = (props: AttachmentProps) => {
                                 })}
                             />
                         </VStack>
-                    </HStack>
+                    </Stack>
                 );
             case "input":
                 return (
-                    <HStack key={i} align="end" spacing={16} w="full">
+                    <Stack
+                        key={i}
+                        align={{ base: "start", md: "end" }}
+                        spacing={{ base: 8, md: 16 }}
+                        w="full"
+                        direction={{ base: "column", md: "row" }}
+                    >
                         <VStack align="start" spacing={6}>
                             <HStack spacing={0.5}>
                                 <Heading size="md">{option.label}</Heading>
@@ -352,11 +364,11 @@ const Attachment = (props: AttachmentProps) => {
                                 {option.description}
                             </Text>
                         </VStack>
-                        <VStack h="full" justify="end">
+                        <VStack h="full" justify="end" w="full">
                             <Input
                                 isInvalid={props.hasError(option.reference)}
                                 size="md"
-                                maxW="300px"
+                                maxW={{ base: "full", md: "300px" }}
                                 variant="filled"
                                 bg="gray.50"
                                 _hover={{
@@ -384,7 +396,7 @@ const Attachment = (props: AttachmentProps) => {
                                 })}
                             />
                         </VStack>
-                    </HStack>
+                    </Stack>
                 );
 
             default:
@@ -405,17 +417,7 @@ const Attachment = (props: AttachmentProps) => {
                 <Flex>
                     <Text color="gray.600" fontSize="sm">
                         {t("consumable-disclaimer.left")}
-                    </Text>
-                    <Text
-                        ml={1}
-                        fontWeight="bold"
-                        color="gray.600"
-                        fontSize="sm"
-                    >
-                        {props.name}
-                    </Text>
-
-                    <Text color="gray.600" fontSize="sm">
+                        <b>{props.name}</b>
                         {t("consumable-disclaimer.right")}
                     </Text>
                 </Flex>
@@ -440,6 +442,8 @@ const View = ({ event, products }: Props) => {
     ];
 
     const isDev = useMemo(() => DEV(), []);
+
+    const isMd = useBreakpointValue({ base: false, md: true });
 
     const {
         attachments,
@@ -526,6 +530,7 @@ const View = ({ event, products }: Props) => {
                     text={t("error.is-empty")}
                 />
                 <Button
+                    isFullWidth={!isMd}
                     variant="iareSolid"
                     onClick={withSubmit(handleSummary)}
                     rightIcon={<BiChevronRight />}

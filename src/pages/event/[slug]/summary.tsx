@@ -31,6 +31,8 @@ import {
     AspectRatio,
     Box,
     Badge,
+    Stack,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
@@ -118,9 +120,14 @@ const ProductItem = (props: IProductItem) => {
     );
     const isFree = useMemo(() => props.price === 0, [props.price]);
     return (
-        <HStack w="full" align="start" spacing={8}>
+        <Stack
+            direction={{ base: "column", md: "row" }}
+            w="full"
+            align="start"
+            spacing={8}
+        >
             <NextImage
-                w="35%"
+                w={{ base: "full", md: "35%" }}
                 borderRadius={7}
                 overflow="hidden"
                 src={defcast(props.media.url)}
@@ -150,13 +157,14 @@ const ProductItem = (props: IProductItem) => {
             </VStack>
             {props.isRemovable && (
                 <IconButton
+                    alignSelf={{ base: "end", md: "start" }}
                     size="sm"
                     aria-label="remove"
                     icon={<HiTrash />}
                     onClick={props.onClick}
                 />
             )}
-        </HStack>
+        </Stack>
     );
 };
 
@@ -406,6 +414,8 @@ const SummaryCheckout = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const isMd = useBreakpointValue({ base: false, md: true });
+
     return (
         <React.Fragment>
             <Script
@@ -417,6 +427,7 @@ const SummaryCheckout = ({
                 strategy="afterInteractive"
             />
             <Modal
+                size={isMd ? "md" : "full"}
                 scrollBehavior="inside"
                 isCentered
                 onClose={onClose}
@@ -518,7 +529,9 @@ const SummaryCheckout = ({
                                 {t("details.phone.number")}
                             </FormLabel>
                             <InputGroup variant="filled">
-                                <InputLeftElement w="20%">
+                                <InputLeftElement
+                                    w={{ base: "40%", md: "20%" }}
+                                >
                                     <Select
                                         borderRightRadius={0}
                                         value={selectedCountry}
@@ -548,7 +561,7 @@ const SummaryCheckout = ({
                                 <Input
                                     id="phone"
                                     type="tel"
-                                    pl="20%"
+                                    pl={{ base: "40%", md: "20%" }}
                                     onChange={(e) => {
                                         updateCustomerData({
                                             phone: {
@@ -591,6 +604,7 @@ const SummaryCheckout = ({
                         </FormControl>
 
                         <Button
+                            isFullWidth={!isMd}
                             isLoading={isLoading && !isOpen && !orderReference}
                             disabled={orderReference ? true : false}
                             variant="iareSolid"
@@ -738,7 +752,7 @@ const SummaryView = ({
                         {t("details.phone.number")}
                     </FormLabel>
                     <InputGroup variant="filled">
-                        <InputLeftElement w="20%">
+                        <InputLeftElement w={{ base: "40%", md: "20%" }}>
                             <Select borderRightRadius={0} value={country.name}>
                                 <option value={country.name}>
                                     {country.name}
@@ -748,7 +762,7 @@ const SummaryView = ({
                         <Input
                             id="phone"
                             type="tel"
-                            pl="20%"
+                            pl={{ base: "40%", md: "20%" }}
                             value={reciept.data.customerData.phoneNumber.number}
                         />
                     </InputGroup>
@@ -763,7 +777,7 @@ const SummaryView = ({
                         value={reciept.data.customerData.email}
                     />
                 </FormControl>
-                <Wrap shouldWrapChildren w="full" spacing={8}>
+                <Wrap shouldWrapChildren w="full" spacing={{ base: 4, md: 8 }}>
                     <Badge variant="subtle">{reciept.created_at}</Badge>
                     <Badge variant="subtle">{reciept.event.slug}</Badge>
                     <Badge

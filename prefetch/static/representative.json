@@ -91,6 +91,19 @@
             "published_at": "2021-08-25T08:20:30.634Z",
             "created_at": "2021-08-25T08:19:28.186Z",
             "updated_at": "2021-08-25T08:36:02.420Z"
+        },
+        {
+            "id": 2,
+            "role": "Ordförande",
+            "abbreviation": "sd",
+            "featured_role": false,
+            "contact": "lol@lol.lol",
+            "slug": "ordfoerande",
+            "role_description": null,
+            "locale": "sv-SE",
+            "published_at": "2022-01-16T21:31:03.859Z",
+            "created_at": "2022-01-16T21:30:40.691Z",
+            "updated_at": "2022-01-16T21:31:03.880Z"
         }
     ],
     "committee_objectives": [
@@ -117,5 +130,11 @@
             "icon": null
         }
     ],
-    "localizations": []
+    "localizations": [
+        {
+            "id": 3,
+            "locale": "en",
+            "published_at": "2022-01-16T21:34:05.709Z"
+        }
+    ]
 }

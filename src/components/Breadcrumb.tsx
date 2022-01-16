@@ -5,6 +5,7 @@ import {
     BreadcrumbProps,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
+import { LinkComponent } from "./LinkComponent";
 
 interface Props extends BreadcrumbProps {
     path: { label: string; href: string }[];
@@ -26,9 +27,12 @@ export const Breadcrumb = ({ path, ...props }: Props) => {
                     fontWeight={isLastChild(i) ? "bold" : "normal"}
                     key={item.label}
                 >
-                    <BreadcrumbLink href={item.href} textTransform="capitalize">
+                    {/*<BreadcrumbLink href={item.href} textTransform="capitalize">
                         {item.label}
-                    </BreadcrumbLink>
+            </BreadcrumbLink>*/}
+                    <LinkComponent href={item.href} textTransform="capitalize">
+                        {item.label}
+                    </LinkComponent>
                 </BreadcrumbItem>
             ))}
         </BaseBreadcrumb>

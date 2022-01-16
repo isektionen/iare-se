@@ -8,35 +8,35 @@ const hydrate = async (locale: TLocale) => {
         data: { chapter },
         error,
     } = await queryLocale<{ chapter: Chapter }>`
-        query {
-            chapter(locale: ${locale}) {
-                content
-                title
-                board {
-                    representatives(where: { hidden: false }) {
-                        id
-                        user {
-                            firstname
-                            lastname
-                        }
-                        cover {
-                            url
-                        }
-                        committee_roles {
-                            role
-                            abbreviation
-                            committee_objectives {
-                                objective
-                            }
+    query FindChapter {
+        chapter(locale: ${locale}) {
+            content
+            title
+            board {
+                representatives(where: { hidden: false }) {
+                    id
+                    user {
+                        firstname
+                        lastname
+                    }
+                    cover {
+                        url
+                    }
+                    committee_roles {
+                        role
+                        abbreviation
+                        committee_objectives {
+                            objective
                         }
                     }
                 }
-                images {
-                    id
-                    url
-                }
+            }
+            images {
+                id
+                url
             }
         }
+    }
     `;
     return { chapter, error };
 };

@@ -39,7 +39,12 @@
                     "href": "/"
                 }
             ],
-            "representative": null,
+            "representative": {
+                "user": {
+                    "firstname": "John",
+                    "lastname": "Landeholt"
+                }
+            },
             "logo": {
                 "alternativeText": "",
                 "width": 1240,

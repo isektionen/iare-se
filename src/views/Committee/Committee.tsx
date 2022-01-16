@@ -2,7 +2,6 @@ import { Flex, Heading } from "@chakra-ui/react";
 import { Sidebar } from "components/committee/Sidebar";
 import { MDXLayout } from "components/mdx/Layout";
 import { useSanity } from "hooks/use-check-error";
-import committee from "models/committee";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";

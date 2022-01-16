@@ -1,6 +1,13 @@
-import { Stack, Heading, Wrap, Avatar, VStack, Text } from "@chakra-ui/react";
+import {
+    Stack,
+    Heading,
+    Wrap,
+    Avatar,
+    VStack,
+    Text,
+    Box,
+} from "@chakra-ui/react";
 import { MDXLayout } from "components/mdx/Layout";
-import Box from "components/motion/Box";
 import { NextImage } from "components/NextImage";
 import { useSanity } from "hooks/use-check-error";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";

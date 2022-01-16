@@ -7,7 +7,7 @@ const student = {
         const { data, error } = await queryLocale<{
             acceptedStudent: AcceptedStudent;
         }>`
-        query {
+        query FindAcceptedStudent {
             acceptedStudent(locale: ${locale}) {
                 content
                 title

@@ -1,24 +1,20 @@
 import {
     Accordion,
     AccordionButton,
-    AccordionIcon,
     AccordionItem,
     AccordionPanel,
 } from "@chakra-ui/accordion";
 import { useBreakpointValue } from "@chakra-ui/media-query";
 import {
     Box,
-    chakra,
     Flex,
     HStack,
     Icon,
     List,
     ListItem,
-    Spacer,
     Text,
 } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
-import MotionBox from "components/motion/Box";
 import { motion } from "framer-motion";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
@@ -30,6 +26,8 @@ import {
     ComponentHeaderSubSection,
 } from "types/strapi";
 import { mergeLink } from "utils/mergeHref";
+
+const MotionBox = motion(Box);
 
 const ListContainer = ({
     subSection,

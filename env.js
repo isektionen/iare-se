@@ -1,8 +1,9 @@
 module.exports = (nextConfig = {}) => {
     return Object.assign({}, nextConfig, {
         webpack: (config, { dev, webpack }) => {
-            const test_nets_local = false;
+            const test_nets_local = true;
 
+            const force_local_backend = true;
             const isDev = dev;
 
             console.log(`isDev: ${isDev}`);
@@ -15,10 +16,10 @@ module.exports = (nextConfig = {}) => {
                     test_nets_local || !isDev
                         ? process.env.TEST_CHECKOUT_KEY
                         : process.env.LIVE_CHECKOUT_KEY,
-                NEXT_PUBLIC_STRAPI: isDev
-                    ? "http://localhost:1337"
-                    : "https://cms.iare.se",
-                NEXT_PUBLIC_DETA: "https://366q30.deta.dev",
+                NEXT_PUBLIC_STRAPI:
+                    isDev || force_local_backend
+                        ? "http://localhost:1337"
+                        : "https://cms.iare.se",
                 NETS_BEARER:
                     test_nets_local || !isDev
                         ? process.env.TEST_NETS_BEARER

@@ -20,7 +20,6 @@ import { useSetLocaleSlug } from "state/locale";
 import { LayoutProps } from "types/global";
 import { Post, UploadFile } from "types/strapi";
 import { makeTitle } from "utils/seo";
-import defaultPost from "../../../prefetch/static/blog.json";
 interface Props {
     post: Post;
     mdx: MDXRemoteSerializeResult;
@@ -29,8 +28,7 @@ interface Props {
 const View = ({
     header,
     footer,
-    /* @ts-ignore */
-    post = defaultPost,
+    post,
     mdx,
     error,
     localeSlugs,

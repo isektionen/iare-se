@@ -1112,7 +1112,6 @@ export type ComponentEventFormSelect = {
   required: Scalars['Boolean'];
   description: Scalars['String'];
   meta_option?: Maybe<MetaOption>;
-  allowMany: Scalars['Boolean'];
 };
 
 export type ComponentEventFormSelectInput = {
@@ -1120,7 +1119,6 @@ export type ComponentEventFormSelectInput = {
   required?: Maybe<Scalars['Boolean']>;
   description: Scalars['String'];
   meta_option?: Maybe<Scalars['ID']>;
-  allowMany?: Maybe<Scalars['Boolean']>;
 };
 
 export type ComponentEventFormSwitch = {
@@ -5886,7 +5884,6 @@ export type EditComponentEventFormSelectInput = {
   required?: Maybe<Scalars['Boolean']>;
   description?: Maybe<Scalars['String']>;
   meta_option?: Maybe<Scalars['ID']>;
-  allowMany?: Maybe<Scalars['Boolean']>;
 };
 
 export type EditComponentEventFormSwitchInput = {

@@ -33,7 +33,7 @@ const getHref = (item: Event | Post | Jobs) => {
 const getDateTime = (item: Event | Post | Jobs) => {
     switch (item.__typename) {
         case "Event":
-            return item.startTime;
+            return item.schedule?.start;
         case "Post":
             return item.published_at;
         case "Jobs":

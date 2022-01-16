@@ -1,4 +1,5 @@
 import {
+    Box,
     Text,
     GridItemProps,
     useBreakpointValue,
@@ -13,13 +14,11 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import { LinkComponent } from "components/LinkComponent";
-import Box from "components/motion/Box";
 import { NextImage } from "components/NextImage";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { MdDateRange } from "react-icons/md";
 import { getDate } from "utils/dates";
-
 
 interface ItemProps {
     categories: string[];

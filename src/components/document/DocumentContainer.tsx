@@ -1,13 +1,5 @@
 import { Button } from "@chakra-ui/button";
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    chakra,
     AspectRatio,
     Drawer,
     DrawerBody,
@@ -16,33 +8,17 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
-    Input,
     HStack,
-    Placement,
     useBreakpointValue,
     SlideDirection,
-    Spinner,
     Box,
-    Center,
-    Flex,
     Text,
     VStack,
 } from "@chakra-ui/react";
 import { WrapPadding } from "components/browser/WrapPadding";
-import {
-    DocumentContext,
-    DocumentType,
-    NewDocumentType,
-} from "hooks/use-document";
+
 import useTranslation from "next-translate/useTranslation";
-import React, {
-    ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React from "react";
 import { isMobile } from "react-device-detect";
 import { useDocumentContext } from "state/document";
 

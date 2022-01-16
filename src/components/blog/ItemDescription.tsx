@@ -65,7 +65,9 @@ export const ItemDescription = ({
                     <Flex align="center">
                         <Icon as={MdDateRange} mr={1} />
                         <Text size="sm">
-                            {getDate(calendarDate, "EEEE d MMM", lang)}
+                            {calendarDate !== "N/A"
+                                ? getDate(calendarDate, "EEEE d MMM", lang)
+                                : calendarDate}
                         </Text>
                     </Flex>
                     <Text size="sm">{author}</Text>

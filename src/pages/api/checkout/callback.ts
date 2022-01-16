@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * callback endpoint is for webhooks recieved from nets.
  * For the time being it only supports these events:
@@ -83,7 +84,7 @@ interface NetsCreated extends BaseNetsWebhook {
 
 interface NetsChargeCreated extends BaseNetsWebhook {
     event: "payment.charge.created.v2";
-    data: BaseNetsWebhook["data"] & {
+    data: {
         chargeId: string;
         paymentMethod: string;
         paymentType: string;
@@ -91,13 +92,45 @@ interface NetsChargeCreated extends BaseNetsWebhook {
             amount: number;
             currency: string;
         };
+        paymentId: string;
+        order: {
+            amount: number;
+            reference: string;
+            orderItems: {
+                reference: string;
+                name: string;
+                quantity: number;
+                unit: string;
+                unitPrice: number;
+                taxRate?: number;
+                taxAmount?: number;
+                grossTotalAmount: number;
+                netTotalAmount: number;
+            }[];
+        };
     };
 }
 
 interface NetsChargeFailed extends BaseNetsWebhook {
     event: "payment.charge.failed";
-    data: BaseNetsWebhook["data"] & {
-        error: {
+    data: {
+        paymentId: string;
+        order: {
+            amount: number;
+            reference: string;
+            orderItems: {
+                reference: string;
+                name: string;
+                quantity: number;
+                unit: string;
+                unitPrice: number;
+                taxRate?: number;
+                taxAmount?: number;
+                grossTotalAmount: number;
+                netTotalAmount: number;
+            }[];
+        };
+        error?: {
             message?: string;
             code?: string;
             source?: string;
@@ -152,17 +185,20 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             break;
         case "payment.charge.failed":
             console.error("WEBHOOK ERROR: " + data.order.reference);
-            console.error(data.error);
+            // console.error(data?.error);
 
             body.status = "failed";
             body.paymentData.paymentId = data.paymentId;
-            body.paymentData.chargeId = data.chargeId;
-            body.errors = [data.error];
+            /* @ts-ignore */
+            body.paymentData.chargeId = data.chargeId ? data.chargeId : "N/A";
+            /* @ts-ignore */
+            body.errors = data.error ? [data?.error] : [];
             break;
         case "payment.charge.created.v2":
             body.status = "charged";
             body.paymentData.paymentId = data.paymentId;
-            body.paymentData.chargeId = data.chargeId;
+            /* @ts-ignore */
+            body.paymentData.chargeId = data.chargeId ? data.chargeId : "N/A";
             body.paymentData.amount = data.amount;
             body.paymentData.payment = {
                 method: data.paymentMethod,

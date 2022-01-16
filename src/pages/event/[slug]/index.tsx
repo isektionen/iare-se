@@ -6,7 +6,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import eventModel from "models/event";
 import View from "views/Event";
 import { conformLocale } from "utils/lang";
-
+import defaultEvent from "../../../../prefetch/static/event.json";
 export default View;
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -17,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: true,
+        fallback: false,
     };
 };
 
@@ -27,6 +27,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         locale,
         params?.slug as string
     );
+    const _event = event ?? defaultEvent;
 
     const requiresPassword = await eventModel.checkIfGuarded(
         locale,
@@ -34,7 +35,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     );
 
     const localeSlugs = extractLocales(
-        { event },
+        { event: _event },
         ["event"],
         ["locale", "slug"]
     ).map((item) => ({
@@ -45,15 +46,16 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
                 : `/${item.locale}/event/${item.slug}`,
     }));
 
-    const mdxSource = event?.body
-        ? await serialize(event?.body as string)
+    const mdxSource = _event?.body
+        ? await serialize(_event?.body as string)
         : null;
+
     return {
         props: {
             error,
             localeSlugs,
             mdx: mdxSource,
-            event,
+            _event,
             requiresPassword,
             ...(await fetchHydration()),
         },

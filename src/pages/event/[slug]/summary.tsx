@@ -46,7 +46,7 @@ import eventModel from "models/event";
 import { isBeforeDeadline } from "utils/dates";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
-import { DEV } from "utils/error";
+import { DEV } from "utils/env";
 import { NextImage } from "components/NextImage";
 import { HiTrash } from "react-icons/hi";
 import { defcast } from "utils/types";

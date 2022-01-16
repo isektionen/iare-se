@@ -149,6 +149,7 @@ const getEvents = async (locale: TLocale) => {
             schedule {
               start
               deadline
+              end
             }
             description
             location

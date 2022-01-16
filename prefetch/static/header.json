@@ -186,8 +186,27 @@
                 "height": 70,
                 "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_1_ca9b97bc62.svg"
             },
-            "feedbackbox": null,
-            "sections": [],
+            "feedbackbox": {
+                "description": "blablabla"
+            },
+            "sections": [
+                {
+                    "id": "5",
+                    "label": "asdasd",
+                    "displayDropDown": false,
+                    "href": "adsads",
+                    "subSection": [
+                        {
+                            "id": "16",
+                            "label": "das",
+                            "href": "dsa",
+                            "description": "das",
+                            "icon": "question",
+                            "color": "gray"
+                        }
+                    ]
+                }
+            ],
             "languages": [
                 {
                     "label": "Swedish",

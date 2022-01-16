@@ -2,13 +2,12 @@ import { Box, Flex, Stack, VStack } from "@chakra-ui/react";
 import { SelectMenu, SelectOption } from "components/document/SearchBar";
 import { LinkComponent } from "components/LinkComponent";
 import { NextImage } from "components/NextImage";
-import { useQuery } from "hooks/use-nets";
 import useTranslation from "next-translate/useTranslation";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
-import { Post, Jobs, Event } from "types/strapi";
+import { Post, Jobs, Event, UploadFile } from "types/strapi";
 import _ from "underscore";
 
 import { Calendar } from "components/blog/Calendar";
@@ -29,6 +28,7 @@ export type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     __body: string;
     __calendarDate: string;
     __href: string;
+    __media?: UploadFile;
     categories: string[];
 })[];
 
@@ -36,6 +36,21 @@ interface Props {
     feed: Feed;
     categories: Record<string, string[]>;
 }
+
+const useQuery = (router: NextRouter) => {
+    // this uses nextjs router
+    const query = router.asPath.split("?")[1];
+    if (!query) return {};
+    const pairs = query.split(/[;&]/);
+    const params = pairs.reduce((params, kv) => {
+        const [key, value] = kv.split("=");
+        if (key && value) {
+            return { ...params, [key]: value };
+        }
+        return { ...params };
+    }, {});
+    return params as any;
+};
 
 const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     useHydrater({ header, footer });
@@ -46,6 +61,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
             { label: t("view.gallery"), key: "GALLERY" },
             { label: t("view.calendar"), key: "CALENDAR" },
         ],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [lang]
     );
 
@@ -118,6 +134,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
         if (view) {
             setCurrentView(view);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lang]);
 
     return (
@@ -136,10 +153,13 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                             <ItemDescription
                                 categories={firstItem?.categories ?? []}
                                 title={firstItem?.title ?? ""}
-                                calendarDate={firstItem?.__calendarDate ?? "N/A"}
+                                calendarDate={
+                                    firstItem?.__calendarDate ?? "N/A"
+                                }
                                 href={firstItem?.__href ?? "#"}
                                 imgurl={
-                                    firstItem?.banner?.url ?? "/indek_template_fill.png"
+                                    firstItem?.__media?.url ??
+                                    "/indek_template_fill.png"
                                 }
                                 description={firstItem?.description ?? ""}
                                 author={firstItem?.author ?? ""}
@@ -148,7 +168,10 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                     </Box>
                     <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
                         <NextImage
-                            src={firstItem?.banner?.url ?? "/indek_template_fill.png"}
+                            src={
+                                firstItem?.__media?.url ??
+                                "/indek_template_fill.png"
+                            }
                             width="2048px"
                             height="1365px"
                             h="35vh"

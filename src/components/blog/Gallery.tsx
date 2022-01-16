@@ -30,7 +30,7 @@ type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     __body: string;
     __calendarDate: string;
     __href: string;
-    __media: UploadFile | undefined;
+    __media?: UploadFile;
     categories: string[];
 })[];
 

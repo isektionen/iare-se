@@ -1,9 +1,9 @@
 const axios = require("axios");
 const backup_data = require("../backup_data/post.json");
 
-const resolver = async () => {
+const resolver = async (force_local) => {
     const url =
-        process.env.NODE_ENV === "production"
+        process.env.NODE_ENV === "production" && !force_local
             ? "https://cms.iare.se/posts"
             : "http://localhost:1337/posts";
     const { data } = await axios.get(url);

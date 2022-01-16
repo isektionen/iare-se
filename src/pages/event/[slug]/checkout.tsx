@@ -36,7 +36,7 @@ import { AllOption, FormState, useCheckout } from "state/products";
 import { Event, Product } from "types/strapi";
 import _ from "underscore";
 import { isBeforeDeadline } from "utils/dates";
-import { DEV } from "utils/error";
+import { DEV } from "utils/env";
 import { conformLocale } from "utils/lang";
 import { defcast } from "utils/types";
 

@@ -314,5 +314,11 @@
             }
         }
     ],
-    "localizations": []
+    "localizations": [
+        {
+            "id": 186,
+            "locale": "en",
+            "published_at": "2022-01-16T22:02:35.957Z"
+        }
+    ]
 }

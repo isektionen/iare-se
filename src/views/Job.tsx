@@ -26,7 +26,6 @@ import { useSetLocaleSlug } from "state/locale";
 import { LayoutProps } from "types/global";
 import { Company, Jobs, UploadFile } from "types/strapi";
 import { makeTitle } from "utils/seo";
-import defaultJob from "../../prefetch/static/job.json";
 interface Props {
     job: Jobs;
     mdx: MDXRemoteSerializeResult;
@@ -35,8 +34,7 @@ interface Props {
 const View = ({
     header,
     footer,
-    /* @ts-ignore */
-    job = defaultJob,
+    job,
     mdx,
     error,
     localeSlugs,

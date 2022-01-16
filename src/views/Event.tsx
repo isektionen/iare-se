@@ -1,19 +1,9 @@
 import { useBreakpointValue } from "@chakra-ui/media-query";
 import {
-    Box,
     Button,
-    Center,
-    Flex,
-    Heading,
-    Icon,
     IconButton,
-    Progress,
-    Spacer,
-    Stack,
-    StackDivider,
     VStack,
     Text,
-    AspectRatio,
     useDisclosure,
     Modal,
     ModalBody,
@@ -27,56 +17,21 @@ import {
     InputRightElement,
     useToast,
 } from "@chakra-ui/react";
-import { Link, Element } from "react-scroll";
-import AccessibleLink from "components/AccessibleLink";
-import { EventPasswordProtection } from "components/event/EventPasswordProtection";
-import { Options } from "components/event/steps/Options";
-import { OrderComplete } from "components/event/steps/OrderComplete";
-import { OrderFinalize } from "components/event/steps/OrderFinalize";
-import { OrderSummary } from "components/event/steps/OrderSummary";
-import { OtherComment } from "components/event/steps/OtherComment";
-import { Tickets } from "components/event/steps/Tickets";
-import { VStepper } from "components/event/VStepper";
 import { MDXLayout } from "components/mdx/Layout";
-import { SkeletonSpinner } from "components/SkeletonSpinner";
-import { format, isAfter, isBefore, parseISO } from "date-fns";
-import { motion } from "framer-motion";
+import { format } from "date-fns";
 import { useSanity } from "hooks/use-check-error";
-import { useNets } from "hooks/use-nets";
-import { Deta } from "lib/deta";
-import { Strapi } from "lib/strapi";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
-import React, {
-    useState,
-    useMemo,
-    useCallback,
-    KeyboardEvent,
-    useEffect,
-} from "react";
-import { isMobileSafari } from "react-device-detect";
-import {
-    useForm,
-    FieldPath,
-    UnpackNestedValue,
-    FieldPathValue,
-} from "react-hook-form";
-import { BsChevronDoubleDown } from "react-icons/bs";
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { IoMdArrowDropleft } from "react-icons/io";
-import { MdDateRange } from "react-icons/md";
-import { validatePassword } from "state/checkout";
-import { useAlert, useHydrater } from "state/layout";
+import React, { useState, useCallback, KeyboardEvent, useEffect } from "react";
+
+import { useHydrater } from "state/layout";
 import { useSetLocaleSlug } from "state/locale";
 import { LayoutProps } from "types/global";
 import { Option } from "components/Autocomplete";
 import { Event, UploadFile } from "types/strapi";
 import _ from "underscore";
-import { getDate, isBeforeDeadline } from "utils/dates";
-import { generateQRCode } from "utils/images";
-import defaultEvent from "../../prefetch/static/event.json";
-import job from "models/job";
+import { isBeforeDeadline } from "utils/dates";
 import { NextSeo } from "next-seo";
 import { getPage, makeTitle } from "utils/seo";
 import { Carousel } from "components/event/Carousel";
@@ -88,7 +43,7 @@ import { DeadlineCounter } from "components/DeadlineCounter";
 import { BiChevronRight, BiHide, BiShow } from "react-icons/bi";
 
 interface Props {
-    event: Event;
+    _event: Event;
     mdx: MDXRemoteSerializeResult;
     requiresPassword: boolean;
 }
@@ -115,8 +70,7 @@ export type TicketData = Partial<DefaultFieldValues> & {
 const View = ({
     header,
     footer,
-    /* @ts-ignore */
-    event = defaultEvent,
+    _event,
     localeSlugs,
     error,
     mdx,
@@ -132,7 +86,7 @@ const View = ({
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const router = useRouter();
-    event = defcast(event);
+    const event = _event; //defcast(_event);
 
     const { t } = useTranslation("event");
 

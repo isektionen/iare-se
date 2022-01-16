@@ -22,7 +22,7 @@
         "alternativeText": "",
         "width": 1240,
         "height": 328,
-        "url": "/uploads/footer_logo_42868d9569_872244ec85.svg"
+        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/footer_logo_42868d9569_f8d10656ad.svg"
     },
     "localizations": [
         {
@@ -44,7 +44,7 @@
                 "alternativeText": "",
                 "width": 1240,
                 "height": 328,
-                "url": "/uploads/footer_logo_42868d9569_872244ec85.svg"
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/footer_logo_42868d9569_f8d10656ad.svg"
             }
         }
     ]

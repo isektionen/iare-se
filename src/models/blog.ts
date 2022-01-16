@@ -1,6 +1,6 @@
 import { queryLocale } from "lib/strapi";
 import { TLocale } from "types/global";
-import { Post, Event, Jobs } from "types/strapi";
+import { Post, Event, Jobs, UploadFile } from "types/strapi";
 import _ from "underscore";
 
 const getAuthor = (item: Event | Post | Jobs) => {
@@ -32,7 +32,7 @@ const getHref = (item: Event | Post | Jobs) => {
 const getDateTime = (item: Event | Post | Jobs) => {
     switch (item.__typename) {
         case "Event":
-            return item.schedule.start;
+            return item?.schedule?.start;
         case "Post":
             return item.published_at;
         case "Jobs":
@@ -67,6 +67,17 @@ const getBody = (item: Event | Post | Jobs) => {
             return item?.body ?? "";
         default:
             return "";
+    }
+};
+
+const getMedia = (item: Event | Post | Jobs) => {
+    switch (item.__typename) {
+        case "Event":
+            return _.first(item.media || []) as UploadFile;
+        case "Post":
+            return item.banner as UploadFile;
+        case "Jobs":
+            return item.banner as UploadFile;
     }
 };
 
@@ -209,6 +220,7 @@ const getFeed = async (locale: TLocale) => {
             __body: getBody(item),
             __calendarDate: getDateTime(item),
             __href: getHref(item),
+            __media: getMedia(item),
         }))
         .reverse()
         .value();

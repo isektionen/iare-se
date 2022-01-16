@@ -1,10 +1,10 @@
 {
     "locale": "sv-SE",
     "logo": {
-        "alternativeText": "logotyp",
+        "alternativeText": "",
         "width": 203,
         "height": 70,
-        "url": "/uploads/logo_51c078fa80.svg"
+        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_1_ca9b97bc62.svg"
     },
     "feedbackbox": {
         "description": "Är det någon fin själ som hjälpt till extra mycket? Har någon nämnd gjort något helt fantastiskt? Vill du sprida kärlek?"
@@ -181,10 +181,10 @@
         {
             "locale": "en",
             "logo": {
-                "alternativeText": "logotyp",
+                "alternativeText": "",
                 "width": 203,
                 "height": 70,
-                "url": "/uploads/logo_51c078fa80.svg"
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logo_1_ca9b97bc62.svg"
             },
             "feedbackbox": null,
             "sections": [],

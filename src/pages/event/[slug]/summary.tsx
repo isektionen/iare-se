@@ -20,6 +20,16 @@ import {
     InputLeftElement,
     Button,
     useToast,
+    useDisclosure,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    AspectRatio,
+    Box,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
@@ -44,8 +54,9 @@ import { defcast } from "utils/types";
 import _ from "underscore";
 import { countries, Country } from "country-data";
 import { BiChevronRight } from "react-icons/bi";
-import { checkout } from "lib/checkout";
-
+import { checkoutClient } from "lib/checkout";
+import { usePayment } from "hooks/use-payment";
+import Script from "next/script";
 interface IProductItem extends DetailedFormSummary {}
 const ProductItem = (props: IProductItem) => {
     const { t } = useTranslation("summary");
@@ -143,7 +154,8 @@ type DetailedFormSummary = Omit<FormState, "optionResults"> & {
 };
 
 export const Summary = ({ event, products }: Props) => {
-    const { t } = useTranslation("summary");
+    const { t, lang } = useTranslation("summary");
+
     const router = useRouter();
     const path = [
         { label: "Aktuellt", href: "/blog" },
@@ -153,7 +165,16 @@ export const Summary = ({ event, products }: Props) => {
     ];
 
     const [loading, setLoading] = useState(true);
+    const [orderReference, setOrderReference] = useState<string>();
     const isDev = useMemo(() => DEV(), []);
+
+    // only supporting English and Swedish currently
+    const localeConversion: Record<string, "en-GB" | "sv-SE"> = {
+        en: "en-GB",
+        sv: "sv-SE",
+        "en-GB": "en-GB",
+        "sv-SE": "sv-SE",
+    };
 
     const {
         formState,
@@ -165,6 +186,13 @@ export const Summary = ({ event, products }: Props) => {
         hasError,
         withSubmit,
     } = useSummary();
+
+    const { hydrateCheckout, checkout } = usePayment({
+        config: {
+            containerId: "checkout-modal",
+            language: localeConversion[lang],
+        },
+    });
 
     const getReference = useCallback((s: string) => {
         const [parent, reference] = s.split("::");
@@ -226,7 +254,9 @@ export const Summary = ({ event, products }: Props) => {
 
     const totalCost = useMemo(
         () => productSummary.reduce((acc, it) => acc + it.total, 0),
-        [productSummary]
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [productSummary, productSummary.length]
     );
     const rsvpButtonText = useMemo(
         () =>
@@ -237,9 +267,10 @@ export const Summary = ({ event, products }: Props) => {
     );
 
     const toaster = useToast();
+    const { isOpen, onClose, onOpen } = useDisclosure();
 
     const handleSubmit = useCallback(async () => {
-        const { reference, reserved, paymentId } = await checkout.create({
+        const { reference, reserved, paymentId } = await checkoutClient.create({
             // TODO: PRODUCT REF MIGHT BREAK RELATION IN BACKEND
             items: productSummary.map((product) => ({
                 reference: product.productReference,
@@ -257,6 +288,7 @@ export const Summary = ({ event, products }: Props) => {
                 };
             }, {}),
         });
+        setOrderReference(reference);
         if (reserved && !paymentId && reference) {
             toaster({
                 title: `[${reference}] Din osa har reserverats`,
@@ -264,9 +296,36 @@ export const Summary = ({ event, products }: Props) => {
                 status: "success",
                 duration: 8000,
             });
-        } else {
+        } else if (paymentId && reserved && reference) {
+            onOpen();
+            hydrateCheckout(paymentId);
         }
-    }, [customer, event.slug, productSummary, toaster]);
+    }, [
+        customer,
+        event.slug,
+        hydrateCheckout,
+        onOpen,
+        productSummary,
+        toaster,
+    ]);
+
+    useEffect(() => {
+        if (checkout) {
+            console.log("HELLO");
+            checkout.on("pay-initialized", () => {
+                checkout.send("payment-order-finalized", true);
+            });
+            checkout.on("payment-completed", ({ paymentId }) => {
+                onClose();
+                toaster({
+                    title: `[${orderReference}] Din betalning har reserverats`,
+                    description: `Ett bekräftelsemail har skickats till ${customer.email}`,
+                    status: "success",
+                    duration: 8000,
+                });
+            });
+        }
+    }, [checkout, customer.email, onClose, orderReference, toaster]);
 
     useEffect(() => {
         if (error.length > 0 && formState.length === 0) {
@@ -293,168 +352,207 @@ export const Summary = ({ event, products }: Props) => {
     }, []);
 
     return (
-        <VStack
-            bg="white"
-            pos="relative"
-            align="start"
-            spacing={8}
-            w="full"
-            px={{ base: 3, md: 16 }}
-            pt={{ base: 4, md: 10 }}
-            pb={{ base: 8, md: 16 }}
-        >
-            <Breadcrumb path={path} />
-            {!loading && (
-                <React.Fragment>
-                    <Heading textTransform="capitalize">{event.title}</Heading>
-                    <Text>{event.description}</Text>
-                    <Heading textTransform="capitalize">
-                        {t("customer")}
-                    </Heading>
+        <React.Fragment>
+            <Script
+                src={
+                    process.env.NODE_ENV === "production"
+                        ? "https://checkout.dibspayment.eu/v1/checkout.js?v=1"
+                        : "https://test.checkout.dibspayment.eu/v1/checkout.js?v=1"
+                }
+                strategy="afterInteractive"
+            />
+            <Modal
+                scrollBehavior="inside"
+                isCentered
+                onClose={onClose}
+                isOpen={isOpen}
+                motionPreset="slideInBottom"
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalBody maxH="650px">
+                        <Box id="checkout-modal"></Box>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+            <VStack
+                bg="white"
+                pos="relative"
+                align="start"
+                spacing={8}
+                w="full"
+                px={{ base: 3, md: 16 }}
+                pt={{ base: 4, md: 10 }}
+                pb={{ base: 8, md: 16 }}
+            >
+                <Breadcrumb path={path} />
+                {!loading && (
+                    <React.Fragment>
+                        <Heading textTransform="capitalize">
+                            {event.title}
+                        </Heading>
+                        <Text>{event.description}</Text>
+                        <Heading textTransform="capitalize">
+                            {t("customer")}
+                        </Heading>
 
-                    <FormControl isRequired isInvalid={hasError("firstname")}>
-                        <FormLabel htmlFor="firstname">
-                            {t("details.firstname")}
-                        </FormLabel>
-                        <Input
-                            variant="filled"
-                            id="firstname"
-                            type="firstname"
-                            onChange={(e) => {
-                                updateCustomerData({
-                                    firstName: e.target.value,
-                                });
-                            }}
-                        />
-                        <FormErrorMessage>
-                            {t("required", { field: t("details.firstname") })}
-                        </FormErrorMessage>
-                    </FormControl>
-
-                    <FormControl isRequired isInvalid={hasError("lastname")}>
-                        <FormLabel htmlFor="lastname">
-                            {t("details.lastname")}
-                        </FormLabel>
-                        <Input
-                            variant="filled"
-                            id="lastname"
-                            type="lastname"
-                            onChange={(e) => {
-                                updateCustomerData({
-                                    lastName: e.target.value,
-                                });
-                            }}
-                        />
-                        <FormErrorMessage>
-                            {t("required", { field: t("details.lastname") })}
-                        </FormErrorMessage>
-                    </FormControl>
-
-                    <FormControl
-                        isRequired
-                        isInvalid={
-                            hasError("phone.number") || hasError("phone.prefix")
-                        }
-                    >
-                        <FormLabel htmlFor="phone">
-                            {t("details.phone.number")}
-                        </FormLabel>
-                        <InputGroup variant="filled">
-                            <InputLeftElement w="20%">
-                                <Select
-                                    borderRightRadius={0}
-                                    value={selectedCountry}
-                                    onChange={(e) => {
-                                        const country = findCountry(
-                                            e.target.value
-                                        );
-                                        setSelectedCountry(country.name);
-                                        updateCustomerData({
-                                            phone: {
-                                                prefix: defcast(
-                                                    _.first(
-                                                        country.countryCallingCodes
-                                                    )
-                                                ),
-                                            },
-                                        });
-                                    }}
-                                >
-                                    {countries.all.map((c, i) => (
-                                        <option key={i} value={c.name}>
-                                            {c.name}
-                                        </option>
-                                    ))}
-                                </Select>
-                            </InputLeftElement>
+                        <FormControl
+                            isRequired
+                            isInvalid={hasError("firstname")}
+                        >
+                            <FormLabel htmlFor="firstname">
+                                {t("details.firstname")}
+                            </FormLabel>
                             <Input
-                                id="phone"
-                                type="tel"
-                                pl="20%"
+                                variant="filled"
+                                id="firstname"
+                                type="firstname"
                                 onChange={(e) => {
                                     updateCustomerData({
-                                        phone: {
-                                            number: e.target.value,
-                                        },
+                                        firstName: e.target.value,
                                     });
                                 }}
                             />
-                        </InputGroup>
-
-                        <FormErrorMessage>
-                            {hasError("phone.number") &&
-                                t("required", {
-                                    field: t("details.phone.number"),
+                            <FormErrorMessage>
+                                {t("required", {
+                                    field: t("details.firstname"),
                                 })}
-                            {hasError("phone.prefix") &&
-                                t("required", {
-                                    field: t("details.phone.prefix"),
+                            </FormErrorMessage>
+                        </FormControl>
+
+                        <FormControl
+                            isRequired
+                            isInvalid={hasError("lastname")}
+                        >
+                            <FormLabel htmlFor="lastname">
+                                {t("details.lastname")}
+                            </FormLabel>
+                            <Input
+                                variant="filled"
+                                id="lastname"
+                                type="lastname"
+                                onChange={(e) => {
+                                    updateCustomerData({
+                                        lastName: e.target.value,
+                                    });
+                                }}
+                            />
+                            <FormErrorMessage>
+                                {t("required", {
+                                    field: t("details.lastname"),
                                 })}
-                        </FormErrorMessage>
-                    </FormControl>
+                            </FormErrorMessage>
+                        </FormControl>
 
-                    <FormControl isRequired isInvalid={hasError("email")}>
-                        <FormLabel htmlFor="email">
-                            {t("details.email")}
-                        </FormLabel>
-                        <Input
-                            variant="filled"
-                            id="email"
-                            type="email"
-                            onChange={(e) => {
-                                updateCustomerData({
-                                    email: e.target.value,
-                                });
-                            }}
-                        />
-                        <FormErrorMessage>
-                            {t("required", { field: t("details.email") })}
-                        </FormErrorMessage>
-                    </FormControl>
+                        <FormControl
+                            isRequired
+                            isInvalid={
+                                hasError("phone.number") ||
+                                hasError("phone.prefix")
+                            }
+                        >
+                            <FormLabel htmlFor="phone">
+                                {t("details.phone.number")}
+                            </FormLabel>
+                            <InputGroup variant="filled">
+                                <InputLeftElement w="20%">
+                                    <Select
+                                        borderRightRadius={0}
+                                        value={selectedCountry}
+                                        onChange={(e) => {
+                                            const country = findCountry(
+                                                e.target.value
+                                            );
+                                            setSelectedCountry(country.name);
+                                            updateCustomerData({
+                                                phone: {
+                                                    prefix: defcast(
+                                                        _.first(
+                                                            country.countryCallingCodes
+                                                        )
+                                                    ),
+                                                },
+                                            });
+                                        }}
+                                    >
+                                        {countries.all.map((c, i) => (
+                                            <option key={i} value={c.name}>
+                                                {c.name}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                </InputLeftElement>
+                                <Input
+                                    id="phone"
+                                    type="tel"
+                                    pl="20%"
+                                    onChange={(e) => {
+                                        updateCustomerData({
+                                            phone: {
+                                                number: e.target.value,
+                                            },
+                                        });
+                                    }}
+                                />
+                            </InputGroup>
 
-                    <Heading textTransform="capitalize">{t("summary")}</Heading>
-                    <VStack spacing={8}>
-                        {productSummary.map((product, i) => (
-                            <ProductItem key={i} {...product} />
-                        ))}
-                    </VStack>
-                    <Button
-                        variant="iareSolid"
-                        rightIcon={<BiChevronRight />}
-                        onClick={withSubmit(handleSubmit)}
-                    >
-                        {rsvpButtonText}
-                    </Button>
-                </React.Fragment>
-            )}
-            {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
-            {loading && (
-                <Center w="full" h="80vh" flexDirection="column">
-                    <Spinner size="xl" mb={8} />
-                    <Heading size="md">{t("loading")}</Heading>
-                </Center>
-            )}
-        </VStack>
+                            <FormErrorMessage>
+                                {hasError("phone.number") &&
+                                    t("required", {
+                                        field: t("details.phone.number"),
+                                    })}
+                                {hasError("phone.prefix") &&
+                                    t("required", {
+                                        field: t("details.phone.prefix"),
+                                    })}
+                            </FormErrorMessage>
+                        </FormControl>
+
+                        <FormControl isRequired isInvalid={hasError("email")}>
+                            <FormLabel htmlFor="email">
+                                {t("details.email")}
+                            </FormLabel>
+                            <Input
+                                variant="filled"
+                                id="email"
+                                type="email"
+                                onChange={(e) => {
+                                    updateCustomerData({
+                                        email: e.target.value,
+                                    });
+                                }}
+                            />
+                            <FormErrorMessage>
+                                {t("required", { field: t("details.email") })}
+                            </FormErrorMessage>
+                        </FormControl>
+
+                        <Heading textTransform="capitalize">
+                            {t("summary")}
+                        </Heading>
+                        <VStack spacing={8}>
+                            {productSummary.map((product, i) => (
+                                <ProductItem key={i} {...product} />
+                            ))}
+                        </VStack>
+                        <Button
+                            variant="iareSolid"
+                            rightIcon={<BiChevronRight />}
+                            onClick={withSubmit(handleSubmit)}
+                        >
+                            {rsvpButtonText}
+                        </Button>
+                    </React.Fragment>
+                )}
+                {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
+                {loading && (
+                    <Center w="full" h="80vh" flexDirection="column">
+                        <Spinner size="xl" mb={8} />
+                        <Heading size="md">{t("loading")}</Heading>
+                    </Center>
+                )}
+            </VStack>
+        </React.Fragment>
     );
 };
 

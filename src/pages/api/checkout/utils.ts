@@ -103,7 +103,7 @@ export function createWebhook(eventName: NetsWebhook) {
             process.env.NODE_ENV === "production"
                 ? "https://iare.se/api/checkout/callback"
                 : /*: "http://localhost:3000/api/checkout/callback"*/
-                  "https://e344-2001-6b0-1-1041-5894-5c67-9849-b2e4.ngrok.io/api/checkout/callback",
+                  "https://c628-2001-6b0-1-1041-5894-5c67-9849-b2e4.ngrok.io/api/checkout/callback",
         authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
     };
 }

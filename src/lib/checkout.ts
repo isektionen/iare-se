@@ -1,7 +1,7 @@
 import { ICreateBody } from "pages/api/checkout/create";
 import _ from "underscore";
 
-export const checkout = {
+export const checkoutClient = {
     create: async (
         body: ICreateBody
     ): Promise<{

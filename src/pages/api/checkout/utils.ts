@@ -102,17 +102,14 @@ export function createWebhook(eventName: NetsWebhook) {
         url:
             process.env.NODE_ENV === "production"
                 ? "https://iare.se/api/checkout/callback"
-                : /*: "http://localhost:3000/api/checkout/callback"*/
-                  "https://a0e8-2001-6b0-1-1041-b9c5-ba6c-a459-e1b8.ngrok.io/api/checkout/callback",
-        authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
+                : "http://localhost:3000/api/checkout/callback",
+        /*: "https://a0e8-2001-6b0-1-1041-b9c5-ba6c-a459-e1b8.ngrok.io/api/checkout/callback"*/ authorization:
+            process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
     };
 }
 
 export const nets = axios.create({
-    baseURL:
-        process.env.NODE_ENV === "production"
-            ? "https://api.dibspayment.eu/v1"
-            : "https://test.api.dibspayment.eu/v1",
+    baseURL: process.env.NETS_BASE_API as string,
     headers: {
         Authorization: process.env.NETS_BEARER,
     },

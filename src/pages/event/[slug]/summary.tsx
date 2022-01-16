@@ -7,11 +7,9 @@ import {
     HStack,
     IconButton,
     Tag,
-    TagCloseButton,
     TagLabel,
     Wrap,
     FormControl,
-    FormHelperText,
     FormLabel,
     Input,
     FormErrorMessage,
@@ -23,12 +21,8 @@ import {
     useDisclosure,
     Modal,
     ModalBody,
-    ModalCloseButton,
     ModalContent,
-    ModalFooter,
-    ModalHeader,
     ModalOverlay,
-    AspectRatio,
     Box,
     Badge,
     Stack,
@@ -419,11 +413,7 @@ const SummaryCheckout = ({
     return (
         <React.Fragment>
             <Script
-                src={
-                    process.env.NODE_ENV === "production"
-                        ? "https://checkout.dibspayment.eu/v1/checkout.js?v=1"
-                        : "https://test.checkout.dibspayment.eu/v1/checkout.js?v=1"
-                }
+                src={process.env.NEXT_PUBLIC_CHECKOUT_SRC}
                 strategy="afterInteractive"
             />
             <Modal

@@ -20,7 +20,7 @@ type GenericCallback = (...args: any[]) => any;
 
 type Conform<T, P> = Omit<T, "__typename"> & { __component: P };
 
-type AllFormOptions =
+export type AllFormOptions =
     | Conform<ComponentEventFormInput, "input">
     | Conform<ComponentEventFormSelect, "select">
     | Conform<ComponentEventFormSwitch, "switch">;
@@ -252,7 +252,7 @@ const formError = selector({
     },
 });
 
-const component2type: Record<string, "input" | "select" | "switch"> = {
+export const component2type: Record<string, "input" | "select" | "switch"> = {
     "event-form.input": "input",
     "event-form.select": "select",
     "event-form.switch": "switch",

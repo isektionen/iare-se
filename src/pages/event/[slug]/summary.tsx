@@ -30,19 +30,22 @@ import {
     ModalOverlay,
     AspectRatio,
     Box,
+    Badge,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    AllFormOptions,
     AllOption,
+    component2type,
     FormState,
     getInnerId,
     MetaOption,
     useSummary,
 } from "state/products";
 import { conformLocale } from "utils/lang";
-import { Event, Product, UploadFile } from "types/strapi";
+import { Event, Product, ProductOption, UploadFile } from "types/strapi";
 import eventModel from "models/event";
 import { isBeforeDeadline } from "utils/dates";
 import useTranslation from "next-translate/useTranslation";
@@ -57,7 +60,10 @@ import { BiChevronRight } from "react-icons/bi";
 import { checkoutClient } from "lib/checkout";
 import { usePayment } from "hooks/use-payment";
 import Script from "next/script";
-interface IProductItem extends DetailedFormSummary {}
+import { OrderReceipt } from "types/summary";
+interface IProductItem extends DetailedFormSummary {
+    isRemovable?: boolean;
+}
 const ProductItem = (props: IProductItem) => {
     const { t } = useTranslation("summary");
 
@@ -110,6 +116,7 @@ const ProductItem = (props: IProductItem) => {
         () => !new RegExp(/#\d+$/).test(props.name),
         [props.name]
     );
+    const isFree = useMemo(() => props.price === 0, [props.price]);
     return (
         <HStack w="full" align="start" spacing={8}>
             <NextImage
@@ -126,17 +133,29 @@ const ProductItem = (props: IProductItem) => {
 
                     <Heading textTransform="capitalize">{props.name}</Heading>
                 </HStack>
-                <Text>{props.total} SEK</Text>
+                {isFree ? (
+                    <Text>{t("is-free")}</Text>
+                ) : (
+                    <Text>{props.total} SEK</Text>
+                )}
+
                 {props.optionResults
-                    .filter((p) => p.data.length !== 0)
+                    .filter(
+                        (p) =>
+                            p.data.length !== 0 &&
+                            p.reference !== undefined &&
+                            p.label !== undefined
+                    )
                     .map(RenderOptions)}
             </VStack>
-            <IconButton
-                size="sm"
-                aria-label="remove"
-                icon={<HiTrash />}
-                onClick={props.onClick}
-            />
+            {props.isRemovable && (
+                <IconButton
+                    size="sm"
+                    aria-label="remove"
+                    icon={<HiTrash />}
+                    onClick={props.onClick}
+                />
+            )}
         </HStack>
     );
 };
@@ -144,6 +163,7 @@ const ProductItem = (props: IProductItem) => {
 interface Props {
     event: Event;
     products: Product[];
+    reciept?: OrderReceipt;
 }
 
 type DetailedFormSummary = Omit<FormState, "optionResults"> & {
@@ -157,16 +177,15 @@ type DetailedFormSummary = Omit<FormState, "optionResults"> & {
     onClick: () => void;
 };
 
-export const Summary = ({ event, products }: Props) => {
-    const { t, lang } = useTranslation("summary");
+type Path = { path: { label: string; href: string }[] };
 
+const SummaryCheckout = ({
+    event,
+    products,
+    path,
+}: Omit<Props, "receipt"> & Path) => {
+    const { t, lang } = useTranslation("summary");
     const router = useRouter();
-    const path = [
-        { label: "Aktuellt", href: "/blog" },
-        { label: event.title, href: `/event/${event.slug}` },
-        { label: "Osa", href: `/event/${event.slug}/checkout` },
-        { label: "Sammanfattning", href: `/event/${event.slug}/summary` },
-    ];
 
     const [loading, setLoading] = useState(true);
     const [orderReference, setOrderReference] = useState<string>();
@@ -305,6 +324,11 @@ export const Summary = ({ event, products }: Props) => {
                 status: "success",
                 duration: 8000,
             });
+            router.push(
+                `/event/${event.slug}/summary?reference=${reference}`,
+                undefined,
+                { shallow: false, scroll: false }
+            );
         } else if (paymentId && reserved && reference) {
             setOrderReference(reference);
 
@@ -317,6 +341,7 @@ export const Summary = ({ event, products }: Props) => {
         hydrateCheckout,
         onOpen,
         productSummary,
+        router,
         t,
         toaster,
     ]);
@@ -338,9 +363,24 @@ export const Summary = ({ event, products }: Props) => {
                     status: "success",
                     duration: 8000,
                 });
+                router.push(
+                    `/event/${event.slug}/summary?reference=${orderReference}`,
+                    undefined,
+                    { shallow: false, scroll: false }
+                );
             });
         }
-    }, [checkout, customer.email, isOpen, onClose, orderReference, t, toaster]);
+    }, [
+        checkout,
+        customer.email,
+        event.slug,
+        isOpen,
+        onClose,
+        orderReference,
+        router,
+        t,
+        toaster,
+    ]);
 
     useEffect(() => {
         if (error.length > 0 && formState.length === 0) {
@@ -407,6 +447,14 @@ export const Summary = ({ event, products }: Props) => {
                             {event.title}
                         </Heading>
                         <Text>{event.description}</Text>
+                        <Heading textTransform="capitalize">
+                            {t("summary")}
+                        </Heading>
+                        <VStack spacing={8}>
+                            {productSummary.map((product, i) => (
+                                <ProductItem isRemovable key={i} {...product} />
+                            ))}
+                        </VStack>
                         <Heading textTransform="capitalize">
                             {t("customer")}
                         </Heading>
@@ -542,14 +590,6 @@ export const Summary = ({ event, products }: Props) => {
                             </FormErrorMessage>
                         </FormControl>
 
-                        <Heading textTransform="capitalize">
-                            {t("summary")}
-                        </Heading>
-                        <VStack spacing={8}>
-                            {productSummary.map((product, i) => (
-                                <ProductItem key={i} {...product} />
-                            ))}
-                        </VStack>
                         <Button
                             isLoading={isLoading && !isOpen && !orderReference}
                             disabled={orderReference ? true : false}
@@ -573,6 +613,217 @@ export const Summary = ({ event, products }: Props) => {
     );
 };
 
+const SummaryView = ({
+    event,
+    products,
+    reciept,
+    path,
+}: Required<Props> & Path) => {
+    const { t, lang } = useTranslation("summary");
+    const country = defcast(
+        countries.all.find((p) =>
+            p.countryCallingCodes.includes(
+                reciept.data.customerData.phoneNumber.prefix
+            )
+        )
+    );
+
+    const statusColor: Record<string, string> = useMemo(
+        () => ({
+            created: "purple",
+            failed: "red",
+            completed: "green",
+            charged: "yellow",
+            refunded: "green",
+        }),
+        []
+    );
+
+    const productSummary: DetailedFormSummary[] = useMemo(() => {
+        return (
+            reciept?.data.order.items.reduce((acc, it) => {
+                const product = defcast(
+                    products.find((p) => p.reference === it.reference)
+                );
+                return [
+                    ...acc,
+                    {
+                        name: it.name,
+                        reference: it.reference,
+                        amount: it.quantity,
+                        price: it.unitPrice / 100,
+                        total: it.netTotalAmount / 100,
+                        media: defcast(
+                            products.find((p) => p.reference === it.reference)
+                        ).media as UploadFile,
+                        productReference: it.reference,
+                        optionResults: _.pairs(reciept.data.options).map(
+                            ([k, v]) => {
+                                const option = product.product_options?.find(
+                                    (p) => p?.reference === k
+                                ) as ProductOption;
+                                const optionData = _.first(
+                                    option?.data
+                                ) as AllFormOptions;
+                                return {
+                                    label: optionData?.label,
+                                    data: v,
+                                    reference: option?.reference,
+                                    type: optionData
+                                        ? component2type[
+                                              optionData?.__component
+                                          ]
+                                        : "input",
+                                };
+                            }
+                        ),
+                        onClick: () => {},
+                    },
+                ];
+            }, [] as DetailedFormSummary[]) ?? []
+        );
+    }, [products, reciept?.data.options, reciept?.data.order.items]);
+
+    return (
+        <React.Fragment>
+            <VStack
+                bg="white"
+                pos="relative"
+                align="start"
+                spacing={8}
+                w="full"
+                px={{ base: 3, md: 16 }}
+                pt={{ base: 4, md: 10 }}
+                pb={{ base: 8, md: 16 }}
+            >
+                <Breadcrumb path={path} />
+                <Heading textTransform="capitalize">{event.title}</Heading>
+                <Text>{event.description}</Text>
+
+                <Heading textTransform="capitalize">{t("summary")}</Heading>
+                <VStack spacing={8}>
+                    {productSummary &&
+                        productSummary.map((product, i) => (
+                            <ProductItem key={i} {...product} />
+                        ))}
+                </VStack>
+                <Heading textTransform="capitalize">{t("customer")}</Heading>
+
+                <FormControl isDisabled>
+                    <FormLabel htmlFor="firstname">
+                        {t("details.firstname")}
+                    </FormLabel>
+                    <Input
+                        variant="filled"
+                        id="firstname"
+                        type="firstname"
+                        value={reciept.data.customerData.firstName}
+                    />
+                </FormControl>
+
+                <FormControl isDisabled>
+                    <FormLabel htmlFor="lastname">
+                        {t("details.lastname")}
+                    </FormLabel>
+                    <Input
+                        variant="filled"
+                        id="lastname"
+                        type="lastname"
+                        value={reciept.data.customerData.lastName}
+                    />
+                </FormControl>
+
+                <FormControl isDisabled>
+                    <FormLabel htmlFor="phone">
+                        {t("details.phone.number")}
+                    </FormLabel>
+                    <InputGroup variant="filled">
+                        <InputLeftElement w="20%">
+                            <Select borderRightRadius={0} value={country.name}>
+                                <option value={country.name}>
+                                    {country.name}
+                                </option>
+                            </Select>
+                        </InputLeftElement>
+                        <Input
+                            id="phone"
+                            type="tel"
+                            pl="20%"
+                            value={reciept.data.customerData.phoneNumber.number}
+                        />
+                    </InputGroup>
+                </FormControl>
+
+                <FormControl isDisabled>
+                    <FormLabel htmlFor="email">{t("details.email")}</FormLabel>
+                    <Input
+                        variant="filled"
+                        id="email"
+                        type="email"
+                        value={reciept.data.customerData.email}
+                    />
+                </FormControl>
+                <Wrap shouldWrapChildren w="full" spacing={8}>
+                    <Badge variant="subtle">{reciept.created_at}</Badge>
+                    <Badge variant="subtle">{reciept.event.slug}</Badge>
+                    <Badge
+                        variant="subtle"
+                        colorScheme={statusColor[reciept.data.status]}
+                    >
+                        {reciept.data.status}
+                    </Badge>
+                    <Badge variant="subtle">
+                        {reciept.data.order.reference}
+                    </Badge>
+                    {reciept.data.paymentData?.paymentId && (
+                        <Badge variant="subtle">
+                            {reciept.data.paymentData?.paymentId}
+                        </Badge>
+                    )}
+
+                    {reciept.data.paymentData?.payment?.method && (
+                        <Badge variant="subtle">
+                            {reciept.data.paymentData?.payment?.method}
+                        </Badge>
+                    )}
+                    {reciept.data.paymentData?.payment?.type && (
+                        <Badge variant="subtle">
+                            {reciept.data.paymentData?.payment?.type}
+                        </Badge>
+                    )}
+                </Wrap>
+            </VStack>
+        </React.Fragment>
+    );
+};
+
+export const Summary = ({ event, products, reciept }: Props) => {
+    const { t, lang } = useTranslation("summary");
+
+    const path = useMemo(
+        () => [
+            { label: "Aktuellt", href: "/blog" },
+            { label: event.title, href: `/event/${event.slug}` },
+            { label: "Osa", href: `/event/${event.slug}/checkout` },
+            { label: "Sammanfattning", href: `/event/${event.slug}/summary` },
+        ],
+        [event.slug, event.title]
+    );
+
+    if (reciept) {
+        return (
+            <SummaryView
+                event={event}
+                products={products}
+                path={path}
+                reciept={reciept}
+            />
+        );
+    }
+
+    return <SummaryCheckout event={event} products={products} path={path} />;
+};
+
 export const getServerSideProps: GetServerSideProps = async ({
     locale,
     params,
@@ -580,8 +831,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
     locale = conformLocale(locale);
     const { slug } = params as { slug: string };
+
+    const reciept = await eventModel.findReciept(
+        locale,
+        query.reference as string
+    );
+
     const isGuarded = await eventModel.checkIfGuarded(locale, slug);
-    if (isGuarded) {
+    if (!reciept && isGuarded) {
         const { password = null } = query as { password: string | null };
         const { validated } = await eventModel.findGuarded(
             locale,
@@ -601,7 +858,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     const data = await eventModel.find(locale, slug);
 
-    if (!isBeforeDeadline(data.event?.schedule?.deadline)) {
+    if (!reciept && !isBeforeDeadline(data.event?.schedule?.deadline)) {
         return {
             redirect: {
                 destination: `/event/${slug}?callback=due.date`,
@@ -613,7 +870,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     const products = await eventModel.findProducts(locale, slug);
 
     return {
-        props: { event: data.event, products },
+        props: { event: data.event, products, reciept },
     };
 };
 

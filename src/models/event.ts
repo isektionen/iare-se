@@ -64,6 +64,17 @@ const findProducts = async (locale: TLocale, slug: string) => {
     return res.data;
 };
 
+const findReciept = async (locale: TLocale, reference: string) => {
+    if (!reference) {
+        return null;
+    }
+    const res = await strapiInstance.get(`/orders/${reference}/receipt`);
+    if (res.status !== 200) {
+        return null;
+    }
+    return res.data;
+};
+
 const find = async (locale: TLocale, slug: string) => {
     const { data, error } = await queryLocale<{
         events: Event[];
@@ -105,6 +116,7 @@ const event = {
     checkIfGuarded,
     findGuarded,
     findProducts,
+    findReciept,
 };
 
 export default event;

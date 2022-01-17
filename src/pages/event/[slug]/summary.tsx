@@ -871,6 +871,15 @@ export const getServerSideProps: GetServerSideProps = async ({
         };
     }
 
+    if (!reciept && query.reference) {
+        return {
+            redirect: {
+                destination: `/event/${slug}?callback=invalid.reciept`,
+                permanent: true,
+            },
+        };
+    }
+
     const products = await eventModel.findProducts(locale, slug);
 
     return {

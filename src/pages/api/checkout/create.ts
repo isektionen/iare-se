@@ -152,10 +152,10 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         // webhooks will fill order with paymentData and possible errors
         webhooks: [
-            createWebhook("created"),
-            createWebhook("charge.created.v2"),
-            createWebhook("charge.failed"),
-            createWebhook("checkout.completed"),
+            createWebhook("created", { reference: order.reference }),
+            createWebhook("charge.created.v2", { reference: order.reference }),
+            createWebhook("charge.failed", { reference: order.reference }),
+            createWebhook("checkout.completed", { reference: order.reference }),
         ],
     });
 

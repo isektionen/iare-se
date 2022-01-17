@@ -18,7 +18,8 @@
         "callback": {
             "invalid-password": "Invalid password",
             "due-date": "Can't RSVP to Event",
-            "no-products": "Can't create a empty RSVP"
+            "no-products": "Can't create a empty RSVP",
+            "invalid-reciept": "Reciept doesn't exist"
         }
     }
 }

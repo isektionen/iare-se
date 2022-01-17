@@ -68,11 +68,15 @@ const findReciept = async (locale: TLocale, reference: string) => {
     if (!reference) {
         return null;
     }
-    const res = await strapiInstance.get(`/orders/${reference}/receipt`);
-    if (res.status !== 200) {
+    try {
+        const res = await strapiInstance.get(`/orders/${reference}/receipt`);
+        if (res.status !== 200) {
+            return null;
+        }
+        return res.data;
+    } catch (e) {
         return null;
     }
-    return res.data;
 };
 
 const find = async (locale: TLocale, slug: string) => {

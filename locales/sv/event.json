@@ -18,7 +18,8 @@
         "callback": {
             "invalid-password": "Fel lösenord",
             "due-date": "Det går inte att Osa",
-            "no-products": "Det går inte att osa tomt"
+            "no-products": "Det går inte att osa tomt",
+            "invalid-reciept": "Kvittot gick inte att hitta"
 
         }
     }

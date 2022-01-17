@@ -150,11 +150,13 @@ interface NetsCheckoutCompleted extends BaseNetsWebhook {
 
 const callback = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
-        return res.status(400);
+        return res.status(400).send();
     }
 
     const auth = (req.headers["Authorization"] ||
         req.headers.authorization) as string;
+
+    const orderReferenceFromHeader = req.headers["x-order-reference"] as string;
 
     const [bearer, token] = auth.split(" ", 1);
     if (
@@ -171,10 +173,11 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
         | NetsCreated;
 
     // orderRefence is event.slug + 6 random characters
-    const orderReference = data.order.reference;
+    const orderReference = data?.order?.reference ?? orderReferenceFromHeader;
 
     let body = {
         timestamp,
+        paymentData: {},
         errors: [] as Record<string, string>[],
     } as IOrderBody;
 
@@ -184,7 +187,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.paymentData.paymentId = data.paymentId;
             break;
         case "payment.charge.failed":
-            console.error("WEBHOOK ERROR: " + data.order.reference);
+            console.error("WEBHOOK ERROR: " + orderReference);
             // console.error(data?.error);
 
             body.status = "failed";
@@ -210,16 +213,16 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.paymentData.paymentId = data.paymentId;
             body.order = {
                 items: data.order.orderItems,
-                reference: data.order.reference,
+                reference: orderReference,
                 amount: data.order.amount,
             };
             break;
     }
 
-    console.log("NETS WEBHOOK FOR REF: ", orderReference);
+    console.log(`[${event}]: NETS WEBHOOK FOR REF: ${orderReference}`);
     await strapi.put(`/orders/${orderReference}`, body);
 
-    return res.status(200);
+    return res.status(200).send();
 };
 
 export default callback;

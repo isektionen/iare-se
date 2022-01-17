@@ -137,6 +137,14 @@ const View = ({
         if (callback) {
             setLoading(false);
             switch (callback) {
+                case "invalid.reciept":
+                    toaster({
+                        title: t("modal.callback.invalid-reciept"),
+                        status: "warning",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    break;
                 case "invalid.password":
                     toaster({
                         title: t("modal.callback.invalid-password"),

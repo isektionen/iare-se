@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const LOCAL_CALLBACK_URL = "https://thin-wasp-63.loca.lt";
+
 type NetsWebhook =
     | "checkout.completed"
     | "created"
@@ -96,15 +98,22 @@ export function createBody({
     };
 }
 
-export function createWebhook(eventName: NetsWebhook) {
+export function createWebhook(
+    eventName: NetsWebhook,
+    headers?: { reference: string }
+) {
     return {
         eventName: `payment.${eventName}`,
         url:
             process.env.NODE_ENV === "production"
                 ? "https://iare.se/api/checkout/callback"
-                : "http://localhost:3000/api/checkout/callback",
-        /*: "https://a0e8-2001-6b0-1-1041-b9c5-ba6c-a459-e1b8.ngrok.io/api/checkout/callback"*/ authorization:
-            process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
+                : LOCAL_CALLBACK_URL + "/api/checkout/callback",
+        authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
+        headers: [
+            {
+                "x-order-reference": headers?.reference,
+            },
+        ],
     };
 }
 

@@ -114,7 +114,7 @@ const checkoutAtom = atom<DibsCheckoutApi | null>({
 });
 
 export const usePayment = ({ config, theme }: Props) => {
-    const [dibs, createDibs] = useState<DibsInterface | null>(null);
+    const [isHydrated, setIsHydrated] = useState<boolean>(false);
     const [checkout, createCheckout] = useState<DibsCheckoutApi | null>(null);
 
     const [internalPaymentId, setPaymentId] = useState<string | null>(
@@ -143,9 +143,13 @@ export const usePayment = ({ config, theme }: Props) => {
     const hydrateCheckout = useRecoilCallback(
         ({ set }) =>
             (paymentId: string) => {
+                if (isHydrated) {
+                    return;
+                }
                 set(paymentIdAtom, paymentId);
                 const maybeDibs = findDibsObject();
                 if (maybeDibs) {
+                    setIsHydrated(true);
                     createCheckout(
                         new maybeDibs.Checkout(
                             extendConfig(internalConfig, { paymentId })

@@ -408,6 +408,12 @@ const SummaryCheckout = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        if (checkout) {
+            checkout.setLanguage(localeConversion[lang]);
+        }
+    }, [checkout, lang, localeConversion]);
+
     const isMd = useBreakpointValue({ base: false, md: true });
 
     return (

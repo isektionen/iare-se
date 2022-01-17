@@ -14,5 +14,6 @@
     "is-empty": "Var snäll välj minst en (1) produkt"
 
 
-  }
+  },
+  "form-has-requirements": "Formuläret har tomma obligatoriska fält"
 }

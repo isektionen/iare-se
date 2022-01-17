@@ -537,6 +537,11 @@ const View = ({ event, products }: Props) => {
                 >
                     Avsluta osan
                 </Button>
+                {error.filter((p) => p !== "form-is-empty").length > 0 && (
+                    <Text color="red.400" fontWeight="bold" fontSize="xs">
+                        {t("form-has-requirements")}
+                    </Text>
+                )}
             </VStack>
         </VStack>
     );

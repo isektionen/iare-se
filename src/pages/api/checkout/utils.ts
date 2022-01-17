@@ -1,6 +1,8 @@
 import axios from "axios";
+import _ from "underscore";
+import { Status, StatusType } from "./callback";
 
-const LOCAL_CALLBACK_URL = "https://thin-wasp-63.loca.lt";
+const LOCAL_CALLBACK_URL = "https://brown-cat-36.loca.lt";
 
 type NetsWebhook =
     | "checkout.completed"
@@ -95,6 +97,12 @@ export function createBody({
         notifications: {
             webhooks,
         },
+    };
+}
+export function createStatus(status: StatusType): Status {
+    return {
+        status,
+        timestamp: _.now(),
     };
 }
 

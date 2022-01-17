@@ -643,6 +643,33 @@ const SummaryView = ({
         []
     );
 
+    const status = useMemo(() => {
+        if (reciept.data.status && reciept.data.status.length > 0) {
+            return _.first(
+                _.sortBy(reciept.data.status, (obj) => {
+                    let score = obj.timestamp;
+                    switch (obj.status) {
+                        case "completed":
+                            score += 100;
+                            break;
+                        case "charged":
+                            score += 50;
+                            break;
+                        case "failed":
+                            score += 200;
+                            break;
+                        case "created":
+                            break;
+                        case "refunded":
+                            score += 150;
+                            break;
+                    }
+                    return score;
+                }).reverse()
+            );
+        }
+    }, [reciept.data.status]);
+
     const productSummary: DetailedFormSummary[] = useMemo(() => {
         return (
             reciept?.data.order.items.reduce((acc, it) => {
@@ -770,12 +797,14 @@ const SummaryView = ({
                 <Wrap shouldWrapChildren w="full" spacing={{ base: 4, md: 8 }}>
                     <Badge variant="subtle">{reciept.created_at}</Badge>
                     <Badge variant="subtle">{reciept.event.slug}</Badge>
-                    <Badge
-                        variant="subtle"
-                        colorScheme={statusColor[reciept.data.status]}
-                    >
-                        {reciept.data.status}
-                    </Badge>
+                    {status && (
+                        <Badge
+                            variant="subtle"
+                            colorScheme={statusColor[status.status]}
+                        >
+                            {status.status}
+                        </Badge>
+                    )}
                     <Badge variant="subtle">
                         {reciept.data.order.reference}
                     </Badge>

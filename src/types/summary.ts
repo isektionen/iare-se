@@ -1,3 +1,4 @@
+import { Status } from "pages/api/checkout/callback";
 import { Product, Event } from "./strapi";
 
 export interface OrderReceipt {
@@ -15,7 +16,7 @@ export interface Data {
     order: Order;
     paymentData?: Partial<PaymentData>;
     errors: any[];
-    status: string;
+    status: Status[];
 }
 
 export interface PaymentData {

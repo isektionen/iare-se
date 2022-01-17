@@ -12,6 +12,7 @@
  */
 
 import { axios as strapi } from "lib/strapi";
+import { createStatus } from "./utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import _ from "underscore";
 
@@ -39,6 +40,17 @@ interface BaseNetsWebhook {
     };
 }
 
+export type StatusType =
+    | "created"
+    | "charged"
+    | "completed"
+    | "failed"
+    | "refunded";
+
+export type Status = {
+    status: StatusType;
+    timestamp: number;
+};
 interface IOrderBody {
     paymentData: {
         paymentId?: string;
@@ -75,7 +87,7 @@ interface IOrderBody {
     };
     errors?: Record<string, string>[];
     timestamp: string;
-    status: "created" | "charged" | "completed" | "failed" | "refunded";
+    status: Status[];
 }
 
 interface NetsCreated extends BaseNetsWebhook {
@@ -183,14 +195,14 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (event) {
         case "payment.created":
-            body.status = "created";
+            body.status = [createStatus("created")];
             body.paymentData.paymentId = data.paymentId;
             break;
         case "payment.charge.failed":
             console.error("WEBHOOK ERROR: " + orderReference);
             // console.error(data?.error);
 
-            body.status = "failed";
+            body.status = [createStatus("failed")];
             body.paymentData.paymentId = data.paymentId;
             /* @ts-ignore */
             body.paymentData.chargeId = data.chargeId ? data.chargeId : "N/A";
@@ -198,7 +210,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.errors = data.error ? [data?.error] : [];
             break;
         case "payment.charge.created.v2":
-            body.status = "charged";
+            body.status = [createStatus("charged")];
             body.paymentData.paymentId = data.paymentId;
             /* @ts-ignore */
             body.paymentData.chargeId = data.chargeId ? data.chargeId : "N/A";
@@ -209,7 +221,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             };
             break;
         case "payment.checkout.completed":
-            body.status = "completed";
+            body.status = [createStatus("completed")];
             body.paymentData.paymentId = data.paymentId;
             body.order = {
                 items: data.order.orderItems,

@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 import { MetaOption } from "state/products";
 import _ from "underscore";
-import { createBody, createWebhook, isFree, nets } from "./utils";
+import { createBody, createStatus, createWebhook, isFree, nets } from "./utils";
 
 export interface NetsCustomer {
     firstName: string;
@@ -172,7 +172,9 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         options,
         order: body.order, //contains unique reference
         errors: [],
-        status: isFree(body) ? "completed" : "created",
+        status: isFree(body)
+            ? [createStatus("completed")]
+            : [createStatus("created")],
     });
 
     // reserve products

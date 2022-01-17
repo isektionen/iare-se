@@ -32,7 +32,9 @@ import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
+import { fetchHydration, useHydrater } from "state/layout";
 import { AllOption, FormState, useCheckout } from "state/products";
+import { LayoutProps } from "types/global";
 import { Event, Product } from "types/strapi";
 import _ from "underscore";
 import { isBeforeDeadline } from "utils/dates";
@@ -431,7 +433,8 @@ const Attachment = (props: AttachmentProps) => {
     );
 };
 
-const View = ({ event, products }: Props) => {
+const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
+    useHydrater({ header, footer });
     const { t } = useTranslation("checkout");
     const router = useRouter();
 
@@ -588,6 +591,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     const products = await eventModel.findProducts(locale, slug);
     return {
-        props: { event: data.event, products },
+        props: { event: data.event, products, ...(await fetchHydration()) },
     };
 };

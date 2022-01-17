@@ -57,6 +57,8 @@ import { checkoutClient } from "lib/checkout";
 import { usePayment } from "hooks/use-payment";
 import Script from "next/script";
 import { OrderReceipt } from "types/summary";
+import { LayoutProps } from "types/global";
+import { fetchHydration, useHydrater } from "state/layout";
 interface IProductItem extends DetailedFormSummary {
     isRemovable?: boolean;
 }
@@ -194,12 +196,15 @@ const SummaryCheckout = ({
     const isDev = useMemo(() => DEV(), []);
 
     // only supporting English and Swedish currently
-    const localeConversion: Record<string, "en-GB" | "sv-SE"> = {
-        en: "en-GB",
-        sv: "sv-SE",
-        "en-GB": "en-GB",
-        "sv-SE": "sv-SE",
-    };
+    const localeConversion: Record<string, "en-GB" | "sv-SE"> = useMemo(
+        () => ({
+            en: "en-GB",
+            sv: "sv-SE",
+            "en-GB": "en-GB",
+            "sv-SE": "sv-SE",
+        }),
+        []
+    );
 
     const {
         formState,
@@ -751,7 +756,7 @@ const SummaryView = ({
                         {t("details.firstname")}
                     </FormLabel>
                     <Input
-                        variant="filled"
+                        variant="flushed"
                         id="firstname"
                         type="firstname"
                         value={reciept.data.customerData.firstName}
@@ -763,7 +768,7 @@ const SummaryView = ({
                         {t("details.lastname")}
                     </FormLabel>
                     <Input
-                        variant="filled"
+                        variant="flushed"
                         id="lastname"
                         type="lastname"
                         value={reciept.data.customerData.lastName}
@@ -774,9 +779,9 @@ const SummaryView = ({
                     <FormLabel htmlFor="phone">
                         {t("details.phone.number")}
                     </FormLabel>
-                    <InputGroup variant="filled">
+                    <InputGroup variant="flushed">
                         <InputLeftElement w={{ base: "40%", md: "20%" }}>
-                            <Select borderRightRadius={0} value={country.name}>
+                            <Select variant="flushed" value={country.name}>
                                 <option value={country.name}>
                                     {country.name}
                                 </option>
@@ -794,7 +799,7 @@ const SummaryView = ({
                 <FormControl isDisabled>
                     <FormLabel htmlFor="email">{t("details.email")}</FormLabel>
                     <Input
-                        variant="filled"
+                        variant="flushed"
                         id="email"
                         type="email"
                         value={reciept.data.customerData.email}
@@ -847,8 +852,16 @@ const SummaryView = ({
     );
 };
 
-export const Summary = ({ event, products, reciept }: Props) => {
+export const Summary = ({
+    event,
+    products,
+    reciept,
+    header,
+    footer,
+}: LayoutProps<Props>) => {
     const { t, lang } = useTranslation("summary");
+
+    useHydrater({ header, footer });
 
     const path = useMemo(
         () => [
@@ -929,7 +942,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     const products = await eventModel.findProducts(locale, slug);
 
     return {
-        props: { event: data.event, products, reciept },
+        props: {
+            event: data.event,
+            products,
+            reciept,
+            ...(await fetchHydration()),
+        },
     };
 };
 

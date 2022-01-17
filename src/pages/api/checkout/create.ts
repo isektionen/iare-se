@@ -172,6 +172,11 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         options,
         order: body.order, //contains unique reference
         errors: [],
+        sentEmailConfirmation: false,
+        recieptUrl:
+            process.env.NODE_ENV === "production"
+                ? `https://www.iare.se/event/${eventRef}/summary?reference=${body.order.reference}`
+                : `http://localhost:3000/event/${eventRef}/summary?reference=${body.order.reference}`,
         status: isFree(body)
             ? [createStatus("completed")]
             : [createStatus("created")],

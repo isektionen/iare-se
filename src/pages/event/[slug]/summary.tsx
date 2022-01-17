@@ -650,18 +650,18 @@ const SummaryView = ({
                     let score = obj.timestamp;
                     switch (obj.status) {
                         case "completed":
-                            score += 100;
+                            score += 1e6;
                             break;
                         case "charged":
-                            score += 50;
+                            score += 0.5e6;
                             break;
                         case "failed":
-                            score += 200;
+                            score += 2e6;
                             break;
                         case "created":
                             break;
                         case "refunded":
-                            score += 150;
+                            score += 1.5e6;
                             break;
                     }
                     return score;
@@ -805,6 +805,17 @@ const SummaryView = ({
                             {status.status}
                         </Badge>
                     )}
+
+                    {!reciept.data.sentEmailConfirmation ? (
+                        <Badge variant="subtle" colorScheme="green">
+                            EMAIL SENT
+                        </Badge>
+                    ) : (
+                        <Badge variant="subtle" colorScheme="yellow">
+                            EMAIL IN QUEUE
+                        </Badge>
+                    )}
+
                     <Badge variant="subtle">
                         {reciept.data.order.reference}
                     </Badge>

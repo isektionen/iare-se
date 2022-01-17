@@ -12,6 +12,8 @@ export interface OrderReceipt {
 
 export interface Data {
     customerData: CustomerData;
+    sentEmailConfirmation: boolean;
+    recieptUrl: string;
     options: Options;
     order: Order;
     paymentData?: Partial<PaymentData>;

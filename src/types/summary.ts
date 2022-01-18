@@ -14,7 +14,10 @@ export interface Data {
     customerData: CustomerData;
     sentEmailConfirmation: boolean;
     recieptUrl: string;
-    options: Options;
+    options: {
+        reference: string;
+        data: MetaData[];
+    }[];
     order: Order;
     paymentData?: Partial<PaymentData>;
     errors: any[];
@@ -55,7 +58,7 @@ interface Option {
     label: string;
     value: string;
 }
-export type Options = Record<string, (string | null | Option | boolean)[]>;
+export type MetaData = Record<string, (string | null | Option | boolean)[]>;
 
 export interface Order {
     items: Item[];
@@ -66,6 +69,7 @@ export interface Order {
 
 export interface Item {
     reference: string;
+    __reference: string;
     name: string;
     quantity: number;
     unitPrice: number;

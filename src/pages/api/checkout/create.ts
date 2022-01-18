@@ -17,6 +17,7 @@ export interface NetsCustomer {
 
 interface IOrderItem {
     reference: string;
+    __reference: string;
     name: string;
     quantity: number;
 }
@@ -25,7 +26,10 @@ export interface ICreateBody {
     items: IOrderItem[];
     reference: string | number; // event-slug
     customer: NetsCustomer;
-    options: Record<string, (string | boolean | MetaOption | null)[]>;
+    options: {
+        reference: string;
+        data: Record<string, (string | boolean | MetaOption | null)[]>;
+    }[];
 }
 
 interface Product {
@@ -57,7 +61,10 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const incomingItemReferences = items.map((r) => r.reference);
+    const incomingRelationalReferences = items.map((r) => r.__reference);
 
+    // already fucked here
+    console.log(JSON.stringify(options, null, 2));
     // get products from event-reference
     const productData = await strapi.get(`/events/${eventRef}/products`);
     if (productData.status !== 200) {

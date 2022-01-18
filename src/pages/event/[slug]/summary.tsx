@@ -56,9 +56,10 @@ import { BiChevronRight } from "react-icons/bi";
 import { checkoutClient } from "lib/checkout";
 import { usePayment } from "hooks/use-payment";
 import Script from "next/script";
-import { OrderReceipt } from "types/summary";
+import { MetaData, OrderReceipt } from "types/summary";
 import { LayoutProps } from "types/global";
 import { fetchHydration, useHydrater } from "state/layout";
+import { ICreateBody } from "pages/api/checkout/create";
 interface IProductItem extends DetailedFormSummary {
     isRemovable?: boolean;
 }
@@ -175,9 +176,15 @@ type DetailedFormSummary = Omit<FormState, "optionResults"> & {
     total: number;
     media: UploadFile;
     productReference: string;
-    optionResults: (FormState["optionResults"][0] & {
+    /*optionResults: (FormState["optionResults"][0] & {
         type: AllOption["type"];
-    })[];
+    })[];*/
+    optionResults: {
+        type: AllOption["type"];
+        label: string;
+        reference: string;
+        data: (string | MetaOption | boolean | null)[];
+    }[];
     onClick: () => void;
 };
 
@@ -305,20 +312,27 @@ const SummaryCheckout = ({
         const { reference, reserved, paymentId } = await checkoutClient.create({
             // TODO: PRODUCT REF MIGHT BREAK RELATION IN BACKEND
             items: productSummary.map((product) => ({
+                __reference: product.reference,
                 reference: product.productReference,
                 name: product.name,
                 quantity: product.amount,
             })),
             reference: defcast(event.slug),
             customer,
-            options: productSummary.reduce((acc, { optionResults }) => {
-                return {
+            options: productSummary.reduce((acc, it) => {
+                return [
                     ...acc,
-                    ...optionResults.reduce((_acc, it) => {
-                        return { ..._acc, [it.reference]: it.data };
-                    }, {}),
-                };
-            }, {}),
+                    ...it.optionResults.reduce((_acc, _it) => {
+                        return [
+                            ..._acc,
+                            {
+                                reference: it.reference + "::" + _it.reference,
+                                data: _it.data,
+                            },
+                        ];
+                    }, [] as { reference: string; data: any }[]),
+                ];
+            }, [] as ICreateBody["options"]),
         });
         if (reserved && !paymentId && reference) {
             setOrderReference(reference);
@@ -687,6 +701,7 @@ const SummaryView = ({
                 const product = defcast(
                     products.find((p) => p.reference === it.reference)
                 );
+
                 return [
                     ...acc,
                     {
@@ -699,7 +714,34 @@ const SummaryView = ({
                             products.find((p) => p.reference === it.reference)
                         ).media as UploadFile,
                         productReference: it.reference,
-                        optionResults: _.pairs(reciept.data.options).map(
+                        optionResults: reciept.data.options
+                            .filter((p) => p.reference.includes(it.__reference))
+                            .map((option) => {
+                                const path = option.reference.split("::");
+                                const optionReference = _.last(path);
+                                const _option = product?.product_options?.find(
+                                    (p) => p?.reference === optionReference
+                                );
+                                const optionData = _.first(
+                                    _option?.data ?? []
+                                ) as AllFormOptions;
+                                return {
+                                    label: optionData.label,
+                                    data: option.data as unknown as (
+                                        | string
+                                        | MetaOption
+                                        | boolean
+                                        | null
+                                    )[],
+                                    reference: option.reference,
+                                    type: optionData
+                                        ? component2type[
+                                              optionData?.__component
+                                          ]
+                                        : "input",
+                                };
+                            }),
+                        /*optionResults: _.pairs(reciept.data.options).map(
                             ([k, v]) => {
                                 const option = product.product_options?.find(
                                     (p) => p?.reference === k
@@ -718,7 +760,8 @@ const SummaryView = ({
                                         : "input",
                                 };
                             }
-                        ),
+                        ),*/
+
                         onClick: () => {},
                     },
                 ];

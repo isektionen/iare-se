@@ -326,11 +326,13 @@ const SummaryCheckout = ({
                         return [
                             ..._acc,
                             {
+                                label: _it.label,
+                                type: _it.type,
                                 reference: it.reference + "::" + _it.reference,
                                 data: _it.data,
                             },
                         ];
-                    }, [] as { reference: string; data: any }[]),
+                    }, [] as { reference: string; data: any; label: string; type: string }[]),
                 ];
             }, [] as ICreateBody["options"]),
         });

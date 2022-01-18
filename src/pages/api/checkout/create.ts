@@ -27,6 +27,8 @@ export interface ICreateBody {
     reference: string | number; // event-slug
     customer: NetsCustomer;
     options: {
+        label: string;
+        type: string;
         reference: string;
         data: Record<string, (string | boolean | MetaOption | null)[]>;
     }[];

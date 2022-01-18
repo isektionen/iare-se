@@ -63,7 +63,7 @@ export const Sidebar = ({ committees, ...props }: Props) => {
     const isAboveMd = useBreakpointValue({ base: false, md: true });
 
     return (
-        <VStack
+        <VStack py={5}
             w={{ base: "45px", sm: "min-content", lg: "225px" }}
             spacing={0.5}
             align="stretch"

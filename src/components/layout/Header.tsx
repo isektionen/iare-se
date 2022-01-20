@@ -245,13 +245,35 @@ const Header = (props: BoxProps) => {
                                             _subSection.length === 0
                                         ) {
                                             return (
-                                                <React.Fragment
-                                                    key={
-                                                        i +
-                                                        "accordionitem-" +
-                                                        href
-                                                    }
-                                                ></React.Fragment>
+                                                <AccordionItem
+                                                key={
+                                                    i + "accordionitem-" + href
+                                                }
+                                                borderTopWidth="0 !important"
+                                                borderBottomWidth="0 !important"
+                                                >   
+                                                
+                                                    <AccordionButton>
+                                                        <Flex
+                                                            align="center"
+                                                            w="full"
+                                                            flex={1}
+                                                            justify="space-between"
+                                                        >
+                                                            <AccessibleLink
+                                                                href={
+                                                                    href
+                                                                }>
+                                                            <Text
+                                                                fontWeight="700"
+                                                                size="lg"
+                                                            >
+                                                                {label}
+                                                            </Text>
+                                                            </AccessibleLink>
+                                                        </Flex>
+                                                    </AccordionButton>
+                                                </AccordionItem>
                                             );
                                         }
                                         return (

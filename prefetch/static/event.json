@@ -1,73 +1,146 @@
 {
-    "id": 22,
-    "title": "Alumn/övrig Jubileumsgasquen",
-    "slug": "alumn-oevrig-jubileumsgasquen",
-    "committee": {
-        "id": 15,
-        "name": "Jubileum",
-        "locale": "sv",
-        "published_at": "2021-09-23T08:10:40.559Z",
-        "created_at": "2021-09-23T08:10:38.220Z",
-        "updated_at": "2021-09-23T08:10:40.586Z",
-        "committee_objective": null,
-        "abbreviation": null,
-        "slug": "jubileum",
-        "content": null,
-        "contact": null,
-        "icon": null
-    },
+    "id": 48,
+    "title": "Dags att spexa",
+    "slug": "dags-att-spexasdasdas",
+    "committee": null,
     "category": {
-        "id": 1,
-        "name": "Efterfest",
+        "id": 9,
+        "name": "Spex",
         "locale": "sv",
-        "published_at": "2021-07-26T19:44:57.334Z",
-        "created_at": "2021-07-26T16:24:32.398Z",
-        "updated_at": "2021-09-30T08:50:56.878Z"
+        "published_at": "2021-11-12T14:40:15.915Z",
+        "created_at": "2021-11-12T14:40:08.630Z",
+        "updated_at": "2021-11-12T14:40:15.934Z"
     },
-    "startTime": "2021-11-13T16:00:00.000Z",
-    "endTime": "2021-11-14T02:00:00.000Z",
-    "deadline": "2021-10-10T21:30:00.000Z",
-    "description": null,
+    "startTime": null,
+    "endTime": null,
+    "deadline": null,
+    "description": "Nu spexas det helt enkelt",
     "locale": "sv",
-    "published_at": "2021-11-15T17:55:03.596Z",
-    "created_at": "2021-09-24T08:06:38.994Z",
-    "updated_at": "2021-11-15T17:55:03.625Z",
-    "fullfillmentUID": "ghVKzklu",
-    "body": "Jubileumgasquen",
-    "maxTickets": 0,
-    "tickets": {
-        "id": 140,
-        "allowMultiple": false,
-        "Tickets": [
-            {
-                "id": 276,
-                "name": null,
-                "price": 1250,
-                "swedishName": "Inklusive alkohol",
-                "ticketUID": "wDHAaCvQ",
-                "englishName": null
+    "published_at": "2022-01-21T10:17:00.654Z",
+    "created_at": "2022-01-21T10:16:45.593Z",
+    "updated_at": "2022-01-21T10:17:00.684Z",
+    "fullfillmentUID": null,
+    "body": "Här borde det stå en massa info om brosshan",
+    "maxTickets": null,
+    "public": true,
+    "location": "nymble",
+    "schedule": {
+        "id": 1,
+        "start": "2022-01-26T11:00:00.000Z",
+        "end": "2022-02-03T11:00:00.000Z",
+        "deadline": "2022-01-26T11:00:00.000Z"
+    },
+    "media": [
+        {
+            "id": 48,
+            "name": "banner20201 - kopia_2.jpg",
+            "alternativeText": "",
+            "caption": "",
+            "width": 1702,
+            "height": 630,
+            "formats": {
+                "large": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/large_banner20201_kopia_2_83626d7f94.jpg",
+                    "hash": "large_banner20201_kopia_2_83626d7f94",
+                    "mime": "image/jpeg",
+                    "name": "large_banner20201 - kopia_2.jpg",
+                    "path": null,
+                    "size": 70.9,
+                    "width": 1000,
+                    "height": 370
+                },
+                "small": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_banner20201_kopia_2_83626d7f94.jpg",
+                    "hash": "small_banner20201_kopia_2_83626d7f94",
+                    "mime": "image/jpeg",
+                    "name": "small_banner20201 - kopia_2.jpg",
+                    "path": null,
+                    "size": 22.99,
+                    "width": 500,
+                    "height": 185
+                },
+                "medium": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_banner20201_kopia_2_83626d7f94.jpg",
+                    "hash": "medium_banner20201_kopia_2_83626d7f94",
+                    "mime": "image/jpeg",
+                    "name": "medium_banner20201 - kopia_2.jpg",
+                    "path": null,
+                    "size": 43.02,
+                    "width": 750,
+                    "height": 278
+                },
+                "thumbnail": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_banner20201_kopia_2_83626d7f94.jpg",
+                    "hash": "thumbnail_banner20201_kopia_2_83626d7f94",
+                    "mime": "image/jpeg",
+                    "name": "thumbnail_banner20201 - kopia_2.jpg",
+                    "path": null,
+                    "size": 7.18,
+                    "width": 245,
+                    "height": 91
+                }
             },
-            {
-                "id": 277,
-                "name": null,
-                "price": 1250,
-                "swedishName": "Alkoholfritt",
-                "ticketUID": "E2dIbs2h",
-                "englishName": null
+            "hash": "banner20201_kopia_2_83626d7f94",
+            "ext": ".jpg",
+            "mime": "image/jpeg",
+            "size": 185.16,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/banner20201_kopia_2_83626d7f94.jpg",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2021-11-14T11:46:34.729Z",
+            "updated_at": "2021-11-14T11:46:34.737Z"
+        }
+    ],
+    "products": [
+        {
+            "id": 1,
+            "name": "Spex biljett",
+            "price": 1,
+            "stock": 9999,
+            "count": 0,
+            "reference": "spex-biljett-12321312312",
+            "consumable": false,
+            "description": "En rolig show helt enkelt",
+            "published_at": "2022-01-21T10:15:03.853Z",
+            "created_at": "2022-01-21T10:13:31.755Z",
+            "updated_at": "2022-01-21T10:15:03.872Z",
+            "media": {
+                "id": 52,
+                "name": "logga-liten (1).png",
+                "alternativeText": "",
+                "caption": "",
+                "width": 264,
+                "height": 350,
+                "formats": {
+                    "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_logga_liten_1_e5abdc05dc.png",
+                        "hash": "thumbnail_logga_liten_1_e5abdc05dc",
+                        "mime": "image/png",
+                        "name": "thumbnail_logga-liten (1).png",
+                        "path": null,
+                        "size": 12.19,
+                        "width": 118,
+                        "height": 156
+                    }
+                },
+                "hash": "logga_liten_1_e5abdc05dc",
+                "ext": ".png",
+                "mime": "image/png",
+                "size": 13.85,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logga_liten_1_e5abdc05dc.png",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-11-22T14:27:59.097Z",
+                "updated_at": "2021-11-22T14:27:59.105Z"
             }
-        ]
-    },
-    "servingOptions": {
-        "id": 43,
-        "servingFood": true,
-        "servingAlcohol": true
-    },
-    "place": {
-        "id": 22,
-        "name": "Münchenbryggeriet",
-        "showMap": null
-    },
-    "passwordProtected": null,
-    "banner": null,
+        }
+    ],
     "localizations": []
 }

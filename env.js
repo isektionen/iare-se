@@ -17,7 +17,7 @@ module.exports = (nextConfig = {}) => {
                         ? process.env.TEST_CHECKOUT_KEY
                         : process.env.LIVE_CHECKOUT_KEY,
                 NEXT_PUBLIC_STRAPI:
-                    isDev || force_local_backend
+                    isDev && force_local_backend
                         ? "http://localhost:1337"
                         : "https://cms.iare.se",
                 NETS_BEARER:

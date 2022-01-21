@@ -114,7 +114,7 @@ export function createWebhook(
         eventName: `payment.${eventName}`,
         url:
             process.env.NODE_ENV === "production"
-                ? "https://iare.se/api/checkout/callback"
+                ? "https://www.iare.se/api/checkout/callback"
                 : LOCAL_CALLBACK_URL + "/api/checkout/callback",
         authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",
         headers: [

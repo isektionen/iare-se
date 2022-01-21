@@ -1,9 +1,9 @@
 module.exports = (nextConfig = {}) => {
     return Object.assign({}, nextConfig, {
         webpack: (config, { dev, webpack }) => {
-            const test_nets_local = true;
+            const test_nets_local = false;
 
-            const force_local_backend = true;
+            const force_local_backend = false;
             const isDev = dev;
 
             console.log(`isDev: ${isDev}`);

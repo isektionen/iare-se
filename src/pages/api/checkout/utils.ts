@@ -2,7 +2,8 @@ import axios from "axios";
 import _ from "underscore";
 import { Status, StatusType } from "./callback";
 
-const LOCAL_CALLBACK_URL = "https://brown-cat-36.loca.lt";
+const LOCAL_CALLBACK_URL = "https://ancient-rat-77.loca.lt";
+const FORCE_LOCAL = true;
 
 type NetsWebhook =
     | "checkout.completed"
@@ -81,7 +82,7 @@ export function createBody({
         order,
         checkout: {
             termsUrl:
-                process.env.NODE_ENV === "production"
+                process.env.NODE_ENV === "production" && !FORCE_LOCAL
                     ? "https://www.iare.se"
                     : "http://localhost:3000",
             publicDevice: false,
@@ -89,7 +90,7 @@ export function createBody({
             integrationType: "EmbeddedCheckout",
             merchantHandlesConsumerData: true,
             url:
-                process.env.NODE_ENV === "production"
+                process.env.NODE_ENV === "production" && !FORCE_LOCAL
                     ? "https://www.iare.se"
                     : "http://localhost:3000",
             consumer,
@@ -113,7 +114,7 @@ export function createWebhook(
     return {
         eventName: `payment.${eventName}`,
         url:
-            process.env.NODE_ENV === "production"
+            process.env.NODE_ENV === "production" && !FORCE_LOCAL
                 ? "https://www.iare.se/api/checkout/callback"
                 : LOCAL_CALLBACK_URL + "/api/checkout/callback",
         authorization: process.env.NETS_WEBHOOK_AUTH || "invalid-environment",

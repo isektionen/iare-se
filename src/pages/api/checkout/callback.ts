@@ -170,12 +170,11 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const orderReferenceFromHeader = req.headers["x-order-reference"] as string;
 
-    const [bearer, token] = auth.split(" ", 1);
     if (
-        token !== process.env.NETS_WEBHOOK_AUTH &&
+        auth !== process.env.NETS_WEBHOOK_AUTH &&
         process.env.NODE_ENV === "production"
     ) {
-        return res.status(401);
+        return res.status(401).send();
     }
 
     const { event, data, timestamp } = req.body as

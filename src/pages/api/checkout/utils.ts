@@ -82,7 +82,7 @@ export function createBody({
         checkout: {
             termsUrl:
                 process.env.NODE_ENV === "production"
-                    ? "https://iare.se"
+                    ? "https://www.iare.se"
                     : "http://localhost:3000",
             publicDevice: false,
             charge: true,
@@ -90,7 +90,7 @@ export function createBody({
             merchantHandlesConsumerData: true,
             url:
                 process.env.NODE_ENV === "production"
-                    ? "https://iare.se"
+                    ? "https://www.iare.se"
                     : "http://localhost:3000",
             consumer,
         },

@@ -1,17 +1,13 @@
 import {
     InputGroup,
-    InputRightAddon,
     Input,
-    Box,
     VStack,
     Button,
     Menu,
     MenuButton,
     MenuList,
-    MenuItem,
     CheckboxGroup,
     Checkbox,
-    HStack,
     Wrap,
     Drawer,
     DrawerBody,
@@ -28,7 +24,7 @@ import useTranslation from "next-translate/useTranslation";
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import { IoIosArrowDown } from "react-icons/io";
-import { useFuseRegister, QueryState } from "state/document";
+import { useFuseRegister } from "state/document";
 
 export interface SelectOption {
     label: string;

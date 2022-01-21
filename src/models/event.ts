@@ -1,7 +1,8 @@
-import strapi, { gql, queryLocale } from "lib/strapi";
+import strapi, { gql, queryLocale, axios as strapiInstance } from "lib/strapi";
 import { TLocale } from "types/global";
 import { Diet, Allergy, Event } from "types/strapi";
 import _ from "underscore";
+import { isBeforeDeadline } from "utils/dates";
 
 const findAll = async () => {
     const { data } = await strapi.query<{ events: Event[] }>({
@@ -16,76 +17,110 @@ const findAll = async () => {
     return { events: data.events };
 };
 
-const find = async (locale: TLocale, slug: string) => {
+const checkIfGuarded = async (locale: TLocale, slug: string) => {
+    try {
+        const res = await strapiInstance.get(`events/${slug}/password`);
+
+        return res.status === 200;
+    } catch {
+        return false;
+    }
+};
+
+const findGuarded = async (
+    locale: TLocale,
+    slug: string,
+    password: string | null
+) => {
+    if (!password) {
+        return {
+            event: null,
+            error: true,
+        };
+    }
+
     const { data, error } = await queryLocale<{
         events: Event[];
-        orderCount: number;
-        diets: Diet[];
-        allergies: Allergy[];
     }>`
-        query FindManyDetailedEvents {
-            events(locale: ${locale}, where: { slug: ${slug}}) {
-                locale
-                fullfillmentUID
-                id
+        query FindGuardedEvent {
+            events(locale: ${locale}, where: {slug: ${slug}, password: ${password}}) {
                 slug
-                title
-                description
-                body
-                committee {
-                    name
-                }
-                tickets {
-                    Tickets {
-                        id
-                        swedishName
-                        englishName
-                        ticketUID
-                        price
-                    }
-                    allowMultiple
-                }
-                servingOptions {
-                    servingFood
-                }
-                place {
-                    name
-                }
-                maxTickets
-                startTime
-                endTime
-                deadline
-                published_at
-                passwordProtected {
-                    __typename
-                }
-                localizations {
-                    locale
-                    slug
-                }
-                otherCommentLabel {id commentLabelSwedish commentLabelEnglish __typename}
-            }
-            diets {
-                id
-                name
-            }
-            allergies {
-                id
-                name
+                
             }
         }
     `;
+
+    return {
+        validated: _.first(data.events)?.slug === slug,
+        error: error,
+    };
+};
+
+const findProducts = async (locale: TLocale, slug: string) => {
+    const res = await strapiInstance.get(`/events/${slug}/products`);
+    if (res.status !== 200) {
+        return [];
+    }
+    return res.data;
+};
+
+const findReciept = async (locale: TLocale, reference: string) => {
+    if (!reference) {
+        return null;
+    }
+    try {
+        const res = await strapiInstance.get(`/orders/${reference}/receipt`);
+        if (res.status !== 200) {
+            return null;
+        }
+        return res.data;
+    } catch (e) {
+        return null;
+    }
+};
+
+const find = async (locale: TLocale, slug: string) => {
+    const { data, error } = await queryLocale<{
+        events: Event[];
+    }>`
+        query FindManyDetailedEvents {
+            events(locale: ${locale}, where: {slug: ${slug}}) {
+                locale
+                title
+                slug
+                body
+                password
+                schedule {
+                    start
+                    deadline
+                    end
+                }
+                location
+                media {
+                    formats
+                    url
+                    name
+                    width
+                    height
+                }
+                description
+            }
+        }
+    `;
+
     return {
         event: _.first(data.events),
-        diets: data.diets,
-        allergies: data.allergies,
-        error,
+        error: error,
     };
 };
 
 const event = {
     find,
     findAll,
+    checkIfGuarded,
+    findGuarded,
+    findProducts,
+    findReciept,
 };
 
 export default event;

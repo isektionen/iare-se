@@ -1,5 +1,7 @@
-import { Button, IconButton, IconButtonProps } from "@chakra-ui/button";
 import {
+    Button,
+    IconButton,
+    IconButtonProps,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -23,7 +25,7 @@ import { WrapPadding } from "components/browser/WrapPadding";
 import { format } from "date-fns";
 import { useDynamicLocale } from "hooks/use-format";
 import useTranslation from "next-translate/useTranslation";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoChevronBack, IoChevronForward, IoClose } from "react-icons/io5";

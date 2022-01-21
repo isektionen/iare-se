@@ -1,16 +1,8 @@
-import {
-    Box,
-    Button,
-    Heading,
-    HStack,
-    List,
-    ListItem,
-    VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, List, ListItem } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
 import { HorizontalScroll } from "components/HorizontalScroll";
 import { LinkComponent } from "components/LinkComponent";
-import React, { useMemo } from "react";
+import React from "react";
 import { usePageHydrate } from "state/layout";
 
 export const PageMenu = () => {

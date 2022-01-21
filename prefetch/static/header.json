@@ -113,6 +113,13 @@
                     "color": "gray"
                 }
             ]
+        },
+        {
+            "id": "13",
+            "label": "Nämnder",
+            "displayDropDown": true,
+            "href": "/chapter/committee",
+            "subSection": []
         }
     ],
     "languages": [
@@ -247,10 +254,10 @@
                     ]
                 },
                 {
-                    "id": "12",
-                    "label": "Company",
+                    "id": "14",
+                    "label": "Committees",
                     "displayDropDown": false,
-                    "href": "/company",
+                    "href": "/en/chapter/committee",
                     "subSection": []
                 }
             ],

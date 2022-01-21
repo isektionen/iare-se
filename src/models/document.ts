@@ -4,7 +4,7 @@ import { TLocale } from "types/global";
 
 const getDocuments = async (locale: TLocale) => {
     const { data, error } = await queryLocale<{ document: DocumentType }>`
-            query {
+            query FindDocs {
                 document(locale: ${locale}) {
                     document {
                         name
@@ -23,7 +23,7 @@ const getDocuments = async (locale: TLocale) => {
                 }
             }
         `;
-    return { documents: data.document, error };
+    return { documents: data?.document ?? [], error };
 };
 
 const document = {

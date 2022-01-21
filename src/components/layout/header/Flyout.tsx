@@ -1,6 +1,5 @@
-import { SimpleGrid, Circle, Icon, Text } from "@chakra-ui/react";
+import { SimpleGrid, Circle, Icon, Text, Box } from "@chakra-ui/react";
 import AccessibleLink from "components/AccessibleLink";
-import Box from "components/motion/Box";
 import React from "react";
 import { ComponentHeaderMenuSection } from "types/strapi";
 import { availableIcons } from "utils/icon";

@@ -22,7 +22,7 @@ import { usePagination } from "hooks/use-pagination";
 import useTranslation from "next-translate/useTranslation";
 import React, { useEffect } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { Post, Jobs, Event } from "types/strapi";
+import { Post, Jobs, Event, UploadFile } from "types/strapi";
 import { Item } from "./Item";
 
 type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
@@ -30,6 +30,7 @@ type Feed = ((Omit<Post, "categories"> | Event | Jobs) & {
     __body: string;
     __calendarDate: string;
     __href: string;
+    __media?: UploadFile;
     categories: string[];
 })[];
 
@@ -77,9 +78,9 @@ export const Gallery = ({
                     tc
                         ? tc
                         : {
-                            base: "repeat(1, 1fr)",
-                            md: "repeat(12, 1fr)",
-                        }
+                              base: "repeat(1, 1fr)",
+                              md: "repeat(12, 1fr)",
+                          }
                 }
                 templateRows={
                     tr ? tr : { base: "repeat(1, 1fr)", md: "repeat(1, 1fr)" }
@@ -107,7 +108,9 @@ export const Gallery = ({
                             item={{
                                 categories: item.categories,
                                 href: item?.__href ?? "#",
-                                imgurl: item?.banner?.url ?? "/indek_template_fill.png",
+                                imgurl:
+                                    item?.__media?.url ??
+                                    "/indek_template_fill.png",
                                 calendarDate: item?.__calendarDate ?? "N/A",
                                 title: item.title,
                                 description: item.description as string,
@@ -133,7 +136,8 @@ export const Gallery = ({
                                 item={{
                                     href: item?.__href ?? "#",
                                     imgurl:
-                                        item?.banner?.url ?? "/indek_template_fill.png",
+                                        item?.__media?.url ??
+                                        "/indek_template_fill.png",
                                     categories: item.categories,
                                     calendarDate: item?.__calendarDate ?? "N/A",
                                     title: item.title,

@@ -1,1 +1,35 @@
-[]
+{
+    "id": 2,
+    "title": "Test bain C-Å",
+    "slug": "test-bain-c-a",
+    "deadlineDate": "2021-12-24T11:00:00.000Z",
+    "startDate": "2021-12-31T11:00:00.000Z",
+    "jobCategory": {
+        "id": 1,
+        "name": "Full-time",
+        "locale": "sv",
+        "published_at": "2021-07-26T16:25:20.251Z",
+        "created_at": "2021-07-26T16:25:18.096Z",
+        "updated_at": "2021-07-26T16:25:20.284Z"
+    },
+    "company": null,
+    "body": "Bain TEST",
+    "position": null,
+    "location": null,
+    "locale": "sv",
+    "published_at": "2021-11-24T16:28:17.471Z",
+    "created_at": "2021-09-15T17:03:39.390Z",
+    "updated_at": "2021-11-24T16:28:17.499Z",
+    "description": null,
+    "year": [],
+    "contact": [
+        {
+            "id": 3,
+            "label": "Ansökan",
+            "type": "website",
+            "href": "www.google.com"
+        }
+    ],
+    "banner": null,
+    "localizations": []
+}

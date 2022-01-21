@@ -1,8 +1,8 @@
 {
-    "id": 1,
-    "title": "test",
-    "description": "test",
-    "slug": "test",
+    "id": 2,
+    "title": "test-post",
+    "description": "en beskrivning",
+    "slug": "test-post",
     "adminUser": {
         "id": 1,
         "firstname": "John",
@@ -10,13 +10,65 @@
         "username": null,
         "preferedLanguage": null
     },
-    "committee": null,
-    "body": "# test",
-    "locale": "en",
-    "published_at": "2021-07-26T04:04:21.237Z",
-    "created_at": "2021-07-26T04:04:16.861Z",
-    "updated_at": "2021-07-26T04:04:21.269Z",
-    "banner": null,
-    "categories": [],
+    "committee": {
+        "id": 5,
+        "name": "Studienämnden",
+        "locale": "sv",
+        "published_at": "2021-07-26T13:48:03.050Z",
+        "created_at": "2021-07-26T13:48:01.069Z",
+        "updated_at": "2021-08-30T19:34:50.646Z",
+        "committee_objective": 3,
+        "abbreviation": null,
+        "slug": "studienaemnden",
+        "content": null,
+        "contact": null,
+        "icon": null
+    },
+    "body": "EN KROPP!\n\n## VÅGAT!",
+    "locale": "sv",
+    "published_at": "2021-11-24T16:28:52.131Z",
+    "created_at": "2021-09-12T13:58:59.839Z",
+    "updated_at": "2021-11-24T16:28:52.283Z",
+    "banner": {
+        "id": 37,
+        "name": "photo-1542156822-6924d1a71ace.webp",
+        "alternativeText": "",
+        "caption": "",
+        "width": 500,
+        "height": 334,
+        "formats": {
+            "thumbnail": {
+                "ext": ".webp",
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_photo_1542156822_6924d1a71ace_4ec5bc5630.webp",
+                "hash": "thumbnail_photo_1542156822_6924d1a71ace_4ec5bc5630",
+                "mime": "image/webp",
+                "name": "thumbnail_photo-1542156822-6924d1a71ace.webp",
+                "path": null,
+                "size": 5.83,
+                "width": 234,
+                "height": 156
+            }
+        },
+        "hash": "photo_1542156822_6924d1a71ace_4ec5bc5630",
+        "ext": ".webp",
+        "mime": "image/webp",
+        "size": 15.15,
+        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/photo_1542156822_6924d1a71ace_4ec5bc5630.webp",
+        "previewUrl": null,
+        "provider": "aws-s3",
+        "provider_metadata": null,
+        "created_at": "2021-08-24T13:16:04.087Z",
+        "updated_at": "2021-08-24T13:16:04.096Z"
+    },
+    "categories": [
+        {
+            "id": 1,
+            "name": "Studentliv",
+            "locale": "sv",
+            "published_at": "2021-07-26T16:26:07.087Z",
+            "created_at": "2021-07-26T16:26:05.197Z",
+            "updated_at": "2021-07-26T16:26:07.100Z"
+        }
+    ],
     "localizations": []
 }

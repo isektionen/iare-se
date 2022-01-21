@@ -3,10 +3,13 @@ import { fetchHydration } from "state/layout";
 import _ from "underscore";
 import representative from "models/representative";
 import View from "views/Contact/Contact";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    locale = conformLocale(locale);
+
     const { representatives, error } = await representative.getRepresentatives(
         locale
     );

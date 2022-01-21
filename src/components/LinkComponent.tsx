@@ -8,6 +8,7 @@ interface Props extends BoxProps, ButtonOptions {
     variant?: string;
     children: any;
     isDisabled?: boolean;
+    shallow?: boolean;
 }
 
 export const LinkComponent = <T,>(props: Props) => {

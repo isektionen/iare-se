@@ -6,6 +6,7 @@ import {
     useRecoilValue,
     useSetRecoilState,
 } from "recoil";
+import { conformLocale } from "utils/lang";
 
 interface LocaleState {
     slug: string;
@@ -21,7 +22,10 @@ const stateSelector = selector({
     key: "SELECTOR/LOCALSTATE",
     get: ({ get }) => {
         const state = get(localeState);
-        return (locale: string) => state.find((item) => item.locale === locale);
+        return (locale: string) => {
+            locale = conformLocale(locale);
+            return state.find((item) => item.locale === locale);
+        };
     },
 });
 

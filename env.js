@@ -9,11 +9,11 @@ module.exports = (nextConfig = {}) => {
             console.log(`isDev: ${isDev}`);
             const env = {
                 NEXT_PUBLIC_CHECKOUT_SRC:
-                    test_nets_local || !isDev
+                    test_nets_local || isDev
                         ? process.env.TEST_CHECKOUT
                         : process.env.LIVE_CHECKOUT,
                 NEXT_PUBLIC_CHECKOUT_KEY:
-                    test_nets_local || !isDev
+                    test_nets_local || isDev
                         ? process.env.TEST_CHECKOUT_KEY
                         : process.env.LIVE_CHECKOUT_KEY,
                 NEXT_PUBLIC_STRAPI:
@@ -21,11 +21,11 @@ module.exports = (nextConfig = {}) => {
                         ? "http://localhost:1337"
                         : "https://cms.iare.se",
                 NETS_BEARER:
-                    test_nets_local || !isDev
+                    test_nets_local || isDev
                         ? process.env.TEST_NETS_BEARER
                         : process.env.LIVE_NETS_BEARER,
                 NETS_BASE_API:
-                    test_nets_local || !isDev
+                    test_nets_local || isDev
                         ? "https://test.api.dibspayment.eu/v1"
                         : "https://api.dibspayment.eu/v1",
             };

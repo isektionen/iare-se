@@ -1,104 +1,50 @@
 {
     "id": 2,
-    "role": "Ordförande",
-    "abbreviation": "sd",
+    "role": "eventansvarig",
+    "locale": "sv",
+    "published_at": "2021-08-25T09:35:00.297Z",
+    "created_at": "2021-08-25T09:34:59.693Z",
+    "updated_at": "2021-08-29T13:58:04.028Z",
+    "abbreviation": "",
+    "committee_objective": 2,
     "featured_role": false,
-    "contact": "lol@lol.lol",
-    "slug": "ordfoerande",
+    "contact": "event@iare.nu",
+    "slug": "eventansvarig",
     "role_description": null,
-    "locale": "sv-SE",
-    "published_at": "2022-01-16T21:31:03.859Z",
-    "created_at": "2022-01-16T21:30:40.691Z",
-    "updated_at": "2022-01-16T21:31:03.880Z",
     "representatives": [
         {
-            "id": 1,
-            "user": 1,
-            "hidden": false,
-            "chapter_year": null,
-            "personal_description": null,
-            "locale": "sv-SE",
-            "published_at": "2021-08-25T08:07:47.812Z",
-            "created_at": "2021-08-25T08:07:39.870Z",
-            "updated_at": "2021-08-25T09:21:37.158Z",
-            "cover": {
-                "id": 19,
-                "name": "samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                "alternativeText": "",
-                "caption": "",
-                "width": 6016,
-                "height": 4016,
-                "formats": {
-                    "thumbnail": {
-                        "name": "thumbnail_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                        "hash": "thumbnail_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "width": 234,
-                        "height": 156,
-                        "size": 10.71,
-                        "path": null,
-                        "url": "/uploads/thumbnail_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-                    },
-                    "large": {
-                        "name": "large_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                        "hash": "large_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "width": 1000,
-                        "height": 668,
-                        "size": 84.48,
-                        "path": null,
-                        "url": "/uploads/large_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-                    },
-                    "medium": {
-                        "name": "medium_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                        "hash": "medium_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "width": 750,
-                        "height": 501,
-                        "size": 55.73,
-                        "path": null,
-                        "url": "/uploads/medium_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-                    },
-                    "small": {
-                        "name": "small_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                        "hash": "small_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "width": 500,
-                        "height": 334,
-                        "size": 32.02,
-                        "path": null,
-                        "url": "/uploads/small_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-                    }
-                },
-                "hash": "samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                "ext": ".jpg",
-                "mime": "image/jpeg",
-                "size": 1141.87,
-                "url": "/uploads/samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg",
-                "previewUrl": null,
-                "provider": "local",
-                "provider_metadata": null,
-                "created_at": "2021-07-23T13:14:30.623Z",
-                "updated_at": "2021-07-23T13:14:30.648Z"
-            }
-        },
-        {
-            "id": 2,
+            "id": 3,
             "user": 7,
             "hidden": false,
+            "contact": "event@iare.nu",
             "chapter_year": null,
+            "locale": "sv",
+            "published_at": "2021-08-25T14:13:48.015Z",
+            "created_at": "2021-08-25T14:12:31.272Z",
+            "updated_at": "2021-08-25T14:28:49.546Z",
+            "description": "Ansvarig för eventklustret samt alkoholfrågor. Även ansvarig för bokning av sektionslokalen, bilen och övriga lokaler på Campus.",
+            "featured_contact": true,
             "personal_description": null,
-            "locale": "sv-SE",
-            "published_at": "2021-08-25T08:32:52.285Z",
-            "created_at": "2021-08-25T08:32:50.210Z",
-            "updated_at": "2021-08-25T09:20:32.965Z",
             "cover": null
         }
     ],
-    "committee_objectives": [],
+    "committee_objectives": [
+        {
+            "id": 2,
+            "objective": "styrelsen",
+            "locale": "sv",
+            "created_at": "2021-08-25T14:02:25.314Z",
+            "updated_at": "2021-08-25T17:42:06.228Z",
+            "committee_role": null
+        },
+        {
+            "id": 8,
+            "objective": "event",
+            "locale": "sv",
+            "created_at": "2021-08-26T09:28:33.057Z",
+            "updated_at": "2021-08-26T09:28:33.065Z",
+            "committee_role": null
+        }
+    ],
     "localizations": []
 }

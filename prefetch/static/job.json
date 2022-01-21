@@ -1,99 +1,33 @@
 {
-    "id": 1,
-    "title": "Part-time Analyst till Strategic PMO på tillväxtbolag ",
-    "slug": "part-time-analyst-till-strategic-pmo-pa-tillvaextbolag",
-    "deadlineDate": "2021-06-30T10:00:00.000Z",
-    "startDate": "2021-08-01T10:00:00.000Z",
+    "id": 2,
+    "title": "Test bain C-Å",
+    "slug": "test-bain-c-a",
+    "deadlineDate": "2021-12-24T11:00:00.000Z",
+    "startDate": "2021-12-31T11:00:00.000Z",
     "jobCategory": {
-        "id": 3,
-        "name": "part-time",
-        "locale": "sv-SE",
-        "published_at": "2021-07-20T10:54:03.946Z",
-        "created_at": "2021-07-20T10:54:03.008Z",
-        "updated_at": "2021-07-20T10:54:03.965Z"
-    },
-    "company": {
         "id": 1,
-        "name": "Nabo",
-        "website": "https://nabo.se/",
-        "backgroundColor": "porterbrun",
-        "sponsor": true,
-        "locale": "sv-SE",
-        "published_at": "2021-07-20T11:14:18.202Z",
-        "created_at": "2021-07-20T11:13:34.736Z",
-        "updated_at": "2021-07-24T19:08:48.918Z",
-        "logo": {
-            "id": 13,
-            "name": "original.png",
-            "alternativeText": "",
-            "caption": "",
-            "width": 400,
-            "height": 97,
-            "formats": {
-                "thumbnail": {
-                    "name": "thumbnail_original.png",
-                    "hash": "thumbnail_original_6147295cd7",
-                    "ext": ".png",
-                    "mime": "image/png",
-                    "width": 245,
-                    "height": 59,
-                    "size": 7.94,
-                    "path": null,
-                    "url": "/uploads/thumbnail_original_6147295cd7.png"
-                }
-            },
-            "hash": "original_6147295cd7",
-            "ext": ".png",
-            "mime": "image/png",
-            "size": 5.52,
-            "url": "/uploads/original_6147295cd7.png",
-            "previewUrl": null,
-            "provider": "local",
-            "provider_metadata": null,
-            "created_at": "2021-07-20T11:13:21.874Z",
-            "updated_at": "2021-07-20T11:13:21.885Z"
-        }
+        "name": "Full-time",
+        "locale": "sv",
+        "published_at": "2021-07-26T16:25:20.251Z",
+        "created_at": "2021-07-26T16:25:18.096Z",
+        "updated_at": "2021-07-26T16:25:20.284Z"
     },
-    "body": "Är du en driven student som vill få ett försprång i karriären och accelerera din utveckling? Letar du ett jobb vid sidan av studierna som är mer än bara extrainkomst? Då ska du söka denna roll som analytiker på tillväxtbolaget Nabo.\n\nVi söker en analytiker till avdelningen för strategiska projekt (”Strategic PMO”) på Nabo, vars fokus är skapa värde genom att driva bolagets prioriterade projekt inom bland annat strategi, affärsutveckling, strategiska partnerskap och M&A. Enheten består av tidigare managementkonsulter med lång erfarenhet från top-tier konsultbolag globalt.\n\nRollen ger dig en chans att utveckla verktyg och färdigheter som är avgörande för dig som ser en karriär inom affärsutveckling och som managementkonsult, bland annat strukturerad problem-lösning och arbete tillsammans i team.\n\n\nDu kommer arbeta hands-on med att skapa värde i topprioriterade frågor för ett tillväxtbolag i en utvecklande miljö och få vara med på vår resa mot att bli Sveriges bästa bostadsrättsförvaltare.\n\n**Om Nabo**\n\nBostaden är värdens största tillgångsslag och ofta den viktigaste och dyraste investeringen vi gör som privatpersoner. Nabo är på en resa för att forma framtidens förvaltning och boendetjänster genom nya, smarta och digitala lösningar vilket branschen alldeles för länge har saknat. \n\nNabo har en unik position i branschen med egenutvecklad plattform för förvaltning av bostäder som automatiserar rutinarbete och underlättar arbetet. Det blir enklare att engagera sig i sitt boende och tid frigörs till annat både för BRF-styrelse, fastighetsägare, boende och våra förvaltningsexperter.\n\nFör att fortsätta resan behöver vi vara modiga och engagerade, ha tydliga mål och driva vår egen utveckling med stöd av engagerade ledare. Utöver den personliga och professionella utvecklingen ser vi till att våra dagar tillsammans består av hög trivsel och många härliga skratt.\n\n**Vad du kommer göra**\n\nDu kommer arbeta i ett team vars fokus är att skapa värde genom att driva strategiska projekt. Din roll är att stötta i en rad olika arbetsuppgifter, exempelvis:\n\n- Delta i att strukturera problem och prioritera aktiviteter\n- Inhämta och analysera data\n- Ta fram business case och beslutsunderlag, inklusive kommunikation/storyline\n- Stötta i komplexa projekt \n\n**Vi söker dig som**\n\n- Lockas av att ta sig an och besvara viktiga frågeställningar med stort värde\n- Tycker om att prestera och har en can-do-attityd\n- Håller ett högt tempo, är noggrann samt har god struktur i ditt arbete\n- Vill lära sig och utvecklas snabbt på arbetet\n- Kan arbeta självständigt med dina arbetsuppgifter med regelbundna avstämningar/feedback\n- Söker ett långsiktigt extraarbete vid sidan av dina studier\n\n**Ytterligare information**\n\nOmfattning: 15-20 timmar per vecka – kan även utökas enligt dina önskemål \n\nOrt: Stockholm\n\nTillträde: Enligt överenskommelse\n\nLåter Nabo som nästa steg för dig? Skicka personligt brev och CV idag! Intervjuer sker löpande så vänta inte med din ansökan.\n\nVid frågor är du välkommen att kontakta Mattias Hellstrand (mattias.hellstrand@nabo.se) eller Pierre Mousa (pierre.mousa@nabo.se)",
-    "position": "Projektledning",
-    "location": "Stockholm",
+    "company": null,
+    "body": "Bain TEST",
+    "position": null,
+    "location": null,
+    "locale": "sv",
+    "published_at": "2021-11-24T16:28:17.471Z",
+    "created_at": "2021-09-15T17:03:39.390Z",
+    "updated_at": "2021-11-24T16:28:17.499Z",
     "description": null,
-    "locale": "sv-SE",
-    "published_at": "2021-07-20T13:27:24.187Z",
-    "created_at": "2021-07-20T10:53:26.694Z",
-    "updated_at": "2021-07-24T19:08:48.898Z",
-    "year": [
-        {
-            "id": 1,
-            "year": "YEAR_ONE"
-        },
-        {
-            "id": 2,
-            "year": "YEAR_TWO"
-        },
-        {
-            "id": 3,
-            "year": "YEAR_THREE"
-        }
-    ],
+    "year": [],
     "contact": [
         {
-            "id": 1,
-            "label": "Mattrias Hellstrand",
-            "type": "email",
-            "href": "mattias.hellstrand@nabo.se"
-        },
-        {
-            "id": 2,
-            "label": " Pierre Mousa",
-            "type": "email",
-            "href": "pierre.mousa@nabo.se"
-        },
-        {
             "id": 3,
-            "label": "Skicka ansökan",
-            "type": "cta",
-            "href": "https://karriar.nabo.se/jobs/1236999-part-time-analyst-till-strategic-pmo-pa-tillvaxtbolag/applications/new"
+            "label": "Ansökan",
+            "type": "website",
+            "href": "www.google.com"
         }
     ],
     "banner": null,

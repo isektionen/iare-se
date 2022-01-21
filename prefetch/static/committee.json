@@ -1,24 +1,90 @@
 {
     "id": 1,
-    "name": "I-Alumni",
+    "name": "Kommunikationsnämnden",
+    "locale": "sv",
+    "published_at": "2021-07-26T13:46:20.470Z",
+    "created_at": "2021-07-26T13:46:18.035Z",
+    "updated_at": "2022-01-03T09:24:28.538Z",
     "committee_objective": null,
     "abbreviation": null,
-    "slug": null,
-    "content": null,
-    "locale": "sv-SE",
-    "published_at": "2021-05-30T12:29:27.418Z",
-    "created_at": "2021-05-30T12:28:53.363Z",
-    "updated_at": "2021-05-31T09:20:59.801Z",
-    "icon": null,
+    "slug": "kommunikationsnaemnden",
+    "content": "# Vad gör vi?\n\nEller är det? hmmmm\n\n<contact/>",
+    "contact": null,
+    "icon": {
+        "id": 39,
+        "name": "Icon RePorter.svg",
+        "alternativeText": "",
+        "caption": "",
+        "width": 26,
+        "height": 20,
+        "formats": null,
+        "hash": "Icon_Re_Porter_d3c43059d5",
+        "ext": ".svg",
+        "mime": "image/svg+xml",
+        "size": 0.84,
+        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Icon_Re_Porter_d3c43059d5.svg",
+        "previewUrl": null,
+        "provider": "aws-s3",
+        "provider_metadata": null,
+        "created_at": "2021-08-30T20:14:17.226Z",
+        "updated_at": "2021-08-30T20:14:17.235Z"
+    },
     "events": [],
     "posts": [],
-    "representatives": [],
-    "contacts": [],
+    "representatives": [
+        {
+            "id": 1,
+            "user": 5,
+            "hidden": false,
+            "contact": "ka@iare.nu",
+            "chapter_year": null,
+            "locale": "sv",
+            "published_at": "2021-08-25T09:34:26.689Z",
+            "created_at": "2021-08-25T09:34:24.652Z",
+            "updated_at": "2021-08-25T14:29:19.615Z",
+            "description": "Ansvarig för innehållet på sektionshemsidan, facebook, instagram och övriga sociala medier. Samordnar publiceringsschema och ser till att rådande policy följs.",
+            "featured_contact": false,
+            "personal_description": null,
+            "cover": null
+        },
+        {
+            "id": 7,
+            "user": 10,
+            "hidden": false,
+            "contact": null,
+            "chapter_year": null,
+            "locale": "sv",
+            "published_at": "2021-08-31T13:00:22.738Z",
+            "created_at": "2021-08-31T13:00:09.689Z",
+            "updated_at": "2021-08-31T13:00:22.759Z",
+            "description": null,
+            "featured_contact": null,
+            "personal_description": null,
+            "cover": null
+        }
+    ],
+    "contacts": [
+        {
+            "id": 7,
+            "user": 10,
+            "hidden": false,
+            "contact": null,
+            "chapter_year": null,
+            "locale": "sv",
+            "published_at": "2021-08-31T13:00:22.738Z",
+            "created_at": "2021-08-31T13:00:09.689Z",
+            "updated_at": "2021-08-31T13:00:22.759Z",
+            "description": null,
+            "featured_contact": null,
+            "personal_description": null,
+            "cover": null
+        }
+    ],
     "localizations": [
         {
-            "id": 3,
+            "id": 6,
             "locale": "en",
-            "published_at": "2021-07-28T16:49:37.433Z"
+            "published_at": "2021-07-28T16:23:30.912Z"
         }
     ]
 }

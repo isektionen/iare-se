@@ -1,140 +1,173 @@
 {
     "id": 1,
     "user": {
-        "id": 1,
-        "firstname": "John",
-        "lastname": "Landeholt",
-        "username": "jola",
+        "id": 5,
+        "firstname": "Annie",
+        "lastname": "Holgersson",
+        "username": null,
         "preferedLanguage": null
     },
     "hidden": false,
+    "contact": "ka@iare.nu",
     "chapter_year": null,
+    "locale": "sv",
+    "published_at": "2021-08-25T09:34:26.689Z",
+    "created_at": "2021-08-25T09:34:24.652Z",
+    "updated_at": "2021-08-25T14:29:19.615Z",
+    "description": "Ansvarig för innehållet på sektionshemsidan, facebook, instagram och övriga sociala medier. Samordnar publiceringsschema och ser till att rådande policy följs.",
+    "featured_contact": false,
     "personal_description": null,
-    "locale": "sv-SE",
-    "published_at": "2021-08-25T08:07:47.812Z",
-    "created_at": "2021-08-25T08:07:39.870Z",
-    "updated_at": "2021-08-25T09:21:37.158Z",
-    "cover": {
-        "id": 19,
-        "name": "samantha-gades-fIHozNWfcvs-unsplash.jpg",
-        "alternativeText": "",
-        "caption": "",
-        "width": 6016,
-        "height": 4016,
-        "formats": {
-            "thumbnail": {
-                "name": "thumbnail_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                "hash": "thumbnail_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                "ext": ".jpg",
-                "mime": "image/jpeg",
-                "width": 234,
-                "height": 156,
-                "size": 10.71,
-                "path": null,
-                "url": "/uploads/thumbnail_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-            },
-            "large": {
-                "name": "large_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                "hash": "large_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                "ext": ".jpg",
-                "mime": "image/jpeg",
-                "width": 1000,
-                "height": 668,
-                "size": 84.48,
-                "path": null,
-                "url": "/uploads/large_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-            },
-            "medium": {
-                "name": "medium_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                "hash": "medium_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                "ext": ".jpg",
-                "mime": "image/jpeg",
-                "width": 750,
-                "height": 501,
-                "size": 55.73,
-                "path": null,
-                "url": "/uploads/medium_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-            },
-            "small": {
-                "name": "small_samantha-gades-fIHozNWfcvs-unsplash.jpg",
-                "hash": "small_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-                "ext": ".jpg",
-                "mime": "image/jpeg",
-                "width": 500,
-                "height": 334,
-                "size": 32.02,
-                "path": null,
-                "url": "/uploads/small_samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg"
-            }
-        },
-        "hash": "samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee",
-        "ext": ".jpg",
-        "mime": "image/jpeg",
-        "size": 1141.87,
-        "url": "/uploads/samantha_gades_f_I_Hoz_N_Wfcvs_unsplash_4abe0763ee.jpg",
-        "previewUrl": null,
-        "provider": "local",
-        "provider_metadata": null,
-        "created_at": "2021-07-23T13:14:30.623Z",
-        "updated_at": "2021-07-23T13:14:30.648Z"
-    },
+    "cover": null,
     "committee_roles": [
         {
-            "id": 1,
-            "role": "Ordförande",
-            "abbreviation": null,
-            "featured_role": null,
-            "contact": null,
-            "slug": null,
-            "role_description": null,
-            "locale": "sv-SE",
-            "published_at": "2021-08-25T08:20:30.634Z",
-            "created_at": "2021-08-25T08:19:28.186Z",
-            "updated_at": "2021-08-25T08:36:02.420Z"
-        },
-        {
-            "id": 2,
-            "role": "Ordförande",
-            "abbreviation": "sd",
-            "featured_role": false,
-            "contact": "lol@lol.lol",
-            "slug": "ordfoerande",
-            "role_description": null,
-            "locale": "sv-SE",
-            "published_at": "2022-01-16T21:31:03.859Z",
-            "created_at": "2022-01-16T21:30:40.691Z",
-            "updated_at": "2022-01-16T21:31:03.880Z"
+            "id": 9,
+            "role": "kommunikationsansvarig",
+            "locale": "sv",
+            "published_at": "2021-08-25T09:39:28.634Z",
+            "created_at": "2021-08-25T09:39:26.810Z",
+            "updated_at": "2021-08-29T13:59:07.413Z",
+            "abbreviation": "ka",
+            "committee_objective": null,
+            "featured_role": true,
+            "contact": "ka@iare.nu",
+            "slug": "kommunikationsansvarig",
+            "role_description": null
         }
     ],
     "committee_objectives": [
         {
-            "id": 1,
-            "objective": "Näringsliv",
-            "locale": "sv-SE",
-            "created_at": "2021-08-25T08:31:01.447Z",
-            "updated_at": "2021-08-25T08:34:39.248Z"
+            "id": 2,
+            "objective": "styrelsen",
+            "locale": "sv",
+            "created_at": "2021-08-25T14:02:25.314Z",
+            "updated_at": "2021-08-25T17:42:06.228Z",
+            "committee_role": null
+        },
+        {
+            "id": 6,
+            "objective": "kommunikation",
+            "locale": "sv",
+            "created_at": "2021-08-25T14:14:29.563Z",
+            "updated_at": "2021-08-25T17:41:23.441Z",
+            "committee_role": null
         }
     ],
     "committees": [
         {
-            "id": 2,
-            "name": "Webgroup",
+            "id": 1,
+            "name": "Kommunikationsnämnden",
+            "locale": "sv",
+            "published_at": "2021-07-26T13:46:20.470Z",
+            "created_at": "2021-07-26T13:46:18.035Z",
+            "updated_at": "2022-01-03T09:24:28.538Z",
             "committee_objective": null,
             "abbreviation": null,
-            "slug": null,
-            "content": null,
-            "locale": "sv-SE",
-            "published_at": "2021-05-30T15:39:52.739Z",
-            "created_at": "2021-05-30T15:39:50.672Z",
-            "updated_at": "2021-08-25T08:36:02.429Z",
-            "icon": null
+            "slug": "kommunikationsnaemnden",
+            "content": "# Vad gör vi?\n\nEller är det? hmmmm\n\n<contact/>",
+            "contact": null,
+            "icon": {
+                "id": 39,
+                "name": "Icon RePorter.svg",
+                "alternativeText": "",
+                "caption": "",
+                "width": 26,
+                "height": 20,
+                "formats": null,
+                "hash": "Icon_Re_Porter_d3c43059d5",
+                "ext": ".svg",
+                "mime": "image/svg+xml",
+                "size": 0.84,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Icon_Re_Porter_d3c43059d5.svg",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-08-30T20:14:17.226Z",
+                "updated_at": "2021-08-30T20:14:17.235Z"
+            }
+        },
+        {
+            "id": 7,
+            "name": "Styrelsen",
+            "locale": "sv",
+            "published_at": "2021-07-30T11:40:18.707Z",
+            "created_at": "2021-07-30T11:40:12.221Z",
+            "updated_at": "2022-01-03T21:24:08.996Z",
+            "committee_objective": 2,
+            "abbreviation": "Styr",
+            "slug": "styrelsen",
+            "content": "\n<contact/>",
+            "contact": null,
+            "icon": {
+                "id": 51,
+                "name": "kth-also-good-e1506587194610.jpg",
+                "alternativeText": "",
+                "caption": "",
+                "width": 1620,
+                "height": 1080,
+                "formats": {
+                    "large": {
+                        "ext": ".jpg",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/large_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                        "hash": "large_kth_also_good_e1506587194610_ff2ebbe425",
+                        "mime": "image/jpeg",
+                        "name": "large_kth-also-good-e1506587194610.jpg",
+                        "path": null,
+                        "size": 152.8,
+                        "width": 1000,
+                        "height": 667
+                    },
+                    "small": {
+                        "ext": ".jpg",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                        "hash": "small_kth_also_good_e1506587194610_ff2ebbe425",
+                        "mime": "image/jpeg",
+                        "name": "small_kth-also-good-e1506587194610.jpg",
+                        "path": null,
+                        "size": 41.42,
+                        "width": 500,
+                        "height": 333
+                    },
+                    "medium": {
+                        "ext": ".jpg",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                        "hash": "medium_kth_also_good_e1506587194610_ff2ebbe425",
+                        "mime": "image/jpeg",
+                        "name": "medium_kth-also-good-e1506587194610.jpg",
+                        "path": null,
+                        "size": 85.93,
+                        "width": 750,
+                        "height": 500
+                    },
+                    "thumbnail": {
+                        "ext": ".jpg",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                        "hash": "thumbnail_kth_also_good_e1506587194610_ff2ebbe425",
+                        "mime": "image/jpeg",
+                        "name": "thumbnail_kth-also-good-e1506587194610.jpg",
+                        "path": null,
+                        "size": 11.01,
+                        "width": 234,
+                        "height": 156
+                    }
+                },
+                "hash": "kth_also_good_e1506587194610_ff2ebbe425",
+                "ext": ".jpg",
+                "mime": "image/jpeg",
+                "size": 397.56,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-11-15T22:05:05.807Z",
+                "updated_at": "2021-11-15T22:05:05.816Z"
+            }
         }
     ],
     "localizations": [
         {
-            "id": 3,
+            "id": 2,
             "locale": "en",
-            "published_at": "2022-01-16T21:34:05.709Z"
+            "published_at": "2021-08-25T13:38:21.874Z"
         }
     ]
 }

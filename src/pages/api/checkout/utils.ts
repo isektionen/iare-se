@@ -3,7 +3,7 @@ import _ from "underscore";
 import { Status, StatusType } from "./callback";
 
 const LOCAL_CALLBACK_URL = "https://ancient-rat-77.loca.lt";
-const FORCE_LOCAL = true;
+const FORCE_LOCAL = false;
 
 type NetsWebhook =
     | "checkout.completed"

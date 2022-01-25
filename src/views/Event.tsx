@@ -180,6 +180,10 @@ const View = ({
         base: "intrinsic",
         md: "fill",
     });
+
+    const startDate = event?.schedule?.start
+        ? format(new Date(defcast(event.schedule).start), "dd MMMM yyyy")
+        : "N/A";
     return (
         <React.Fragment>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -261,10 +265,7 @@ const View = ({
                 <Breadcrumb path={path} />
                 <Carousel
                     title={event.title}
-                    description={`${format(
-                        new Date(defcast(event.schedule).start),
-                        "dd MMMM yyyy"
-                    )} • ${event.location}`}
+                    description={`${startDate} • ${event.location}`}
                 >
                     {defcast(event.media).map((image, i) => {
                         image = defcast(image);
@@ -283,7 +284,9 @@ const View = ({
                     })}
                 </Carousel>
                 <Description text={event.description} />
-                <DeadlineCounter schedule={defcast(event.schedule)} />
+                {event.schedule && (
+                    <DeadlineCounter schedule={defcast(event.schedule)} />
+                )}
                 <MDXLayout source={mdx} />
                 {Rsvpable ? (
                     <Button

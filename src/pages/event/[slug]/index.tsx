@@ -17,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: false,
+        fallback: "blocking",
     };
 };
 
@@ -60,6 +60,6 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             requiresPassword,
             ...(await fetchHydration()),
         },
-        revalidate: 60,
+        revalidate: 5,
     };
 };

@@ -102,9 +102,15 @@ export const Item = ({
                         <HStack spacing={2} fontSize="sm" color="gray.600">
                             <Flex align="center">
                                 <Icon as={MdDateRange} mr={1} />
-                                <Text size="sm">
-                                    {getDate(calendarDate, "EEEE d MMM", lang)}
-                                </Text>
+                                {calendarDate && calendarDate !== "N/A" && (
+                                    <Text size="sm">
+                                        {getDate(
+                                            calendarDate,
+                                            "EEEE d MMM",
+                                            lang
+                                        )}
+                                    </Text>
+                                )}
                             </Flex>
                             <Text size="sm">{author}</Text>
                         </HStack>

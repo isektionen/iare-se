@@ -21,20 +21,26 @@ interface Props {
 }
 export const DeadlineCounter = ({ schedule, ...props }: Props) => {
     const { t, lang } = useTranslation("event");
-    const deadlineDate = new Date(schedule.deadline);
-    const startDate = new Date(schedule.start);
-    const endDate = new Date(schedule.end);
-    const day = format(deadlineDate, "dd");
-    const month = format(deadlineDate, "MMMM");
+    const deadlineDate =
+        schedule && schedule.deadline ? new Date(schedule.deadline) : null;
+    const startDate =
+        schedule && schedule.start ? new Date(schedule.start) : null;
+    const endDate = schedule && schedule.end ? new Date(schedule.end) : null;
+    const day = deadlineDate ? format(deadlineDate, "dd") : "N/A";
+    const month = deadlineDate ? format(deadlineDate, "MMMM") : null;
 
-    const start = {
-        hour: format(startDate, "HH:mm"),
-        date: format(startDate, "dd MMMM"),
-    };
-    const end = {
-        hour: format(endDate, "HH:mm"),
-        date: format(endDate, "dd MMMM"),
-    };
+    const start = startDate
+        ? {
+              hour: format(startDate, "HH:mm"),
+              date: format(startDate, "dd MMMM"),
+          }
+        : null;
+    const end = endDate
+        ? {
+              hour: format(endDate, "HH:mm"),
+              date: format(endDate, "dd MMMM"),
+          }
+        : null;
     return (
         <Stack
             spacing={{ base: 8, md: 16 }}
@@ -59,7 +65,7 @@ export const DeadlineCounter = ({ schedule, ...props }: Props) => {
                     fontSize="2rem"
                     fontWeight={500}
                 >
-                    {month}
+                    {month && month}
                 </Heading>
             </VStack>
             <HStack
@@ -71,26 +77,32 @@ export const DeadlineCounter = ({ schedule, ...props }: Props) => {
                 color="white"
                 align="space-evenly"
             >
-                <VStack align="start">
-                    <Text>{t("deadline.from")}</Text>
-                    <Spacer />
-                    <Box>
-                        <Text>{start.hour}</Text>
-                        <Text>{start.date}</Text>
-                    </Box>
-                </VStack>
-                <VStack>
-                    <Spacer />
-                    <BiChevronRight size={32} />
-                </VStack>
-                <VStack align="start">
-                    <Text>{t("deadline.to")}</Text>
-                    <Spacer />
-                    <Box>
-                        <Text>{end.hour}</Text>
-                        <Text>{end.date}</Text>
-                    </Box>
-                </VStack>
+                {start && (
+                    <VStack align="start">
+                        <Text>{t("deadline.from")}</Text>
+                        <Spacer />
+                        <Box>
+                            <Text>{start.hour}</Text>
+                            <Text>{start.date}</Text>
+                        </Box>
+                    </VStack>
+                )}
+                {end && (
+                    <React.Fragment>
+                        <VStack>
+                            <Spacer />
+                            <BiChevronRight size={32} />
+                        </VStack>
+                        <VStack align="start">
+                            <Text>{t("deadline.to")}</Text>
+                            <Spacer />
+                            <Box>
+                                <Text>{end.hour}</Text>
+                                <Text>{end.date}</Text>
+                            </Box>
+                        </VStack>
+                    </React.Fragment>
+                )}
             </HStack>
         </Stack>
     );

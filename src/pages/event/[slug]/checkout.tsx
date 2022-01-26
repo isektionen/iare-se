@@ -459,6 +459,7 @@ const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
         withSubmit,
         internalState,
         error,
+        resetCheckout,
     } = useCheckout(products);
 
     useEffect(() => {

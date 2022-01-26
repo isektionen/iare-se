@@ -223,6 +223,8 @@ const SummaryCheckout = ({
         hasError,
         withSubmit,
         isLoading,
+        resetCustomer,
+        resetCheckout,
     } = useSummary();
 
     const { hydrateCheckout, checkout } = usePayment({
@@ -426,6 +428,10 @@ const SummaryCheckout = ({
                 prefix: _.first(sweden.countryCallingCodes),
             },
         });
+        return () => {
+            resetCustomer();
+            resetCheckout();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

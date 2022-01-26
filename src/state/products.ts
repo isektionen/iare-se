@@ -299,6 +299,7 @@ const customerError = selector({
 });
 
 export const useSummary = () => {
+    const [state, setState] = useRecoilState(_state);
     const [formState, setFormState] = useRecoilState(_formState);
     const [customer, setCustomer] = useRecoilState(customerAtom);
     const error = useRecoilValue(formError);
@@ -371,6 +372,14 @@ export const useSummary = () => {
         [_customerError, isSubmitting]
     );
 
+    const resetCustomer = useCallback(() => {
+        setCustomer(defaultCustomer);
+    }, [setCustomer]);
+
+    const resetCheckout = useCallback(() => {
+        setState(defaultState);
+    }, [setState]);
+
     return {
         formState,
         error,
@@ -381,6 +390,8 @@ export const useSummary = () => {
         withSubmit,
         hasError,
         isLoading: isSubmitting,
+        resetCustomer,
+        resetCheckout,
     };
 };
 
@@ -472,7 +483,7 @@ export const useCheckout = (products: Product[]) => {
     useEffect(() => {
         if (state === defaultState) hydrate(products);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [products]);
+    }, [state]);
 
     useEffect(() => {
         setFormState((s) => s.filter((p) => p.amount !== 0));
@@ -610,6 +621,10 @@ export const useCheckout = (products: Product[]) => {
         [error, formState, state]
     );
 
+    const resetCheckout = useCallback(() => {
+        setState(defaultState);
+    }, [setState]);
+
     return {
         internalState: state,
         updateProduct,
@@ -621,5 +636,6 @@ export const useCheckout = (products: Product[]) => {
         error,
         withSubmit,
         hasError,
+        resetCheckout,
     };
 };

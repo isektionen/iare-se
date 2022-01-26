@@ -27,6 +27,8 @@ import {
     Badge,
     Stack,
     useBreakpointValue,
+    ModalCloseButton,
+    ModalHeader,
 } from "@chakra-ui/react";
 import { Breadcrumb } from "components/Breadcrumb";
 import { GetServerSideProps } from "next";
@@ -220,6 +222,7 @@ const SummaryCheckout = ({
         resetProduct,
         updateCustomerData,
         customer,
+        customerError,
         hasError,
         withSubmit,
         isLoading,
@@ -459,6 +462,8 @@ const SummaryCheckout = ({
             >
                 <ModalOverlay />
                 <ModalContent>
+                    <ModalHeader>Checkout</ModalHeader>
+                    <ModalCloseButton />
                     <ModalBody maxH="650px">
                         <Box id="checkout-modal"></Box>
                     </ModalBody>
@@ -648,7 +653,7 @@ const SummaryCheckout = ({
                         </Button>
                     </React.Fragment>
                 )}
-                {isDev && <pre>{JSON.stringify(customer, null, 2)}</pre>}
+                {isDev && <pre>{JSON.stringify(customerError, null, 2)}</pre>}
                 {loading && (
                     <Center w="full" h="80vh" flexDirection="column">
                         <Spinner size="xl" mb={8} />

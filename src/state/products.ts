@@ -307,6 +307,7 @@ export const useSummary = () => {
     const _customerError = useRecoilValue(customerError);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     const getType = useCallback(
         (ref: string) => {
@@ -357,9 +358,13 @@ export const useSummary = () => {
     const withSubmit = useCallback(
         (cb: any) => () => {
             setIsSubmitting(true);
+            setLoading(true);
 
             if (formState.length > 0 && _customerError.length === 0) {
                 cb();
+            }
+            if (_customerError.length > 0) {
+                _.delay(() => setLoading(false), 350);
             }
         },
         [_customerError.length, formState.length]
@@ -383,13 +388,14 @@ export const useSummary = () => {
     return {
         formState,
         error,
+        customerError: _customerError,
         getType,
         resetProduct,
         customer,
         updateCustomerData,
         withSubmit,
         hasError,
-        isLoading: isSubmitting,
+        isLoading,
         resetCustomer,
         resetCheckout,
     };

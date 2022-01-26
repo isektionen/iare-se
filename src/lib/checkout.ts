@@ -2,6 +2,15 @@ import { ICreateBody } from "pages/api/checkout/create";
 import _ from "underscore";
 
 export const checkoutClient = {
+    cancel: async (orderReference: string) => {
+        await fetch("/api/checkout/cancel", {
+            body: JSON.stringify({ orderReference }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+        });
+    },
     create: async (
         body: ICreateBody
     ): Promise<{

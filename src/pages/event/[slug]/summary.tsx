@@ -201,7 +201,9 @@ const SummaryCheckout = ({
     const router = useRouter();
 
     const [loading, setLoading] = useState(true);
+    const [checkoutCompleted, setCheckoutCompleted] = useState(false);
     const [orderReference, setOrderReference] = useState<string>();
+    const [cachedPaymentId, setPaymentId] = useState<string>();
     const isDev = useMemo(() => DEV(), []);
 
     // only supporting English and Swedish currently
@@ -230,7 +232,7 @@ const SummaryCheckout = ({
         resetCheckout,
     } = useSummary();
 
-    const { hydrateCheckout, checkout } = usePayment({
+    const { hydrateCheckout, checkout, setIsHydrated } = usePayment({
         config: {
             containerId: "checkout-modal",
             language: localeConversion[lang],
@@ -314,62 +316,72 @@ const SummaryCheckout = ({
     const { isOpen, onClose, onOpen } = useDisclosure();
 
     const handleSubmit = useCallback(async () => {
-        const { reference, reserved, paymentId } = await checkoutClient.create({
-            // TODO: PRODUCT REF MIGHT BREAK RELATION IN BACKEND
-            items: productSummary.map((product) => ({
-                __reference: product.reference,
-                reference: product.productReference,
-                name: product.name,
-                quantity: product.amount,
-            })),
-            reference: defcast(event.slug),
-            customer,
-            options: productSummary.reduce((acc, it) => {
-                return [
-                    ...acc,
-                    ...it.optionResults.reduce((_acc, _it) => {
+        if (!orderReference && !cachedPaymentId) {
+            const { reference, reserved, paymentId } =
+                await checkoutClient.create({
+                    items: productSummary.map((product) => ({
+                        __reference: product.reference,
+                        reference: product.productReference,
+                        name: product.name,
+                        quantity: product.amount,
+                    })),
+                    reference: defcast(event.slug),
+                    customer,
+                    options: productSummary.reduce((acc, it) => {
                         return [
-                            ..._acc,
-                            {
-                                label: _it.label,
-                                type: _it.type,
-                                reference: it.reference + "::" + _it.reference,
-                                data: _it.data,
-                            },
+                            ...acc,
+                            ...it.optionResults.reduce((_acc, _it) => {
+                                return [
+                                    ..._acc,
+                                    {
+                                        label: _it.label,
+                                        type: _it.type,
+                                        reference:
+                                            it.reference + "::" + _it.reference,
+                                        data: _it.data,
+                                    },
+                                ];
+                            }, [] as { reference: string; data: any; label: string; type: string }[]),
                         ];
-                    }, [] as { reference: string; data: any; label: string; type: string }[]),
-                ];
-            }, [] as ICreateBody["options"]),
-        });
-        if (reserved && !paymentId && reference) {
-            setOrderReference(reference);
+                    }, [] as ICreateBody["options"]),
+                });
+            if (reserved && !paymentId && reference) {
+                setOrderReference(reference);
 
-            toaster({
-                title: t("checkout.complete.title", { code: reference }),
-                description: t("checkout.complete.description", {
-                    email: customer.email,
-                }),
-                status: "success",
-                duration: 8000,
-            });
-            router.push(
-                `/event/${event.slug}/summary?reference=${reference}`,
-                undefined,
-                { shallow: false, scroll: false }
-            );
-        } else if (paymentId && reserved && reference) {
-            setOrderReference(reference);
-
+                toaster({
+                    title: t("checkout.complete.title", { code: reference }),
+                    description: t("checkout.complete.description", {
+                        email: customer.email,
+                    }),
+                    status: "success",
+                    duration: 8000,
+                });
+                router.push(
+                    `/event/${event.slug}/summary?reference=${reference}`,
+                    undefined,
+                    { shallow: false, scroll: false }
+                );
+            } else if (paymentId && reserved && reference) {
+                setOrderReference(reference);
+                setPaymentId(paymentId);
+                onOpen();
+                hydrateCheckout(paymentId);
+            }
+        } else if (cachedPaymentId) {
+            setIsHydrated(false);
             onOpen();
-            hydrateCheckout(paymentId);
+            hydrateCheckout(cachedPaymentId);
         }
     }, [
+        cachedPaymentId,
         customer,
         event.slug,
         hydrateCheckout,
         onOpen,
+        orderReference,
         productSummary,
         router,
+        setIsHydrated,
         t,
         toaster,
     ]);
@@ -381,6 +393,7 @@ const SummaryCheckout = ({
             });
             checkout.on("payment-completed", ({ paymentId }) => {
                 onClose();
+                setCheckoutCompleted(true);
                 toaster({
                     title: t("checkout.complete.title", {
                         code: defcast(orderReference),
@@ -459,6 +472,7 @@ const SummaryCheckout = ({
                 onClose={onClose}
                 isOpen={isOpen}
                 motionPreset="slideInBottom"
+                closeOnOverlayClick={false}
             >
                 <ModalOverlay />
                 <ModalContent>
@@ -644,7 +658,7 @@ const SummaryCheckout = ({
                         <Button
                             isFullWidth={!isMd}
                             isLoading={isLoading && !isOpen && !orderReference}
-                            disabled={orderReference ? true : false}
+                            disabled={checkoutCompleted}
                             variant="iareSolid"
                             rightIcon={<BiChevronRight />}
                             onClick={withSubmit(handleSubmit)}

@@ -117,9 +117,6 @@ export const usePayment = ({ config, theme }: Props) => {
     const [isHydrated, setIsHydrated] = useState<boolean>(false);
     const [checkout, createCheckout] = useState<DibsCheckoutApi | null>(null);
 
-    const [internalPaymentId, setPaymentId] = useState<string | null>(
-        config.paymentId || null
-    );
     const [internalConfig, setInternalConfig] = useState<DibsCheckoutConfig>(
         extendConfig(config, {
             theme,
@@ -129,16 +126,6 @@ export const usePayment = ({ config, theme }: Props) => {
 
     const [internalTheme, setInternalTheme] =
         useState<Partial<DibsThemeConfig> | null>(theme || null);
-
-    /*const [loading, errors] = useScript({
-        src: thirdPartyScript,
-        onload: () => {
-            const maybeDibs = findDibsObject();
-            if (maybeDibs) {
-                createDibs(maybeDibs);
-            }
-        },
-    });*/
 
     const hydrateCheckout = useRecoilCallback(
         ({ set }) =>
@@ -162,5 +149,6 @@ export const usePayment = ({ config, theme }: Props) => {
     return {
         hydrateCheckout,
         checkout,
+        setIsHydrated,
     };
 };

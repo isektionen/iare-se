@@ -23,7 +23,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     locale = conformLocale(locale);
-    console.log(locale);
     const { event, error } = await eventModel.find(
         locale,
         params?.slug as string

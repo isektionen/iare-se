@@ -66,7 +66,6 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     const incomingRelationalReferences = items.map((r) => r.__reference);
 
     // already fucked here
-    console.log(JSON.stringify(options, null, 2));
     // get products from event-reference
     const productData = await strapi.get(`/events/${eventRef}/products`);
     if (productData.status !== 200) {

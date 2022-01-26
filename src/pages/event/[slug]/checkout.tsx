@@ -498,7 +498,7 @@ const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
                     />
                 ))}
             </Wrap>
-            {isDev && <pre>{JSON.stringify(error, null, 2)}</pre>}
+            {isDev && <pre>{JSON.stringify(formState, null, 2)}</pre>}
 
             {attachments.length > 0 && (
                 <React.Fragment>

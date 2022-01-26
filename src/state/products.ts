@@ -110,9 +110,7 @@ const attachments = selector({
         const state = get(_state);
 
         const result = _.pairs(state)
-            .filter(
-                ([k, v]) => v.available && v.options.length > 0 && v.amount > 0
-            )
+            .filter(([k, v]) => v.available && v.amount > 0)
             .reduce((acc, [k, v]) => {
                 if (v.consumable) {
                     return [
@@ -613,7 +611,7 @@ export const useCheckout = (products: Product[]) => {
     return {
         internalState: state,
         updateProduct,
-        attachments: _attachments,
+        attachments: _attachments.filter((p) => p.options.length > 0),
         resetProduct,
         formState,
         appendData,

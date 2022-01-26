@@ -338,15 +338,17 @@ export const useSummary = () => {
             setIsSubmitting(false);
 
             //setCustomer((s) => ({ ...s, ...data }));
-            setCustomer((s) => ({
-                firstName: data.firstName ?? s.firstName,
-                lastName: data.lastName ?? s.lastName,
-                email: data.email ?? s.email,
-                phone: {
-                    number: data?.phone?.number ?? s.phone.number,
-                    prefix: data?.phone?.prefix ?? s.phone.prefix,
-                },
-            }));
+            setCustomer((s) => {
+                return {
+                    firstName: data.firstName ?? s.firstName,
+                    lastName: data.lastName ?? s.lastName,
+                    email: data.email ?? s.email,
+                    phone: {
+                        number: data?.phone?.number ?? s.phone.number,
+                        prefix: data?.phone?.prefix ?? s.phone.prefix,
+                    },
+                };
+            });
         },
         [setCustomer]
     );

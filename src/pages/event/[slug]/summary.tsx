@@ -244,7 +244,7 @@ const SummaryCheckout = ({
 
     const sweden = findCountry("Sweden");
 
-    const [selectedCountry, setSelectedCountry] = useState(sweden.name);
+    const [selectedCountry, setSelectedCountry] = useState(sweden);
 
     const productSummary = useMemo(() => {
         return formState.reduce((acc, it) => {
@@ -551,12 +551,12 @@ const SummaryCheckout = ({
                                 >
                                     <Select
                                         borderRightRadius={0}
-                                        value={selectedCountry}
+                                        value={selectedCountry.name}
                                         onChange={(e) => {
                                             const country = findCountry(
                                                 e.target.value
                                             );
-                                            setSelectedCountry(country.name);
+                                            setSelectedCountry(country);
                                             updateCustomerData({
                                                 phone: {
                                                     prefix: defcast(
@@ -580,9 +580,19 @@ const SummaryCheckout = ({
                                     type="tel"
                                     pl={{ base: "40%", md: "20%" }}
                                     onChange={(e) => {
+                                        const prefix = _.first(
+                                            selectedCountry.countryCallingCodes
+                                        ) as string;
                                         updateCustomerData({
                                             phone: {
-                                                number: e.target.value,
+                                                number: e.target.value.startsWith(
+                                                    prefix
+                                                )
+                                                    ? e.target.value.replace(
+                                                          prefix,
+                                                          ""
+                                                      )
+                                                    : e.target.value,
                                             },
                                         });
                                     }}
@@ -632,7 +642,7 @@ const SummaryCheckout = ({
                         </Button>
                     </React.Fragment>
                 )}
-                {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
+                {isDev && <pre>{JSON.stringify(customer, null, 2)}</pre>}
                 {loading && (
                     <Center w="full" h="80vh" flexDirection="column">
                         <Spinner size="xl" mb={8} />

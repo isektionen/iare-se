@@ -216,6 +216,7 @@ const formError = selector({
     get: ({ get }) => {
         const attachmentState = get(attachments);
         const formState = get(_formState);
+        const internalState = get(_state);
 
         const _requiredFields = attachmentState
             .filter((attachment) =>
@@ -231,7 +232,13 @@ const formError = selector({
                 ];
             }, [] as string[]);
 
-        const formIsEmpty = formState.length === 0 ? ["form-is-empty"] : [];
+        const stateContainsItems = _.values(internalState).some(
+            (p) => p.amount !== 0
+        );
+        const formIsEmpty =
+            formState.length === 0 && !stateContainsItems
+                ? ["form-is-empty"]
+                : [];
 
         const missingFields = formState.reduce((acc, it) => {
             const missing = it.optionResults.reduce(
@@ -349,6 +356,7 @@ export const useSummary = () => {
     const withSubmit = useCallback(
         (cb: any) => () => {
             setIsSubmitting(true);
+
             if (formState.length > 0 && _customerError.length === 0) {
                 cb();
             }
@@ -588,15 +596,18 @@ export const useCheckout = (products: Product[]) => {
 
     const withSubmit = useCallback(
         (cb: GenericCallback) => (args: any | any[]) => {
+            const stateContainsItems = _.values(state).some(
+                (p) => p.amount !== 0
+            );
             setIsSubmitting(true);
             if (
                 error.filter((p) => p !== "form-is-empty").length === 0 &&
-                formState.length > 0
+                (formState.length > 0 || stateContainsItems)
             ) {
                 cb(formState);
             }
         },
-        [error, formState]
+        [error, formState, state]
     );
 
     return {

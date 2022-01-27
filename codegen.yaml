@@ -1,5 +1,6 @@
 overwrite: true
-schema: "http://localhost:1337/graphql" # "https://cms.iare.se/graphql"
+#schema: "http://localhost:1337/graphql"
+schema: "https://cms.iare.se/graphql"
 generates:
     ./src/types/strapi.ts:
         plugins:

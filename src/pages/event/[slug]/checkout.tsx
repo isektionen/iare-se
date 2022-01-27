@@ -42,7 +42,7 @@ import { DEV } from "utils/env";
 import { conformLocale } from "utils/lang";
 import { defcast } from "utils/types";
 
-type ExtendedProduct = Product & { available: boolean };
+type ExtendedProduct = Product & { available: boolean; count: number };
 interface Props {
     password: string | null;
     event: Event;
@@ -91,6 +91,7 @@ const ProductItem = ({
     price,
     updateProduct,
     resetProduct,
+    count,
     ...props
 }: ProductProps) => {
     media = defcast(media);
@@ -158,7 +159,7 @@ const ProductItem = ({
                     <Button
                         size="xs"
                         onClick={handleInc}
-                        disabled={!props.available}
+                        disabled={!props.available || value === count}
                     >
                         +
                     </Button>

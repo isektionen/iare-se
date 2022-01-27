@@ -283,16 +283,39 @@ export const getInnerId = (idString: string) => {
 
 const isFalsy = (s?: string) => !s || s.length === 0 || s === "N/A";
 
+const isEmail = (email: string) =>
+    new RegExp(
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
+    ).test(email);
+
+const isNumber = (number: string | undefined) =>
+    number ? new RegExp(/^([0-9\-\s]+)$/).test(number) : false;
+
+const isEmpty = (str: string | undefined) => (str ? str.length === 0 : true);
+
 const customerError = selector({
     key: "SELECTOR/CUSTOMERERROR",
     get: ({ get }) => {
         const state = get(customerAtom);
         let errors = [];
-        if (isFalsy(state.firstName)) errors.push("firstname");
-        if (isFalsy(state.lastName)) errors.push("lastname");
-        if (isFalsy(state.email)) errors.push("email");
-        if (isFalsy(state.phone.number)) errors.push("phone.number");
-        if (isFalsy(state.phone.prefix)) errors.push("phone.prefix");
+        if (isFalsy(state.firstName) || isEmpty(state.firstName))
+            errors.push("firstname");
+        if (isFalsy(state.lastName) || isEmpty(state.lastName))
+            errors.push("lastname");
+        if (
+            isFalsy(state.email) ||
+            !isEmail(state.email) ||
+            isEmpty(state.email)
+        )
+            errors.push("email");
+        if (
+            isFalsy(state.phone.number) ||
+            !isNumber(state.phone.number) ||
+            isEmpty(state.phone.number)
+        )
+            errors.push("phone.number");
+        if (isFalsy(state.phone.prefix) || isEmpty(state.phone.prefix))
+            errors.push("phone.prefix");
 
         return errors;
     },

@@ -15,6 +15,10 @@ export const checkoutClient = {
         body: ICreateBody
     ): Promise<{
         reserved: boolean;
+        due?: {
+            reference: string;
+            available: Boolean;
+        };
         paymentId?: string;
         reference?: string;
     }> => {
@@ -27,6 +31,12 @@ export const checkoutClient = {
         });
         if (result.status === 200) {
             const data = await result.json();
+            if (_.has(data, "due")) {
+                return {
+                    reserved: false,
+                    due: data.due,
+                };
+            }
             if (_.has(data, "paymentId")) {
                 return {
                     reserved: true,

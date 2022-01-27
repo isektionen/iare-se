@@ -25,6 +25,10 @@
     "complete": {
       "title": "[{{code}}] Your order is completed",
       "description": "A confirmation email is sent to {{email}}"
+    },
+    "invalid": {
+      "title": "Your order could not be reserved",
+      "description": "A product might be bought out."
     }
   }
 

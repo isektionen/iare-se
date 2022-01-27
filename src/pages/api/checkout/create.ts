@@ -167,9 +167,26 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         ],
     });
 
+    // reserve products
+
+    body.order.items.forEach(async (i) => {
+        try {
+            await strapi.get(
+                `/products/${i.reference}/reserve?quantity=${i.quantity}`
+            );
+        } catch (e) {
+            return res.status(200).json({
+                reserved: false,
+                due: {
+                    reference: i.reference,
+                    available: false,
+                },
+            });
+        }
+    });
+
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference
-
     await strapi.post("/orders", {
         customerData: {
             firstName: body.checkout.consumer?.privatePerson?.firstName,
@@ -188,14 +205,6 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         status: isFree(body)
             ? [createStatus("completed")]
             : [createStatus("created")],
-    });
-
-    // reserve products
-
-    body.order.items.forEach(async (i) => {
-        await strapi.get(
-            `/products/${i.reference}/reserve?quantity=${i.quantity}`
-        );
     });
 
     //console.log(JSON.stringify(body, null, 2));

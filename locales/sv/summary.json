@@ -25,6 +25,10 @@
     "complete": {
       "title": "[{{code}}] Din order har reserverats",
       "description": "Ett bekräftelsemail har skickats till {{email}}"
+    },
+    "invalid": {
+      "title": "Din order kunde inte reserveras",
+      "description": "En produkt kan vara slutköpt"
     }
   }
 

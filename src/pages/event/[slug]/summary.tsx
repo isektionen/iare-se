@@ -318,7 +318,7 @@ const SummaryCheckout = ({
 
     const handleSubmit = useCallback(async () => {
         if (!orderReference && !cachedPaymentId) {
-            const { reference, reserved, paymentId } =
+            const { reference, reserved, paymentId, due } =
                 await checkoutClient.create({
                     items: productSummary.map((product) => ({
                         __reference: product.reference,
@@ -346,6 +346,16 @@ const SummaryCheckout = ({
                         ];
                     }, [] as ICreateBody["options"]),
                 });
+            if (due) {
+                toaster({
+                    title: t("checkout.invalid.title"),
+                    description: t("checkout.invalid.description"),
+                    status: "error",
+                    duration: 8000,
+                });
+                setLoading(false);
+                return;
+            }
             if (reserved && !paymentId && reference) {
                 setOrderReference(reference);
 

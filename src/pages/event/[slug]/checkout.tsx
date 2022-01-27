@@ -91,6 +91,7 @@ const ProductItem = ({
     price,
     updateProduct,
     resetProduct,
+    stock,
     count,
     ...props
 }: ProductProps) => {
@@ -98,6 +99,7 @@ const ProductItem = ({
 
     const [value, setValue] = useState<number>(0);
 
+    const stockLeft = useMemo(() => stock - count, [stock, count]);
     const handleDec = useCallback(() => {
         if (value > 0) {
             updateProduct(id, value - 1);
@@ -159,7 +161,7 @@ const ProductItem = ({
                     <Button
                         size="xs"
                         onClick={handleInc}
-                        disabled={!props.available || value === count}
+                        disabled={!props.available || value === stockLeft}
                     >
                         +
                     </Button>
@@ -169,7 +171,7 @@ const ProductItem = ({
                 variant="iareSolid"
                 isFullWidth
                 onClick={handleToggle}
-                disabled={!props.available}
+                disabled={!props.available || (value == stockLeft && !added)}
             >
                 {added ? "Ta bort" : "Lägg till"}
             </Button>
@@ -445,7 +447,6 @@ const View = ({
     useHydrater({ header, footer });
     const { t } = useTranslation("checkout");
     const router = useRouter();
-
     const path = [
         { label: "Aktuellt", href: "/blog" },
         { label: event.title, href: `/event/${event.slug}` },

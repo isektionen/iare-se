@@ -168,6 +168,7 @@ const ProductItem = (props: IProductItem) => {
 };
 
 interface Props {
+    password: string | null;
     event: Event;
     products: Product[];
     reciept?: OrderReceipt;
@@ -196,7 +197,7 @@ const SummaryCheckout = ({
     event,
     products,
     path,
-}: Omit<Props, "receipt"> & Path) => {
+}: Omit<Props, "receipt" | "password"> & Path) => {
     const { t, lang } = useTranslation("summary");
     const router = useRouter();
 
@@ -684,7 +685,7 @@ const SummaryView = ({
     products,
     reciept,
     path,
-}: Required<Props> & Path) => {
+}: Omit<Required<Props>, "password"> & Path) => {
     const { t, lang } = useTranslation("summary");
     const country = defcast(
         countries.all.find((p) =>
@@ -938,9 +939,10 @@ export const Summary = ({
     reciept,
     header,
     footer,
+    password,
 }: LayoutProps<Props>) => {
     const { t, lang } = useTranslation("summary");
-
+    const router = useRouter();
     useHydrater({ header, footer });
 
     const path = useMemo(
@@ -952,6 +954,17 @@ export const Summary = ({
         ],
         [event.slug, event.title]
     );
+
+    const [cachedPassword, setPassword] = useState(password);
+
+    useEffect(() => {
+        if (password && !reciept) {
+            router.replace(`/event/${event.slug}/summary`, undefined, {
+                shallow: true,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (reciept) {
         return (
@@ -971,18 +984,21 @@ export const getServerSideProps: GetServerSideProps = async ({
     locale,
     params,
     query,
+    res,
 }) => {
     locale = conformLocale(locale);
     const { slug } = params as { slug: string };
 
+    const { password = null } = query as { password: string | null };
     const reciept = await eventModel.findReciept(
         locale,
         query.reference as string
     );
 
+    console.log("PASSWORD", password);
+
     const isGuarded = await eventModel.checkIfGuarded(locale, slug);
     if (!reciept && isGuarded) {
-        const { password = null } = query as { password: string | null };
         const { validated } = await eventModel.findGuarded(
             locale,
             slug,
@@ -1020,9 +1036,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
 
     const products = await eventModel.findProducts(locale, slug);
-
     return {
         props: {
+            password,
             event: data.event,
             products,
             reciept,

@@ -44,6 +44,7 @@ import { defcast } from "utils/types";
 
 type ExtendedProduct = Product & { available: boolean };
 interface Props {
+    password: string | null;
     event: Event;
     products: ExtendedProduct[];
 }
@@ -433,7 +434,13 @@ const Attachment = (props: AttachmentProps) => {
     );
 };
 
-const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
+const View = ({
+    password,
+    event,
+    products,
+    header,
+    footer,
+}: LayoutProps<Props>) => {
     useHydrater({ header, footer });
     const { t } = useTranslation("checkout");
     const router = useRouter();
@@ -463,6 +470,7 @@ const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
     } = useCheckout(products);
 
     useEffect(() => {
+        // removing password query
         router.replace(`/event/${event.slug}/checkout`, undefined, {
             shallow: true,
         });
@@ -470,8 +478,12 @@ const View = ({ event, products, header, footer }: LayoutProps<Props>) => {
     }, []);
 
     const handleSummary = useCallback(() => {
-        router.push(`/event/${event.slug}/summary`);
-    }, [event.slug, router]);
+        if (password) {
+            router.push(`/event/${event.slug}/summary?password=${password}`);
+        } else {
+            router.push(`/event/${event.slug}/summary`);
+        }
+    }, [event.slug, router, password]);
 
     return (
         <VStack
@@ -561,8 +573,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     locale = conformLocale(locale);
     const { slug } = params as { slug: string };
     const isGuarded = await eventModel.checkIfGuarded(locale, slug);
+    const { password = null } = query as { password: string | null };
     if (isGuarded) {
-        const { password = null } = query as { password: string | null };
         const { validated } = await eventModel.findGuarded(
             locale,
             slug,
@@ -592,6 +604,11 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     const products = await eventModel.findProducts(locale, slug);
     return {
-        props: { event: data.event, products, ...(await fetchHydration()) },
+        props: {
+            password,
+            event: data.event,
+            products,
+            ...(await fetchHydration()),
+        },
     };
 };

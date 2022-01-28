@@ -169,21 +169,33 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // reserve products
 
-    body.order.items.forEach(async (i) => {
-        try {
-            await strapi.get(
-                `/products/${i.reference}/${eventRef}/reserve?quantity=${i.quantity}`
-            );
-        } catch (e) {
-            return res.status(200).json({
-                reserved: false,
-                due: {
-                    reference: i.reference,
-                    available: false,
-                },
-            });
-        }
-    });
+    _.chain(body.order.items)
+        .reduce((acc, it) => {
+            if (_.has(acc, it.reference)) {
+                return {
+                    ...acc,
+                    [it.reference]: acc[it.reference] + it.quantity,
+                };
+            }
+            return { ...acc, [it.reference]: it.quantity };
+        }, {} as Record<string, number>)
+        .pairs()
+        .forEach(async ([reference, quantity]) => {
+            try {
+                await strapi.get(
+                    `/products/${reference}/${eventRef}/reserve?quantity=${quantity}`
+                );
+            } catch (e) {
+                return res.status(200).json({
+                    reserved: false,
+                    due: {
+                        reference: reference,
+                        available: false,
+                    },
+                });
+            }
+        })
+        .value();
 
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference

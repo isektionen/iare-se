@@ -137,6 +137,14 @@ const View = ({
         if (callback) {
             setLoading(false);
             switch (callback) {
+                case "max.capacity":
+                    toaster({
+                        title: t("modal.callback.max-capacity"),
+                        status: "warning",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    break;
                 case "invalid.reciept":
                     toaster({
                         title: t("modal.callback.invalid-reciept"),

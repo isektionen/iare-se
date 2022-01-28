@@ -16,6 +16,7 @@
         "show": "show",
         "placeholder": "Enter password...",
         "callback": {
+            "max-capacity": "Max capacity of event",
             "invalid-password": "Invalid password",
             "due-date": "Can't RSVP to Event",
             "no-products": "Can't create a empty RSVP",

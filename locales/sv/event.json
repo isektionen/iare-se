@@ -16,6 +16,7 @@
         "show": "visa",
         "placeholder": "Ange lösenord...",
         "callback": {
+            "max-capacity": "Max kapaciteten är uppnådd",
             "invalid-password": "Fel lösenord",
             "due-date": "Det går inte att Osa",
             "no-products": "Det går inte att osa tomt",

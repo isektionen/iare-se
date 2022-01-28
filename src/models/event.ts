@@ -27,6 +27,15 @@ const checkIfGuarded = async (locale: TLocale, slug: string) => {
     }
 };
 
+const checkStatus = async (locale: TLocale, slug: string) => {
+    try {
+        const res = await strapiInstance.get(`events/${slug}/status`);
+        return res.status === 200;
+    } catch {
+        return false;
+    }
+};
+
 const findGuarded = async (
     locale: TLocale,
     slug: string,
@@ -121,6 +130,7 @@ const event = {
     findGuarded,
     findProducts,
     findReciept,
+    checkStatus,
 };
 
 export default event;

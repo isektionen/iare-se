@@ -1026,6 +1026,17 @@ export const getServerSideProps: GetServerSideProps = async ({
         }
     }
 
+    const isAvailable = await eventModel.checkStatus(locale, slug);
+
+    if (!reciept && !isAvailable) {
+        return {
+            redirect: {
+                destination: `/event/${slug}?callback=max.capacity`,
+                permanent: true,
+            },
+        };
+    }
+
     const data = await eventModel.find(locale, slug);
 
     if (!reciept && !isBeforeDeadline(data.event?.schedule?.deadline)) {

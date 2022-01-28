@@ -78,9 +78,12 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     // check if event is bookable
     const eventData = await strapi.get(`/events/${eventRef}/status`);
     if (eventData.status !== 200) {
-        return res.status(400).json({
-            error: "Cannot RSVP to event",
-            eventRef,
+        return res.status(200).json({
+            reserved: false,
+            due: {
+                reference: eventRef,
+                available: false,
+            },
         });
     }
 

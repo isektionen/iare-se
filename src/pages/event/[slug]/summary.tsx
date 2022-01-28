@@ -229,6 +229,7 @@ const SummaryCheckout = ({
         hasError,
         withSubmit,
         isLoading,
+        setIsLoading,
         resetCustomer,
         resetCheckout,
     } = useSummary();
@@ -347,13 +348,13 @@ const SummaryCheckout = ({
                     }, [] as ICreateBody["options"]),
                 });
             if (due) {
+                setIsLoading(false);
                 toaster({
                     title: t("checkout.invalid.title"),
                     description: t("checkout.invalid.description"),
                     status: "error",
                     duration: 8000,
                 });
-                setLoading(false);
                 return;
             }
             if (reserved && !paymentId && reference) {

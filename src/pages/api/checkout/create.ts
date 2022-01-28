@@ -172,7 +172,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     body.order.items.forEach(async (i) => {
         try {
             await strapi.get(
-                `/products/${i.reference}/reserve?quantity=${i.quantity}`
+                `/products/${i.reference}/${eventRef}/reserve?quantity=${i.quantity}`
             );
         } catch (e) {
             return res.status(200).json({

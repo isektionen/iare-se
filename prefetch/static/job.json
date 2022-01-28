@@ -1,35 +1,110 @@
 {
-    "id": 2,
-    "title": "Test bain C-Å",
-    "slug": "test-bain-c-a",
-    "deadlineDate": "2021-12-24T11:00:00.000Z",
-    "startDate": "2021-12-31T11:00:00.000Z",
-    "jobCategory": {
+    "id": 4,
+    "title": "jobba som chokladsmakare!",
+    "slug": "jobba-som-chokladsmakare",
+    "deadlineDate": "2022-01-27T11:00:00.000Z",
+    "startDate": "2022-01-14T11:00:00.000Z",
+    "jobCategory": {},
+    "company": {
         "id": 1,
-        "name": "Full-time",
+        "name": "mackan",
+        "website": "mackan.nu",
+        "backgroundColor": "white",
+        "sponsor": false,
         "locale": "sv",
-        "published_at": "2021-07-26T16:25:20.251Z",
-        "created_at": "2021-07-26T16:25:18.096Z",
-        "updated_at": "2021-07-26T16:25:20.284Z"
+        "published_at": "2021-09-12T13:06:46.680Z",
+        "created_at": "2021-09-12T13:06:45.484Z",
+        "updated_at": "2021-09-12T13:22:11.677Z",
+        "logo": {
+            "id": 45,
+            "name": "seoimageplaceholder.webp",
+            "alternativeText": "",
+            "caption": "",
+            "width": 1200,
+            "height": 1200,
+            "formats": {
+                "large": {
+                    "ext": ".webp",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/large_seoimageplaceholder_3534b4885f.webp",
+                    "hash": "large_seoimageplaceholder_3534b4885f",
+                    "mime": "image/webp",
+                    "name": "large_seoimageplaceholder.webp",
+                    "path": null,
+                    "size": 12.21,
+                    "width": 1000,
+                    "height": 1000
+                },
+                "small": {
+                    "ext": ".webp",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_seoimageplaceholder_3534b4885f.webp",
+                    "hash": "small_seoimageplaceholder_3534b4885f",
+                    "mime": "image/webp",
+                    "name": "small_seoimageplaceholder.webp",
+                    "path": null,
+                    "size": 5.61,
+                    "width": 500,
+                    "height": 500
+                },
+                "medium": {
+                    "ext": ".webp",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_seoimageplaceholder_3534b4885f.webp",
+                    "hash": "medium_seoimageplaceholder_3534b4885f",
+                    "mime": "image/webp",
+                    "name": "medium_seoimageplaceholder.webp",
+                    "path": null,
+                    "size": 8.68,
+                    "width": 750,
+                    "height": 750
+                },
+                "thumbnail": {
+                    "ext": ".webp",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_seoimageplaceholder_3534b4885f.webp",
+                    "hash": "thumbnail_seoimageplaceholder_3534b4885f",
+                    "mime": "image/webp",
+                    "name": "thumbnail_seoimageplaceholder.webp",
+                    "path": null,
+                    "size": 1.39,
+                    "width": 156,
+                    "height": 156
+                }
+            },
+            "hash": "seoimageplaceholder_3534b4885f",
+            "ext": ".webp",
+            "mime": "image/webp",
+            "size": 11.89,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/seoimageplaceholder_3534b4885f.webp",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2021-09-12T13:21:30.696Z",
+            "updated_at": "2021-09-12T13:21:30.706Z"
+        }
     },
-    "company": null,
-    "body": "Bain TEST",
-    "position": null,
-    "location": null,
+    "body": "Barry?\n- Adam?\n\n  \n- Oan you believe this is happening?\n- I can't. I'll pick you up.\n\n  \nLooking sharp.\n\n  \nUse the stairs. Your father\npaid good money for those.\n\n  \nSorry. I'm excited.\n\n  \nHere's the graduate.\nWe're very proud of you, son.\n\n  \nA perfect report card, all B's.\n\n  \nVery proud.\n\n  \nMa! I got a thing going here.\n\n  \n- You got lint on your fuzz.\n- Ow! That's me!\n\n  \n- Wave to us! We'll be in row 118,000.\n- Bye!\n\n  \nBarry, I told you,\nstop flying in the house!\n\n  \n- Hey, Adam.\n- Hey, Barry.\n\n  \n- Is that fuzz gel?\n- A little. Special day, graduation.\n\n  \nNever thought I'd make it.\n\n  \nThree days grade school,\nthree days high school.\n\n  \nThose were awkward.\n\n  \nThree days college. I'm glad I took\na day and hitchhiked around the hive.\n\n  \nYou did come back different.\n\n  \n- Hi, Barry.\n- Artie, growing a mustache? Looks good.\n\n  \n- Hear about Frankie?\n- Yeah.\n\n  \n- You going to the funeral?\n- No, I'm not going.\n\n  \nEverybody knows,\nsting someone, you die.\n\n  \nDon't waste it on a squirrel.\nSuch a hothead.\n\n  \nI guess he could have\njust gotten out of the way.\n\n  \nI love this incorporating\nan amusement park into our day.\n\n  \nThat's why we don't need vacations.\n\n  \nBoy, quite a bit of pomp...\nunder the circumstances.\n\n  \n- Well, Adam, today we are men.\n- We are!\n\n  \n- Bee-men.\n- Amen!\n\n  \nHallelujah!\n\n  \nStudents, faculty, distinguished bees,\n\n  \nplease welcome Dean Buzzwell.\n\n  \nWelcome, New Hive Oity\ngraduating class of...\n\n  \n...9:15.\n\n  \nThat concludes our ceremonies.\n\n  \nAnd begins your career\nat Honex Industries!\n\n  \nWill we pick ourjob today?\n\n  \nI heard it's just orientation.\n\n  \nHeads up! Here we go.\n\n  \nKeep your hands and antennas\ninside the tram at all times.\n\n  \n- Wonder what it'll be like?\n- A little scary.\n\n  \nWelcome to Honex,\na division of Honesco\n\n  \nand a part of the Hexagon Group.\n\n  \nThis is it!\n\n  \nWow.\n\n  \nWow.\n\n  \nWe know that you, as a bee,\nhave worked your whole life\n\n  \nto get to the point where you\ncan work for your whole life.\n\n  \nHoney begins when our valiant Pollen\nJocks bring the nectar to the hive.\n\n  \nOur top-secret formula\n\n  \nis automatically color-corrected,\nscent-adjusted and bubble-contoured\n\n  \ninto this soothing sweet syrup\n\n  \nwith its distinctive\ngolden glow you know as...\n\n  \nHoney!\n\n  \n",
+    "position": "vd",
+    "location": "",
     "locale": "sv",
-    "published_at": "2021-11-24T16:28:17.471Z",
-    "created_at": "2021-09-15T17:03:39.390Z",
-    "updated_at": "2021-11-24T16:28:17.499Z",
+    "published_at": "2022-01-27T17:57:46.558Z",
+    "created_at": "2022-01-27T17:57:39.244Z",
+    "updated_at": "2022-01-27T17:59:26.915Z",
     "description": null,
-    "year": [],
-    "contact": [
+    "year": [
         {
-            "id": 3,
-            "label": "Ansökan",
-            "type": "website",
-            "href": "www.google.com"
+            "id": 5,
+            "year": "YEAR_THREE"
+        },
+        {
+            "id": 6,
+            "year": "YEAR_FIVE"
         }
     ],
+    "contact": [],
     "banner": null,
-    "localizations": []
+    "localizations": [
+        {
+            "id": 5,
+            "locale": "en",
+            "published_at": "2022-01-27T17:57:59.319Z"
+        }
+    ]
 }

@@ -1012,8 +1012,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         query.reference as string
     );
 
-    console.log("PASSWORD", password);
-
     const isGuarded = await eventModel.checkIfGuarded(locale, slug);
     if (!reciept && isGuarded) {
         const { validated } = await eventModel.findGuarded(

@@ -6,6 +6,7 @@ import {
     useRecoilCallback,
     useRecoilState,
     useRecoilValue,
+    useSetRecoilState,
 } from "recoil";
 import {
     ComponentEventFormInput,
@@ -156,15 +157,9 @@ const _formState = selector<FormState[]>({
                 (p) => p.reference === it.id
             );
             const isConsumable = state[stateId].consumable;
-            const amount = state[stateId].amount;
-
-            // poor mans filter
-            if (
-                alreadyExistingOption &&
-                _.has(alreadyExistingOption, "__remove_next")
-            ) {
-                return [...acc];
-            }
+            const amount = alreadyExistingOption
+                ? alreadyExistingOption.amount
+                : state[stateId].amount;
 
             return [
                 ...acc,
@@ -346,12 +341,9 @@ export const useSummary = () => {
             setFormState((s) =>
                 s.map((p) => {
                     if (p.reference === ref) {
-                        return {
-                            ...p,
-                            __remove_next: true,
-                        };
+                        return { ...p, amount: 0 };
                     }
-                    return p;
+                    return { ...p };
                 })
             );
         },

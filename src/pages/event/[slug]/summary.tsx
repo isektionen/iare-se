@@ -118,6 +118,7 @@ const ProductItem = (props: IProductItem) => {
         [props.name]
     );
     const isFree = useMemo(() => props.price === 0, [props.price]);
+
     return (
         <Stack
             direction={{ base: "column", md: "row" }}
@@ -257,8 +258,12 @@ const SummaryCheckout = ({
 
     const productSummary = useMemo(() => {
         return formState.reduce((acc, it) => {
+            if (it.amount === 0) {
+                return [...acc];
+            }
             const ref = getInnerId(it.reference);
             const productData = products.find((p) => p.id == ref);
+
             if (productData) {
                 return [
                     ...acc,
@@ -394,6 +399,7 @@ const SummaryCheckout = ({
         productSummary,
         router,
         setIsHydrated,
+        setIsLoading,
         t,
         toaster,
     ]);
@@ -679,7 +685,7 @@ const SummaryCheckout = ({
                         </Button>
                     </React.Fragment>
                 )}
-                {isDev && <pre>{JSON.stringify(customerError, null, 2)}</pre>}
+                {isDev && <pre>{JSON.stringify(productSummary, null, 2)}</pre>}
                 {loading && (
                     <Center w="full" h="80vh" flexDirection="column">
                         <Spinner size="xl" mb={8} />

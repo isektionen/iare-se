@@ -1,7 +1,7 @@
 {
     "view": {
-        "gallery": "Galleri vy",
-        "calendar": "Kalender vy"
+        "gallery": "Galleri-vy",
+        "calendar": "Kalender-vy"
     },
     "article": {
         "event": "Event",

@@ -5,7 +5,7 @@ require("dotenv").config({ path: opath });
 
 const resolver = async (force_local) => {
     const url =
-        process.env.NODE_ENV === "production" && !force_local
+        process.env.NODE_ENV === "production" || !force_local
             ? "https://cms.iare.se/remote-services/init"
             : "http://localhost:1337/remote-services/init";
     const body = {

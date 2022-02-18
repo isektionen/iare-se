@@ -120,6 +120,13 @@
             "displayDropDown": true,
             "href": "/chapter/committee",
             "subSection": []
+        },
+        {
+            "id": "15",
+            "label": "Styrelsen",
+            "displayDropDown": false,
+            "href": "/committee/styrelsen",
+            "subSection": []
         }
     ],
     "languages": [

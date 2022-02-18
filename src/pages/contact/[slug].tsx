@@ -24,7 +24,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
     return {
         paths: committeeFunctions.map(({ slug }) => ({ params: { slug } })),
-        fallback: true,
+        fallback: "blocking",
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
@@ -35,6 +35,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
             locale,
             params?.slug as string
         );
+
     return {
         props: {
             error,

@@ -41,42 +41,24 @@ interface CustomRepresentative {
 }
 
 interface Props {
-    representative: CommitteeFunction[];
+    repr: CommitteeFunction;
 }
 
-const View = ({
-    error,
-    header,
-    footer,
-    /* @ts-ignore */
-    representative = [defaultCommitteeFunction],
-}: LayoutProps<Props>) => {
+const View = ({ error, header, footer, repr }: LayoutProps<Props>) => {
     useSanity(error);
     useHydrater({ header, footer });
 
     const { t } = useTranslation("contact");
-
-    const repr = _.first(
-        representative.map((rep) => {
-            const _rep = _.first(
-                rep.representatives as Representative[]
-            ) as Representative;
-
-            const name = _rep
-                ? _rep.user?.firstname + " " + _rep.user?.lastname
-                : t("vacant");
-            return {
-                name,
-                role: rep.role,
-                email: rep.contact,
-                abbr: rep.abbreviation,
-                imageSrc: _rep?.cover?.url ?? "",
-                personal_desc: _rep?.personal_description ?? "",
-                role_desc: rep.role_description,
-            };
-        })
-    ) as CustomRepresentative;
-
+    const data = _.first(repr?.representatives ?? []) as Representative;
+    const _repr = {
+        name: data.user?.firstname + " " + data.user?.lastname,
+        role: repr.role,
+        email: repr.contact,
+        abbr: repr.abbreviation,
+        imageSrc: data.cover?.url ?? "",
+        personal_desc: data?.personal_description ?? "",
+        role_desc: repr.role_description,
+    } as CustomRepresentative;
     const {
         register,
         watch,
@@ -127,7 +109,7 @@ const View = ({
         <React.Fragment>
             <NextSeo
                 title={makeTitle(
-                    t("seo:contact-single.title", { contact: repr.role })
+                    t("seo:contact-single.title", { contact: _repr.role })
                 )}
             />
 
@@ -160,7 +142,7 @@ const View = ({
                     borderWidth="1px"
                     borderColor="gray.200"
                 >
-                    <Profile {...repr} />
+                    <Profile {..._repr} />
                     <Flex
                         as="form"
                         w="full"
@@ -184,7 +166,7 @@ const View = ({
                                         {t("mail.to.label")}
                                     </InputLeftAddon>
                                     <Input
-                                        value={repr.email}
+                                        value={_repr.email}
                                         readOnly
                                         {...register("to", { required: true })}
                                     />

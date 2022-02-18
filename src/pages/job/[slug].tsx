@@ -5,6 +5,8 @@ import { fetchHydration } from "state/layout";
 import _ from "underscore";
 import jobModel from "models/job";
 import View from "views/Job";
+import defaultJob from "../../../prefetch/static/job.json";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
@@ -17,31 +19,34 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: true,
+        fallback: false,
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+    locale = conformLocale(locale);
+
     const { job, error } = await jobModel.find(locale, params?.slug as string);
 
+    const _job = job ?? defaultJob;
     const localeSlugs = extractLocales(
-        { job },
+        { job: _job },
         ["job"],
         ["locale", "slug"]
     ).map((item) => ({
         ...item,
         slug:
-            item.locale === "sv"
+            item.locale === conformLocale("sv")
                 ? `/job/${item.slug}`
                 : `/${item.locale}/job/${item.slug}`,
     }));
 
-    const mdxSource = job?.body ? await serialize(job.body) : null;
+    const mdxSource = _job?.body ? await serialize(_job.body) : null;
 
     return {
         props: {
             error,
             localeSlugs,
-            job,
+            job: _job,
             mdx: mdxSource,
             ...(await fetchHydration()),
         },

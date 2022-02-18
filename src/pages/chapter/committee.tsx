@@ -4,10 +4,13 @@ import { fetchHydration } from "state/layout";
 import _ from "underscore";
 import committee from "models/committee";
 import View from "views/Committee/Committee";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    locale = conformLocale(locale);
+
     const { committeeLandingpage } = await committee.getLandingPage(locale);
     const { committees, error } = await committee.getCommittees(locale);
     const mdxSource = committeeLandingpage?.content

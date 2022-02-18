@@ -1,13 +1,5 @@
 import { Button } from "@chakra-ui/button";
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    chakra,
     AspectRatio,
     Drawer,
     DrawerBody,
@@ -16,72 +8,48 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
-    Input,
     HStack,
-    Placement,
     useBreakpointValue,
     SlideDirection,
-    Spinner,
     Box,
-    Center,
-    Flex,
+    Text,
+    VStack,
 } from "@chakra-ui/react";
 import { WrapPadding } from "components/browser/WrapPadding";
-import {
-    DocumentContext,
-    DocumentType,
-    NewDocumentType,
-} from "hooks/use-document";
+
 import useTranslation from "next-translate/useTranslation";
-import React, {
-    ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React from "react";
 import { isMobile } from "react-device-detect";
 import { useDocumentContext } from "state/document";
 
 const Document = ({ file }: { file?: string }) => {
-    const ref = useRef<HTMLIFrameElement>(null);
-
-    const [loaded, setLoaded] = useState(false);
-
+    const { t } = useTranslation("document");
     return (
         <AspectRatio h="80vh" ratio={1 / Math.SQRT2}>
             <Box w="full" h="full">
-                {!loaded && (
-                    <Flex
-                        pos="absolute"
-                        w="full"
-                        justify="center"
-                        alignItems="center"
-                    >
-                        <Spinner size="lg" />
-                    </Flex>
-                )}
-                {/*<iframe
-                    ref={ref}
-                    id="pdfiframe"
-                    frameBorder="0"
-                    allowFullScreen
-                    onLoad={() => setLoaded(true)}
-                    scrolling="auto"
-                    src={`https://docs.google.com/viewer?url=${file}&embedded=true`}
-                />*/}
                 <object
                     width="100%"
                     height="100%"
                     data={file}
                     type="application/pdf"
-                    onLoad={() => setLoaded(true)}
                 >
                     <iframe
-                        onLoad={() => setLoaded(true)}
                         src={`https://docs.google.com/viewer?url=${file}&embedded=true`}
-                    ></iframe>
+                    >
+                        <VStack>
+                            <Text>{t("thumbnail.drawer.documentFailure")}</Text>
+                            {file && (
+                                <Button
+                                    as="a"
+                                    variant="iareSolid"
+                                    href={file}
+                                    target="_blank"
+                                >
+                                    {t("thumbnail.drawer.download")}
+                                </Button>
+                            )}
+                        </VStack>
+                    </iframe>
                 </object>
             </Box>
         </AspectRatio>

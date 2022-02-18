@@ -1,4 +1,4 @@
-import { Flex, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import React from "react";
 import { Categories, Category } from "./Categories";
 import { Pages, Route } from "./Pages";

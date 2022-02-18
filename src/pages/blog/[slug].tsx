@@ -8,6 +8,8 @@ import { fetchHydration } from "../../state/layout";
 import _ from "underscore";
 import blog from "models/blog";
 import View from "views/Blog/Slug";
+import { conformLocale } from "utils/lang";
+import defaultPost from "../../../prefetch/static/blog.json";
 
 export default View;
 
@@ -28,31 +30,33 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 slug: e.slug as string,
             },
         })),
-        fallback: true,
+        fallback: false,
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+    locale = conformLocale(locale);
     const { post, error } = await blog.getPost(locale, params?.slug as string);
 
+    const _post = post ?? defaultPost;
     const localeSlugs = extractLocales(
-        { post },
+        { post: _post },
         ["post"],
         ["locale", "slug"]
     ).map((item) => ({
         ...item,
         slug:
-            item.locale === "sv"
+            item.locale === conformLocale("sv")
                 ? `/blog/${item.slug}`
                 : `/${item.locale}/blog/${item.slug}`,
     }));
 
-    const mdxSource = post?.body ? await serialize(post.body) : null;
+    const mdxSource = _post?.body ? await serialize(_post.body) : null;
 
     return {
         props: {
             error,
             localeSlugs,
-            post,
+            post: _post,
             mdx: mdxSource,
             ...(await fetchHydration()),
         },

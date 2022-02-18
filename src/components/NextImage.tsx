@@ -3,7 +3,8 @@ import Image, { ImageProps } from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { isExternal } from "utils/path";
 
-export type NextImageProps = ImageProps & BoxProps;
+export type NextImageProps = Omit<ImageProps, "src"> &
+    BoxProps & { src: string };
 
 interface StaticImageData {
     src: string;

@@ -1,6 +1,7 @@
 import useTranslation from "next-translate/useTranslation";
 import { sv, enGB } from "date-fns/locale";
 import { Dict } from "@chakra-ui/utils";
+import { conformLocale } from "utils/lang";
 
 type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -50,7 +51,7 @@ export const useFormat = (formatFunction: FormatFunctionType) => {
 };
 
 export const useDynamicLocale = () => {
-    const { lang } = useTranslation();
+    let { lang } = useTranslation();
 
-    return locales[lang];
+    return locales[conformLocale(lang)];
 };

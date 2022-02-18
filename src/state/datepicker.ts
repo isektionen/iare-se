@@ -28,6 +28,7 @@ import {
     isWithinInterval,
     Locale,
     startOfWeek,
+    getDaysInMonth,
 } from "date-fns";
 import { enGB } from "date-fns/locale";
 import useTranslation from "next-translate/useTranslation";
@@ -80,45 +81,78 @@ const selectDay = selectorFamily({
         },
 });
 
+/**
+ * Days should be a array always containing 42 days in it.
+ * The first week should always be on the first row. (the first 7 elements)
+ * If the month starts on a friday, it should mean that MON-THU should come
+ * from the previous month. This can be done through date-math, where we
+ * extract what day the current month starts on, then subtract that from 7.
+ *
+ * today = new Date()
+ * som = startOfMonth(today)
+ * >> Date
+ * getDay(som)
+ * >> number // 0-6, where 0 represents SUN
+ *
+ *
+ * [1,   2,   3,   4,   5,   6,   0  ]
+ * [MON, TUE, WED, THU, FRI, SAT, SUN]
+ *                           x
+ * daysFromLastMonth = getDay(som) - 1
+ * >> number
+ *
+ *
+ * start = subDays(som, daysFromLastMonth)
+ * ----
+ * A calendar is a grid of 6 rows and 7 columns, meaning that
+ * 42 cells exists for each month.
+ * We know from before the amount of extra days from the previous
+ * month (daysFromLastMonth) and we can get the amount of days that the
+ * current month has:
+ * daysInMonth = getDaysInMonth(today)
+ * >> number
+ *
+ * Thus ending up with this calculation:
+ * daysFromNextMonth = 42 - (daysInMonth + daysFromLastMonth)
+ * >> number
+ *
+ * end = addDays(endOfMonth(today), daysFromNextMonth)
+ */
+
+const calendarDays = (today: Date) => {
+    const daysFromLastMonth = getDay(startOfMonth(today)) - 1;
+    const start = subDays(startOfMonth(today), daysFromLastMonth);
+    const end = addDays(
+        endOfMonth(today),
+        42 - (getDaysInMonth(today) + daysFromLastMonth)
+    );
+
+    return eachDayOfInterval({
+        start,
+        end,
+    });
+};
+
 const selectMonth = selector({
     key: "SELECTOR/DATEPICKER/MONTH",
     get: ({ get }) => {
         const { activeMonth, firstDayOfWeek, locale } = get(dateState);
         const month = activeMonth;
         const today = new Date();
-        const date = month;
-        const monthStart = startOfMonth(date);
-        const monthEnd = endOfMonth(date);
-        const monthStartDay = 6 - getDay(monthStart) - firstDayOfWeek;
 
         const dateMap = (d: Date) => ({
             day: getDate(d),
             date: d,
         });
 
-        let days = [
-            ...eachDayOfInterval({
-                start: subDays(monthStart, monthStartDay + firstDayOfWeek),
-                end: subDays(monthStart, 1),
-            }).map(dateMap),
-            ...eachDayOfInterval({
-                start: monthStart,
-                end: monthEnd,
-            }).map(dateMap),
-        ];
-        days = [
-            ...days,
-            ...eachDayOfInterval({
-                start: addDays(monthEnd, 1),
-                end: addDays(monthEnd, 42 - days.length),
-            }).map(dateMap),
-        ];
+        const days = calendarDays(today).map(dateMap);
+
         const weekdayLabels = eachDayOfInterval({
             start: addDays(startOfWeek(today), firstDayOfWeek),
             end: addDays(endOfWeek(today), firstDayOfWeek),
         }).map((date) => format(date, "EEE", { locale }));
         return {
-            monthLabel: format(date, "MMMM yyyy", { locale }),
+            monthLabel: format(month, "MMMM yyyy", { locale }),
             weekdayLabels,
             days,
         };

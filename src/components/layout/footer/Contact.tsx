@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Drawer,
     DrawerBody,
@@ -11,7 +10,6 @@ import {
     FormHelperText,
     FormLabel,
     Heading,
-    HStack,
     Input,
     Popover,
     PopoverArrow,
@@ -23,7 +21,6 @@ import {
     Textarea,
     useDisclosure,
     useToast,
-    VStack,
 } from "@chakra-ui/react";
 import { useViewport } from "hooks/use-viewport";
 import useTranslation from "next-translate/useTranslation";
@@ -31,7 +28,7 @@ import React from "react";
 import { isMobile } from "react-device-detect";
 import { useForm } from "react-hook-form";
 import { BsBoxArrowUp } from "react-icons/bs";
-import { Link, Element, Button as LinkButton } from "react-scroll";
+import { Link, Element } from "react-scroll";
 
 const Form = ({ onComplete }: { onComplete: () => void }) => {
     const { t } = useTranslation("common");

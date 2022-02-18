@@ -25,4 +25,10 @@ module.exports = withPlugins([getEnv, [withBundleAnalyzer], nextTranslate], {
         locales: ["en", "sv"],
         defaultLocale: "sv",
     },
+    functions: {
+        "api/checkout/callback.ts": {
+            memory: 1024 * 2,
+            maxDuration: 90,
+        },
+    },
 });

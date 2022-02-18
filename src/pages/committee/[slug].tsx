@@ -7,6 +7,7 @@ import { fetchHydration } from "state/layout";
 import { Committee } from "types/strapi";
 import committeeModel from "models/committee";
 import View from "views/Committee/Slug";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
@@ -31,6 +32,8 @@ export const getStaticPaths: GetStaticPaths = async (params) => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+    locale = conformLocale(locale);
+
     const { committees, error } = await committeeModel.getCommittees(locale);
 
     const { committee, error: committeeError } = committeeModel.find(

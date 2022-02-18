@@ -1,0 +1,19 @@
+{
+  "products": "Produkter",
+  "attachments": "Tillägg",
+  "select": {
+    "create": "Lägg till {{option}}"
+  },
+  "consumable-disclaimer": {
+    "left": "Valen ovan är förbundna med ",
+    "right": ", då den förknippas med mat"
+  },
+  "non-consumable-disclaimer": "Ovan val behandlas för alla produkter av sorten {{product}}",
+  "error": {
+    "is-required": "{{field}} är obligatorisk",
+    "is-empty": "Var snäll välj minst en (1) produkt"
+
+
+  },
+  "form-has-requirements": "Formuläret har tomma obligatoriska fält"
+}

@@ -7,7 +7,6 @@ import {
     ComponentHeaderContact,
     ComponentHeaderFeedbackbox,
     ComponentHeaderLanguages,
-    ComponentHeaderLogo,
     ComponentHeaderMenuSection,
     Footer,
     Header,

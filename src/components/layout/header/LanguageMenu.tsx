@@ -18,6 +18,7 @@ import useTranslation from "next-translate/useTranslation";
 import { IoIosArrowDown } from "react-icons/io";
 import { useLocaleSlug } from "state/locale";
 import { useRouter } from "next/router";
+import { conformLocale } from "utils/lang";
 interface Props extends ButtonProps {
     standardLanguage: ComponentHeaderLanguages | undefined;
     isMobile?: boolean;
@@ -27,7 +28,10 @@ interface Props extends ButtonProps {
 export const LanguageMenu = (props: Props) => {
     const { standardLanguage, isMobile, languages, ...rest } = props;
     const { locales } = i18nConfig;
-    const { lang } = useTranslation();
+    let { lang } = useTranslation();
+
+    lang = conformLocale(lang);
+
     const router = useRouter();
     const changeSlug = useLocaleSlug();
     const changeLanguage = async (lang: string) => {

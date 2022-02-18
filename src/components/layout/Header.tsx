@@ -1,6 +1,11 @@
-import { Box, BoxProps, Flex, HStack, List, ListItem } from "@chakra-ui/layout";
 import AccessibleLink from "components/AccessibleLink";
 import {
+    BoxProps,
+    Flex,
+    HStack,
+    List,
+    ListItem,
+    Box,
     Text,
     Button,
     chakra,
@@ -22,9 +27,8 @@ import {
     AlertDescription,
     AlertIcon,
     AlertTitle,
-    CloseButton,
 } from "@chakra-ui/react";
-import { useViewportScroll } from "framer-motion";
+import { motion, useViewportScroll } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -32,7 +36,6 @@ import { LinkComponent } from "components/LinkComponent";
 import { MdChatBubble } from "react-icons/md";
 import { LanguageMenu } from "./header/LanguageMenu";
 import { IoCloseCircle } from "react-icons/io5";
-import { MobileMenuItem } from "./header/MobileMenuItem";
 import { Logo } from "./header/Logo";
 import { Section } from "./header/Section";
 import { useRecoilValue } from "recoil";
@@ -40,12 +43,12 @@ import { headerState, layout, Layout, useAlertSelector } from "state/layout";
 import { Feedback } from "./header/Feedback";
 import useTranslation from "next-translate/useTranslation";
 import { PageMenu, PageMenuMobile } from "./header/PageMenu";
-import MotionBox from "components/motion/Box";
 import { BsPlus } from "react-icons/bs";
 import { mergeLink } from "utils/mergeHref";
 import _ from "underscore";
 import { useRouter } from "next/router";
-import { AlertSection } from "./AlertSection";
+
+const MotionBox = motion(Box);
 
 const Header = (props: BoxProps) => {
     const router = useRouter();

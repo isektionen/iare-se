@@ -10,6 +10,7 @@ const job = require("./resolvers/job");
 const committeeFunction = require("./resolvers/committeeFunction");
 
 const config = {
+    force_local: false,
     resolvers: [
         header,
         footer,
@@ -24,10 +25,10 @@ const config = {
 };
 
 const prefetch = () => {
-    const { resolvers } = config;
+    const { resolvers, force_local } = config;
 
     resolvers.forEach(async (resolver) => {
-        const { basename, data } = await resolver();
+        const { basename, data } = await resolver(force_local);
         fs.writeFileSync(
             __dirname + `/static/${basename}.json`,
             JSON.stringify(data, null, 4)

@@ -1,6 +1,6 @@
 import { queryLocale } from "lib/strapi";
 import { TLocale } from "types/global";
-import { Post, Event, Jobs } from "types/strapi";
+import { Post, Event, Jobs, UploadFile } from "types/strapi";
 import _ from "underscore";
 
 const getAuthor = (item: Event | Post | Jobs) => {
@@ -32,7 +32,7 @@ const getHref = (item: Event | Post | Jobs) => {
 const getDateTime = (item: Event | Post | Jobs) => {
     switch (item.__typename) {
         case "Event":
-            return item.startTime;
+            return item?.schedule?.start ?? null;
         case "Post":
             return item.published_at;
         case "Jobs":
@@ -67,6 +67,17 @@ const getBody = (item: Event | Post | Jobs) => {
             return item?.body ?? "";
         default:
             return "";
+    }
+};
+
+const getMedia = (item: Event | Post | Jobs) => {
+    switch (item.__typename) {
+        case "Event":
+            return _.first(item.media || []) as UploadFile;
+        case "Post":
+            return item.banner as UploadFile;
+        case "Jobs":
+            return item.banner as UploadFile;
     }
 };
 
@@ -122,30 +133,31 @@ const getPosts = async (locale: TLocale) => {
 
 const getEvents = async (locale: TLocale) => {
     const { data, error } = await queryLocale<{ events: Event[] }>`
-        query FindManyEvents {
-            events(locale: ${locale}) {
-                locale
-                id
-                title
-                slug
-                category {
-                    name
-                }
-                place {
-                    name
-                }
-                committee {
-                    name
-                }
-                startTime
-                deadline
-                description
-                banner {
-                    url
-                }
-                published_at
+    query FindManyEvents {
+        events(locale: ${locale}, where: {public: true}) {
+            locale
+            id
+            title
+            slug
+            category {
+              name
             }
-        }`;
+            media {
+              name
+              formats
+            }
+            schedule {
+              start
+              deadline
+              end
+            }
+            description
+            location
+            published_at
+                        
+                        
+        }
+    }`;
     return { events: data.events, error };
 };
 
@@ -181,14 +193,12 @@ const getFeed = async (locale: TLocale) => {
     var { events, error: eventError } = await getEvents(locale);
     var { jobs, error: jobError } = await getJobs(locale);
 
-    console.log("test");
-
     // This old statement made it so that posterrors would hinder jobs from showing
     //if (jobError || postError || eventError) {
-        //return { feed: [], error: true };
+    //return { feed: [], error: true };
     //}
 
-    // Changed 
+    // Changed
     if (jobError) {
         jobs = [];
     }
@@ -211,6 +221,7 @@ const getFeed = async (locale: TLocale) => {
             __body: getBody(item),
             __calendarDate: getDateTime(item),
             __href: getHref(item),
+            __media: getMedia(item),
         }))
         .reverse()
         .value();

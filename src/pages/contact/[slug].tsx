@@ -5,6 +5,7 @@ import { CommitteeFunction } from "types/strapi";
 import _ from "underscore";
 import representativeModel from "models/representative";
 import View from "views/Contact/Slug";
+import { conformLocale } from "utils/lang";
 
 export default View;
 
@@ -27,6 +28,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 };
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+    locale = conformLocale(locale);
+
     const { representative, error } =
         await representativeModel.getRepresentative(
             locale,

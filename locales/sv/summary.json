@@ -1,0 +1,35 @@
+{
+  "is-free": "Utan kostnad",
+  "customer": "Kunduppgifter",
+  "summary": "Sammanfattning",
+  "loading": "Laddar Sammanfattningen",
+  "switch": {
+    "true": "Ja",
+    "false": "Nej"
+  },
+  "rsvp": {
+    "free": "Osa",
+    "paid": "Betala {{cost}} {{currency}}"
+  },
+  "required": "{{field}} är obligatorisk",
+  "details": {
+    "firstname": "Förnamn",
+    "lastname": "Efternamn",
+    "email": "Email",
+    "phone": {
+      "number": "Telefonnummer",
+      "prefix": "Prefix"
+    }
+  },
+  "checkout": {
+    "complete": {
+      "title": "[{{code}}] Din order har reserverats",
+      "description": "Ett bekräftelsemail har skickats till {{email}}"
+    },
+    "invalid": {
+      "title": "Din order kunde inte reserveras",
+      "description": "En produkt kan vara slutköpt"
+    }
+  }
+
+}

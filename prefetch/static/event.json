@@ -1,150 +1,211 @@
-[
-    {
-        "id": 22,
-        "title": "Alumn/övrig Jubileumsgasquen",
-        "slug": "alumn-oevrig-jubileumsgasquen",
-        "committee": {
-            "id": 15,
-            "name": "Jubileum",
-            "locale": "sv",
-            "published_at": "2021-09-23T08:10:40.559Z",
-            "created_at": "2021-09-23T08:10:38.220Z",
-            "updated_at": "2021-09-23T08:10:40.586Z",
-            "committee_objective": null,
-            "abbreviation": null,
-            "slug": "jubileum",
-            "content": null,
-            "contact": null,
-            "icon": null
-        },
-        "category": {
-            "id": 1,
-            "name": "Efterfest",
-            "locale": "sv",
-            "published_at": "2021-07-26T19:44:57.334Z",
-            "created_at": "2021-07-26T16:24:32.398Z",
-            "updated_at": "2021-09-30T08:50:56.878Z"
-        },
-        "startTime": "2021-11-13T16:00:00.000Z",
-        "endTime": "2021-11-14T02:00:00.000Z",
-        "deadline": "2021-10-10T21:30:00.000Z",
-        "description": null,
-        "locale": "sv",
-        "published_at": "2021-11-15T17:55:03.596Z",
-        "created_at": "2021-09-24T08:06:38.994Z",
-        "updated_at": "2021-11-15T17:55:03.625Z",
-        "fullfillmentUID": "ghVKzklu",
-        "body": "Jubileumgasquen",
-        "maxTickets": 0,
-        "tickets": {
-            "id": 140,
-            "allowMultiple": false,
-            "Tickets": [
-                {
-                    "id": 276,
-                    "name": null,
-                    "price": 1250,
-                    "swedishName": "Inklusive alkohol",
-                    "ticketUID": "wDHAaCvQ",
-                    "englishName": null
-                },
-                {
-                    "id": 277,
-                    "name": null,
-                    "price": 1250,
-                    "swedishName": "Alkoholfritt",
-                    "ticketUID": "E2dIbs2h",
-                    "englishName": null
-                }
-            ]
-        },
-        "servingOptions": {
-            "id": 43,
-            "servingFood": true,
-            "servingAlcohol": true
-        },
-        "place": {
-            "id": 22,
-            "name": "Münchenbryggeriet",
-            "showMap": null
-        },
-        "passwordProtected": null,
-        "banner": null,
-        "localizations": []
+{
+    "id": 58,
+    "title": "lösenordet är indek",
+    "slug": "loesenordet-aer-indek",
+    "committee": null,
+    "category": null,
+    "startTime": null,
+    "endTime": null,
+    "deadline": null,
+    "description": "indek",
+    "locale": "sv",
+    "published_at": "2022-01-27T11:32:33.805Z",
+    "created_at": "2022-01-27T11:32:29.941Z",
+    "updated_at": "2022-01-27T11:32:34.029Z",
+    "fullfillmentUID": null,
+    "body": "indek",
+    "maxTickets": null,
+    "public": true,
+    "location": "issy",
+    "schedule": {
+        "id": 7,
+        "start": "2022-01-29T11:00:00.000Z",
+        "end": "2022-01-30T11:00:00.000Z",
+        "deadline": "2022-01-28T11:00:00.000Z"
     },
-    {
-        "id": 24,
-        "title": "Cmi Test 2",
-        "slug": "cmi-test-2",
-        "committee": {
-            "id": 4,
-            "name": "Clubmästeriet",
-            "locale": "sv",
-            "published_at": "2021-07-26T13:47:49.961Z",
-            "created_at": "2021-07-26T13:47:45.102Z",
-            "updated_at": "2021-09-22T10:48:30.800Z",
-            "committee_objective": 8,
-            "abbreviation": "CMi",
-            "slug": "clubmaesteriet",
-            "content": "Hallå där\n\n<h1>Rubrik</h1>\n<img src=\"https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Logotyp_Porterbrun_1_fa87d9cc2e.png\" alt=\"test image\" width=\"100\" height=\"100\"></img>",
-            "contact": null,
-            "icon": null
-        },
-        "category": {
-            "id": 1,
-            "name": "Efterfest",
-            "locale": "sv",
-            "published_at": "2021-07-26T19:44:57.334Z",
-            "created_at": "2021-07-26T16:24:32.398Z",
-            "updated_at": "2021-09-30T08:50:56.878Z"
-        },
-        "startTime": "2021-11-13T11:00:00.000Z",
-        "endTime": "2021-11-13T12:00:00.000Z",
-        "deadline": "2021-10-09T10:00:00.000Z",
-        "description": "Här har vi beskrivningen till eventet",
-        "locale": "sv",
-        "published_at": "2021-11-15T17:59:41.070Z",
-        "created_at": "2021-09-30T11:08:23.382Z",
-        "updated_at": "2021-11-15T18:23:03.447Z",
-        "fullfillmentUID": "R7NNRnre",
-        "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Här har vi en kortare? beskrivning\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Här har vi en kortare? beskrivning\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Här har vi en kortare? beskrivning\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Här har vi en kortare? beskrivning\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nWhy do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Här har vi en kortare? beskrivning",
-        "maxTickets": null,
-        "tickets": {
-            "id": 144,
-            "allowMultiple": false,
-            "Tickets": [
-                {
-                    "id": 283,
-                    "name": null,
-                    "price": 1,
-                    "swedishName": "Alkohol",
-                    "ticketUID": "oZNzBY80",
-                    "englishName": null
+    "media": [
+        {
+            "id": 57,
+            "name": "fast-food-alcohol-icon-cartoon-style-vector-web-design-isolated-white-background-141679440.jpeg",
+            "alternativeText": "",
+            "caption": "",
+            "width": 800,
+            "height": 800,
+            "formats": {
+                "small": {
+                    "ext": ".jpeg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864.jpeg",
+                    "hash": "small_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864",
+                    "mime": "image/jpeg",
+                    "name": "small_fast-food-alcohol-icon-cartoon-style-vector-web-design-isolated-white-background-141679440.jpeg",
+                    "path": null,
+                    "size": 14.93,
+                    "width": 500,
+                    "height": 500
                 },
-                {
-                    "id": 284,
-                    "name": null,
-                    "price": 1,
-                    "swedishName": "Alkfri",
-                    "ticketUID": "eU8tTGl2",
-                    "englishName": null
+                "medium": {
+                    "ext": ".jpeg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864.jpeg",
+                    "hash": "medium_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864",
+                    "mime": "image/jpeg",
+                    "name": "medium_fast-food-alcohol-icon-cartoon-style-vector-web-design-isolated-white-background-141679440.jpeg",
+                    "path": null,
+                    "size": 25.83,
+                    "width": 750,
+                    "height": 750
+                },
+                "thumbnail": {
+                    "ext": ".jpeg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864.jpeg",
+                    "hash": "thumbnail_fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864",
+                    "mime": "image/jpeg",
+                    "name": "thumbnail_fast-food-alcohol-icon-cartoon-style-vector-web-design-isolated-white-background-141679440.jpeg",
+                    "path": null,
+                    "size": 3.43,
+                    "width": 156,
+                    "height": 156
                 }
-            ]
+            },
+            "hash": "fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864",
+            "ext": ".jpeg",
+            "mime": "image/jpeg",
+            "size": 25.1,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/fast_food_alcohol_icon_cartoon_style_vector_web_design_isolated_white_background_141679440_251f9c6864.jpeg",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2022-01-27T09:51:08.797Z",
+            "updated_at": "2022-01-27T09:51:08.807Z"
         },
-        "servingOptions": {
-            "id": 46,
-            "servingFood": true,
-            "servingAlcohol": true
+        {
+            "id": 51,
+            "name": "kth-also-good-e1506587194610.jpg",
+            "alternativeText": "",
+            "caption": "",
+            "width": 1620,
+            "height": 1080,
+            "formats": {
+                "large": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/large_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                    "hash": "large_kth_also_good_e1506587194610_ff2ebbe425",
+                    "mime": "image/jpeg",
+                    "name": "large_kth-also-good-e1506587194610.jpg",
+                    "path": null,
+                    "size": 152.8,
+                    "width": 1000,
+                    "height": 667
+                },
+                "small": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/small_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                    "hash": "small_kth_also_good_e1506587194610_ff2ebbe425",
+                    "mime": "image/jpeg",
+                    "name": "small_kth-also-good-e1506587194610.jpg",
+                    "path": null,
+                    "size": 41.42,
+                    "width": 500,
+                    "height": 333
+                },
+                "medium": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/medium_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                    "hash": "medium_kth_also_good_e1506587194610_ff2ebbe425",
+                    "mime": "image/jpeg",
+                    "name": "medium_kth-also-good-e1506587194610.jpg",
+                    "path": null,
+                    "size": 85.93,
+                    "width": 750,
+                    "height": 500
+                },
+                "thumbnail": {
+                    "ext": ".jpg",
+                    "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_kth_also_good_e1506587194610_ff2ebbe425.jpg",
+                    "hash": "thumbnail_kth_also_good_e1506587194610_ff2ebbe425",
+                    "mime": "image/jpeg",
+                    "name": "thumbnail_kth-also-good-e1506587194610.jpg",
+                    "path": null,
+                    "size": 11.01,
+                    "width": 234,
+                    "height": 156
+                }
+            },
+            "hash": "kth_also_good_e1506587194610_ff2ebbe425",
+            "ext": ".jpg",
+            "mime": "image/jpeg",
+            "size": 397.56,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/kth_also_good_e1506587194610_ff2ebbe425.jpg",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2021-11-15T22:05:05.807Z",
+            "updated_at": "2021-11-15T22:05:05.816Z"
         },
-        "place": {
-            "id": 24,
-            "name": "Munchen",
-            "showMap": null
-        },
-        "passwordProtected": {
-            "id": 34
-        },
-        "banner": null,
-        "localizations": []
-    }
-]
+        {
+            "id": 50,
+            "name": "SvartIndekLogga.svg",
+            "alternativeText": "",
+            "caption": "",
+            "width": 53,
+            "height": 84,
+            "formats": null,
+            "hash": "Svart_Indek_Logga_eb93ec9200",
+            "ext": ".svg",
+            "mime": "image/svg+xml",
+            "size": 1.47,
+            "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/Svart_Indek_Logga_eb93ec9200.svg",
+            "previewUrl": null,
+            "provider": "aws-s3",
+            "provider_metadata": null,
+            "created_at": "2021-11-15T21:23:14.457Z",
+            "updated_at": "2021-11-15T21:23:14.464Z"
+        }
+    ],
+    "products": [
+        {
+            "id": 2,
+            "name": "fattig student",
+            "price": 0,
+            "stock": 9999,
+            "count": 14,
+            "reference": "fattig-student",
+            "consumable": false,
+            "description": "spex för en fattig iare",
+            "published_at": "2022-01-21T13:50:28.171Z",
+            "created_at": "2022-01-21T13:50:15.854Z",
+            "updated_at": "2022-01-27T18:05:18.916Z",
+            "media": {
+                "id": 52,
+                "name": "logga-liten (1).png",
+                "alternativeText": "",
+                "caption": "",
+                "width": 264,
+                "height": 350,
+                "formats": {
+                    "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/thumbnail_logga_liten_1_e5abdc05dc.png",
+                        "hash": "thumbnail_logga_liten_1_e5abdc05dc",
+                        "mime": "image/png",
+                        "name": "thumbnail_logga-liten (1).png",
+                        "path": null,
+                        "size": 12.19,
+                        "width": 118,
+                        "height": 156
+                    }
+                },
+                "hash": "logga_liten_1_e5abdc05dc",
+                "ext": ".png",
+                "mime": "image/png",
+                "size": 13.85,
+                "url": "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/logga_liten_1_e5abdc05dc.png",
+                "previewUrl": null,
+                "provider": "aws-s3",
+                "provider_metadata": null,
+                "created_at": "2021-11-22T14:27:59.097Z",
+                "updated_at": "2021-11-22T14:27:59.105Z"
+            }
+        }
+    ],
+    "localizations": []
+}

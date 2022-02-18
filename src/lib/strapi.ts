@@ -11,7 +11,10 @@ const Strapi = (
         path.map((p, i) => p + (variables[i] ? variables[i] : "")).join("")
     );
 };
-const getUri = () => Strapi`/graphql`;
+const getUri = () => {
+    const base = Strapi`/graphql`;
+    return base;
+};
 
 const client = new ApolloClient({
     uri: getUri(),

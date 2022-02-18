@@ -1,86 +1,26 @@
 {
-    "fetching": "Fetching event data",
-    "beforeLeave": "Any information stored for the RSVP will be lost refreshing, do you want to continue?",
-    "step": {
-        "zero": "Authorize",
-        "one": "Choose a ticket",
-        "two": "Choose diets",
-        "three": "Other information",
-        "four": "Order summary",
-        "five": "RSVP"
-    },
-    "required": "Choose atleast one type of ticket",
-
-    "summary": {
-        "changeMenu": {
-            "label": "Switch ticket"
-        },
-        "order": {
-            "label": "Ticket details"
-        },
-        "diet": {
-            "label": "Dietary details",
-            "diets": "Diets",
-            "allergens": "Allergens",
-            "empty": "None"
-        },
-        "no_other_comment": "No value entered."
-    },
-    "stepsMobile": "Step {{activeStep}} of {{totalSteps}}",
-    "delivery": {
-        "status": "Order recieved",
-        "message": "A ticket was sent to {email}"
-    },
-    "back": "back",
     "deadline": {
-        "closed": "The event has closed its' RSVP"
+        "from": "from",
+        "to": "to"
     },
-    "ticket": {
-        "max": "The event has exceeded its ticket cap"
-    },
-    "diet": {
-        "label": "Diet",
-        "description": "Choose the diet(s) that suit you best",
-        "search": {
-            "placeholder": "Search diets",
-            "createText": "Add as a new diet"
-        }
-    },
-    "allergen": {
-        "label": "Allergy/Preference",
-        "description": "Choose the allergen(s) that suit you best",
-        "search": {
-            "placeholder": "Search allergens",
-            "createText": "Add as a new allergen"
-        }
-    },
-    "orderConfirmation": {
-        "title": "Confirmation",
-        "firstName": "firstName",
-        "lastName": "lastName",
-        "email": "Email",
-        "phone": "Phone",
-        "button": {
-            "label": "Rsvp"
-        }
-    },
+    "rsvp": "Begin rsvp",
     "error":  {
         "deadline": {
             "message": "The RSVP for this event has closed!"
-        },
-        "invalidIntention": {
-            "message": "The IID that the browser provided is invalid."
         }
     },
-    "badge": {
-        "new": "new"
-    },
-    "passwordProtected": {
-        "validateLabel": "validate",
-        "showLabel": "hide",
-        "hideLabel": "show",
-        "placeholder": "provide password"
-    },
-    "errorLabel": "Wrong password",
-    "successLabel": "Password accepted"
+    "modal": {
+        "title": "Event is password protected",
+        "primary": "Validate",
+        "secondary": "Close",
+        "show": "show",
+        "placeholder": "Enter password...",
+        "callback": {
+            "max-capacity": "Max capacity of event",
+            "invalid-password": "Invalid password",
+            "due-date": "Can't RSVP to Event",
+            "no-products": "Can't create a empty RSVP",
+            "invalid-reciept": "Reciept doesn't exist"
+        }
+    }
 }

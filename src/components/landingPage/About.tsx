@@ -1,5 +1,5 @@
 import { MDXLayout } from "components/mdx/Layout";
-import Box from "components/motion/Box";
+import { Box } from "@chakra-ui/react";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import React from "react";
 

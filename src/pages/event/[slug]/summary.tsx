@@ -623,19 +623,21 @@ const SummaryCheckout = ({
                                     type="tel"
                                     pl={{ base: "40%", md: "20%" }}
                                     onChange={(e) => {
+                                        var filteredValue = e.target.value.replaceAll("-","").replaceAll(" ", ""); 
+
                                         const prefix = _.first(
                                             selectedCountry.countryCallingCodes
                                         ) as string;
                                         updateCustomerData({
                                             phone: {
-                                                number: e.target.value.startsWith(
+                                                number: filteredValue.startsWith(
                                                     prefix
                                                 )
-                                                    ? e.target.value.replace(
+                                                    ? filteredValue.replace(
                                                           prefix,
                                                           ""
                                                       )
-                                                    : e.target.value,
+                                                    : filteredValue,
                                             },
                                         });
                                     }}

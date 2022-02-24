@@ -79,6 +79,8 @@ const FormErrorHelper = (props: IFormErrorHelper) => {
         </React.Fragment>
     );
 };
+
+// Naming of variables could be improved, what does v (see below) mean for example? Name should be self explanatory.0
 interface ProductProps extends ExtendedProduct {
     updateProduct: (id: string, v: number) => void;
     resetProduct: (id: string) => void;
@@ -366,7 +368,7 @@ const Attachment = (props: AttachmentProps) => {
                                     </Heading>
                                 )}
                             </HStack>
-                            <Text w="180px" noOfLines={2}>
+                            <Text w="180px" noOfLines={4}>
                                 {option.description}
                             </Text>
                         </VStack>

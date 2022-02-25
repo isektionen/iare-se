@@ -528,7 +528,6 @@ const View = ({
                         spacing={8}
                     >
                         {_.sortBy(attachments, "consumable")
-                            .reverse()
                             .map((att, i) => (
                                 <React.Fragment key={i}>
                                     <Heading size="lg">{att.name}</Heading>

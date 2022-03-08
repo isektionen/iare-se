@@ -230,6 +230,22 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             
             // TODO add incrementor here:
 
+            var totalQuantity = 0;
+
+            body.order.items.forEach((item) => {
+                totalQuantity += item.quantity;
+            });
+
+            if (amount !== 0) {
+                try {
+                    // try to accumulate as many tyckets as user wants.            
+                    await strapi.get(
+                        `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
+                    );
+                } catch (e) {
+                }
+            }
+
             body.order.items.forEach(async (item) => {
                 try {
                     // quantity can be zero
@@ -237,17 +253,10 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                         const eventRef = body.order.reference.split("::")[0];
 
                         await strapi.get(
-                            `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}`
+                            `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
                         );
                     }
                 } catch (e) {
-                    return res.status(200).json({
-                        reserved: false,
-                        due: {
-                            reference: body.order.reference,
-                            available: false,
-                        },
-                    });
                 }
             })
 

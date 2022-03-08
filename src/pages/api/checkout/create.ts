@@ -172,12 +172,37 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // reserve products
 
-    body.order.items.forEach(async (item) => {
+    var totalQuantity = 0;
+
+    body.order.items.forEach((item) => {
+        totalQuantity += item.quantity;
+    });
+
+    if (amount == 0) {
+        try {
+            // try to accumulate as many tyckets as user wants.            
+            await strapi.get(
+                `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
+            );
+        } catch (e) {
+            return res.status(200).json({
+                reserved: false,
+                due: {
+                    reference: reference,
+                    available: false,
+                },
+            });
+        }
+    }
+    
+    body.order.items.forEach(async (item, index) => {
         try {
             // quantity can be zero
+            // Only add to accumulator after all items have been added
             if (amount == 0) {
+
                 await strapi.get(
-                    `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}`
+                    `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
                 );
             }
         } catch (e) {
@@ -189,7 +214,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
                 },
             });
         }
-    })
+    });
 
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference

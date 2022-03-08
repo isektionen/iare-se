@@ -230,6 +230,8 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             
             // TODO add incrementor here:
 
+            const eventRef = body.order.reference.split("::")[0];
+
             var totalQuantity = 0;
 
             body.order.items.forEach((item) => {
@@ -250,7 +252,6 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 try {
                     // quantity can be zero
                     if (body.order.amount != 0) {
-                        const eventRef = body.order.reference.split("::")[0];
 
                         await strapi.get(
                             `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`

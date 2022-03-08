@@ -218,6 +218,28 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 method: data.paymentMethod,
                 type: data.paymentType,
             };
+
+
+            body.order.items.forEach(async (item) => {
+                try {
+                    // quantity can be zero
+                    if (body.order.amount !== 0) {
+                        await strapi.get(
+                            `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}`
+                        );
+                    }
+                } catch (e) {
+                    return res.status(200).json({
+                        reserved: false,
+                        due: {
+                            reference: reference,
+                            available: false,
+                        },
+                    });
+                }
+            })
+
+
             break;
         case "payment.checkout.completed":
             body.status = [createStatus("completed")];

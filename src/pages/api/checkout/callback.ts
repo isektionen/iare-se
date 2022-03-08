@@ -236,7 +236,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 totalQuantity += item.quantity;
             });
 
-            if (amount !== 0) {
+            if (amount != 0) {
                 try {
                     // try to accumulate as many tyckets as user wants.            
                     await strapi.get(
@@ -249,7 +249,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
             body.order.items.forEach(async (item) => {
                 try {
                     // quantity can be zero
-                    if (body.order.amount !== 0) {
+                    if (body.order.amount != 0) {
                         const eventRef = body.order.reference.split("::")[0];
 
                         await strapi.get(

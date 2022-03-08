@@ -228,38 +228,43 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 amount: data.order.amount,
             };
             
-            // TODO add incrementor here:
 
-            const eventRef = body.order.reference.split("::")[0];
+            try {
+                // TODO add incrementor here:
 
-            var totalQuantity = 0;
+                const eventRef = body.order.reference.split("::")[0];
 
-            body.order.items.forEach((item) => {
-                totalQuantity += item.quantity;
-            });
+                var totalQuantity = 0;
 
-            if (amount != 0) {
-                try {
-                    // try to accumulate as many tyckets as user wants.            
-                    await strapi.get(
-                        `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
-                    );
-                } catch (e) {
-                }
-            }
+                body.order.items.forEach((item) => {
+                    totalQuantity += item.quantity;
+                });
 
-            body.order.items.forEach(async (item) => {
-                try {
-                    // quantity can be zero
-                    if (body.order.amount != 0) {
-
+                if (body.order.amount != 0) {
+                    try {
+                        // try to accumulate as many tyckets as user wants.            
                         await strapi.get(
-                            `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
+                            `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
                         );
+                    } catch (e) {
                     }
-                } catch (e) {
                 }
-            })
+
+                body.order.items.forEach(async (item) => {
+                    try {
+                        // quantity can be zero
+                        if (body.order.amount != 0) {
+
+                            await strapi.get(
+                                `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
+                            );
+                        }
+                    } catch (e) {
+                    }
+                })
+            } catch (e) {
+                body.order.
+            }
 
             break;
     }

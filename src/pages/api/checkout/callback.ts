@@ -35,7 +35,6 @@ interface BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
-                sideProduct: boolean;
             }[];
         };
     };
@@ -84,7 +83,6 @@ interface IOrderBody {
             taxAmount?: number;
             grossTotalAmount: number;
             netTotalAmount: number;
-            sideProduct: boolean;
         }[];
     };
     errors?: Record<string, string>[];
@@ -120,7 +118,6 @@ interface NetsChargeCreated extends BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
-                sideProduct: boolean;
             }[];
         };
     };
@@ -143,7 +140,6 @@ interface NetsChargeFailed extends BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
-                sideProduct: boolean;
             }[];
         };
         error?: {
@@ -186,8 +182,6 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
         | NetsChargeCreated
         | NetsCheckoutCompleted
         | NetsCreated;
-
-    console.log(data);
 
     // orderRefence is event.slug + 6 random characters
     const orderReference = data?.order?.reference ?? orderReferenceFromHeader;
@@ -234,16 +228,15 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 amount: data.order.amount,
             };
             
+
+            // TODO add incrementor here:
+
             const eventRef = body.order.reference.split("::")[0];
 
             var totalQuantity = 0;
 
             body.order.items.forEach((item) => {
-                // TODO check if sideproduct
-                console.log(item.sideProduct);
-                if (!item.sideProduct) {
-                    totalQuantity += item.quantity;
-                }
+                totalQuantity += item.quantity;
             });
 
             if (body.order.amount != 0) {

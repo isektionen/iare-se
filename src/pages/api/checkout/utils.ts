@@ -28,7 +28,6 @@ interface NetsRequestBody {
             taxAmount?: number;
             grossTotalAmount: number;
             netTotalAmount: number;
-            sideProduct: boolean;
         }[];
         amount: number;
         currency: string;

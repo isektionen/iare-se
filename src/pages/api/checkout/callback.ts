@@ -143,6 +143,7 @@ interface NetsChargeFailed extends BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
+                sideProduct: boolean;
             }[];
         };
         error?: {
@@ -185,6 +186,8 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
         | NetsChargeCreated
         | NetsCheckoutCompleted
         | NetsCreated;
+
+    console.log(data);
 
     // orderRefence is event.slug + 6 random characters
     const orderReference = data?.order?.reference ?? orderReferenceFromHeader;
@@ -237,6 +240,7 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
             body.order.items.forEach((item) => {
                 // TODO check if sideproduct
+                console.log(item.sideProduct);
                 if (!item.sideProduct) {
                     totalQuantity += item.quantity;
                 }

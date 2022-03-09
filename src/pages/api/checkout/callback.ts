@@ -35,6 +35,7 @@ interface BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
+                sideProduct: boolean;
             }[];
         };
     };
@@ -83,6 +84,7 @@ interface IOrderBody {
             taxAmount?: number;
             grossTotalAmount: number;
             netTotalAmount: number;
+            sideProduct: boolean;
         }[];
     };
     errors?: Record<string, string>[];
@@ -118,6 +120,7 @@ interface NetsChargeCreated extends BaseNetsWebhook {
                 taxAmount?: number;
                 grossTotalAmount: number;
                 netTotalAmount: number;
+                sideProduct: boolean;
             }[];
         };
     };
@@ -228,15 +231,15 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
                 amount: data.order.amount,
             };
             
-
-            // TODO add incrementor here:
-
             const eventRef = body.order.reference.split("::")[0];
 
             var totalQuantity = 0;
 
             body.order.items.forEach((item) => {
-                totalQuantity += item.quantity;
+                // TODO check if sideproduct
+                if (!item.sideProduct) {
+                    totalQuantity += item.quantity;
+                }
             });
 
             if (body.order.amount != 0) {

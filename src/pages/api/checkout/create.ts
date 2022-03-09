@@ -195,15 +195,19 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
         }
     }
     
-    body.order.items.forEach(async (item, index) => {
-        try {
-            // quantity can be zero
-            // Only add to accumulator after all items have been added
-            if (amount == 0) {
+    
+    const recurrent_reserve = async (url_list: any[]) => {
+        if (url_list.length == 0) {
+            return;
+        }
 
-                await strapi.get(
-                    `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
-                );
+        var url_to_try = url_list.pop();
+
+        try {
+            if (amount == 0) {
+                // only reserve here if free
+                console.log("Reserving ticket with url from url_list");
+                await strapi.get(url_to_try);
             }
         } catch (e) {
             return res.status(200).json({
@@ -214,7 +218,20 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
                 },
             });
         }
-    });
+
+        recurrent_reserve(url_list);
+    }
+
+    
+    var reserve_url_list = [] as any[];
+
+    if (amount == 0) {
+        body.order.items.forEach(async (item) => {
+            reserve_url_list.push(`/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}`); 
+        });
+
+        await recurrent_reserve(reserve_url_list);
+    }
 
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference

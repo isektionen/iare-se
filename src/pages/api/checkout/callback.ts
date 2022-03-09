@@ -231,38 +231,36 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
             // TODO add incrementor here:
 
-            const eventRef = body.order.reference.split("::")[0];  
+            const eventRef = body.order.reference.split("::")[0];
 
-            const recurrent_reserve = async (url_list: any[]) => {
-                if (url_list.length == 0) {
-                    return;
-                }
-        
-                var url_to_try = url_list.pop();
-        
+            var totalQuantity = 0;
+
+            body.order.items.forEach((item) => {
+                totalQuantity += item.quantity;
+            });
+
+            if (body.order.amount != 0) {
                 try {
+                    // try to accumulate as many tyckets as user wants.            
+                    await strapi.get(
+                        `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
+                    );
+                } catch (e) {
+                }
+            }
+
+            body.order.items.forEach(async (item) => {
+                try {
+                    // quantity can be zero
                     if (body.order.amount != 0) {
-                        // only reserve here if free
-                        console.log("Reserving ticket with url from url_list");
-                        await strapi.get(url_to_try);
+
+                        await strapi.get(
+                            `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
+                        );
                     }
                 } catch (e) {
                 }
-        
-                recurrent_reserve(url_list);
-            }
-        
-            
-            var reserve_url_list = [] as any[];
-        
-            if (body.order.amount != 0) {
-                body.order.items.forEach(async (item) => {
-                    reserve_url_list.push(`/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}`); 
-                });
-        
-                await recurrent_reserve(reserve_url_list);
-            }
-
+            })    
 
             break;
     }

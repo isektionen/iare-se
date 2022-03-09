@@ -40,6 +40,7 @@ interface Product {
     stock: number;
     count: number;
     price: number;
+    sideProduct: boolean;
 }
 
 type IProductBody = Product[];
@@ -123,6 +124,8 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
             const quantity = clamp(i.quantity);
             const netTotalAmount = quantity * price;
 
+            const sideProduct = ref.sideProduct;
+
             return {
                 ...i,
                 unitPrice: price,
@@ -132,6 +135,7 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
                 taxAmount: netTotalAmount * (taxRate / 100),
                 grossTotalAmount: netTotalAmount * (1 + taxRate / 100),
                 netTotalAmount,
+                sideProduct: sideProduct,
             };
         })
         .filter((i) => i.quantity > 0);
@@ -174,8 +178,12 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
 
     var totalQuantity = 0;
 
-    body.order.items.forEach((item) => {
-        totalQuantity += item.quantity;
+    
+    order.items.forEach((item) => {
+        // Do not count in accumulator if sideproduct
+        if (!item.sideProduct) {
+            totalQuantity += item.quantity;
+        }
     });
 
     if (amount == 0) {

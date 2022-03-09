@@ -155,7 +155,7 @@ const ProductItem = (props: IProductItem) => {
                     )
                     .map(RenderOptions)}
             </VStack>
-            {props.isRemovable && (
+            {false && props.isRemovable && (
                 <IconButton
                     alignSelf={{ base: "end", md: "start" }}
                     size="sm"

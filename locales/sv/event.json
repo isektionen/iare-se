@@ -3,7 +3,7 @@
         "from": "från",
         "to": "till"
     },
-    "rsvp": "Påbörja osa",
+    "rsvp": "Påbörja köp",
     "error":  {
         "deadline": {
             "message": "Osan för detta event är redan passerad"

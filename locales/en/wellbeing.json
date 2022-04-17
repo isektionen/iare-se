@@ -1,8 +1,10 @@
 {
     "title": "Well Being",
-    "explanation": "Well being is ...",
-    "dailytipheader": "Todays Tip",
-    "alltipsheader": "All Tips",
-    "alltipsexplanation": "Here below, a collection of tips for managing stress is presented. These have been synthesised by researchers at Karolinska Insitute and Umeå University"
+    "explanation": "Here below, a collection of tips for managing stress is presented. These have been synthesised by researchers at Karolinska Insitute and Umeå University",
+    "header": {
+        "today": "Todays Tips",
+        "all": "All Tips"
+    }
 }
+    
   

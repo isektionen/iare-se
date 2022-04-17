@@ -7,6 +7,7 @@ module.exports = {
         "/event/[slug]/summary": ["summary"],
         "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/chapter/committee": ["mdx"],
+        "/chapter/wellbeing": ["wellbeing"],
         "/chapter/brand": ["brand"],
         "/contact": ["contact"],
         "/contact/[slug]": ["contact"],

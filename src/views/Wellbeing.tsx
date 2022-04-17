@@ -33,8 +33,8 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
     const { t, lang } = useTranslation("wellbeing");
 
     // Calculate day from start of year
-    var now = new Date();
-    var start = new Date(now.getFullYear(), 0, 0);
+    var now: any = new Date();
+    var start: any = new Date(now.getFullYear(), 0, 0);
     var diff = now - start;
     var oneDay = 1000 * 60 * 60 * 24;
     var day = Math.floor(diff / oneDay);

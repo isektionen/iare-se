@@ -12,6 +12,8 @@ import { HiOutlineDownload } from "react-icons/hi";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { makeTitle } from "utils/seo";
+import { Link } from '@chakra-ui/react'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 
 
 const tip_titles = ['Kortvarig stress är oftast inte farlig', 'Oroa dig inte över stress - återhämta dig istället', 'Vikten av återhämtning', 'Var uppmärksam på dina sömnrutiner.', 'Ta mikropauser', '- Ägna några minuter åt att mentalt lämna arbetet bakom dig.', 'Fortsätt med de aktiviteter du tycker om att ägna dig åt på din lediga tid.', 'Träna/motionera regelbundet, helst i dagsljus.', 'Lägg märke till förändrade energinivåer.', 'Uppmärksamma och visa omtanke om dina kollegor.', 'Skapa en sömnrutin', 'Var uppmärksam på ditt behov av mat och dryck.', 'Be om hjälp.', 'Gör fysiska avbrott och bryt mönstret.', 'Kom tillbaka in i kroppen genom avslappning.', 'Lös problem tillsammans med dina kollegor.', 'Tänk på de saker du har löst trots att du först inte visste vad du skulle göra.', 'Medveten närvaro', 'Prata med en kollega om era bedrifter och positiva erfarenheter', 'Kom ut i naturen!', 'Motion för kognition.', 'Bekräfta och validera oro.', 'Visa medkänsla för dig själv', 'Var tillmötesgående så ofta du kan.', 'Visa intresse för en kollega och lyssna till problem.', 'Acceptera känslor med lugn och avslappning', 'Var den du är så ofta du kan.', 'Ge dig själv och andra beröm.', 'Använd tuggummi i samband med stressfulla perioder']
@@ -60,6 +62,11 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                     {/* Intro */}
                     <Box pb="4em">
                         <p>{t("explanation")}</p>
+                        <br></br>
+                        <Link href='https://drive.google.com/file/d/1bdMQcFk1cjmVgjSzM-Ibv4qi1l5a201O/view?usp=sharing' isExternal>
+                            Resurser för Välmående <ExternalLinkIcon mx='2px' />
+                        </Link>
+                        <br></br>
                         <br></br>
                         <p><b>{lang == "sv"? tip_titles[0]:tip_titles_en[0]}</b></p>
                         <p>{lang == "sv"? tip_texts[0]:tip_texts_en[0]}</p>

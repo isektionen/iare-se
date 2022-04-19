@@ -34,5 +34,8 @@
     },
     "blog": {
         "title": "Nyhetsflödet"
+    },
+    "wellbeing": {
+        "title": "Välmående"
     }
 }

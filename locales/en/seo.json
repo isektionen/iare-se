@@ -37,5 +37,8 @@
     },
     "wellbeing": {
         "title": "Well Being"
+    },
+    "booking-form": {
+        "title": "Booking Form"
     }
 }

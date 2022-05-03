@@ -37,5 +37,8 @@
     },
     "wellbeing": {
         "title": "Välmående"
+    },
+    "booking-form": {
+        "title": "Bokningsformulär"
     }
 }

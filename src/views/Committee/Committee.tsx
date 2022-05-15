@@ -44,7 +44,6 @@ const View = ({
                 py={8}
                 px={{ base: 4, md: 10 }}
                 w="full"
-                h="100vh"
                 align="stretch"
             >
                 <Sidebar committees={committees} />

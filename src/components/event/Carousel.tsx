@@ -87,7 +87,7 @@ export const Carousel = ({ children, title, description, ...props }: Props) => {
                     <Spacer />
                     <Box>
                         <Heading
-                            fontSize="5xl"
+                            fontSize="6vw"
                             color="white"
                             textTransform="capitalize"
                             fontWeight="bold"
@@ -95,7 +95,11 @@ export const Carousel = ({ children, title, description, ...props }: Props) => {
                         >
                             {title}
                         </Heading>
-                        <Text color="white" fontFamily="source sans pro">
+                        <Text
+                            fontSize="2.5vw"
+                            color="white"
+                            fontFamily="source sans pro"
+                        >
                             {description}
                         </Text>
                     </Box>

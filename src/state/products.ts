@@ -158,7 +158,7 @@ const _formState = selector<FormState[]>({
             );
             const isConsumable = state[stateId].consumable;
             const amount = alreadyExistingOption
-                ? alreadyExistingOption.amount
+                ? state[stateId].amount
                 : state[stateId].amount;
 
             return [
@@ -509,7 +509,7 @@ export const useCheckout = (products: Product[]) => {
 
     useEffect(() => {
         setFormState((s) => s.filter((p) => p.amount !== 0));
-    }, [_attachments.length, setFormState]);
+    }, [_attachments.length, setFormState, state]);
 
     const updateProduct = useCallback(
         (id: string, v: number) => {

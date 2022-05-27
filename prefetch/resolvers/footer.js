@@ -2,7 +2,7 @@ const { request } = require("graphql-request");
 
 const resolver = async (force_local) => {
     const data = await request(
-        process.env.NODE_ENV === "production" && !force_local
+        process.env.NODE_ENV === "production" || !force_local
             ? "https://cms.iare.se/graphql"
             : "http://localhost:1337/graphql",
         `

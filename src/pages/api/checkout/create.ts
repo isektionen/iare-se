@@ -172,33 +172,49 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // reserve products
 
-    _.chain(body.order.items)
-        .reduce((acc, it) => {
-            if (_.has(acc, it.reference)) {
-                return {
-                    ...acc,
-                    [it.reference]: acc[it.reference] + it.quantity,
-                };
-            }
-            return { ...acc, [it.reference]: it.quantity };
-        }, {} as Record<string, number>)
-        .pairs()
-        .forEach(async ([reference, quantity]) => {
-            try {
+    var totalQuantity = 0;
+
+    body.order.items.forEach((item) => {
+        totalQuantity += item.quantity;
+    });
+
+    if (amount == 0) {
+        try {
+            // try to accumulate as many tyckets as user wants.            
+            await strapi.get(
+                `/products/${body.order.items[0].reference}/${eventRef}/reserve?quantity=0&accumulate=${totalQuantity}`
+            );
+        } catch (e) {
+            return res.status(200).json({
+                reserved: false,
+                due: {
+                    reference: reference,
+                    available: false,
+                },
+            });
+        }
+    }
+    
+    body.order.items.forEach(async (item, index) => {
+        try {
+            // quantity can be zero
+            // Only add to accumulator after all items have been added
+            if (amount == 0) {
+
                 await strapi.get(
-                    `/products/${reference}/${eventRef}/reserve?quantity=${quantity}`
+                    `/products/${item.reference}/${eventRef}/reserve?quantity=${item.quantity}&accumulate=0`
                 );
-            } catch (e) {
-                return res.status(200).json({
-                    reserved: false,
-                    due: {
-                        reference: reference,
-                        available: false,
-                    },
-                });
             }
-        })
-        .value();
+        } catch (e) {
+            return res.status(200).json({
+                reserved: false,
+                due: {
+                    reference: reference,
+                    available: false,
+                },
+            });
+        }
+    });
 
     // creating order in backend independently of it being free or paid.
     // each order will be uniquely by order.reference

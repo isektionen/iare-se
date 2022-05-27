@@ -34,5 +34,14 @@
     },
     "blog": {
         "title": "Newsfeed"
+    },
+    "wellbeing": {
+        "title": "Well Being"
+    },
+    "booking-form": {
+        "title": "Booking Form"
+    },
+    "safety-council": {
+        "title": "Safety Council"
     }
 }

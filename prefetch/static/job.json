@@ -4,7 +4,14 @@
     "slug": "jobba-som-chokladsmakare",
     "deadlineDate": "2022-01-27T11:00:00.000Z",
     "startDate": "2022-01-14T11:00:00.000Z",
-    "jobCategory": {},
+    "jobCategory": {
+        "id": 3,
+        "name": "part-time",
+        "locale": "sv",
+        "published_at": "2022-01-27T18:21:34.078Z",
+        "created_at": "2021-07-26T16:25:35.352Z",
+        "updated_at": "2022-01-27T18:21:34.099Z"
+    },
     "company": {
         "id": 1,
         "name": "mackan",

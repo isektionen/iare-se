@@ -169,7 +169,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                     <LinkComponent as={Box} href={firstItem?.__href ?? "#"}>
                         <NextImage
                             src={
-                                firstItem?.__media?.formats.medium.url ??
+                                firstItem?.__media?.url ??
                                 "/indek_template_fill.png"
                             }
                             width="2048px"

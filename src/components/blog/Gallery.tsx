@@ -109,7 +109,7 @@ export const Gallery = ({
                                 categories: item.categories,
                                 href: item?.__href ?? "#",
                                 imgurl:
-                                    item?.__media?.formats.medium.url ??
+                                    item?.__media?.url ??
                                     "/indek_template_fill.png",
                                 calendarDate: item?.__calendarDate ?? "N/A",
                                 title: item.title,

@@ -144,6 +144,7 @@ const getEvents = async (locale: TLocale) => {
             }
             media {
               name
+              url
               formats
             }
             schedule {

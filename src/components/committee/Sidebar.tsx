@@ -14,6 +14,7 @@ import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import { Committee } from "types/strapi";
+import { NextImage } from "components/NextImage";
 
 export const CommitteeItem = (committee: Committee) => {
     const variant = useBreakpointValue({
@@ -39,15 +40,31 @@ export const CommitteeItem = (committee: Committee) => {
             bg={isActive ? "gray.200" : undefined}
         >
             <Center w="full" justifyContent={noText ? "center" : "flex-start"}>
-                <Square
-                    rounded="md"
-                    bg="brand.200"
-                    w="24px"
-                    h="24px"
-                    mr={noText ? undefined : 2}
-                >
-                    {committee.name.slice(0, 1)}
-                </Square>
+                {committee.icon?.url !== undefined && (
+                    <NextImage
+                        rounded="md"
+                        bg="brand.200"
+                        src={committee.icon?.url ?? "/indek_template_fill.png"}
+                        width="24px"
+                        height="24px"
+                        layout="intrinsic"
+                        objectFit="cover"
+                        overflow="hidden"
+                        mr={noText ? undefined : 2}
+                    />
+                )}
+                {committee.icon?.url == undefined && (
+                    <Square
+                        rounded="md"
+                        bg="brand.200"
+                        w="24px"
+                        h="24px"
+                        mr={noText ? undefined : 2}
+                    >
+                        {committee.name.slice(0, 1)}
+                    </Square>
+                )}
+
                 <Text>{variant}</Text>
             </Center>
         </LinkComponent>

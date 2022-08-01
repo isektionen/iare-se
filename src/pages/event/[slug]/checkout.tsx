@@ -554,7 +554,7 @@ const View = ({
                     onClick={withSubmit(handleSummary)}
                     rightIcon={<BiChevronRight />}
                 >
-                    Avsluta osan
+                    {t("next-step")}
                 </Button>
                 {error.filter((p) => p !== "form-is-empty").length > 0 && (
                     <Text color="red.400" fontWeight="bold" fontSize="xs">

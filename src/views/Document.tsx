@@ -55,7 +55,7 @@ const View = ({ data, header, footer, error }: LayoutProps<Props>) => {
                         <Empty title="No Documents found" />
                     )}
                     {documents.length > 0 &&
-                        documents.map((d, i) => (
+                        [...documents].reverse().map((d, i) => (
                             <WrapItem key={"thumbnail-" + i}>
                                 <ItemThumbnail {...d} size={sizeVariant} />
                             </WrapItem>

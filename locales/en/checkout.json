@@ -13,6 +13,7 @@
     "is-required": "{{field}} is required",
     "is-empty": "Please choose at least one (1) product"
   },
-  "form-has-requirements": "The form contains empty required fields"
+  "form-has-requirements": "The form contains empty required fields",
+  "next-step":"Continue"
 
 }

@@ -25,8 +25,8 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
 
             <VStack h="full" w="full" align="stretch">
             <Center bg='lightgray' h='100px' color='white'>
-                <Link href='https://www.iare.one/trygghetsradet/' color="black" isExternal>
-                    {lang == "sv" ? "Trygghetsrådets kontaktformulär på iare.one" : "Safety Council contact form at iare.one"} <ExternalLinkIcon mx='2px' />
+                <Link href='https://forms.gle/5LNGeFGXRYrriYkP9' color="black" isExternal>
+                    {lang == "sv" ? "Trygghetsrådets kontakt via Google Formulär" : "Safety Council contact  via Google Forms"} <ExternalLinkIcon mx='2px' />
                 </Link>
             </Center>
             </VStack>

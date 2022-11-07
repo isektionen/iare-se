@@ -76,7 +76,7 @@ const View = (props: LayoutProps<Props>) => {
                     top="80px"
                     left="0"
                     bottom="0"
-                    h="calc(100vh - 60px)"
+                    // h="calc(100vh - 60px)"
                 />
                 <Flex flex={1} pl={12} position="relative" direction="column">
                     <AccessibleLink

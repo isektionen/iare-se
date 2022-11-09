@@ -25,7 +25,9 @@ export const CommitteeItem = (committee: Committee) => {
     });
     const router = useRouter();
 
-    const isActive = router.asPath.includes(committee.slug as string);
+    // gen-i är med i dagen-i, därför blir den aktiv på dagen-i sidan
+    // const isActive = router.asPath.includes(committee.slug as string);
+    const isActive = router.query.slug === (committee.slug as string);
 
     const noText = useMemo(() => variant === "", [variant]);
     return (

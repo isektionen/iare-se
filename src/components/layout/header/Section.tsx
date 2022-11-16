@@ -7,6 +7,8 @@ import { ComponentHeaderMenuSection } from "types/strapi";
 import { Flyout } from "./Flyout";
 
 export const Section = (section: ComponentHeaderMenuSection) => {
+    const sectionSpecificName = "Musikhjälpen";
+
     if (section.displayDropDown) {
         return (
             <Box role="group" key={"section" + section.id}>
@@ -42,11 +44,24 @@ export const Section = (section: ComponentHeaderMenuSection) => {
             as={Button}
             key={"section" + section.id}
             href={section.href}
-            bg="white"
-            color="gray.600"
+            fontFamily={
+                section.label === sectionSpecificName ? "Courier New" : ""
+            }
+            bg={
+                section.label === sectionSpecificName
+                    ? "rgb(255, 71, 51)"
+                    : "white"
+            }
+            color={section.label === sectionSpecificName ? "white" : "gray.600"}
             alignItems="center"
             fontSize="md"
-            _hover={{ color: "gray.900" }}
+            _hover={{
+                color:
+                    section.label === sectionSpecificName
+                        ? "white"
+                        : "gray.900",
+                bg: section.label === sectionSpecificName ? "red" : "",
+            }}
             _focus={{ boxShadow: "none" }}
         >
             {section.label}

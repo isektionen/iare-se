@@ -8,6 +8,8 @@ import { Flyout } from "./Flyout";
 
 export const Section = (section: ComponentHeaderMenuSection) => {
     const sectionSpecificName = "Musikhjälpen";
+    const linearGradient =
+        "linear-gradient(90deg, rgba(255,30,30,1) 0%, rgba(201,0,0,1) 100%)";
 
     if (section.displayDropDown) {
         return (
@@ -48,11 +50,13 @@ export const Section = (section: ComponentHeaderMenuSection) => {
                 section.label === sectionSpecificName ? "Courier New" : ""
             }
             bg={
-                section.label === sectionSpecificName
-                    ? "rgb(255, 71, 51)"
-                    : "white"
+                section.label === sectionSpecificName ? linearGradient : "white"
             }
-            color={section.label === sectionSpecificName ? "white" : "gray.600"}
+            color={
+                section.label === sectionSpecificName
+                    ? "rgb(235, 235, 235)"
+                    : "gray.600"
+            }
             alignItems="center"
             fontSize="md"
             _hover={{
@@ -60,7 +64,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
                     section.label === sectionSpecificName
                         ? "white"
                         : "gray.900",
-                bg: section.label === sectionSpecificName ? "red" : "",
+                bg: section.label === sectionSpecificName ? linearGradient : "",
             }}
             _focus={{ boxShadow: "none" }}
         >

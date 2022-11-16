@@ -52,11 +52,7 @@ export const Section = (section: ComponentHeaderMenuSection) => {
             bg={
                 section.label === sectionSpecificName ? linearGradient : "white"
             }
-            color={
-                section.label === sectionSpecificName
-                    ? "rgb(235, 235, 235)"
-                    : "gray.600"
-            }
+            color={section.label === sectionSpecificName ? "white" : "gray.600"}
             alignItems="center"
             fontSize="md"
             _hover={{

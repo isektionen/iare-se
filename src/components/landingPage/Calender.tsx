@@ -8,7 +8,7 @@ export const Calender = () => {
             }}
         >
             <iframe
-                src="https://calendar.google.com/calendar/u/0/embed?src=iare.nu_pre97odp8btuq3u2a9i6u3fnbc@group.calendar.google.com&ctz=Europe/Stockholm&fbclid=IwAR1_uo_FW2eWkIlQq7G926j8k8LMuaprP9d0ZABhcQ0pfv4l2EVZELjPtYw"
+                src="https://calendar.google.com/calendar/embed?src=iare.nu_pre97odp8btuq3u2a9i6u3fnbc%40group.calendar.google.com&ctz=Europe%2FStockholm"
                 style={{ border: 0 }}
                 width="800"
                 height="600"

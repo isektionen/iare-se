@@ -94,7 +94,7 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                                 size={64}
                             />
                             <Color name="Mörkgrön" hex="#143523" size={64} />
-                            <Color name="Porterbrun" hex="#7D5A3C" size={64} />
+                            <Color name="Porterbrun" hex="#7D5A3E" size={64} />
                             <Color name="Mörkblå" hex="#3C5F7D" size={64} />
                             <Color name="Vit" hex="#fff" size={64} />
                         </Wrap>

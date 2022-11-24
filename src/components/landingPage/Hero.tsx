@@ -18,7 +18,7 @@ export const Hero = () => {
         () => [
             {
                 label: t("sentences.business"),
-                color: "#7D5A3C",
+                color: "#7D5A3E",
                 fontColor: "#fff",
             },
             {

@@ -10,7 +10,7 @@ import Layout from "components/layout";
 import React, { StrictMode, Suspense } from "react";
 import { DefFooter, DefHeader } from "types/global";
 import { pdfjs } from "react-pdf";
-
+import { Analytics } from "@vercel/analytics/react";
 import "@fontsource/source-sans-pro/200.css";
 import "@fontsource/source-sans-pro/300.css";
 import "@fontsource/source-sans-pro/400.css";
@@ -44,6 +44,7 @@ const App = ({ Component, pageProps }: Props) => {
 
                         <Layout>
                             <Component {...pageProps} />
+                            <Analytics />
                         </Layout>
                     </ApolloProvider>
                 </ChakraProvider>

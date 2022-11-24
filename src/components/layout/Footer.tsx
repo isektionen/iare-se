@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { NewsLetter } from "./footer/NewsLetter";
+// import { NewsLetter } from "./footer/NewsLetter";
 import { Social } from "./footer/Social";
 import { Logo } from "./footer/Logo";
 import { Copyright } from "./footer/Copyright";
@@ -47,8 +47,8 @@ const Footer = (props: BoxProps) => {
 
             <Flex w="full" direction={{ base: "column-reverse", lg: "row" }}>
                 <PageSection />
-                <Spacer />
-                <NewsLetter />
+                {/* <Spacer /> */}
+                {/* <NewsLetter /> */}
             </Flex>
             <Divider
                 my={12}

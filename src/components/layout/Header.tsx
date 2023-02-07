@@ -245,7 +245,8 @@ const Header = (props: BoxProps) => {
                                         };
                                         if (
                                             _subSection &&
-                                            _subSection.length === 0
+                                            _subSection.length === 0 &&
+                                            label === "Musikhjälpen"
                                         ) {
                                             return (
                                                 <React.Fragment
@@ -254,7 +255,32 @@ const Header = (props: BoxProps) => {
                                                         "accordionitem-" +
                                                         href
                                                     }
-                                                ></React.Fragment>
+                                                >
+                                                    <ListItem
+                                                        style={{
+                                                            listStyleType:
+                                                                "None",
+                                                            margin: "1rem",
+                                                            backgroundColor:
+                                                                "red",
+                                                            padding: ".5rem",
+                                                            borderRadius:
+                                                                "10px",
+                                                            color: "white",
+                                                            textAlign: "center",
+                                                        }}
+                                                        onClick={onClose}
+                                                    >
+                                                        <AccessibleLink
+                                                            // href={item?.href}
+                                                            href={href}
+                                                            target="_blank"
+                                                        >
+                                                            {/* {item?.label} */}
+                                                            {label}
+                                                        </AccessibleLink>
+                                                    </ListItem>
+                                                </React.Fragment>
                                             );
                                         }
                                         return (

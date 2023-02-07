@@ -1,26 +1,7 @@
-import {
-    VStack,
-    Flex,
-    Spacer,
-    Wrap,
-    Text,
-    Button,
-    Center,
-    Square,
-    Box,
-    Heading,
-    Image,
-} from "@chakra-ui/react";
-import { Color } from "components/brand/Color";
-import { Section } from "components/brand/Section";
-import { Typography } from "components/brand/Typography";
-import Header from "components/layout/Header";
-import { LinkComponent } from "components/LinkComponent";
-import { NextImage } from "components/NextImage";
+import { VStack, Flex, Box, Heading } from "@chakra-ui/react";
 import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import { HiOutlineDownload } from "react-icons/hi";
 import { useHydrater } from "state/layout";
 import { LayoutProps } from "types/global";
 import { makeTitle } from "utils/seo";
@@ -36,15 +17,22 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
         <React.Fragment>
             <NextSeo title={makeTitle(t("seo:corporate.title"))} />
 
-            <VStack h="full" w="70%" align="stretch" margin="0 auto">
+            <VStack
+                h="full"
+                w={{ base: "100%", sm: "80%", md: "60%" }}
+                align="stretch"
+                margin="10px auto"
+                bg={{ base: "", sm: "rgb(240, 240, 240)" }}
+                borderRadius={{ base: "0px", sm: "15px", md: "50px" }}
+            >
                 <Box p={{ base: "1em", md: "4em" }} bg="white.200">
                     <Flex
                         pb="2em"
                         justifyContent="space-between"
                         flexDirection="column"
                     >
-                        <Box flex="1" textAlign="left">
-                            <Heading verticalAlign="bottom" mt="2em">
+                        <Box flex="1" textAlign="left" mb="1em">
+                            <Heading verticalAlign="bottom">
                                 {t("title")}
                             </Heading>
                         </Box>
@@ -54,21 +42,31 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                         </Box>
 
                         <Box pb="0.5em">
-                            <Heading pb="0.2em">{t("lunchtitle")}</Heading>
+                            <Heading fontSize="1.5em" my="0.3em">
+                                {t("lunchtitle")}
+                            </Heading>
                             <p>{t("lunchtext")}</p>
                         </Box>
 
                         <Box pb="0.5em">
-                            <Heading pb="0.2em">{t("adtitle")}</Heading>
+                            <Heading fontSize="1.5em" my="0.3em">
+                                {t("adtitle")}
+                            </Heading>
                             <p>{t("adtext")}</p>
                         </Box>
 
                         <Box pb="0.5em">
-                            <Heading pb="0.2em">{t("sponstitle")}</Heading>
+                            <Heading fontSize="1.5em" my="0.3em">
+                                {t("sponstitle")}
+                            </Heading>
                             <p>{t("sponstext")}</p>
                         </Box>
                         <Box>
-                            <Link href="mailto:na@iare.nu" isExternal>
+                            <Link
+                                href="mailto:na@iare.nu"
+                                isExternal
+                                fontSize="1.5em"
+                            >
                                 {lang == "sv"
                                     ? "Maila Näringslivsansvarig"
                                     : "Email Coporate Relations Resonsible"}{" "}

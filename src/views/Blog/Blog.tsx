@@ -75,7 +75,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
                 ? _type.split(",").map((item: string) => item.toLowerCase())
                 : _type.toLowerCase();
         }
-        return ["event", "job", "post"];
+        return ["event", "jobs", "post"];
     }, [query]);
 
     const preselectedOptions = useCallback(
@@ -91,7 +91,7 @@ const View = ({ header, footer, feed, categories }: LayoutProps<Props>) => {
     const [options, _setOptions] = useState<SelectOption[]>(
         [
             { label: t("article.event"), value: "Event" },
-            { label: t("article.job"), value: "Job" },
+            { label: t("article.job"), value: "Jobs" },
             { label: t("article.news"), value: "Post" },
         ].map(preselectedOptions)
     );

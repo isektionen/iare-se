@@ -8,6 +8,7 @@ module.exports = {
         "/chapter/document": ["document", "filter", "datepicker", "searchbar"],
         "/chapter/committee": ["mdx"],
         "/chapter/wellbeing": ["wellbeing"],
+        "/chapter/corporate": ["corporate"],
         "/chapter/brand": ["brand"],
         "/contact": ["contact"],
         "/contact/[slug]": ["contact"],

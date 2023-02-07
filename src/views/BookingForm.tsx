@@ -25,8 +25,8 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
 
             <VStack h="full" w="full" align="stretch">
             <Center bg='lightgray' h='100px' color='white'>
-                <Link href='https://www.iare.one/bokningsformular/' color="black" isExternal>
-                    {lang == "sv" ? "Bokningsformulär på iare.one" : "Booking form at iare.one"} <ExternalLinkIcon mx='2px' />
+                <Link href='https://www.facebook.com/carl.lavo.3' color="black" isExternal>
+                    {lang == "sv" ? "Bokningsformulär används för närvarande inte. Hör av dig till Carl Lavö via inofficella kanaler (t.ex Facebook)" : "Booking form at iare.one"} <ExternalLinkIcon mx='2px' />
                 </Link>
             </Center>
             </VStack>

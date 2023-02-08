@@ -42,4 +42,4 @@ yarn-error.log*
 
 yarn.lock
 .env
-prefetch/static/*
+prefetch/static

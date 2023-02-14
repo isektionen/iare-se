@@ -52,33 +52,19 @@ const View = ({
 
             <Flex
                 overflow="hidden"
+                pos="relative"
                 direction="column"
                 bg="white"
-                pos="relative"
             >
                 {image && (
-                    <Flex
-                        maxH="55vh"
-                        w="full"
-                        pos="relative"
-                        overflow="hidden"
-                        _after={{
-                            content: "''",
-                            position: "absolute",
-                            bottom: 0,
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bg: "linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.65) 100%)",
-                        }}
-                    >
+                    <Flex maxH="55vh" w="full" overflow="hidden">
                         <NextImage
                             w="full"
                             width={2560}
                             height={1200}
                             src={image.url as string}
-                            layout="intrinsic"
-                            objectFit="contain"
+                            layout="fill"
+                            objectFit="cover"
                             objectPosition="center"
                             priority
                         />

@@ -77,7 +77,6 @@ const View = ({
                             top: 0,
                             left: 0,
                             right: 0,
-                            bg: "linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.65) 100%)",
                         }}
                     >
                         <NextImage
@@ -85,8 +84,8 @@ const View = ({
                             width={image.width as number}
                             height={image.height as number}
                             src={image.url as string}
-                            layout="intrinsic"
-                            objectFit="contain"
+                            layout="fill"
+                            objectFit="cover"
                             objectPosition="center"
                             priority
                         />
@@ -98,7 +97,10 @@ const View = ({
                         textDecoration="none"
                         _hover={{ textDecoration: "none" }}
                     >
-                        <Icon as={IoMdArrowDropleft} /> {t("common:back")}
+                        <HStack>
+                            <Icon as={IoMdArrowDropleft} />
+                            <p>{t("common:back")}</p>
+                        </HStack>
                     </AccessibleLink>
                 </Box>
                 <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>

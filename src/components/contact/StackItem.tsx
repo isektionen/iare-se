@@ -32,7 +32,7 @@ export const StackItem = (representative: Representative) => {
             "abbreviation"
         ).map((text, i) => {
             if (!text) return role[i];
-            return text?.toUpperCase();
+            return text;
         });
 
         const href = _.pluck(
@@ -62,6 +62,9 @@ export const StackItem = (representative: Representative) => {
             representative.committee_roles?.length > 1,
         [representative]
     );
+
+    console.log(roles?.role);
+
     return (
         <>
             <GridTableItem pl={2}>

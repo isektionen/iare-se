@@ -56,7 +56,10 @@ export const CustomGridItem = (representative: Representative) => {
                 height={200 * 3}
                 objectFit="cover"
                 objectPosition="center"
-                src="https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/photo_1542156822_6924d1a71ace_4ec5bc5630.webp"
+                src={
+                    representative.cover?.url ||
+                    "https://iare-strapi-backend.s3.eu-north-1.amazonaws.com/photo_1542156822_6924d1a71ace_4ec5bc5630.webp"
+                }
                 priority
             />
             <Box p={2} position="relative">

@@ -81,7 +81,7 @@ const View = (props: LayoutProps<Props>) => {
                 <Flex
                     w={{ base: "60%" }}
                     flex={1}
-                    pl={12}
+                    pl={{ base: "0px", md: "12px" }}
                     position="relative"
                     direction="column"
                 >

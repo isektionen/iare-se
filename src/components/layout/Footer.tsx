@@ -47,8 +47,6 @@ const Footer = (props: BoxProps) => {
 
             <Flex w="full" direction={{ base: "column-reverse", lg: "row" }}>
                 <PageSection />
-                {/* <Spacer /> */}
-                {/* <NewsLetter /> */}
             </Flex>
             <Divider
                 my={12}

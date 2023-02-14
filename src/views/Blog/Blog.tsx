@@ -11,7 +11,7 @@ import { Post, Jobs, Event, UploadFile } from "types/strapi";
 import _ from "underscore";
 
 import { Calendar } from "components/blog/Calendar";
-import { Gallery } from "components/blog/Gallery";
+import { Gallery } from "components/blog/GalleryNewsPage";
 import { ItemDescription } from "components/blog/ItemDescription";
 import { ViewMenu } from "components/blog/ViewMenu";
 import { NextSeo } from "next-seo";

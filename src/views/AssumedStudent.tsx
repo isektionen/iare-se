@@ -35,9 +35,9 @@ const View = ({
         <React.Fragment>
             <NextSeo title={makeTitle(title)} />
             <Stack
-                py={8}
-                px={{ base: 4, md: 12 }}
-                spacing={8}
+                p={{ base: "0.5em", md: "2em" }}
+                margin="0 auto"
+                w={{ base: "100%", sm: "80%", md: "60%" }}
                 direction={{ base: "column-reverse", md: "row" }}
             >
                 <Box minW={{ base: "full", md: "70%" }}>

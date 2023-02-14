@@ -20,8 +20,7 @@ export const CommitteeItem = (committee: Committee) => {
     const variant = useBreakpointValue({
         base: "",
         sm: "",
-        md: committee.abbreviation || committee.name,
-        lg: committee.name,
+        md: committee.name,
     });
     const router = useRouter();
 

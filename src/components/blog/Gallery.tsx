@@ -79,7 +79,7 @@ export const Gallery = ({
                         ? tc
                         : {
                               base: "repeat(1, 1fr)",
-                              md: "repeat(12, 1fr)",
+                              md: "repeat(2, 1fr)",
                           }
                 }
                 templateRows={
@@ -125,7 +125,7 @@ export const Gallery = ({
                             <Item
                                 h={span ? undefined : undefined}
                                 key={item.id + "-" + pageIndex + "-" + idx}
-                                colSpan={span ? span : { base: 6, md: 4 }}
+                                // colSpan={span ? span : { base: 6, md: 4 }}
                                 mx={{ base: 4, md: 0 }}
                                 mb={{ base: "90px", md: "20px" }}
                                 bottom={

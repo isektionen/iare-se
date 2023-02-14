@@ -59,12 +59,12 @@ export const Item = ({
             : _description
         : "N/A";
     return (
-        <GridItem w="full" mb={mb} {...props}>
+        <GridItem w="full" {...props}>
             <Box position="relative">
                 <Box
-                    mx={mx}
+                    // mx={mx}
                     p={4}
-                    position="absolute"
+                    // position="absolute"
                     zIndex={2}
                     left="0"
                     bottom={bottom}

@@ -34,32 +34,14 @@ const View = ({
     return (
         <React.Fragment>
             <NextSeo title={makeTitle(title)} />
-            <Stack
-                py={8}
-                px={{ base: 4, md: 12 }}
-                spacing={8}
-                direction={{ base: "column-reverse", md: "row" }}
+            <Box
+                p={{ base: "0.5em", md: "2em" }}
+                margin="0 auto"
+                w={{ base: "100%", sm: "80%", md: "60%" }}
             >
-                <Box minW={{ base: "full", md: "60%" }}>
-                    <Heading mb={8}>{title}</Heading>
-                    {mdx && <MDXLayout source={mdx} flex={1} />}
-                </Box>
-                {hasImages && (
-                    <VStack spacing={4} w={{ base: "full", md: "40%" }}>
-                        {images.map((image, i) => (
-                            <NextImage
-                                key={image.id}
-                                src={image.url}
-                                priority={i < 3}
-                                width={900}
-                                w="full"
-                                height={600}
-                                layout="intrinsic"
-                            />
-                        ))}
-                    </VStack>
-                )}
-            </Stack>
+                <Heading mb={8}>{title}</Heading>
+                {mdx && <MDXLayout source={mdx} flex={1} />}
+            </Box>
         </React.Fragment>
     );
 };

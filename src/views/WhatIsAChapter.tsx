@@ -70,7 +70,6 @@ const View = ({
                                     src={rep?.cover?.url}
                                     name={fullname}
                                     size="lg"
-                                    rounded="sm"
                                     w="167px"
                                     h="250px"
                                     mb={4}

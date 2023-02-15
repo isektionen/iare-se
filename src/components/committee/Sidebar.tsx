@@ -50,7 +50,9 @@ export const CommitteeItem = (committee: Committee) => {
                         width="24px"
                         height="24px"
                         layout="intrinsic"
-                        objectFit="cover"
+                        objectFit="contain"
+                        style={{ padding: "2px" }}
+                        objectPosition="center"
                         overflow="hidden"
                         mr={noText ? undefined : 2}
                     />

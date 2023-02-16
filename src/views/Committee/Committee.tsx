@@ -37,9 +37,14 @@ const View = ({
         })),
     });
 
+    const menuPage = t("seo:committee.title") !== "seo:committee.title";
+    const translationString = menuPage
+        ? "seo:committee.title"
+        : "seo:committees.title";
+
     return (
         <React.Fragment>
-            <NextSeo title={makeTitle(t("seo:committee.title"))} />
+            <NextSeo title={makeTitle(t(translationString))} />
             <Flex py={8} px={{ base: 4, md: 10 }} w="full" align="stretch">
                 <Sidebar committees={committees} />
                 <Flex

@@ -11,6 +11,8 @@ import {
     Icon,
     useBreakpointValue,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import Image from "next/image";
 import AccessibleLink from "components/AccessibleLink";
 import { LinkComponent } from "components/LinkComponent";
 import { MDXLayout } from "components/mdx/Layout";
@@ -53,6 +55,13 @@ const View = ({
         job?.contact?.filter((item) => item?.type === "email") || [];
     const position = job?.position;
     const location = job?.location;
+
+    const [imageFormat, setImageFormat] = useState(false);
+
+    const changeImageFormat = () => {
+        setImageFormat(!imageFormat);
+    };
+
     return (
         <React.Fragment>
             <NextSeo
@@ -66,7 +75,7 @@ const View = ({
             >
                 {image && (
                     <Flex
-                        maxH="55vh"
+                        h={{ base: "30vh", md: "40vh", lg: "50vh" }}
                         w="full"
                         pos="relative"
                         overflow="hidden"
@@ -77,30 +86,38 @@ const View = ({
                             top: 0,
                             left: 0,
                             right: 0,
-                            bg: "linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.65) 100%)",
                         }}
                     >
-                        <NextImage
-                            w="full"
+                        <Image
                             width={image.width as number}
                             height={image.height as number}
                             src={image.url as string}
-                            layout="intrinsic"
-                            objectFit="contain"
+                            layout="fill"
+                            objectFit={imageFormat ? "contain" : "cover"}
                             objectPosition="center"
                             priority
                         />
                     </Flex>
                 )}
-                <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>
+                <HStack
+                    px={{ base: 4, lg: 12 }}
+                    pt={{ base: 4, lg: 8 }}
+                    justifyContent="space-between"
+                >
                     <AccessibleLink
                         href="/blog"
                         textDecoration="none"
                         _hover={{ textDecoration: "none" }}
                     >
-                        <Icon as={IoMdArrowDropleft} /> {t("common:back")}
+                        <HStack>
+                            <Icon as={IoMdArrowDropleft} />
+                            <p>{t("common:back")}</p>
+                        </HStack>
                     </AccessibleLink>
-                </Box>
+                    <Button size="xs" onClick={changeImageFormat}>
+                        Toggle image format
+                    </Button>
+                </HStack>
                 <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>
                     {cta && (
                         <LinkComponent

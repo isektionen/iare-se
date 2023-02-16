@@ -20,8 +20,7 @@ export const CommitteeItem = (committee: Committee) => {
     const variant = useBreakpointValue({
         base: "",
         sm: "",
-        md: committee.abbreviation || committee.name,
-        lg: committee.name,
+        md: committee.name,
     });
     const router = useRouter();
 
@@ -85,7 +84,7 @@ export const Sidebar = ({ committees, ...props }: Props) => {
 
     return (
         <VStack
-            w={{ base: "45px", sm: "min-content", lg: "225px" }}
+            w={{ base: "0px", sm: "min-content", lg: "225px" }}
             spacing={0.5}
             align="stretch"
             {...props}

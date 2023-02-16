@@ -15,10 +15,10 @@ body,
 #__next {
     position: relative;
     height: 100vh;
-    width: 100vw;
+    /* WARNING! USING 100vw won't account the scrollbar and will therefore add a horizontal scrollbar */
+    width: 100%;
     padding: 0;
     margin: 0;
-    /*overflow: hidden;*/
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: "white";

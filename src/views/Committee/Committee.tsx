@@ -40,14 +40,13 @@ const View = ({
     return (
         <React.Fragment>
             <NextSeo title={makeTitle(t("seo:committee.title"))} />
-            <Flex
-                py={8}
-                px={{ base: 4, md: 10 }}
-                w="full"
-                align="stretch"
-            >
+            <Flex py={8} px={{ base: 4, md: 10 }} w="full" align="stretch">
                 <Sidebar committees={committees} />
-                <Flex pl={12} direction="column" w="full">
+                <Flex
+                    pl={{ base: "0px", md: "12px" }}
+                    direction="column"
+                    w="full"
+                >
                     <Heading mb={4}>{title}</Heading>
                     {mdx && <MDXLayout source={mdx} flex={1} />}
                 </Flex>

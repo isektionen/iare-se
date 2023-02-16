@@ -78,7 +78,13 @@ const View = (props: LayoutProps<Props>) => {
                     bottom="0"
                     // h="calc(100vh - 60px)"
                 />
-                <Flex flex={1} pl={12} position="relative" direction="column">
+                <Flex
+                    w={{ base: "60%" }}
+                    flex={1}
+                    pl={{ base: "0px", md: "12px" }}
+                    position="relative"
+                    direction="column"
+                >
                     <AccessibleLink
                         pb={6}
                         href="/chapter/committee"

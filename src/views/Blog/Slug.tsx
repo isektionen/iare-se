@@ -5,13 +5,18 @@ import {
     Heading,
     useBreakpointValue,
     Icon,
+    VStack,
+    HStack,
+    Button,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import AccessibleLink from "components/AccessibleLink";
 import { MDXLayout } from "components/mdx/Layout";
 import { NextImage } from "components/NextImage";
 import { useSanity } from "hooks/use-check-error";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { NextSeo } from "next-seo";
+import Image from "next/image";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import { IoMdArrowDropleft } from "react-icons/io";
@@ -42,6 +47,12 @@ const View = ({
 
     const image = post.banner as UploadFile;
 
+    const [imageFormat, setImageFormat] = useState(false);
+
+    const changeImageFormat = () => {
+        setImageFormat(!imageFormat);
+    };
+
     return (
         <React.Fragment>
             <NextSeo
@@ -52,47 +63,47 @@ const View = ({
 
             <Flex
                 overflow="hidden"
+                pos="relative"
                 direction="column"
                 bg="white"
-                pos="relative"
             >
                 {image && (
-                    <Flex
-                        maxH="55vh"
-                        w="full"
+                    <Box
+                        h={{ base: "30vh", md: "40vh", lg: "50vh" }}
+                        w="100%"
                         pos="relative"
                         overflow="hidden"
-                        _after={{
-                            content: "''",
-                            position: "absolute",
-                            bottom: 0,
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bg: "linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.65) 100%)",
-                        }}
                     >
-                        <NextImage
-                            w="full"
-                            width={2560}
-                            height={1200}
+                        <Image
+                            width={image.width as number}
+                            height={image.height as number}
                             src={image.url as string}
-                            layout="intrinsic"
-                            objectFit="contain"
+                            layout="fill"
+                            objectFit={imageFormat ? "contain" : "cover"}
                             objectPosition="center"
                             priority
                         />
-                    </Flex>
+                    </Box>
                 )}
-                <Box px={{ base: 4, lg: 12 }} pt={{ base: 4, lg: 8 }}>
+                <HStack
+                    px={{ base: 4, lg: 12 }}
+                    pt={{ base: 4, lg: 8 }}
+                    justifyContent="space-between"
+                >
                     <AccessibleLink
                         href="/blog"
                         textDecoration="none"
                         _hover={{ textDecoration: "none" }}
                     >
-                        <Icon as={IoMdArrowDropleft} /> {t("common:back")}
+                        <HStack>
+                            <Icon as={IoMdArrowDropleft} />
+                            <p>{t("common:back")}</p>
+                        </HStack>
                     </AccessibleLink>
-                </Box>
+                    <Button size="xs" onClick={changeImageFormat}>
+                        Toggle image format
+                    </Button>
+                </HStack>
 
                 <Stack
                     direction={{ base: "column", lg: "row" }}
@@ -107,13 +118,12 @@ const View = ({
                         flex={1}
                         p={4}
                         shadow="2xl"
-                        rounded="md"
+                        rounded="2em"
                         borderWidth="1px"
                         borderColor="gray.200"
                         minH="550px"
                         bg="white"
                         w="full"
-                        pos="relative"
                     >
                         <Heading pb={8}>{post.title}</Heading>
                         {mdx && <MDXLayout source={mdx} />}

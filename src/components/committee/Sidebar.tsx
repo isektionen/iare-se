@@ -81,6 +81,11 @@ interface Props extends BoxProps {
 export const Sidebar = ({ committees, ...props }: Props) => {
     const { t } = useTranslation("mdx");
     const isAboveMd = useBreakpointValue({ base: false, md: true });
+    
+    const sortedCommittees = [...committees].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
+   
 
     return (
         <VStack
@@ -101,7 +106,8 @@ export const Sidebar = ({ committees, ...props }: Props) => {
                         {t("committees")}
                     </Heading>
 
-                    {committees.map((committee) => (
+                    {sortedCommittees.map((committee) => (
+                       
                         <CommitteeItem key={committee.id} {...committee} />
                     ))}
                 </>

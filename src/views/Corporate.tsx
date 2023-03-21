@@ -26,6 +26,15 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
     useHydrater({ header, footer });
 
     const { t, lang } = useTranslation("corporate");
+    const emails = [
+        "event.naringsliv@iare.nu",
+        "naringsliv@iare.nu",
+        "naringsliv@dageni.se",
+        "i-case@iare.nu",
+        "istart@iare.nu",
+        "naringsliv.mottagningen@iare.nu",
+        "naringslivsansvarig@iare.nu",
+    ];
 
     return (
         <React.Fragment>
@@ -87,18 +96,6 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                             </Heading>
                             <p>{t("iStartText")}</p>
                         </Box>
-                        {/* <Box>
-                            <Link
-                                href="mailto:na@iare.nu"
-                                isExternal
-                                fontSize="1.5em"
-                            >
-                                {lang == "sv"
-                                    ? "Maila Näringslivsansvarig"
-                                    : "Email Coporate Relations Resonsible"}{" "}
-                                <ExternalLinkIcon mx="2px" />
-                            </Link>
-                        </Box> */}
                         <TableContainer mt="2em">
                             <Table variant="simple">
                                 <Thead>
@@ -108,72 +105,19 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    <Tr>
-                                        <Td>{t("tr1")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:event.naringsliv@iare.nu"
-                                                isExternal
-                                            >
-                                                event.naringsliv@iare.nu
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>{t("tr2")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:naringsliv@iare.nu"
-                                                isExternal
-                                            >
-                                                naringsliv@iare.nu
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>{t("tr3")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:naringsliv@dageni.se"
-                                                isExternal
-                                            >
-                                                naringsliv@dageni.se
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>{t("tr4")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:i-case@iare.nu"
-                                                isExternal
-                                            >
-                                                i-case@iare.nu
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>{t("tr5")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:istart@iare.nu"
-                                                isExternal
-                                            >
-                                                istart@iare.nu
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>{t("tr6")}</Td>
-                                        <Td>
-                                            <Link
-                                                href="mailto:naringslivsansvarig@iare.nu"
-                                                isExternal
-                                            >
-                                                naringslivsansvarig@iare.nu
-                                            </Link>
-                                        </Td>
-                                    </Tr>
+                                    {emails.map((email, index) => (
+                                        <Tr key={index}>
+                                            <Td>{t("tr" + (index + 1))}</Td>
+                                            <Td>
+                                                <Link
+                                                    href={"mailto:" + email}
+                                                    isExternal
+                                                >
+                                                    {email}
+                                                </Link>
+                                            </Td>
+                                        </Tr>
+                                    ))}
                                 </Tbody>
                             </Table>
                         </TableContainer>

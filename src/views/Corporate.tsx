@@ -1,4 +1,18 @@
-import { VStack, Flex, Box, Heading } from "@chakra-ui/react";
+import {
+    VStack,
+    Flex,
+    Box,
+    Heading,
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+} from "@chakra-ui/react";
 import { NextSeo } from "next-seo";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
@@ -54,14 +68,26 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                             </Heading>
                             <p>{t("adtext")}</p>
                         </Box>
-
                         <Box pb="0.5em">
                             <Heading fontSize="1.5em" my="0.3em">
-                                {t("sponstitle")}
+                                {t("dageniTitle")}
                             </Heading>
-                            <p>{t("sponstext")}</p>
+                            <p>{t("dageniText1")}</p>
+                            <p>{t("dageniText2")}</p>
                         </Box>
-                        <Box>
+                        <Box pb="0.5em">
+                            <Heading fontSize="1.5em" my="0.3em">
+                                {t("iCaseTitle")}
+                            </Heading>
+                            <p>{t("iCaseText")}</p>
+                        </Box>
+                        <Box pb="0.5em">
+                            <Heading fontSize="1.5em" my="0.3em">
+                                {t("iStartTitle")}
+                            </Heading>
+                            <p>{t("iStartText")}</p>
+                        </Box>
+                        {/* <Box>
                             <Link
                                 href="mailto:na@iare.nu"
                                 isExternal
@@ -72,7 +98,85 @@ const View = ({ header, footer }: LayoutProps<{}>) => {
                                     : "Email Coporate Relations Resonsible"}{" "}
                                 <ExternalLinkIcon mx="2px" />
                             </Link>
-                        </Box>
+                        </Box> */}
+                        <TableContainer mt="2em">
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>{t("tableHeader1")}</Th>
+                                        <Th>{t("tableHeader2")}</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>{t("tr1")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:event.naringsliv@iare.nu"
+                                                isExternal
+                                            >
+                                                event.naringsliv@iare.nu
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>{t("tr2")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:naringsliv@iare.nu"
+                                                isExternal
+                                            >
+                                                naringsliv@iare.nu
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>{t("tr3")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:naringsliv@dageni.se"
+                                                isExternal
+                                            >
+                                                naringsliv@dageni.se
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>{t("tr4")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:i-case@iare.nu"
+                                                isExternal
+                                            >
+                                                i-case@iare.nu
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>{t("tr5")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:istart@iare.nu"
+                                                isExternal
+                                            >
+                                                istart@iare.nu
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>{t("tr6")}</Td>
+                                        <Td>
+                                            <Link
+                                                href="mailto:naringslivsansvarig@iare.nu"
+                                                isExternal
+                                            >
+                                                naringslivsansvarig@iare.nu
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
                     </Flex>
                 </Box>
             </VStack>

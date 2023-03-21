@@ -29,6 +29,9 @@
     "committee-single": {
         "title": "{{committee}}"
     },
+    "committees": {
+        "title": "Nämnder"
+    },
     "blog-single": {
         "title": "{{blog}}"
     },

@@ -1,45 +1,40 @@
 import {
     Avatar,
-    Box,
     BoxProps,
-    Center,
-    Flex,
     Heading,
-    HStack,
-    Spacer,
     Stack,
     Text,
     VStack,
+    Grid,
 } from "@chakra-ui/react";
 import React from "react";
 import { useCommittee } from "state/committee";
-import { Representative, CommitteeFunction } from "types/strapi";
+import { CommitteeFunction } from "types/strapi";
 import _ from "underscore";
 
 interface Props extends BoxProps {}
 
 interface ICard {
-    size: number;
     fullname: string;
     imgsrc: string;
     role: string;
     email: string;
 }
 
-const Card = ({ size, fullname, imgsrc, role, email }: ICard) => {
-    const _size =
-        size === 1 ? "xl" : size === 2 ? "lg" : size === 3 ? "md" : "sm";
+const Card = ({ fullname, imgsrc, role, email }: ICard) => {
     return (
         <Stack spacing={4} direction={{ base: "column", md: "row" }}>
-            <Avatar
-                size={_size}
-                name={fullname}
-                src={imgsrc}
-                alignSelf={{ base: "center", md: "flex-start" }}
-            />
+            <Avatar size="xl" name={fullname} src={imgsrc} alignSelf="center" />
             <VStack spacing={1} align={{ base: "center", md: "flex-start" }}>
-                <Heading size="md">{fullname}</Heading>
-                <Text color="gray.600">{role}</Text>
+                <Heading size="sm">{fullname}</Heading>
+                <Text
+                    overflow="hidden"
+                    whiteSpace="nowrap"
+                    textOverflow="ellipsis"
+                    color="gray.600"
+                >
+                    {role}
+                </Text>
                 <Text color="gray.600">{email}</Text>
             </VStack>
         </Stack>
@@ -52,39 +47,35 @@ export const Contact = ({ ...props }: Props) => {
         return <></>;
     }
 
-    const count = committee?.contacts?.length ?? 0;
     return (
-        <Flex>
-            <Stack
-                p={6}
-                spacing={4}
-                direction={{ base: "column", md: "row" }}
-                {...props}
-            >
-                {committee.contacts?.map((user) => {
-                    const imgsrc = user?.cover?.url;
-                    const fullname =
-                        user?.user?.firstname + " " + user?.user?.lastname;
-                    const _role = _.first(
-                        user?.committee_roles as CommitteeFunction[]
-                    );
-                    const role = _role?.role;
-                    const email = _role?.contact;
-                    if (!user) {
-                        return <></>;
-                    }
-                    return (
-                        <Card
-                            size={count}
-                            key={user.id}
-                            fullname={fullname}
-                            imgsrc={imgsrc as string}
-                            role={role as string}
-                            email={email as string}
-                        />
-                    );
-                })}
-            </Stack>
-        </Flex>
+        <Grid
+            templateColumns={{ base: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+            p={6}
+            gap={4}
+            {...props}
+        >
+            {committee.contacts?.map((user) => {
+                const imgsrc = user?.cover?.url;
+                const fullname =
+                    user?.user?.firstname + " " + user?.user?.lastname;
+                const _role = _.first(
+                    user?.committee_roles as CommitteeFunction[]
+                );
+                const role = _role?.role;
+                const email = _role?.contact;
+                if (!user) {
+                    return <></>;
+                }
+                return (
+                    <Card
+                        key={user.id}
+                        fullname={fullname}
+                        imgsrc={imgsrc as string}
+                        role={role as string}
+                        email={email as string}
+                    />
+                );
+            })}
+        </Grid>
     );
 };

@@ -97,6 +97,39 @@ const AccordionSection = ({
     if (subSection && subSection.length === 0) {
         return <></>;
     }
+    if (subSection && subSection.length === 1) {
+        const item = _subSection[0];
+
+        return (
+            <AccordionItem
+                borderTopWidth="0 !important"
+                borderBottomWidth="0 !important"
+            >
+                {({ isExpanded }) => (
+                    <Flex
+                        borderBottomWidth="1px"
+                        direction="column"
+                        borderColor="gray.100"
+                    >
+                        <AccessibleLink href={item?.href}>
+                            <AccordionButton>
+                                <Flex
+                                    align="center"
+                                    w="full"
+                                    flex={1}
+                                    justify="space-between"
+                                >
+                                    <Text fontWeight="700" size="lg">
+                                        {item?.label}
+                                    </Text>
+                                </Flex>
+                            </AccordionButton>
+                        </AccessibleLink>
+                    </Flex>
+                )}
+            </AccordionItem>
+        );
+    }
     return (
         <AccordionItem
             borderTopWidth="0 !important"

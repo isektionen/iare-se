@@ -87,7 +87,7 @@ const Header = (props: BoxProps) => {
 
     const defaultIndex = _.chain(sections)
         .pluck("href")
-        .findIndex((path) => router.asPath.includes(path))
+        .findIndex((path) => router.asPath === path)
         .value();
 
     return (
@@ -243,44 +243,58 @@ const Header = (props: BoxProps) => {
                                                 rotate: -45,
                                             },
                                         };
-                                        if (
-                                            _subSection &&
-                                            _subSection.length === 0 &&
-                                            label === "Musikhjälpen"
-                                        ) {
+                                        if (_subSection.length === 1) {
+                                            let item = _subSection[0];
                                             return (
-                                                <React.Fragment
-                                                    key={
-                                                        i +
-                                                        "accordionitem-" +
-                                                        href
-                                                    }
-                                                >
-                                                    <ListItem
-                                                        style={{
-                                                            listStyleType:
-                                                                "None",
-                                                            margin: "1rem",
-                                                            backgroundColor:
-                                                                "red",
-                                                            padding: ".5rem",
-                                                            borderRadius:
-                                                                "10px",
-                                                            color: "white",
-                                                            textAlign: "center",
-                                                        }}
-                                                        onClick={onClose}
+                                                <>
+                                                    <AccordionItem
+                                                        key={
+                                                            i +
+                                                            "accordionitem-" +
+                                                            href
+                                                        }
+                                                        borderTopWidth="0 !important"
+                                                        borderBottomWidth="0 !important"
                                                     >
-                                                        <AccessibleLink
-                                                            // href={item?.href}
-                                                            href={href}
-                                                            target="_blank"
-                                                        >
-                                                            {/* {item?.label} */}
-                                                            {label}
-                                                        </AccessibleLink>
-                                                    </ListItem>
-                                                </React.Fragment>
+                                                        {({ isExpanded }) => (
+                                                            <Flex
+                                                                borderBottomWidth="1px"
+                                                                direction="column"
+                                                                borderColor="gray.100"
+                                                            >
+                                                                <AccessibleLink
+                                                                    href={
+                                                                        item?.href
+                                                                    }
+                                                                >
+                                                                    <AccordionButton
+                                                                        onClick={
+                                                                            onClose
+                                                                        }
+                                                                    >
+                                                                        <Flex
+                                                                            align="center"
+                                                                            w="full"
+                                                                            flex={
+                                                                                1
+                                                                            }
+                                                                            justify="space-between"
+                                                                        >
+                                                                            <Text
+                                                                                fontWeight="700"
+                                                                                size="lg"
+                                                                            >
+                                                                                {
+                                                                                    item?.label
+                                                                                }
+                                                                            </Text>
+                                                                        </Flex>
+                                                                    </AccordionButton>
+                                                                </AccessibleLink>
+                                                            </Flex>
+                                                        )}
+                                                    </AccordionItem>
+                                                </>
                                             );
                                         }
                                         return (

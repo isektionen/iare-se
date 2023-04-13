@@ -9,13 +9,11 @@ export const Sponsors = () => {
 
     const sponsors: { [key: string]: string } = {
         "applied-value": "https://appliedvaluegroup.com/",
-        "capgemini-invent": "https://www.capgemini.com/service/invent/",
-        kearney: "https://www.kearney.com/",
         emc: "https://www.ericsson.com/en/careers/strategic-programs-practice/",
-        bearingpoint: "https://www.bearingpoint.com/en/",
         deloitte: "https://www2.deloitte.com/se/sv.html/",
-        kpmg: "https://home.kpmg/se/sv/home.html/",
-        pwc: "https://www.pwc.se/",
+        mckinsey: "https://www.mckinsey.com/careers/",
+        bain: "https://www.bain.com/se/sv/careers/",
+        pwc: "https://www.pwc.se/karriar/",
     };
     const main_sponsor = "bcg";
     const main_sponsor_link = "https://www.bcg.com/en-nor/";
